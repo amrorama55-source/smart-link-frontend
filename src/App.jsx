@@ -56,6 +56,22 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/forgot-password"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/reset-password"
+        element={
+          <PublicRoute>
+            <ResetPassword />
+          </PublicRoute>
+        }
+      />
+      <Route
         path="/dashboard"
         element={
           <PrivateRoute>
