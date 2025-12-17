@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createLink, getLinks, deleteLink } from '../services/api';
 import Navbar from '../components/Navbar';
-import { Plus, Link2, Copy, Trash2, ExternalLink, QrCode, Edit } from 'lucide-react';
+import { Plus, Link2, Copy, Trash2, ExternalLink, QrCode } from 'lucide-react';
 
 export default function Links() {
   const [links, setLinks] = useState([]);
@@ -21,11 +21,13 @@ export default function Links() {
   }, []);
 
   const loadLinks = async () => {
+    setLoading(true);
     try {
       const data = await getLinks();
       setLinks(data.links);
-    } catch (error) {
-      console.error('Failed to load links:', error);
+    } catch (err) {
+      console.error('Failed to load links:', err);
+      alert('Failed to load links. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -44,20 +46,32 @@ export default function Links() {
       };
 
       await createLink(linkData);
-      
+
       setFormData({ originalUrl: '', customAlias: '', title: '', tags: '' });
       setShowCreateForm(false);
-      loadLinks();
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to create link');
+      await loadLinks();
+    } catch (err) {
+      console.error('Error creating link:', err);
+      if (err.response?.data?.error) {
+        alert(`Failed: ${err.response.data.error}`);
+      } else if (err.message) {
+        alert(`Failed: ${err.message}`);
+      } else {
+        alert('Failed to create link. Please try again.');
+      }
     } finally {
       setCreating(false);
     }
   };
 
   const handleCopy = (text) => {
-    navigator.clipboard.writeText(text);
-    alert('Copied to clipboard!');
+    try {
+      navigator.clipboard.writeText(text);
+      alert('Copied to clipboard!');
+    } catch (err) {
+      console.error('Copy failed:', err);
+      alert('Failed to copy. Please try manually.');
+    }
   };
 
   const handleDelete = async (shortCode) => {
@@ -65,16 +79,17 @@ export default function Links() {
 
     try {
       await deleteLink(shortCode);
-      loadLinks();
-    } catch (error) {
-      alert('Failed to delete link');
+      await loadLinks();
+    } catch (err) {
+      console.error('Failed to delete link:', err);
+      alert('Failed to delete link. Please try again.');
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -203,7 +218,7 @@ export default function Links() {
                       {link.title || 'Untitled Link'}
                     </h3>
                     <p className="text-sm text-gray-600 mb-2 break-all">{link.originalUrl}</p>
-                    
+
                     <div className="flex items-center space-x-2 text-sm">
                       <span className="font-mono bg-blue-50 text-blue-600 px-3 py-1 rounded-lg">
                         {link.shortUrl}

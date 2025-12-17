@@ -53,7 +53,6 @@ export default function ResetPassword() {
       });
       setSuccess(true);
       
-      // Redirect to login after 3 seconds
       setTimeout(() => {
         navigate('/login');
       }, 3000);
