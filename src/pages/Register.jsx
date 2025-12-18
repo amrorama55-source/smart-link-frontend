@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Link2 } from 'lucide-react';
+import PasswordInput from '../components/PasswordInput';
+import PasswordStrength from '../components/PasswordStrength';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -12,7 +14,7 @@ export default function Register() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -72,6 +74,7 @@ export default function Register() {
               </div>
             )}
 
+            {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Full Name
@@ -87,6 +90,7 @@ export default function Register() {
               />
             </div>
 
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
@@ -102,35 +106,24 @@ export default function Register() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            {/* Password */}
+            <PasswordInput
+              label="Password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
+            <PasswordStrength password={formData.password} />
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="••••••••"
-                required
-              />
-            </div>
+            {/* Confirm Password */}
+            <PasswordInput
+              label="Confirm Password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              autoComplete="new-password"
+            />
 
             <button
               type="submit"

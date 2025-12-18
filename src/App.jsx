@@ -4,9 +4,12 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import VerifyEmail from './pages/VerifyEmail';
 import Dashboard from './pages/Dashboard';
 import Links from './pages/Links';
 import Analytics from './pages/Analytics';
+import BioEditor from './pages/BioEditor';
+import PublicBio from './pages/PublicBio';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -71,6 +74,8 @@ function AppRoutes() {
           </PublicRoute>
         }
       />
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/@:username" element={<PublicBio />} />
       <Route
         path="/dashboard"
         element={
@@ -92,6 +97,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <Analytics />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/bio"
+        element={
+          <PrivateRoute>
+            <BioEditor />
           </PrivateRoute>
         }
       />

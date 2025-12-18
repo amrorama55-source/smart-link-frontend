@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Link2 } from 'lucide-react';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -46,6 +47,7 @@ export default function Login() {
               </div>
             )}
 
+            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
@@ -57,14 +59,16 @@ export default function Login() {
                 className="input-field"
                 placeholder="your@email.com"
                 required
+                autoComplete="email"
               />
             </div>
 
+            {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <span className="block text-sm font-medium text-gray-700">
                   Password
-                </label>
+                </span>
                 <Link
                   to="/forgot-password"
                   className="text-sm text-blue-600 hover:text-blue-700 font-medium"
@@ -72,14 +76,14 @@ export default function Login() {
                   Forgot password?
                 </Link>
               </div>
-              <input
-                type="password"
+
+              <PasswordInput
+                label={null}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-field"
+                autoComplete="current-password"
                 placeholder="••••••••"
                 required
-                autoComplete="current-password"
               />
             </div>
 
@@ -95,7 +99,10 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link
+                to="/register"
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
                 Sign up
               </Link>
             </p>
