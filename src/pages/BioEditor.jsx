@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
-import { Plus, Trash2, GripVertical, ExternalLink, Eye } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Eye } from 'lucide-react';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
@@ -51,7 +51,7 @@ export default function BioEditor() {
       const { data } = await api.get('/api/bio/settings');
       setBioData(data.bioPage);
     } catch (error) {
-      console.error(error);
+      console.error('Error loading bio settings:', error);
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ export default function BioEditor() {
       const { data } = await api.get(`/api/bio/check-username/${username}`);
       setUsernameAvailable(data.available);
     } catch (error) {
-      console.error(error);
+      console.error('Error checking username:', error);
     } finally {
       setCheckingUsername(false);
     }
@@ -91,7 +91,13 @@ export default function BioEditor() {
       ...bioData,
       customLinks: [
         ...bioData.customLinks,
-        { title: '', url: '', icon: '', order: bioData.customLinks.length, isActive: true }
+        { 
+          title: '', 
+          url: '', 
+          icon: '', 
+          order: bioData.customLinks.length, 
+          isActive: true 
+        }
       ]
     });
   };
@@ -123,6 +129,7 @@ export default function BioEditor() {
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Link in Bio Editor</h1>
@@ -142,13 +149,14 @@ export default function BioEditor() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Editor */}
+          {/* Editor Section */}
           <div className="space-y-6">
-            {/* Basic Info */}
+            {/* Basic Information Card */}
             <div className="card">
               <h2 className="text-xl font-bold mb-4">Basic Information</h2>
               
               <div className="space-y-4">
+                {/* Username Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Username *
@@ -188,6 +196,7 @@ export default function BioEditor() {
                   )}
                 </div>
 
+                {/* Display Name Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Display Name
@@ -201,6 +210,7 @@ export default function BioEditor() {
                   />
                 </div>
 
+                {/* Bio Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Bio
@@ -214,6 +224,7 @@ export default function BioEditor() {
                   />
                 </div>
 
+                {/* Avatar Field */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Avatar URL
@@ -229,7 +240,7 @@ export default function BioEditor() {
               </div>
             </div>
 
-            {/* Theme */}
+            {/* Theme Selection Card */}
             <div className="card">
               <h2 className="text-xl font-bold mb-4">Theme</h2>
               <div className="grid grid-cols-3 gap-3">
@@ -250,11 +261,14 @@ export default function BioEditor() {
               </div>
             </div>
 
-            {/* Custom Links */}
+            {/* Custom Links Card */}
             <div className="card">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-bold">Links</h2>
-                <button onClick={addCustomLink} className="btn-primary flex items-center space-x-2">
+                <button 
+                  onClick={addCustomLink} 
+                  className="btn-primary flex items-center space-x-2"
+                >
                   <Plus className="w-4 h-4" />
                   <span>Add Link</span>
                 </button>
@@ -262,8 +276,11 @@ export default function BioEditor() {
 
               <div className="space-y-3">
                 {bioData.customLinks.map((link, index) => (
-                  <div key={index} className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg">
-                    <GripVertical className="w-5 h-5 text-gray-400" />
+                  <div 
+                    key={index} 
+                    className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg"
+                  >
+                    <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
                     <input
                       type="text"
                       value={link.title}
@@ -280,7 +297,8 @@ export default function BioEditor() {
                     />
                     <button
                       onClick={() => removeCustomLink(index)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded"
+                      className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                      aria-label="Remove link"
                     >
                       <Trash2 className="w-5 h-5" />
                     </button>
@@ -298,13 +316,13 @@ export default function BioEditor() {
             <button
               onClick={handleSave}
               disabled={saving || !bioData.username || usernameAvailable === false}
-              className="w-full btn-primary disabled:opacity-50"
+              className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
 
-          {/* Preview */}
+          {/* Preview Section */}
           <div className="lg:sticky lg:top-8 h-fit">
             <div className="card">
               <h2 className="text-xl font-bold mb-4">Preview</h2>
@@ -316,30 +334,41 @@ export default function BioEditor() {
                 'bg-white'
               }`}>
                 <div className="p-8 text-center">
+                  {/* Avatar Preview */}
                   {bioData.avatar && (
                     <img
                       src={bioData.avatar}
                       alt="Avatar"
-                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover"
+                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-white/20"
                     />
                   )}
+                  
+                  {/* Display Name Preview */}
                   <h3 className={`text-2xl font-bold mb-2 ${
-                    ['dark', 'neon', 'gradient'].includes(bioData.theme) ? 'text-white' : 'text-gray-900'
+                    ['dark', 'neon', 'gradient'].includes(bioData.theme) 
+                      ? 'text-white' 
+                      : 'text-gray-900'
                   }`}>
                     {bioData.displayName || 'Your Name'}
                   </h3>
+                  
+                  {/* Bio Preview */}
                   {bioData.bio && (
                     <p className={`text-sm mb-6 ${
-                      ['dark', 'neon', 'gradient'].includes(bioData.theme) ? 'text-gray-300' : 'text-gray-600'
+                      ['dark', 'neon', 'gradient'].includes(bioData.theme) 
+                        ? 'text-gray-300' 
+                        : 'text-gray-600'
                     }`}>
                       {bioData.bio}
                     </p>
                   )}
+                  
+                  {/* Links Preview */}
                   <div className="space-y-3">
                     {bioData.customLinks.map((link, index) => (
                       <div
                         key={index}
-                        className={`px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 ${
+                        className={`px-6 py-3 rounded-lg font-medium transition-transform hover:scale-105 cursor-pointer ${
                           ['dark', 'neon'].includes(bioData.theme)
                             ? 'bg-white text-gray-900'
                             : bioData.theme === 'gradient'
