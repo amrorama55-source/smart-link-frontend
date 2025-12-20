@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { CheckCircle, XCircle, Loader } from 'lucide-react';
@@ -7,30 +7,40 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState('verifying'); // verifying, success, error
+  const [status, setStatus] = useState('verifying');
   const [message, setMessage] = useState('');
   const token = searchParams.get('token');
 
-  useEffect(() => {
-    if (token) {
-      verifyEmail();
-    } else {
+  // Use useCallback to memoize the function
+  const verifyEmail = useCallback(async () => {
+    if (!token) {
       setStatus('error');
       setMessage('Invalid verification link');
+      return;
     }
-  }, [token]);
 
-  const verifyEmail = async () => {
     try {
+      console.log('🔍 Verifying with token:', token);
+      console.log('🔗 API URL:', `${API_URL}/api/auth/verify-email/${token}`);
+      
       const { data } = await axios.get(`${API_URL}/api/auth/verify-email/${token}`);
+      
+      console.log('✅ Success response:', data);
       setStatus('success');
       setMessage(data.message || 'Email verified successfully!');
     } catch (error) {
+      console.error('❌ Error response:', error.response?.data);
+      console.error('❌ Error status:', error.response?.status);
+      console.error('❌ Full error:', error);
+      
       setStatus('error');
       setMessage(error.response?.data?.error || 'Verification failed. Please try again.');
-      console.error('Verification error:', error);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    verifyEmail();
+  }, [verifyEmail]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -85,19 +95,34 @@ export default function VerifyEmail() {
               <p className="text-gray-600 mb-6">
                 The verification link may have expired or is invalid. Please try logging in or request a new verification email.
               </p>
-              <Link 
-                to="/login" 
-                className="btn-primary inline-flex items-center justify-center w-full"
-              >
-                Back to Login
-              </Link>
+              <div className="space-y-3">
+                <Link 
+                  to="/login" 
+                  className="btn-primary inline-flex items-center justify-center w-full"
+                >
+                  Back to Login
+                </Link>
+                <button
+                  onClick={verifyEmail}
+                  className="w-full px-4 py-2 text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Try Again
+                </button>
+              </div>
             </>
           )}
           
           {status === 'verifying' && (
-            <p className="text-gray-500">
-              Please wait while we verify your email address...
-            </p>
+            <div className="space-y-3">
+              <p className="text-gray-500">
+                Please wait while we verify your email address...
+              </p>
+              <div className="flex justify-center">
+                <div className="animate-pulse text-gray-400 text-sm">
+                  This may take a few seconds
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
