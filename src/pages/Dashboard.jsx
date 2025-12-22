@@ -97,8 +97,8 @@ export default function Dashboard() {
                       {stat.value.toLocaleString()}
                     </p>
                   </div>
-                  <div className={`${stat.bgColor} p-3 rounded-xl`}>
-                    <Icon className={`w-6 h-6 ${stat.textColor}`} />
+                  <div className={`${stat.bgColor} p-4 rounded-xl flex-shrink-0`}>
+                    <Icon className={`w-7 h-7 ${stat.textColor}`} />
                   </div>
                 </div>
               </div>
@@ -125,15 +125,15 @@ export default function Dashboard() {
                   key={index}
                   className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="w-4 h-4 text-blue-600" />
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <TrendingUp className="w-5 h-5 text-blue-600" />
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-gray-900 truncate">
                         {link.title || 'Untitled'}
                       </p>
-                      <p className="text-sm text-gray-500">{link.shortUrl}</p>
+                      <p className="text-sm text-gray-500 truncate">{link.shortUrl}</p>
                     </div>
                   </div>
                   <div className="text-right">

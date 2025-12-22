@@ -99,7 +99,7 @@ export default function Links() {
           </div>
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="btn-primary flex items-center space-x-2"
+            className="btn-primary flex items-center gap-2"
           >
             <Plus className="w-5 h-5" />
             <span>Create Link</span>
@@ -219,7 +219,7 @@ export default function Links() {
                     </h3>
                     <p className="text-sm text-gray-600 mb-2 break-all">{link.originalUrl}</p>
 
-                    <div className="flex items-center space-x-2 text-sm">
+                    <div className="flex items-center gap-2 text-sm">
                       <span className="font-mono bg-blue-50 text-blue-600 px-3 py-1 rounded-lg">
                         {link.shortUrl}
                       </span>
@@ -241,7 +241,7 @@ export default function Links() {
                     )}
                   </div>
 
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleCopy(link.shortUrl)}
                       className="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"

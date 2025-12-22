@@ -140,7 +140,7 @@ export default function BioEditor() {
               href={`${API_URL}/api/bio/${bioData.username}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary flex items-center space-x-2"
+              className="btn-secondary flex items-center gap-2"
             >
               <Eye className="w-4 h-4" />
               <span>Preview</span>
@@ -267,7 +267,7 @@ export default function BioEditor() {
                 <h2 className="text-xl font-bold">Links</h2>
                 <button 
                   onClick={addCustomLink} 
-                  className="btn-primary flex items-center space-x-2"
+                  className="btn-primary flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Link</span>
@@ -278,7 +278,7 @@ export default function BioEditor() {
                 {bioData.customLinks.map((link, index) => (
                   <div 
                     key={index} 
-                    className="flex items-center space-x-2 p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
                   >
                     <GripVertical className="w-5 h-5 text-gray-400 cursor-move" />
                     <input

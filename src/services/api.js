@@ -78,4 +78,50 @@ export const getDashboardStats = async () => {
   return response.data;
 };
 
+// Settings APIs
+export const getProfile = async () => {
+  const response = await api.get('/api/settings/profile');
+  return response.data;
+};
+
+export const updateProfile = async (profileData) => {
+  const response = await api.put('/api/settings/profile', profileData);
+  return response.data;
+};
+
+export const changePassword = async (passwordData) => {
+  const response = await api.post('/api/settings/change-password', passwordData);
+  return response.data;
+};
+
+export const getSessions = async () => {
+  const response = await api.get('/api/settings/sessions');
+  return response.data;
+};
+
+export const revokeSession = async (token) => {
+  const response = await api.delete(`/api/settings/sessions/${token}`);
+  return response.data;
+};
+
+export const revokeAllSessions = async () => {
+  const response = await api.post('/api/settings/sessions/revoke-all');
+  return response.data;
+};
+
+export const getSubscription = async () => {
+  const response = await api.get('/api/settings/subscription');
+  return response.data;
+};
+
+export const updateSubscription = async (plan) => {
+  const response = await api.put('/api/settings/subscription', { plan });
+  return response.data;
+};
+
+export const deleteAccount = async (data) => {
+  const response = await api.delete('/api/settings/account', { data });
+  return response.data;
+};
+
 export default api;

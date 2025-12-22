@@ -1,17 +1,11 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Link2, LogOut, LayoutDashboard, Link as LinkIcon, BarChart3, User } from 'lucide-react';
+import { Link2, LayoutDashboard, Link as LinkIcon, BarChart3, User, Settings } from 'lucide-react';
 import EmailVerificationBanner from './EmailVerificationBanner';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const location = useLocation();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   const isActive = (path) => location.pathname === path;
 
@@ -22,78 +16,82 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
-            <Link to="/dashboard" className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+            <Link to="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
                 <Link2 className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">Smart Link</span>
+              <span className="text-xl font-bold text-gray-900 tracking-tight">Smart Link</span>
             </Link>
 
             {/* Navigation Links */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center gap-2">
               <Link
                 to="/dashboard"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all ${
                   isActive('/dashboard')
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <LayoutDashboard className="w-5 h-5" />
+                <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">Dashboard</span>
               </Link>
 
               <Link
                 to="/links"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all ${
                   isActive('/links')
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <LinkIcon className="w-5 h-5" />
+                <LinkIcon className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">Links</span>
               </Link>
 
               <Link
                 to="/analytics"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all ${
                   isActive('/analytics')
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <BarChart3 className="w-5 h-5" />
+                <BarChart3 className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">Analytics</span>
               </Link>
 
               <Link
                 to="/bio"
-                className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all ${
                   isActive('/bio')
-                    ? 'bg-blue-50 text-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <User className="w-5 h-5" />
+                <User className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">Bio</span>
+              </Link>
+
+              <Link
+                to="/settings"
+                className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all ${
+                  isActive('/settings')
+                    ? 'bg-blue-50 text-blue-600 shadow-sm'
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
+              >
+                <Settings className="w-5 h-5 flex-shrink-0" />
+                <span className="font-medium">Settings</span>
               </Link>
             </div>
 
             {/* User Menu */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                <p className="text-xs text-gray-500 capitalize">{user?.plan} Plan</p>
+                <p className="text-sm font-semibold text-gray-900">{user?.name}</p>
+                <p className="text-xs text-gray-500 capitalize font-medium">{user?.plan} Plan</p>
               </div>
-              
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-              >
-                <LogOut className="w-5 h-5" />
-                <span className="hidden md:inline font-medium">Logout</span>
-              </button>
             </div>
           </div>
         </div>
@@ -139,6 +137,16 @@ export default function Navbar() {
             >
               <User className="w-5 h-5" />
               <span className="text-xs mt-1">Bio</span>
+            </Link>
+
+            <Link
+              to="/settings"
+              className={`flex flex-col items-center px-3 py-2 rounded-lg ${
+                isActive('/settings') ? 'text-blue-600' : 'text-gray-600'
+              }`}
+            >
+              <Settings className="w-5 h-5" />
+              <span className="text-xs mt-1">Settings</span>
             </Link>
           </div>
         </div>

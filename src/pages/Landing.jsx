@@ -1,0 +1,458 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+const translations = {
+  ar: {
+    login: 'تسجيل الدخول',
+    start: 'ابدأ مجاناً',
+    beta: '🎉 الآن في نسخة تجريبية (Beta)',
+    'hero-title-1': 'كل روابطك في مكان واحد',
+    'hero-title-2': '— برابط ذكي واحد',
+    'hero-subtitle': 'أنشئ صفحة Bio احترافية، شاركها برابط أو QR، وتابع التفاعل بسهولة — بدون أدوات معقدة.',
+    'cta-primary': 'جرّب الآن مجاناً',
+    'cta-secondary': 'شاهد كيف يعمل',
+    'no-credit-card': '✨ لا بطاقة ائتمان • إعداد خلال دقائق',
+    'card-1-title': 'متابعة التفاعل',
+    'card-1-desc': '1,234 نقرة هذا الشهر',
+    'card-2-title': 'صفحة Bio جاهزة',
+    'card-2-desc': 'جميع روابطك في مكان واحد',
+    'card-3-title': 'QR Code ذكي',
+    'card-3-desc': 'شاركه في أي مكان',
+    'problem-title': 'روابطك كثيرة؟ جمهورك ضايع؟',
+    'problem-desc': 'بدل ما تشارك عشرات الروابط في أماكن مختلفة، Smart Link يجمعها في صفحة واحدة ذكية، ويعطيك نظرة واضحة عن تفاعل جمهورك.',
+    'value-title': 'بس رابط واحد… والباقي يصير أوضح',
+    'value-subtitle': 'لا تعقيد، لا فوضى — فقط النتائج',
+    'feature-1-title': '🎯 وضوح',
+    'feature-1-desc': 'اعرف أي رابط يهتم به جمهورك فعلاً — مو بس أرقام، قرارات واضحة.',
+    'feature-2-title': '⚡ بساطة',
+    'feature-2-desc': 'أنشئ وشارك خلال دقائق بدون إعدادات معقدة أو دورات تدريبية.',
+    'feature-3-title': '📱 مرونة',
+    'feature-3-desc': 'شارك رابطك أو QR في أي مكان: Bio، كرت، مطعم، إعلان — حيث ما تبغى.',
+    'how-title': 'كيف يعمل؟',
+    'how-subtitle': 'بسيط جداً — ما يحتاج شرح',
+    'step-1-title': 'أنشئ حسابك',
+    'step-1-desc': 'تسجيل بسيط وسريع',
+    'step-2-title': 'أضف روابطك',
+    'step-2-desc': 'في صفحة Bio واحدة',
+    'step-3-title': 'شارك الرابط',
+    'step-3-desc': 'أو QR في أي مكان',
+    'step-4-title': 'تابع التفاعل',
+    'step-4-desc': 'بسهولة ووضوح',
+    'usecase-title': 'مناسب لك إذا كنت…',
+    'use-1-title': 'صانع محتوى',
+    'use-1-desc': 'تبغى Bio مرتب وجذاب',
+    'use-2-title': 'فريلانسر',
+    'use-2-desc': 'تشارك أعمالك باحترافية',
+    'use-3-title': 'مطعم أو كافيه',
+    'use-3-desc': 'تستخدم QR للمنيو والروابط',
+    'use-4-title': 'أي شخص',
+    'use-4-desc': 'يريد رابط واحد ذكي بدل الفوضى',
+    'beta-title': 'نطوّر Smart Link معاك',
+    'beta-desc': 'Smart Link حالياً في نسخة تجريبية (Beta) نطوّرها مع مستخدمينا الأوائل بناءً على ملاحظاتهم.',
+    'beta-feedback': 'رأيك يهمنا، وملاحظتك تصنع الفرق ✨',
+    'final-cta-title': 'ابدأ الآن — مجاناً',
+    'final-cta-subtitle': 'جرّب Smart Link اليوم وشوف الفرق بنفسك',
+    'final-cta-button': 'أنشئ Smart Link الخاص بك',
+    'no-commitment': '✨ لا التزام • ألغِ في أي وقت',
+    'footer-desc': 'كل روابطك في مكان واحد',
+    'footer-product': 'المنتج',
+    'footer-features': 'الميزات',
+    'footer-pricing': 'الأسعار',
+    'footer-updates': 'التحديثات',
+    'footer-support': 'الدعم',
+    'footer-help': 'المساعدة',
+    'footer-contact': 'تواصل معنا',
+  },
+  en: {
+    login: 'Login',
+    start: 'Get Started',
+    beta: '🎉 Now in Beta',
+    'hero-title-1': 'All your links in one place',
+    'hero-title-2': '— with one smart link',
+    'hero-subtitle': 'Create a professional Bio page, share it via link or QR, and track engagement easily — no complex tools needed.',
+    'cta-primary': 'Try it free now',
+    'cta-secondary': 'See how it works',
+    'no-credit-card': '✨ No credit card • Set up in minutes',
+    'card-1-title': 'Track Engagement',
+    'card-1-desc': '1,234 clicks this month',
+    'card-2-title': 'Bio Page Ready',
+    'card-2-desc': 'All your links in one place',
+    'card-3-title': 'Smart QR Code',
+    'card-3-desc': 'Share it anywhere',
+    'problem-title': 'Too many links? Lost audience?',
+    'problem-desc': 'Instead of sharing dozens of links in different places, Smart Link gathers them in one smart page and gives you a clear view of your audience engagement.',
+    'value-title': 'Just one link… and everything becomes clearer',
+    'value-subtitle': 'No complexity, no chaos — just results',
+    'feature-1-title': '🎯 Clarity',
+    'feature-1-desc': 'Know which link your audience actually cares about — not just numbers, clear decisions.',
+    'feature-2-title': '⚡ Simplicity',
+    'feature-2-desc': 'Create and share in minutes without complex settings or training courses.',
+    'feature-3-title': '📱 Flexibility',
+    'feature-3-desc': 'Share your link or QR anywhere: Bio, card, restaurant, ad — wherever you want.',
+    'how-title': 'How does it work?',
+    'how-subtitle': 'Very simple — no explanation needed',
+    'step-1-title': 'Create your account',
+    'step-1-desc': 'Simple and fast registration',
+    'step-2-title': 'Add your links',
+    'step-2-desc': 'In one Bio page',
+    'step-3-title': 'Share the link',
+    'step-3-desc': 'Or QR anywhere',
+    'step-4-title': 'Track engagement',
+    'step-4-desc': 'Easily and clearly',
+    'usecase-title': 'Perfect for you if you are…',
+    'use-1-title': 'Content Creator',
+    'use-1-desc': 'Want an organized and attractive Bio',
+    'use-2-title': 'Freelancer',
+    'use-2-desc': 'Share your work professionally',
+    'use-3-title': 'Restaurant or Cafe',
+    'use-3-desc': 'Use QR for menu and links',
+    'use-4-title': 'Anyone',
+    'use-4-desc': 'Wants one smart link instead of chaos',
+    'beta-title': 'We develop Smart Link with you',
+    'beta-desc': 'Smart Link is currently in Beta version, which we develop with our early users based on their feedback.',
+    'beta-feedback': 'Your opinion matters, and your feedback makes a difference ✨',
+    'final-cta-title': 'Start now — for free',
+    'final-cta-subtitle': 'Try Smart Link today and see the difference yourself',
+    'final-cta-button': 'Create your Smart Link',
+    'no-commitment': '✨ No commitment • Cancel anytime',
+    'footer-desc': 'All your links in one place',
+    'footer-product': 'Product',
+    'footer-features': 'Features',
+    'footer-pricing': 'Pricing',
+    'footer-updates': 'Updates',
+    'footer-support': 'Support',
+    'footer-help': 'Help',
+    'footer-contact': 'Contact Us',
+  }
+};
+
+export default function Landing() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [lang, setLang] = useState(() => {
+    return localStorage.getItem('lang') || 'ar';
+  });
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('html-root')?.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    localStorage.setItem('lang', lang);
+  }, [lang]);
+
+  const t = (key) => translations[lang]?.[key] || key;
+
+  const switchLanguage = (newLang) => {
+    setLang(newLang);
+  };
+
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
+  return (
+    <div className="min-h-screen bg-gray-50" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+      {/* Navigation */}
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm bg-white/90">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className={`flex items-center ${lang === 'ar' ? 'gap-3' : 'gap-3'} hover:opacity-80 transition-opacity`}>
+              <div className="w-11 h-11 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                </svg>
+              </div>
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+                Smart Link
+              </span>
+            </Link>
+            
+            <div className="flex items-center gap-6">
+              {/* Language Switcher */}
+              <div className="relative inline-flex items-center bg-white rounded-full p-1 shadow-md border border-gray-200">
+                <button
+                  onClick={() => switchLanguage('ar')}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    lang === 'ar'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  العربية
+                </button>
+                <button
+                  onClick={() => switchLanguage('en')}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
+                    lang === 'en'
+                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                      : 'text-gray-600 hover:text-gray-900'
+                  }`}
+                >
+                  English
+                </button>
+              </div>
+              
+              <div className="flex items-center gap-4">
+                <Link to="/login" className="text-gray-700 hover:text-purple-600 font-semibold transition-colors">
+                  {t('login')}
+                </Link>
+                <Link 
+                  to="/register" 
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl"
+                >
+                  {t('start')}
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 text-white py-20 lg:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className={`text-center ${lang === 'ar' ? 'lg:text-right' : 'lg:text-left'}`}>
+              <div className="inline-block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-sm mb-6 border border-white/30">
+                <span>{t('beta')}</span>
+              </div>
+              <h1 className="text-4xl lg:text-6xl font-extrabold leading-tight mb-6">
+                <span>{t('hero-title-1')}</span><br/>
+                <span className="text-purple-200">{t('hero-title-2')}</span>
+              </h1>
+              <p className="text-xl lg:text-2xl text-purple-100 mb-8 leading-relaxed">
+                {t('hero-subtitle')}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Link 
+                  to="/register" 
+                  className="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-purple-50 transition-all shadow-xl hover:shadow-2xl text-center"
+                >
+                  {t('cta-primary')} 🚀
+                </Link>
+                <a 
+                  href="#how-it-works" 
+                  className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all text-center"
+                >
+                  {t('cta-secondary')}
+                </a>
+              </div>
+              <p className="text-purple-200 text-sm mt-4">
+                {t('no-credit-card')}
+              </p>
+            </div>
+            <div className="hidden lg:block">
+              <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 animate-float">
+                <div className="space-y-5">
+                  <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-lg hover:shadow-xl transition-shadow">
+                    <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <svg className="w-7 h-7 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                        <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-800 text-base mb-1">{t('card-1-title')}</p>
+                      <p className="text-sm text-gray-500">{t('card-1-desc')}</p>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-lg hover:shadow-xl transition-shadow">
+                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <svg className="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-800 text-base mb-1">{t('card-2-title')}</p>
+                      <p className="text-sm text-gray-500">{t('card-2-desc')}</p>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-lg hover:shadow-xl transition-shadow">
+                    <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <svg className="w-7 h-7 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clipRule="evenodd"/>
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-gray-800 text-base mb-1">{t('card-3-title')}</p>
+                      <p className="text-sm text-gray-500">{t('card-3-desc')}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Problem → Solution */}
+      <section className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
+            {t('problem-title')}
+          </h2>
+          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+            {t('problem-desc')}
+          </p>
+        </div>
+      </section>
+
+      {/* Value Proposition */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+              {t('value-title')}
+            </h2>
+            <p className="text-xl text-gray-600">{t('value-subtitle')}</p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {[1, 2, 3].map((num) => (
+              <div key={num} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:-translate-y-2">
+                <div className="w-18 h-18 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-md">
+                  <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t(`feature-${num}-title`)}</h3>
+                <p className="text-gray-600 text-lg leading-relaxed">{t(`feature-${num}-desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it Works */}
+      <section id="how-it-works" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+              {t('how-title')}
+            </h2>
+            <p className="text-xl text-gray-600">{t('how-subtitle')}</p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((num) => (
+              <div key={num} className="text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-3xl font-bold shadow-lg">
+                  {num}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t(`step-${num}-title`)}</h3>
+                <p className="text-gray-600">{t(`step-${num}-desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Use Cases */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+              {t('usecase-title')}
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((num) => (
+              <div key={num} className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all">
+                <div className="text-4xl mb-3">{['✨', '💼', '🍔', '🚀'][num - 1]}</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">{t(`use-${num}-title`)}</h3>
+                <p className="text-gray-600">{t(`use-${num}-desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Beta Notice */}
+      <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="bg-white rounded-3xl p-12 shadow-xl">
+            <div className="text-5xl mb-6">🎯</div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              {t('beta-title')}
+            </h2>
+            <p className="text-xl text-gray-600 mb-2 leading-relaxed">
+              <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent font-bold">Smart Link</span> {t('beta-desc')}
+            </p>
+            <p className="text-lg text-gray-500">{t('beta-feedback')}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-24 bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 text-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
+            {t('final-cta-title')}
+          </h2>
+          <p className="text-xl text-purple-100 mb-10">
+            {t('final-cta-subtitle')}
+          </p>
+          <Link 
+            to="/register" 
+            className="inline-block bg-white text-purple-600 px-12 py-5 rounded-xl font-bold text-xl hover:bg-purple-50 transition-all shadow-2xl hover:shadow-3xl"
+          >
+            {t('final-cta-button')} 🚀
+          </Link>
+          <p className="text-purple-200 text-sm mt-6">
+            {t('no-commitment')}
+          </p>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg"></div>
+                <span className="text-xl font-bold">Smart Link</span>
+              </div>
+              <p className="text-gray-400">{t('footer-desc')}</p>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">{t('footer-product')}</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#features" className="hover:text-white transition-colors">{t('footer-features')}</a></li>
+                <li><a href="#pricing" className="hover:text-white transition-colors">{t('footer-pricing')}</a></li>
+                <li><a href="#updates" className="hover:text-white transition-colors">{t('footer-updates')}</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">{t('footer-support')}</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#help" className="hover:text-white transition-colors">{t('footer-help')}</a></li>
+                <li><a href="#contact" className="hover:text-white transition-colors">{t('footer-contact')}</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-bold mb-4">© 2024 Smart Link</h4>
+              <p className="text-gray-400 text-sm">All rights reserved</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
+    </div>
+  );
+}
+
