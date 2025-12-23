@@ -165,29 +165,60 @@ export default function Settings() {
   };
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirm !== 'DELETE') {
-      alert('Please type DELETE to confirm');
-      return;
-    }
+  console.log('🗑️ Delete account attempt', {
+    deleteConfirm,
+    hasPassword: !!deletePassword,
+    deleteConfirmMatch: deleteConfirm === 'DELETE'
+  });
 
-    setLoading(true);
-    try {
-      await api.delete('/api/settings/account', {
-        data: {
-          password: deletePassword,
-          confirmDelete: true
-        }
-      });
-      alert('Account deleted successfully');
-      logout();
-      navigate('/login');
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to delete account');
-    } finally {
-      setLoading(false);
-      setShowDeleteModal(false);
-    }
-  };
+  if (deleteConfirm !== 'DELETE') {
+    alert('Please type DELETE to confirm');
+    return;
+  }
+
+  if (!deletePassword) {
+    alert('Please enter your password');
+    return;
+  }
+
+  const confirmed = confirm('⚠️ FINAL WARNING: This will permanently delete your account and all data. Are you absolutely sure?');
+  if (!confirmed) return;
+
+  setLoading(true);
+  
+  try {
+    console.log('🗑️ Sending delete request to API...');
+    
+    const response = await api.delete('/api/settings/account', {
+      data: {
+        password: deletePassword,
+        confirmDelete: true
+      }
+    });
+    
+    console.log('✅ Delete success:', response.data);
+    
+    alert('Account deleted successfully. You will be logged out now.');
+    
+    // Clear all local data
+    logout();
+    
+    // Redirect to login
+    navigate('/login');
+    
+  } catch (error) {
+    console.error('❌ Delete account error:', error);
+    console.error('❌ Error response:', error.response);
+    
+    const errorMessage = error.response?.data?.error || 'Failed to delete account. Please try again.';
+    alert(errorMessage);
+  } finally {
+    setLoading(false);
+    setShowDeleteModal(false);
+    setDeleteConfirm('');
+    setDeletePassword('');
+  }
+};
 
   const tabs = [
     { id: 'profile', label: 'Profile Information', icon: User },
