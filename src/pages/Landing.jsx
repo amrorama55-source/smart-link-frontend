@@ -133,6 +133,10 @@ export default function Landing() {
   const [lang, setLang] = useState(() => {
     return localStorage.getItem('lang') || 'ar';
   });
+  
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -141,10 +145,23 @@ export default function Landing() {
     localStorage.setItem('lang', lang);
   }, [lang]);
 
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    localStorage.setItem('darkMode', darkMode.toString());
+  }, [darkMode]);
+
   const t = (key) => translations[lang]?.[key] || key;
 
   const switchLanguage = (newLang) => {
     setLang(newLang);
+  };
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
   };
 
   useEffect(() => {
@@ -154,30 +171,47 @@ export default function Landing() {
   }, [user, navigate]);
 
   return (
-    <div className="min-h-screen bg-gray-50" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       {/* Navigation */}
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50 backdrop-blur-sm bg-white/90">
+      <nav className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b sticky top-0 z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/90' : 'bg-white/90'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className={`flex items-center ${lang === 'ar' ? 'gap-3' : 'gap-3'} hover:opacity-80 transition-opacity`}>
-              <div className="w-11 h-11 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
+              <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl flex items-center justify-center shadow-md">
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                 </svg>
               </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent tracking-tight">
+              <span className={`text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent tracking-tight ${darkMode ? 'from-blue-400 to-blue-600' : ''}`}>
                 Smart Link
               </span>
             </Link>
             
             <div className="flex items-center gap-6">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className={`p-2 rounded-lg transition-colors ${darkMode ? 'bg-gray-700 text-yellow-400 hover:bg-gray-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                aria-label="Toggle Dark Mode"
+              >
+                {darkMode ? (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd"/>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                  </svg>
+                )}
+              </button>
+              
               {/* Language Switcher */}
               <div className="relative inline-flex items-center bg-white rounded-full p-1 shadow-md border border-gray-200">
                 <button
                   onClick={() => switchLanguage('ar')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     lang === 'ar'
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -187,7 +221,7 @@ export default function Landing() {
                   onClick={() => switchLanguage('en')}
                   className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
                     lang === 'en'
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg'
+                      ? 'bg-gradient-to-r from-blue-600 to-blue-800 text-white shadow-lg'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -196,12 +230,12 @@ export default function Landing() {
               </div>
               
               <div className="flex items-center gap-4">
-                <Link to="/login" className="text-gray-700 hover:text-purple-600 font-semibold transition-colors">
+                <Link to="/login" className={`font-semibold transition-colors ${darkMode ? 'text-gray-300 hover:text-blue-400' : 'text-gray-700 hover:text-blue-600'}`}>
                   {t('login')}
                 </Link>
                 <Link 
                   to="/register" 
-                  className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl"
+                  className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2 rounded-lg font-semibold hover:opacity-90 transition-all shadow-lg hover:shadow-xl"
                 >
                   {t('start')}
                 </Link>
@@ -212,7 +246,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 text-white py-20 lg:py-32 relative overflow-hidden">
+      <section className={`${darkMode ? 'bg-gradient-to-br from-gray-800 via-gray-900 to-black' : 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900'} text-white py-20 lg:py-32 relative overflow-hidden`}>
         <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -222,35 +256,35 @@ export default function Landing() {
               </div>
               <h1 className="text-4xl lg:text-6xl font-extrabold leading-tight mb-6">
                 <span>{t('hero-title-1')}</span><br/>
-                <span className="text-purple-200">{t('hero-title-2')}</span>
+                <span className={darkMode ? 'text-blue-400' : 'text-blue-200'}>{t('hero-title-2')}</span>
               </h1>
-              <p className="text-xl lg:text-2xl text-purple-100 mb-8 leading-relaxed">
+              <p className={`text-xl lg:text-2xl ${darkMode ? 'text-gray-300' : 'text-blue-100'} mb-8 leading-relaxed`}>
                 {t('hero-subtitle')}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                 <Link 
                   to="/register" 
-                  className="bg-white text-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-purple-50 transition-all shadow-xl hover:shadow-2xl text-center"
+                  className={`${darkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-white text-blue-600 hover:bg-blue-50'} px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-xl hover:shadow-2xl text-center`}
                 >
                   {t('cta-primary')} 🚀
                 </Link>
                 <a 
                   href="#how-it-works" 
-                  className="bg-white/10 backdrop-blur-sm text-white border-2 border-white/30 px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/20 transition-all text-center"
+                  className={`${darkMode ? 'bg-gray-700/50 hover:bg-gray-600/50 border-gray-600' : 'bg-white/10 hover:bg-white/20 border-white/30'} backdrop-blur-sm text-white border-2 px-8 py-4 rounded-xl font-bold text-lg transition-all text-center`}
                 >
                   {t('cta-secondary')}
                 </a>
               </div>
-              <p className="text-purple-200 text-sm mt-4">
+              <p className={`text-sm mt-4 ${darkMode ? 'text-gray-400' : 'text-blue-200'}`}>
                 {t('no-credit-card')}
               </p>
             </div>
             <div className="hidden lg:block">
-              <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 animate-float">
+              <div className={`${darkMode ? 'bg-gray-800/50 border-gray-700' : 'bg-white/10 border-white/20'} backdrop-blur-lg rounded-3xl p-8 border animate-float`}>
                 <div className="space-y-5">
                   <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-lg hover:shadow-xl transition-shadow">
-                    <div className="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <svg className="w-7 h-7 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <svg className="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                         <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z" clipRule="evenodd"/>
                       </svg>
@@ -261,8 +295,8 @@ export default function Landing() {
                     </div>
                   </div>
                   <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-lg hover:shadow-xl transition-shadow">
-                    <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <svg className="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="w-14 h-14 bg-sky-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <svg className="w-7 h-7 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"/>
                       </svg>
                     </div>
@@ -272,8 +306,8 @@ export default function Landing() {
                     </div>
                   </div>
                   <div className="bg-white rounded-xl p-5 flex items-center gap-4 shadow-lg hover:shadow-xl transition-shadow">
-                    <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
-                      <svg className="w-7 h-7 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <svg className="w-7 h-7 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clipRule="evenodd"/>
                       </svg>
                     </div>
@@ -290,37 +324,37 @@ export default function Landing() {
       </section>
 
       {/* Problem → Solution */}
-      <section className="py-20 bg-white">
+      <section className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-6">
+          <h2 className={`text-3xl lg:text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-6`}>
             {t('problem-title')}
           </h2>
-          <p className="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto">
+          <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'} leading-relaxed max-w-3xl mx-auto`}>
             {t('problem-desc')}
           </p>
         </div>
       </section>
 
       {/* Value Proposition */}
-      <section className="py-20 bg-gradient-to-b from-gray-50 to-white">
+      <section className={`py-20 ${darkMode ? 'bg-gradient-to-b from-gray-900 to-gray-800' : 'bg-gradient-to-b from-gray-50 to-white'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl lg:text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
               {t('value-title')}
             </h2>
-            <p className="text-xl text-gray-600">{t('value-subtitle')}</p>
+            <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{t('value-subtitle')}</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {[1, 2, 3].map((num) => (
-              <div key={num} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border border-gray-100 hover:-translate-y-2">
-                <div className="w-18 h-18 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 shadow-md">
+              <div key={num} className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'} rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all border hover:-translate-y-2`}>
+                <div className="w-18 h-18 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl flex items-center justify-center mb-6 shadow-md">
                   <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{t(`feature-${num}-title`)}</h3>
-                <p className="text-gray-600 text-lg leading-relaxed">{t(`feature-${num}-desc`)}</p>
+                <h3 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>{t(`feature-${num}-title`)}</h3>
+                <p className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-lg leading-relaxed`}>{t(`feature-${num}-desc`)}</p>
               </div>
             ))}
           </div>
@@ -328,23 +362,23 @@ export default function Landing() {
       </section>
 
       {/* How it Works */}
-      <section id="how-it-works" className="py-20 bg-white">
+      <section id="how-it-works" className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl lg:text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
               {t('how-title')}
             </h2>
-            <p className="text-xl text-gray-600">{t('how-subtitle')}</p>
+            <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{t('how-subtitle')}</p>
           </div>
 
           <div className="grid md:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((num) => (
               <div key={num} className="text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-3xl font-bold shadow-lg">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-3xl font-bold shadow-lg">
                   {num}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{t(`step-${num}-title`)}</h3>
-                <p className="text-gray-600">{t(`step-${num}-desc`)}</p>
+                <h3 className={`text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2`}>{t(`step-${num}-title`)}</h3>
+                <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>{t(`step-${num}-desc`)}</p>
               </div>
             ))}
           </div>
@@ -352,20 +386,20 @@ export default function Landing() {
       </section>
 
       {/* Use Cases */}
-      <section className="py-20 bg-gray-50">
+      <section className={`py-20 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl lg:text-5xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
               {t('usecase-title')}
             </h2>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((num) => (
-              <div key={num} className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all">
+              <div key={num} className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'} rounded-xl p-6 shadow-md hover:shadow-xl transition-all border`}>
                 <div className="text-4xl mb-3">{['✨', '💼', '🍔', '🚀'][num - 1]}</div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{t(`use-${num}-title`)}</h3>
-                <p className="text-gray-600">{t(`use-${num}-desc`)}</p>
+                <h3 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-2`}>{t(`use-${num}-title`)}</h3>
+                <p className={darkMode ? 'text-gray-300' : 'text-gray-600'}>{t(`use-${num}-desc`)}</p>
               </div>
             ))}
           </div>
@@ -373,86 +407,119 @@ export default function Landing() {
       </section>
 
       {/* Beta Notice */}
-      <section className="py-20 bg-gradient-to-br from-purple-50 to-blue-50">
+      <section className={`py-20 ${darkMode ? 'bg-gradient-to-br from-gray-800 to-gray-900' : 'bg-gradient-to-br from-blue-50 to-sky-50'}`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white rounded-3xl p-12 shadow-xl">
+          <div className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white'} rounded-3xl p-12 shadow-xl border`}>
             <div className="text-5xl mb-6">🎯</div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            <h2 className={`text-3xl font-bold ${darkMode ? 'text-white' : 'text-gray-900'} mb-4`}>
               {t('beta-title')}
             </h2>
-            <p className="text-xl text-gray-600 mb-2 leading-relaxed">
-              <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent font-bold">Smart Link</span> {t('beta-desc')}
+            <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-2 leading-relaxed`}>
+              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent font-bold">Smart Link</span> {t('beta-desc')}
             </p>
-            <p className="text-lg text-gray-500">{t('beta-feedback')}</p>
+            <p className={`text-lg ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>{t('beta-feedback')}</p>
           </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700 text-white">
+      <section className={`py-24 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-black to-gray-900' : 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900'} text-white`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl lg:text-5xl font-bold mb-6">
             {t('final-cta-title')}
           </h2>
-          <p className="text-xl text-purple-100 mb-10">
+          <p className={`text-xl ${darkMode ? 'text-gray-300' : 'text-blue-100'} mb-10`}>
             {t('final-cta-subtitle')}
           </p>
           <Link 
             to="/register" 
-            className="inline-block bg-white text-purple-600 px-12 py-5 rounded-xl font-bold text-xl hover:bg-purple-50 transition-all shadow-2xl hover:shadow-3xl"
+            className={`inline-block ${darkMode ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-white text-blue-600 hover:bg-blue-50'} px-12 py-5 rounded-xl font-bold text-xl transition-all shadow-2xl hover:shadow-3xl`}
           >
             {t('final-cta-button')} 🚀
           </Link>
-          <p className="text-purple-200 text-sm mt-6">
+          <p className={`text-sm mt-6 ${darkMode ? 'text-gray-400' : 'text-blue-200'}`}>
             {t('no-commitment')}
           </p>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg"></div>
-                <span className="text-xl font-bold">Smart Link</span>
-              </div>
-              <p className="text-gray-400">{t('footer-desc')}</p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">{t('footer-product')}</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#features" className="hover:text-white transition-colors">{t('footer-features')}</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">{t('footer-pricing')}</a></li>
-                <li><a href="#updates" className="hover:text-white transition-colors">{t('footer-updates')}</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">{t('footer-support')}</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#help" className="hover:text-white transition-colors">{t('footer-help')}</a></li>
-                <li><a href="#contact" className="hover:text-white transition-colors">{t('footer-contact')}</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">© 2024 Smart Link</h4>
-              <p className="text-gray-400 text-sm">All rights reserved</p>
-            </div>
-          </div>
+{/* Footer */}
+<footer className="bg-gray-900 text-white py-12">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="grid md:grid-cols-4 gap-8">
+      {/* Brand */}
+      <div>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-lg"></div>
+          <span className="text-xl font-bold">Smart Link</span>
         </div>
-      </footer>
+        <p className="text-gray-400 text-sm leading-relaxed">{t('footer-desc')}</p>
+        <div className="flex gap-3 mt-4">
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center transition-colors">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+            </svg>
+          </a>
+          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-gray-800 hover:bg-gray-700 rounded-lg flex items-center justify-center transition-colors">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/>
+              <circle cx="4" cy="4" r="2"/>
+            </svg>
+          </a>
+        </div>
+      </div>
 
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
+      {/* Product */}
+      <div>
+        <h4 className="font-bold mb-4">{t('footer-product')}</h4>
+        <ul className="space-y-2 text-gray-400 text-sm">
+          <li><a href="#features" className="hover:text-white transition-colors">{t('footer-features')}</a></li>
+          <li><a href="#pricing" className="hover:text-white transition-colors">{t('footer-pricing')}</a></li>
+          <li><Link to="/dashboard" className="hover:text-white transition-colors">Dashboard</Link></li>
+          <li><a href="#how-it-works" className="hover:text-white transition-colors">How it Works</a></li>
+        </ul>
+      </div>
+
+      {/* Support */}
+      <div>
+        <h4 className="font-bold mb-4">{t('footer-support')}</h4>
+        <ul className="space-y-2 text-gray-400 text-sm">
+          <li><a href="#help" className="hover:text-white transition-colors">{t('footer-help')}</a></li>
+          <li><a href="mailto:support@smart-link.website" className="hover:text-white transition-colors">{t('footer-contact')}</a></li>
+          <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="#docs" className="hover:text-white transition-colors">Documentation</a></li>
+        </ul>
+      </div>
+
+      {/* Legal */}
+      <div>
+        <h4 className="font-bold mb-4">Legal</h4>
+        <ul className="space-y-2 text-gray-400 text-sm">
+          <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+          <li><Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+          <li><a href="#cookies" className="hover:text-white transition-colors">Cookie Policy</a></li>
+        </ul>
+        <div className="mt-6">
+          <p className="text-gray-500 text-xs">© 2025 Smart Link</p>
+          <p className="text-gray-500 text-xs mt-1">All rights reserved</p>
+        </div>
+      </div>
+    </div>
+
+    {/* Bottom Bar */}
+    <div className="mt-12 pt-8 border-t border-gray-800">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <p className="text-gray-500 text-sm">
+          Made with ❤️ for a better web
+        </p>
+        <div className="flex items-center gap-6 text-sm">
+          <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy</Link>
+          <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">Terms</Link>
+          <a href="mailto:support@smart-link.website" className="text-gray-400 hover:text-white transition-colors">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
     </div>
   );
-}
-
+} 

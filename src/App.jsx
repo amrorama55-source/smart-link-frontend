@@ -12,6 +12,7 @@ import Analytics from './pages/Analytics';
 import BioEditor from './pages/BioEditor';
 import PublicBio from './pages/PublicBio';
 import Settings from './pages/Settings';
+import BioPage from './pages/BioPage';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -142,6 +143,8 @@ function AppRoutes() {
         }
       />
       <Route path="*" element={<Navigate to="/" />} />
+       <Route path="/@:username" element={<BioPage />} />
+
     </Routes>
   );
 }
