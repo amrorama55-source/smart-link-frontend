@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { getDashboardStats } from '../services/api';
 import Navbar from '../components/Navbar';
-import { TrendingUp, Link2, MousePointerClick, Eye, Calendar } from 'lucide-react';
+import {
+  TrendingUp,
+  Link2,
+  MousePointerClick,
+  Eye,
+  Calendar,
+  ExternalLink,
+  BarChart3,
+  Copy,
+  CheckCircle
+} from 'lucide-react';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [copiedCode, setCopiedCode] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,6 +33,12 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyToClipboard = (text, code) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
   };
 
   if (loading) {
@@ -43,7 +60,6 @@ export default function Dashboard() {
       title: 'Total Links',
       value: stats?.totalLinks || 0,
       icon: Link2,
-      color: 'bg-blue-500',
       bgColor: 'bg-blue-50',
       textColor: 'text-blue-600'
     },
@@ -51,7 +67,6 @@ export default function Dashboard() {
       title: 'Total Clicks',
       value: stats?.totalClicks || 0,
       icon: MousePointerClick,
-      color: 'bg-green-500',
       bgColor: 'bg-green-50',
       textColor: 'text-green-600'
     },
@@ -59,7 +74,6 @@ export default function Dashboard() {
       title: 'Active Links',
       value: stats?.activeLinks || 0,
       icon: Eye,
-      color: 'bg-purple-500',
       bgColor: 'bg-purple-50',
       textColor: 'text-purple-600'
     },
@@ -67,7 +81,6 @@ export default function Dashboard() {
       title: 'Clicks Today',
       value: stats?.clicksToday || 0,
       icon: Calendar,
-      color: 'bg-orange-500',
       bgColor: 'bg-orange-50',
       textColor: 'text-orange-600'
     }
@@ -76,12 +89,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-2">Welcome back! Here's your overview.</p>
+          <p className="text-gray-600 mt-2">
+            Welcome back! Here's your overview.
+          </p>
         </div>
 
         {/* Stats Grid */}
@@ -89,15 +104,17 @@ export default function Dashboard() {
           {statCards.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className="card hover:shadow-md transition-shadow">
+              <div key={index} className="card hover:shadow-lg transition-all">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                    <p className="text-sm font-medium text-gray-600">
+                      {stat.title}
+                    </p>
                     <p className="text-3xl font-bold text-gray-900 mt-2">
                       {stat.value.toLocaleString()}
                     </p>
                   </div>
-                  <div className={`${stat.bgColor} p-4 rounded-xl flex-shrink-0`}>
+                  <div className={`${stat.bgColor} p-4 rounded-xl`}>
                     <Icon className={`w-7 h-7 ${stat.textColor}`} />
                   </div>
                 </div>
@@ -106,15 +123,30 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Top Links */}
-        <div className="card">
+        {/* Top Performing Links */}
+        <div className="card mb-8">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-900">Top Performing Links</h2>
+            <h2 className="text-xl font-bold text-gray-900">
+              Top Performing Links
+            </h2>
             <button
               onClick={() => navigate('/links')}
-              className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
             >
-              View All →
+              View All
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </button>
           </div>
 
@@ -122,76 +154,99 @@ export default function Dashboard() {
             <div className="space-y-4">
               {stats.topLinks.map((link, index) => (
                 <div
-                  key={index}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                  key={link.shortCode}
+                  className="group p-4 bg-gray-50 hover:bg-gray-100 rounded-xl transition-all border"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <TrendingUp className="w-5 h-5 text-blue-600" />
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm bg-blue-50 text-blue-600">
+                        {index + 1}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-gray-900 mb-1 truncate">
+                          {link.title || 'Untitled Link'}
+                        </h3>
+
+                        <div className="flex items-center gap-2 mb-2">
+                          <a
+                            href={`${window.location.origin}/${link.shortCode}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-blue-600 hover:underline inline-flex items-center gap-1 truncate"
+                          >
+                            {window.location.origin}/{link.shortCode}
+                            <ExternalLink className="w-3 h-3" />
+                          </a>
+
+                          <button
+                            onClick={() =>
+                              copyToClipboard(
+                                `${window.location.origin}/${link.shortCode}`,
+                                link.shortCode
+                              )
+                            }
+                            className="p-1 hover:bg-gray-200 rounded"
+                          >
+                            {copiedCode === link.shortCode ? (
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <Copy className="w-4 h-4 text-gray-500" />
+                            )}
+                          </button>
+                        </div>
+
+                        <p className="text-xs text-gray-500 truncate">
+                          → {link.originalUrl}
+                        </p>
+                      </div>
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="font-medium text-gray-900 truncate">
-                        {link.title || 'Untitled'}
-                      </p>
-                      <p className="text-sm text-gray-500 truncate">{link.shortUrl}</p>
+
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-gray-900">
+                        {link.totalClicks.toLocaleString()}
+                      </div>
+                      <div className="text-xs text-gray-500">clicks</div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-2xl font-bold text-gray-900">
-                      {link.totalClicks}
-                    </p>
-                    <p className="text-xs text-gray-500">clicks</p>
+
+                  <div className="mt-3 pt-3 border-t flex gap-4">
+                    <Link
+                      to={`/analytics/${link.shortCode}`}
+                      className="text-xs text-gray-600 hover:text-blue-600 flex items-center gap-1"
+                    >
+                      <BarChart3 className="w-3 h-3" />
+                      View Analytics
+                    </Link>
+
+                    <Link
+                      to="/links"
+                      className="text-xs text-gray-600 hover:text-blue-600 flex items-center gap-1"
+                    >
+                      Manage Links
+                    </Link>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
             <div className="text-center py-12">
-              <Link2 className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <Link2 className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 No links yet
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="text-gray-600 mb-6">
                 Create your first short link to get started
               </p>
               <button
                 onClick={() => navigate('/links')}
-                className="btn-primary"
+                className="btn-primary inline-flex items-center gap-2"
               >
+                <Link2 className="w-4 h-4" />
                 Create Link
               </button>
             </div>
           )}
-        </div>
-
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-          <div className="card">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">This Week</h3>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats?.clicksThisWeek || 0}
-            </p>
-            <p className="text-sm text-gray-500 mt-1">Total clicks</p>
-          </div>
-
-          <div className="card">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">This Month</h3>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats?.clicksThisMonth || 0}
-            </p>
-            <p className="text-sm text-gray-500 mt-1">Total clicks</p>
-          </div>
-
-          <div className="card">
-            <h3 className="text-sm font-medium text-gray-600 mb-2">Average</h3>
-            <p className="text-3xl font-bold text-gray-900">
-              {stats?.totalLinks > 0 
-                ? Math.round(stats.totalClicks / stats.totalLinks)
-                : 0
-              }
-            </p>
-            <p className="text-sm text-gray-500 mt-1">Clicks per link</p>
-          </div>
         </div>
       </div>
     </div>
