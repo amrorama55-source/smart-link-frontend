@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getCurrentUser, login as loginApi, register as registerApi } from '../lib/api';
+import { getCurrentUser, login as loginApi, register as registerApi } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -153,9 +153,9 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <tag name="AuthContext.Provider" value={value}>
+    <AuthContext.Provider value={value}>
       {children}
-    </tag>
+    </AuthContext.Provider>
   );
 }
 
