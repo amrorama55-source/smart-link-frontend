@@ -1,223 +1,170 @@
-// src/context/AuthContext.jsx
-import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
-import api from '../services/api';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { getCurrentUser, login as loginApi, register as registerApi } from '../lib/api';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('token'));
   const [loading, setLoading] = useState(true);
-  const isFetchingRef = useRef(false);
+  const [error, setError] = useState(null);
 
-  // ========================================
-  // Fetch User Data with Better Error Handling
-  // ========================================
-  const fetchUser = useCallback(async (forceRefresh = false) => {
-    if (isFetchingRef.current && !forceRefresh) {
-      console.log('⏭️ Already fetching user, skipping...');
+  // Initialize auth state
+  useEffect(() => {
+    initializeAuth();
+  }, []);
+
+  const initializeAuth = async () => {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.log('ℹ️ No token found');
+      setLoading(false);
       return;
     }
 
-    isFetchingRef.current = true;
-
     try {
-      console.log('🔍 Fetching user data...');
-      const res = await api.get('/api/auth/me');
-      setUser(res.data.user);
-      console.log('✅ User data loaded:', res.data.user);
-      return res.data.user;
-    } catch (err) {
-      console.error('❌ Failed to fetch user:', err.response?.data || err.message);
+      console.log('🔍 Initializing auth with token...');
+      const data = await getCurrentUser();
       
-      // ✅ Handle different error cases
-      if (err.response?.status === 401 || err.response?.status === 404) {
-        console.log('⚠️ Token invalid or user not found, clearing auth...');
-        
-        // Clear everything
+      console.log('✅ User data received:', data.user);
+      setUser(data.user);
+      setError(null);
+    } catch (err) {
+      console.error('❌ Failed to initialize auth:', err);
+      
+      // إذا كان الخطأ 404 (user not found), امسح التوكن
+      if (err.response?.status === 404) {
+        console.log('🗑️ Clearing invalid token');
         localStorage.removeItem('token');
-        setToken(null);
-        delete api.defaults.headers.common['Authorization'];
-        setUser(null);
       }
       
-      throw err;
+      setUser(null);
+      setError(err.response?.data?.message || 'Authentication failed');
     } finally {
-      isFetchingRef.current = false;
+      setLoading(false);
     }
-  }, []);
+  };
 
-  // ========================================
-  // Register
-  // ========================================
-  const register = useCallback(async (userData) => {
+  // Login with email/password
+  const login = async (credentials) => {
     try {
-      console.log('📝 Registering user:', userData.email);
+      console.log('🔐 Logging in...');
+      const data = await loginApi(credentials);
       
-      const response = await api.post('/api/auth/register', userData);
-      console.log('✅ Registration response:', response.data);
+      console.log('✅ Login successful:', data.user);
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      setError(null);
       
-      if (response.data.token) {
-        const newToken = response.data.token;
-        localStorage.setItem('token', newToken);
-        setToken(newToken);
-        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-        
-        // Fetch user data
-        await fetchUser(true);
-      }
-      
-      return response.data;
+      return data;
     } catch (err) {
-      console.error('❌ Registration failed:', err.response?.data || err);
-      throw err;
+      console.error('❌ Login failed:', err);
+      const errorMessage = err.response?.data?.error || 'Login failed';
+      setError(errorMessage);
+      throw new Error(errorMessage);
     }
-  }, [fetchUser]);
+  };
 
-  // ========================================
-  // Login with Credentials
-  // ========================================
-  const loginWithCredentials = useCallback(async (credentials) => {
+  // Login with token (OAuth callback)
+  const loginWithToken = async (token) => {
     try {
-      console.log('🔐 Logging in with credentials:', credentials.email);
+      console.log('🔑 Logging in with token...');
       
-      const response = await api.post('/api/auth/login', credentials);
-      console.log('✅ Login response:', response.data);
+      // Save token first
+      localStorage.setItem('token', token);
       
-      if (response.data.token) {
-        const newToken = response.data.token;
-        localStorage.setItem('token', newToken);
-        setToken(newToken);
-        api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-        
-        // Fetch user data
-        await fetchUser(true);
-      }
-      
-      return response.data;
-    } catch (err) {
-      console.error('❌ Login failed:', err.response?.data || err);
-      throw err;
-    }
-  }, [fetchUser]);
-
-  // ========================================
-  // Login with Token (OAuth)
-  // ========================================
-  const loginWithToken = useCallback(async (tokenValue) => {
-    try {
-      console.log('🔐 Logging in with OAuth token');
-      
-      // Set token first
-      localStorage.setItem('token', tokenValue);
-      setToken(tokenValue);
-      api.defaults.headers.common['Authorization'] = `Bearer ${tokenValue}`;
-
-      // Try to fetch user data
+      // Try to fetch user with new token
       try {
-        await fetchUser(true);
-        return { success: true };
+        console.log('📡 Fetching user with new token...');
+        const data = await getCurrentUser();
+        
+        console.log('✅ User fetched successfully:', data.user);
+        setUser(data.user);
+        setError(null);
+        
+        return data;
       } catch (fetchError) {
-        // ✅ If user fetch fails, clear everything
         console.error('❌ Failed to fetch user with new token:', fetchError);
         
-        localStorage.removeItem('token');
-        setToken(null);
-        delete api.defaults.headers.common['Authorization'];
-        setUser(null);
+        // If user not found, clear token and throw error
+        if (fetchError.response?.status === 404) {
+          console.log('🗑️ User not found - clearing token');
+          localStorage.removeItem('token');
+          throw new Error('User not found. Please register first.');
+        }
         
-        throw new Error('User not found. Please register first.');
+        throw fetchError;
       }
-      
     } catch (err) {
-      console.error('❌ Token login failed:', err.response?.data || err.message);
-      
-      // Clear auth state
+      console.error('❌ Token login failed:', err.message);
       localStorage.removeItem('token');
-      setToken(null);
-      delete api.defaults.headers.common['Authorization'];
       setUser(null);
       
-      throw err;
+      const errorMessage = err.message || err.response?.data?.error || 'Authentication failed';
+      setError(errorMessage);
+      throw new Error(errorMessage);
     }
-  }, [fetchUser]);
+  };
 
-  // ========================================
-  // Logout
-  // ========================================
-  const logout = useCallback(() => {
-    console.log('🚪 Logging out');
-    localStorage.removeItem('token');
-    setToken(null);
-    delete api.defaults.headers.common['Authorization'];
-    setUser(null);
-  }, []);
-
-  // ========================================
-  // ✅ Initialize Auth - with Better Error Handling
-  // ========================================
-  useEffect(() => {
-    const initAuth = async () => {
-      const savedToken = localStorage.getItem('token');
+  // Register
+  const register = async (userData) => {
+    try {
+      console.log('📝 Registering...');
+      const data = await registerApi(userData);
       
-      if (!savedToken) {
-        console.log('ℹ️ No token found');
-        setLoading(false);
-        return;
-      }
+      console.log('✅ Registration successful:', data.user);
+      localStorage.setItem('token', data.token);
+      setUser(data.user);
+      setError(null);
+      
+      return data;
+    } catch (err) {
+      console.error('❌ Registration failed:', err);
+      const errorMessage = err.response?.data?.error || 'Registration failed';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  };
 
-      try {
-        console.log('🔍 Initializing auth with saved token...');
-        api.defaults.headers.common['Authorization'] = `Bearer ${savedToken}`;
-        setToken(savedToken);
-        
-        // Try to fetch user
-        await fetchUser(true);
-        
-      } catch (err) {
-        console.error('❌ Failed to initialize auth:', err);
-        
-        // ✅ CRITICAL: If token is invalid, clear everything
-        console.log('🧹 Clearing invalid token...');
-        localStorage.removeItem('token');
-        setToken(null);
-        delete api.defaults.headers.common['Authorization'];
-        setUser(null);
-        
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Logout
+  const logout = () => {
+    console.log('👋 Logging out');
+    localStorage.removeItem('token');
+    setUser(null);
+    setError(null);
+  };
 
-    initAuth();
-  }, []); // Empty deps - runs only once
+  // Update user
+  const updateUser = (updates) => {
+    console.log('🔄 Updating user:', updates);
+    setUser(prev => ({ ...prev, ...updates }));
+  };
 
   const value = {
     user,
-    token,
     loading,
-    setUser,
-    setToken,
-    fetchUser,
-    register,
-    login: loginWithCredentials,
+    error,
+    login,
     loginWithToken,
-    logout
+    register,
+    logout,
+    updateUser,
+    isAuthenticated: !!user
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <tag name="AuthContext.Provider" value={value}>
       {children}
-    </AuthContext.Provider>
+    </tag>
   );
-};
+}
 
-export const useAuth = () => {
+export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
-};
+}
 
 
