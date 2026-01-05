@@ -384,99 +384,143 @@ export default function Links() {
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white dark:bg-gray-800 rounded-xl w-full max-w-2xl p-6 my-8 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-gray-800 rounded-xl w-full max-w-2xl p-6 sm:p-8 my-8 max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200 dark:border-gray-700"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {editingLink ? 'Edit Link' : 'Create Link'}
-              </h2>
+            <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-gray-200 dark:border-gray-700">
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1">
+                  {editingLink ? 'Edit Link' : 'Create New Link'}
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {editingLink ? 'Update your link details' : 'Shorten and customize your URL'}
+                </p>
+              </div>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+                title="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6 text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {/* Original URL - Only for create */}
               {!editingLink && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Original URL *
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+                    <Link2 className="w-4 h-4" />
+                    Original URL
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="url"
                     required
-                    placeholder="https://example.com"
+                    placeholder="https://example.com/your-long-url"
                     value={linkData.originalUrl}
                     onChange={(e) =>
                       setLinkData({ ...linkData, originalUrl: e.target.value })
                     }
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
                   />
                 </div>
               )}
 
               {/* Title */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+                  <Edit3 className="w-4 h-4" />
                   Title
                 </label>
                 <input
                   type="text"
-                  placeholder="My Link"
+                  placeholder="My Awesome Link"
                   value={linkData.title}
                   onChange={(e) =>
                     setLinkData({ ...linkData, title: e.target.value })
                   }
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
                 />
               </div>
 
               {/* Custom Alias */}
               {!editingLink && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Custom Alias (Optional)
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300">
+                    <Link2 className="w-4 h-4" />
+                    Custom Alias
+                    <span className="text-xs font-normal text-gray-500">(Optional)</span>
                   </label>
-                  <input
-                    type="text"
-                    placeholder="my-link"
-                    value={linkData.customAlias}
-                    onChange={(e) =>
-                      setLinkData({ ...linkData, customAlias: e.target.value })
-                    }
-                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                  <div className="flex items-center gap-2">
+                    <span className="px-3 py-3 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-l-xl border-2 border-r-0 border-gray-300 dark:border-gray-600 text-sm font-medium">
+                      {SHORT_URL_BASE}/
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="my-link"
+                      value={linkData.customAlias}
+                      onChange={(e) =>
+                        setLinkData({ ...linkData, customAlias: e.target.value })
+                      }
+                      className="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-r-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-all"
+                    />
+                  </div>
                 </div>
               )}
 
-              {/* A/B Toggle */}
+              {/* A/B Testing Section Toggle */}
               <button
                 type="button"
                 onClick={() => setShowAdvanced(!showAdvanced)}
-                className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                className="w-full flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 transition-all duration-200 border border-purple-200 dark:border-purple-800"
               >
-                <div className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                  <span className="font-medium text-gray-900 dark:text-white">
-                    A/B Testing
-                  </span>
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+                    <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div className="text-left">
+                    <span className="font-semibold text-gray-900 dark:text-white block">
+                      A/B Testing
+                    </span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                      Test multiple variants to optimize performance
+                    </span>
+                  </div>
                 </div>
-                {showAdvanced ? <ChevronUp /> : <ChevronDown />}
+                <div className="flex items-center gap-2">
+                  {linkData.abTest.enabled && (
+                    <span className="px-2 py-1 bg-purple-600 text-white text-xs font-semibold rounded-full">
+                      Active
+                    </span>
+                  )}
+                  {showAdvanced ? (
+                    <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  ) : (
+                    <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  )}
+                </div>
               </button>
 
-              {/* A/B Section */}
+              {/* A/B Testing Content */}
               {showAdvanced && (
-                <div className="border border-purple-200 dark:border-purple-800 rounded-lg p-4 space-y-4 bg-purple-50/30 dark:bg-purple-900/10">
-                  {/* Enable */}
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-semibold text-gray-900 dark:text-white">
-                      Enable A/B Testing
-                    </label>
+                <div className="border-2 border-purple-200 dark:border-purple-800 rounded-xl p-5 space-y-5 bg-gradient-to-br from-purple-50/50 to-pink-50/50 dark:from-purple-900/10 dark:to-pink-900/10 shadow-inner">
+                  {/* Enable Toggle */}
+                  <div className="flex items-center justify-between p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                        <Target className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-bold text-gray-900 dark:text-white block">
+                          Enable A/B Testing
+                        </label>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                          Split traffic between variants
+                        </span>
+                      </div>
+                    </div>
                     <button
                       type="button"
                       onClick={() =>
@@ -494,16 +538,16 @@ export default function Links() {
                           }
                         })
                       }
-                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                      className={`relative inline-flex h-8 w-14 items-center rounded-full transition-all duration-300 shadow-md ${
                         linkData.abTest.enabled
-                          ? 'bg-purple-600'
+                          ? 'bg-gradient-to-r from-purple-600 to-pink-600'
                           : 'bg-gray-300 dark:bg-gray-600'
                       }`}
                     >
                       <span
-                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                        className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-all duration-300 ${
                           linkData.abTest.enabled
-                            ? 'translate-x-6'
+                            ? 'translate-x-7'
                             : 'translate-x-1'
                         }`}
                       />
@@ -513,25 +557,31 @@ export default function Links() {
                   {linkData.abTest.enabled && (
                     <>
                       <div className="flex justify-between items-center">
-                        <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
-                          Variants (min. 2)
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-gray-900 dark:text-white">
+                            Variants
+                          </span>
+                          <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 text-xs font-bold rounded-full">
+                            Min. 2
+                          </span>
+                        </div>
                         <button
                           type="button"
                           onClick={addVariant}
-                          className="text-xs px-2 py-1 bg-purple-600 text-white rounded font-medium hover:bg-purple-700 transition"
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold text-sm hover:from-purple-700 hover:to-pink-700 transition-all shadow-md hover:shadow-lg transform hover:scale-105"
                         >
-                          + Add
+                          <Plus className="w-4 h-4" />
+                          Add Variant
                         </button>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {linkData.abTest.variants.map((variant, index) => (
                           <div
                             key={index}
-                            className="p-3 bg-white dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-600"
+                            className="p-4 bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all"
                           >
-                            <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center justify-between mb-3">
                               <input
                                 type="text"
                                 value={variant.name}
@@ -539,16 +589,18 @@ export default function Links() {
                                   updateVariant(index, 'name', e.target.value)
                                 }
                                 placeholder="Variant Name"
-                                className="text-sm font-semibold bg-transparent border-none focus:outline-none text-gray-900 dark:text-white"
+                                className="text-sm font-bold bg-transparent border-b-2 border-purple-300 dark:border-purple-700 focus:border-purple-600 dark:focus:border-purple-400 focus:outline-none text-gray-900 dark:text-white px-2 py-1 transition-colors"
                               />
                               <button
                                 type="button"
                                 onClick={() => removeVariant(index)}
-                                className="text-red-600 hover:text-red-700 dark:text-red-400"
+                                className="p-1.5 text-red-600 hover:text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                title="Remove variant"
                               >
-                                <X className="w-4 h-4" />
+                                <X className="w-5 h-5" />
                               </button>
                             </div>
+                            
                             <input
                               type="url"
                               value={variant.url}
@@ -556,10 +608,11 @@ export default function Links() {
                                 updateVariant(index, 'url', e.target.value)
                               }
                               placeholder="https://example.com/variant"
-                              className="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white mb-2"
+                              className="w-full px-4 py-2.5 text-sm border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white mb-3 transition-all"
                             />
-                            <div className="flex items-center gap-2">
-                              <label className="text-xs text-gray-600 dark:text-gray-400">
+                            
+                            <div className="flex items-center gap-3 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
+                              <label className="text-xs font-bold text-purple-700 dark:text-purple-300 uppercase tracking-wider">
                                 Weight:
                               </label>
                               <input
@@ -570,9 +623,15 @@ export default function Links() {
                                 onChange={(e) =>
                                   updateVariant(index, 'weight', parseInt(e.target.value) || 0)
                                 }
-                                className="w-20 px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                                className="w-20 px-3 py-2 text-sm font-bold border-2 border-purple-300 dark:border-purple-700 rounded-lg focus:border-purple-500 focus:ring-2 focus:ring-purple-200 dark:focus:ring-purple-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-center transition-all"
                               />
-                              <span className="text-xs text-gray-600 dark:text-gray-400">%</span>
+                              <span className="text-sm font-bold text-purple-700 dark:text-purple-300">%</span>
+                              <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 ml-2">
+                                <div
+                                  className="bg-gradient-to-r from-purple-600 to-pink-600 h-2 rounded-full transition-all duration-300"
+                                  style={{ width: `${variant.weight}%` }}
+                                />
+                              </div>
                             </div>
                           </div>
                         ))}
@@ -582,20 +641,20 @@ export default function Links() {
                 </div>
               )}
 
-              {/* Buttons */}
-              <div className="flex gap-3 pt-4">
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="flex-1 px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition font-medium"
+                  className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all font-semibold shadow-sm hover:shadow"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02]"
                 >
-                  {editingLink ? 'Update' : 'Create'}
+                  {editingLink ? '✓ Update Link' : '+ Create Link'}
                 </button>
               </div>
             </form>
