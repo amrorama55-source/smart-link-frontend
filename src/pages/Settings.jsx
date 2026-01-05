@@ -250,19 +250,19 @@ export default function Settings() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-[100dvh] bg-gray-50 dark:bg-gray-900">
       <Navbar />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account settings and preferences</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Settings</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">Manage your account settings and preferences</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="card p-2">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-2 shadow-sm">
               {tabs.map((tab) => {
                 const Icon = tab.icon;
                 return (
@@ -271,8 +271,8 @@ export default function Settings() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all ${
                       activeTab === tab.id
-                        ? 'bg-blue-50 text-blue-600 shadow-sm'
-                        : 'text-gray-700 hover:bg-gray-50'
+                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
@@ -287,38 +287,38 @@ export default function Settings() {
           <div className="lg:col-span-3">
             {/* Profile Tab */}
             {activeTab === 'profile' && (
-              <div className="card">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <User className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                  <h2 className="text-xl font-bold text-gray-900">Profile Information</h2>
+                  <User className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Profile Information</h2>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Full Name
                     </label>
                     <input
                       type="text"
                       value={profileData.name}
                       onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                       placeholder="Your name"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Email Address
                     </label>
                     <input
                       type="email"
                       value={profileData.email}
                       onChange={(e) => setProfileData({ ...profileData, email: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                       placeholder="your@email.com"
                     />
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       Changing your email will require verification
                     </p>
                   </div>
@@ -326,7 +326,7 @@ export default function Settings() {
                   <button
                     onClick={handleUpdateProfile}
                     disabled={loading}
-                    className="btn-primary flex items-center gap-2"
+                    className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Save className="w-4 h-4" />
                     <span>{loading ? 'Saving...' : 'Save Changes'}</span>
@@ -337,15 +337,15 @@ export default function Settings() {
 
             {/* Password Tab */}
             {activeTab === 'password' && (
-              <div className="card">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <Lock className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                  <h2 className="text-xl font-bold text-gray-900">Security & Password</h2>
+                  <Lock className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Security & Password</h2>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Current Password
                     </label>
                     <div className="relative">
@@ -353,13 +353,13 @@ export default function Settings() {
                         type={showPasswords.current ? 'text' : 'password'}
                         value={passwordData.currentPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                         placeholder="Enter current password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPasswords({ ...showPasswords, current: !showPasswords.current })}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                       >
                         {showPasswords.current ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -367,7 +367,7 @@ export default function Settings() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       New Password
                     </label>
                     <div className="relative">
@@ -375,13 +375,13 @@ export default function Settings() {
                         type={showPasswords.new ? 'text' : 'password'}
                         value={passwordData.newPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                         placeholder="Enter new password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPasswords({ ...showPasswords, new: !showPasswords.new })}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                       >
                         {showPasswords.new ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -389,7 +389,7 @@ export default function Settings() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Confirm New Password
                     </label>
                     <div className="relative">
@@ -397,13 +397,13 @@ export default function Settings() {
                         type={showPasswords.confirm ? 'text' : 'password'}
                         value={passwordData.confirmPassword}
                         onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                         placeholder="Confirm new password"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPasswords({ ...showPasswords, confirm: !showPasswords.confirm })}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                       >
                         {showPasswords.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
@@ -413,7 +413,7 @@ export default function Settings() {
                   <button
                     onClick={handleChangePassword}
                     disabled={loading}
-                    className="btn-primary flex items-center gap-2"
+                    className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Lock className="w-4 h-4" />
                     <span>{loading ? 'Changing...' : 'Change Password'}</span>
@@ -424,15 +424,15 @@ export default function Settings() {
 
             {/* Sessions Tab */}
             {activeTab === 'sessions' && (
-              <div className="card">
-                <div className="flex items-center justify-between mb-6">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                   <div className="flex items-center gap-3">
-                    <Monitor className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    <h2 className="text-xl font-bold text-gray-900">Active Sessions</h2>
+                    <Monitor className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Active Sessions</h2>
                   </div>
                   <button
                     onClick={handleRevokeAllSessions}
-                    className="text-sm text-red-600 hover:text-red-700 font-medium"
+                    className="text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium"
                   >
                     Revoke All Other Sessions
                   </button>
@@ -440,41 +440,41 @@ export default function Settings() {
 
                 <div className="space-y-3">
                   {sessions.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">No active sessions</p>
+                    <p className="text-gray-500 dark:text-gray-400 text-center py-8">No active sessions</p>
                   ) : (
                     sessions.map((session, index) => (
                       <div
                         key={index}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+                        className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700"
                       >
                         <div className="flex items-center gap-4">
                           {session.device === 'Mobile' ? (
-                            <Smartphone className="w-5 h-5 text-gray-400" />
+                            <Smartphone className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                           ) : (
-                            <Monitor className="w-5 h-5 text-gray-400" />
+                            <Monitor className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                           )}
                           <div>
-                            <p className="font-medium text-gray-900">
+                            <p className="font-medium text-gray-900 dark:text-white">
                               {session.browser} on {session.os}
                             </p>
-                            <p className="text-sm text-gray-500">
+                            <p className="text-sm text-gray-500 dark:text-gray-400">
                               {session.device} • {session.ip} • {session.location}
                             </p>
-                            <p className="text-xs text-gray-400 mt-1">
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
                               Last active: {new Date(session.lastActivity).toLocaleString()}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
                           {session.isActive && (
-                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
+                            <span className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 text-xs rounded-full">
                               Active
                             </span>
                           )}
                           {index !== 0 && (
                             <button
                               onClick={() => handleRevokeSession(session.token)}
-                              className="text-red-600 hover:text-red-700 text-sm font-medium"
+                              className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm font-medium"
                             >
                               Revoke
                             </button>
@@ -489,24 +489,24 @@ export default function Settings() {
 
             {/* Subscription Tab */}
             {activeTab === 'subscription' && (
-              <div className="card">
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm">
                 <div className="flex items-center gap-3 mb-6">
-                  <CreditCard className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                  <h2 className="text-xl font-bold text-gray-900">Subscription & Billing</h2>
+                  <CreditCard className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Subscription & Billing</h2>
                 </div>
 
                 <div className="mb-6">
-                  <p className="text-sm text-gray-600 mb-4">
-                    Current Plan: <span className="font-semibold text-gray-900 capitalize">{selectedPlan}</span>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                    Current Plan: <span className="font-semibold text-gray-900 dark:text-white capitalize">{selectedPlan}</span>
                   </p>
                   
                   {subscription?.subscription?.status && (
-                    <div className="p-4 bg-blue-50 rounded-lg mb-4">
-                      <p className="text-sm text-gray-700">
+                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4 border border-blue-200 dark:border-blue-800">
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
                         Status: <span className="font-semibold capitalize">{subscription.subscription.status}</span>
                       </p>
                       {subscription.subscription.currentPeriodEnd && (
-                        <p className="text-sm text-gray-600 mt-1">
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                           Renews on: {new Date(subscription.subscription.currentPeriodEnd).toLocaleDateString()}
                         </p>
                       )}
@@ -520,21 +520,21 @@ export default function Settings() {
                       key={plan.id}
                       className={`p-6 rounded-lg border-2 ${
                         selectedPlan === plan.id
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 bg-white'
+                          ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h3>
                         {selectedPlan === plan.id && (
-                          <CheckCircle className="w-5 h-5 text-blue-600" />
+                          <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         )}
                       </div>
-                      <p className="text-3xl font-bold text-gray-900 mb-4">{plan.price}<span className="text-sm text-gray-500">/mo</span></p>
+                      <p className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{plan.price}<span className="text-sm text-gray-500 dark:text-gray-400">/mo</span></p>
                       <ul className="space-y-2 mb-4">
                         {plan.features.map((feature, index) => (
-                          <li key={index} className="flex items-start text-sm text-gray-600">
-                            <CheckCircle className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                          <li key={index} className="flex items-start text-sm text-gray-600 dark:text-gray-300">
+                            <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400 mr-2 mt-0.5 flex-shrink-0" />
                             {feature}
                           </li>
                         ))}
@@ -543,7 +543,7 @@ export default function Settings() {
                         <button
                           onClick={() => handleChangePlan(plan.id)}
                           disabled={loading}
-                          className="w-full btn-primary"
+                          className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' : 
                            selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' : 
@@ -560,13 +560,13 @@ export default function Settings() {
             {activeTab === 'security' && (
               <div className="space-y-6">
                 {/* Logout Section */}
-                <div className="card">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm">
                   <div className="flex items-center gap-3 mb-6">
-                    <LogOut className="w-6 h-6 text-blue-600 flex-shrink-0" />
-                    <h2 className="text-xl font-bold text-gray-900">Sign Out</h2>
+                    <LogOut className="w-6 h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Sign Out</h2>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-4">
+                  <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                       Sign out from your account. You will need to sign in again to access your account.
                     </p>
                     <button
@@ -576,7 +576,7 @@ export default function Settings() {
                           navigate('/login');
                         }
                       }}
-                      className="btn-secondary flex items-center gap-2"
+                      className="w-full sm:w-auto px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-2"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Sign Out</span>
@@ -585,21 +585,21 @@ export default function Settings() {
                 </div>
 
                 {/* Delete Account Section */}
-                <div className="card border-2 border-red-200">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-sm border-2 border-red-200 dark:border-red-900/50">
                   <div className="flex items-center gap-3 mb-6">
-                    <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0" />
-                    <h2 className="text-xl font-bold text-red-900">Delete Account</h2>
+                    <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0" />
+                    <h2 className="text-xl font-bold text-red-900 dark:text-red-400">Delete Account</h2>
                   </div>
 
-                  <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                    <h3 className="font-semibold text-red-900 mb-2">Permanent Account Deletion</h3>
-                    <p className="text-sm text-red-700 mb-4">
+                  <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <h3 className="font-semibold text-red-900 dark:text-red-300 mb-2">Permanent Account Deletion</h3>
+                    <p className="text-sm text-red-700 dark:text-red-300 mb-4">
                       Once you delete your account, there is no going back. Please be certain.
                       This will permanently delete all your links, analytics data, and account information.
                     </p>
                     <button
                       onClick={() => setShowDeleteModal(true)}
-                      className="btn-danger flex items-center gap-2"
+                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                     >
                       <Trash2 className="w-4 h-4" />
                       <span>Delete Account</span>
@@ -609,42 +609,42 @@ export default function Settings() {
 
                 {/* Delete Modal */}
                 {showDeleteModal && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                      <h3 className="text-xl font-bold text-red-900 mb-4">Delete Account</h3>
-                      <p className="text-gray-600 mb-4">
+                  <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-2xl">
+                      <h3 className="text-xl font-bold text-red-900 dark:text-red-400 mb-4">Delete Account</h3>
+                      <p className="text-gray-600 dark:text-gray-400 mb-4">
                         This action cannot be undone. All your data will be permanently deleted.
                       </p>
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Type DELETE to confirm
                           </label>
                           <input
                             type="text"
                             value={deleteConfirm}
                             onChange={(e) => setDeleteConfirm(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                             placeholder="DELETE"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Enter your password
                           </label>
                           <input
                             type="password"
                             value={deletePassword}
                             onChange={(e) => setDeletePassword(e.target.value)}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg"
+                            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                             placeholder="Your password"
                           />
                         </div>
-                        <div className="flex space-x-3">
+                        <div className="flex gap-3">
                           <button
                             onClick={handleDeleteAccount}
                             disabled={loading || deleteConfirm !== 'DELETE'}
-                            className="flex-1 btn-danger"
+                            className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {loading ? 'Deleting...' : 'Delete Account'}
                           </button>
@@ -654,7 +654,7 @@ export default function Settings() {
                               setDeleteConfirm('');
                               setDeletePassword('');
                             }}
-                            className="flex-1 btn-secondary"
+                            className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
                           >
                             Cancel
                           </button>

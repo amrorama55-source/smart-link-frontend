@@ -124,4 +124,12 @@ export const deleteAccount = async (data) => {
   return response.data;
 };
 
+// Comprehensive Analytics
+export const getComprehensiveAnalytics = async (shortCode, days = null) => {
+  const params = days ? { days } : {};
+  const response = await api.get(`/api/analytics/${shortCode}`, { params });
+  return response.data.analytics;
+};
+
+
 export default api;

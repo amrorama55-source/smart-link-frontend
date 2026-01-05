@@ -138,21 +138,22 @@ export default function Landing() {
     return localStorage.getItem('darkMode') === 'true';
   });
 
-  useEffect(() => {
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.getElementById('html-root')?.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
-    localStorage.setItem('lang', lang);
-  }, [lang]);
+const isRTL = lang === 'ar' || lang === 'ur' || lang === 'fa';
 
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('darkMode', darkMode.toString());
-  }, [darkMode]);
+useEffect(() => {
+  document.documentElement.lang = lang;
+  document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
+  localStorage.setItem('lang', lang);
+}, [lang, isRTL]);
+
+useEffect(() => {
+  if (darkMode) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+  localStorage.setItem('darkMode', darkMode.toString());
+}, [darkMode]);
 
   const t = (key) => translations[lang]?.[key] || key;
 
@@ -171,7 +172,7 @@ export default function Landing() {
   }, [user, navigate]);
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
+    <div className={`min-h-[100dvh] ${darkMode ? 'bg-gray-900' : 'bg-gray-50'}`} dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       {/* Navigation */}
       <nav className={`${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border-b sticky top-0 z-50 backdrop-blur-sm ${darkMode ? 'bg-gray-800/90' : 'bg-white/90'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
