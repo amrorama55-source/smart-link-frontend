@@ -2,6 +2,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { ToastProvider } from './context/ToastContext';
 
 // استيراد الصفحات
 import Login from './pages/Login';
@@ -11,7 +12,7 @@ import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
-import Links from './pages/Links';
+import Links from './pages/EnhancedLinks'; // ✅ صح
 import Analytics from './pages/Analytics';
 import BioEditor from './pages/BioEditor';
 import PublicBio from './pages/PublicBio';
@@ -20,14 +21,15 @@ import BioPage from './pages/BioPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Profile from './pages/Profile';
-import AuthCallback from './pages/AuthCallback'; 
-// Loading Component محسّن
+import AuthCallback from './pages/AuthCallback';
+
+// Loading Component
 function LoadingScreen() {
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-gray-50">
+    <div className="min-h-[100dvh] flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-        <p className="mt-4 text-gray-600">Loading...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
       </div>
     </div>
   );
@@ -60,18 +62,18 @@ function AppRoutes() {
       <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
       <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/@:username" element={<PublicBio />} />
+      <Route path="/auth/callback" element={<AuthCallback />} />
+      
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/links" element={<PrivateRoute><Links /></PrivateRoute>} />
       <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
       <Route path="/bio" element={<PrivateRoute><BioEditor /></PrivateRoute>} />
       <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
-       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+      
+      <Route path="/@:username" element={<PublicBio />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
-
-       <Route path="/auth/callback" element={<AuthCallback />} 
-        />
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
@@ -79,14 +81,16 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <div className="antialiased">
-            <AppRoutes />
-          </div>
-        </AuthProvider>
+    <AuthProvider> {/* ✅ 1 */}
+      <ThemeProvider> {/* ✅ 2 */}
+        <ToastProvider> {/* ✅ 3 */}
+          <BrowserRouter> {/* ✅ 4 */}
+            <div className="antialiased">
+              <AppRoutes />
+            </div>
+          </BrowserRouter>
+        </ToastProvider>
       </ThemeProvider>
-    </BrowserRouter>
+    </AuthProvider>
   );
 }

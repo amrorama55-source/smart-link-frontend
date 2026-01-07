@@ -43,6 +43,23 @@ textarea {
   min-height: 44px; /* iOS recommended touch target */
 }
 
+/* Minimum touch target size: 44x44px */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 12px;
+}
+
+/* Prevent double-tap zoom */
+* {
+  touch-action: manipulation;
+}
+
+/* Smooth scrolling */
+html {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ==========================
    Container (Responsive)
 ========================== */
