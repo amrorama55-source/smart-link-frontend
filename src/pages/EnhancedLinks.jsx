@@ -163,20 +163,15 @@ export default function EnhancedLinks() {
     );
     setShowModal(true);
   };
-
-// ✅ استبدل validateForm() في EnhancedLinks.jsx بهذا الكود
-
 const validateForm = () => {
   const newErrors = {};
 
-  // ✅ CRITICAL FIX: Original URL is optional when A/B Testing is enabled
+  // ✅ Original URL validation - Fixed
   if (!editingLink) {
-    // Check if A/B Testing is enabled and has valid variants
     const hasValidABTest = linkData.abTest?.enabled && 
                           linkData.abTest.variants?.length >= 2 &&
                           linkData.abTest.variants.every(v => v.name?.trim() && v.url?.trim());
 
-    // Original URL is REQUIRED only when A/B Testing is NOT properly configured
     if (!hasValidABTest) {
       const trimmedUrl = (linkData.originalUrl || '').trim();
       
@@ -193,8 +188,6 @@ const validateForm = () => {
         }
       }
     } else {
-      // A/B Testing is enabled and valid, so originalUrl is optional
-      // But if provided, it should be valid
       const trimmedUrl = (linkData.originalUrl || '').trim();
       if (trimmedUrl) {
         try {
@@ -217,18 +210,11 @@ const validateForm = () => {
     }
   }
 
-  // ✅ A/B Testing validation - IMPROVED
+  // ✅ A/B Testing validation
   if (linkData.abTest?.enabled) {
-    console.log('🧪 Validating A/B Test:', {
-      variants: linkData.abTest.variants?.length,
-      splitMethod: linkData.abTest.splitMethod
-    });
-
-    // Check variants count
     if (!linkData.abTest.variants || linkData.abTest.variants.length < 2) {
       newErrors.abTest = 'A/B testing requires at least 2 variants';
     } else {
-      // ✅ Check each variant for name and URL
       const invalidVariants = linkData.abTest.variants.filter(v => {
         const hasName = v.name && v.name.trim().length > 0;
         const hasUrl = v.url && v.url.trim().length > 0;
@@ -237,9 +223,7 @@ const validateForm = () => {
       
       if (invalidVariants.length > 0) {
         newErrors.abTest = 'All variants must have a name and URL';
-        console.log('❌ Invalid variants:', invalidVariants);
       } else {
-        // ✅ Validate URL format for each variant
         const badUrls = linkData.abTest.variants.filter(v => {
           try {
             const url = new URL(v.url.trim());
@@ -251,20 +235,15 @@ const validateForm = () => {
         
         if (badUrls.length > 0) {
           newErrors.abTest = 'All variant URLs must be valid (start with http:// or https://)';
-          console.log('❌ Bad URLs:', badUrls);
         }
       }
 
-      // ✅ Weight validation - RELAXED (backend will normalize)
       if (linkData.abTest.splitMethod === 'weighted' && !newErrors.abTest) {
         const totalWeight = linkData.abTest.variants.reduce((sum, v) => {
           const weight = parseFloat(v.weight) || 0;
           return sum + weight;
         }, 0);
-        
-        console.log('📊 Total Weight:', totalWeight);
 
-        // Only error if completely broken
         if (totalWeight === 0) {
           newErrors.abTest = 'At least one variant must have weight > 0';
         } else if (totalWeight > 200) {
@@ -272,38 +251,46 @@ const validateForm = () => {
         } else if (totalWeight < 50) {
           newErrors.abTest = 'Total weight seems too low. Try "Auto-Fix Weights" button.';
         }
-        // Otherwise backend will auto-normalize ✅
       }
     }
   }
 
-  // Geotargeting validation
+  // ✅ Geotargeting validation - FIXED
   if (linkData.geoRules && linkData.geoRules.length > 0) {
-    const invalidRules = linkData.geoRules.filter(r => {
-      const hasCountries = r.countries && r.countries.length > 0;
-      const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
-      return !hasCountries || !hasUrl;
-    });
+    // Filter out completely empty rules
+    const nonEmptyRules = linkData.geoRules.filter(r => 
+      (r.countries && r.countries.length > 0) || 
+      (r.targetUrl && r.targetUrl.trim().length > 0)
+    );
     
-    if (invalidRules.length > 0) {
-      newErrors.geoRules = 'All geo rules must have countries and target URL';
-    } else {
-      const badGeoUrls = linkData.geoRules.filter(r => {
-        try {
-          const url = new URL(r.targetUrl.trim());
-          return !['http:', 'https:'].includes(url.protocol);
-        } catch {
-          return true;
-        }
+    // Only validate if there are rules with some data
+    if (nonEmptyRules.length > 0) {
+      const invalidRules = nonEmptyRules.filter(r => {
+        const hasCountries = r.countries && r.countries.length > 0;
+        const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
+        return !hasCountries || !hasUrl;
       });
       
-      if (badGeoUrls.length > 0) {
-        newErrors.geoRules = 'All geo rule URLs must be valid';
+      if (invalidRules.length > 0) {
+        newErrors.geoRules = 'All geo rules must have both countries and target URL';
+      } else {
+        const badGeoUrls = nonEmptyRules.filter(r => {
+          try {
+            const url = new URL(r.targetUrl.trim());
+            return !['http:', 'https:'].includes(url.protocol);
+          } catch {
+            return true;
+          }
+        });
+        
+        if (badGeoUrls.length > 0) {
+          newErrors.geoRules = 'All geo rule URLs must be valid';
+        }
       }
     }
   }
 
-  // Device targeting validation
+  // ✅ Device targeting validation - FIXED
   if (linkData.deviceRules?.mobile || linkData.deviceRules?.desktop || linkData.deviceRules?.tablet) {
     const deviceUrls = [
       { key: 'mobile', url: linkData.deviceRules.mobile },
@@ -325,7 +312,7 @@ const validateForm = () => {
     }
   }
 
-  // Schedule validation
+  // ✅ Schedule validation - FIXED
   if (linkData.schedule?.enabled) {
     if (!linkData.schedule.startDate || !linkData.schedule.endDate) {
       newErrors.schedule = 'Start and end dates are required';
@@ -350,7 +337,7 @@ const validateForm = () => {
     }
   }
 
-  // Pixels validation
+  // ✅ Pixels validation
   if (linkData.pixels && linkData.pixels.length > 0) {
     const invalidPixels = linkData.pixels.filter(p => {
       const hasPlatform = p.platform && p.platform.trim().length > 0;
