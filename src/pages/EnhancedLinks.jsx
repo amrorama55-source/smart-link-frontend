@@ -262,23 +262,27 @@ const validateForm = () => {
   // ✅ Geotargeting validation - COMPLETELY FIXED
   // ========================================
   if (linkData.geoRules && linkData.geoRules.length > 0) {
-    // ✅ Filter: فقط القواعد اللي فيها بيانات
-    const rulesWithData = linkData.geoRules.filter(r => 
-      (r.countries && r.countries.length > 0) || 
-      (r.targetUrl && r.targetUrl.trim().length > 0)
-    );
+    // ✅ Filter: فقط القواعد اللي فيها بيانات فعلية
+    const rulesWithData = linkData.geoRules.filter(r => {
+      const hasCountries = r.countries && r.countries.length > 0;
+      const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
+      // ✅ القاعدة فيها بيانات إذا كان فيها countries أو url
+      return hasCountries || hasUrl;
+    });
     
     // ✅ فقط نتحقق إذا في قواعد فيها بيانات
     if (rulesWithData.length > 0) {
-      // ✅ تحقق: كل قاعدة لازم يكون فيها countries و targetUrl
+      // ✅ تحقق: كل قاعدة لازم يكون فيها countries و targetUrl معاً
       const incompleteRules = rulesWithData.filter(r => {
         const hasCountries = r.countries && r.countries.length > 0;
         const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
+        // ✅ القاعدة ناقصة إذا كان فيها واحد بس من الاثنين
         return !hasCountries || !hasUrl;
       });
       
       if (incompleteRules.length > 0) {
-        newErrors.geoRules = 'Each geo rule must have both countries and target URL';
+        // ✅ رسالة واضحة توضح المشكلة
+        newErrors.geoRules = 'Each geo rule must have BOTH countries AND target URL. Please fill both fields or remove the rule.';
       } else {
         // ✅ تحقق من صحة الـ URLs
         const badGeoUrls = rulesWithData.filter(r => {
@@ -291,7 +295,7 @@ const validateForm = () => {
         });
         
         if (badGeoUrls.length > 0) {
-          newErrors.geoRules = 'All geo rule URLs must be valid (start with http:// or https://)';
+          newErrors.geoRules = 'All geo rule URLs must be valid and start with http:// or https://';
         }
       }
     }
@@ -387,6 +391,10 @@ const validateForm = () => {
       pixels: linkData.pixels?.length || 0
     }
   });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;

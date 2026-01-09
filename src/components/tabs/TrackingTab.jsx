@@ -7,6 +7,17 @@ export default function TrackingTab({
   updatePixel,
   errors 
 }) {
+  // ✅ CRITICAL FIX: Handle undefined linkData
+  if (!linkData) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="text-gray-500 dark:text-gray-400">
+          Loading...
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       
