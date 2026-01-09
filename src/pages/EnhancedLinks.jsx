@@ -163,10 +163,15 @@ export default function EnhancedLinks() {
     );
     setShowModal(true);
   };
+// ✅ FIXED validateForm - في Links.jsx
+// استبدل الـ function الحالية بهذه النسخة المحسّنة
+
 const validateForm = () => {
   const newErrors = {};
 
-  // ✅ Original URL validation - Fixed
+  // ========================================
+  // ✅ Original URL validation - IMPROVED
+  // ========================================
   if (!editingLink) {
     const hasValidABTest = linkData.abTest?.enabled && 
                           linkData.abTest.variants?.length >= 2 &&
@@ -210,7 +215,9 @@ const validateForm = () => {
     }
   }
 
-  // ✅ A/B Testing validation
+  // ========================================
+  // ✅ A/B Testing validation - IMPROVED
+  // ========================================
   if (linkData.abTest?.enabled) {
     if (!linkData.abTest.variants || linkData.abTest.variants.length < 2) {
       newErrors.abTest = 'A/B testing requires at least 2 variants';
@@ -246,35 +253,35 @@ const validateForm = () => {
 
         if (totalWeight === 0) {
           newErrors.abTest = 'At least one variant must have weight > 0';
-        } else if (totalWeight > 200) {
-          newErrors.abTest = 'Total weight seems too high. Try "Auto-Fix Weights" button.';
-        } else if (totalWeight < 50) {
-          newErrors.abTest = 'Total weight seems too low. Try "Auto-Fix Weights" button.';
         }
       }
     }
   }
 
-  // ✅ Geotargeting validation - FIXED
+  // ========================================
+  // ✅ Geotargeting validation - COMPLETELY FIXED
+  // ========================================
   if (linkData.geoRules && linkData.geoRules.length > 0) {
-    // Filter out completely empty rules
-    const nonEmptyRules = linkData.geoRules.filter(r => 
+    // ✅ Filter: فقط القواعد اللي فيها بيانات
+    const rulesWithData = linkData.geoRules.filter(r => 
       (r.countries && r.countries.length > 0) || 
       (r.targetUrl && r.targetUrl.trim().length > 0)
     );
     
-    // Only validate if there are rules with some data
-    if (nonEmptyRules.length > 0) {
-      const invalidRules = nonEmptyRules.filter(r => {
+    // ✅ فقط نتحقق إذا في قواعد فيها بيانات
+    if (rulesWithData.length > 0) {
+      // ✅ تحقق: كل قاعدة لازم يكون فيها countries و targetUrl
+      const incompleteRules = rulesWithData.filter(r => {
         const hasCountries = r.countries && r.countries.length > 0;
         const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
         return !hasCountries || !hasUrl;
       });
       
-      if (invalidRules.length > 0) {
-        newErrors.geoRules = 'All geo rules must have both countries and target URL';
+      if (incompleteRules.length > 0) {
+        newErrors.geoRules = 'Each geo rule must have both countries and target URL';
       } else {
-        const badGeoUrls = nonEmptyRules.filter(r => {
+        // ✅ تحقق من صحة الـ URLs
+        const badGeoUrls = rulesWithData.filter(r => {
           try {
             const url = new URL(r.targetUrl.trim());
             return !['http:', 'https:'].includes(url.protocol);
@@ -284,38 +291,44 @@ const validateForm = () => {
         });
         
         if (badGeoUrls.length > 0) {
-          newErrors.geoRules = 'All geo rule URLs must be valid';
+          newErrors.geoRules = 'All geo rule URLs must be valid (start with http:// or https://)';
         }
       }
     }
   }
 
+  // ========================================
   // ✅ Device targeting validation - FIXED
-  if (linkData.deviceRules?.mobile || linkData.deviceRules?.desktop || linkData.deviceRules?.tablet) {
+  // ========================================
+  if (linkData.deviceRules) {
     const deviceUrls = [
       { key: 'mobile', url: linkData.deviceRules.mobile },
       { key: 'desktop', url: linkData.deviceRules.desktop },
       { key: 'tablet', url: linkData.deviceRules.tablet }
-    ].filter(d => d.url && d.url.trim());
+    ].filter(d => d.url && d.url.trim().length > 0);
 
-    const badDeviceUrls = deviceUrls.filter(d => {
-      try {
-        const url = new URL(d.url.trim());
-        return !['http:', 'https:'].includes(url.protocol);
-      } catch {
-        return true;
+    if (deviceUrls.length > 0) {
+      const badDeviceUrls = deviceUrls.filter(d => {
+        try {
+          const url = new URL(d.url.trim());
+          return !['http:', 'https:'].includes(url.protocol);
+        } catch {
+          return true;
+        }
+      });
+      
+      if (badDeviceUrls.length > 0) {
+        newErrors.deviceRules = 'All device URLs must be valid (start with http:// or https://)';
       }
-    });
-    
-    if (badDeviceUrls.length > 0) {
-      newErrors.deviceRules = 'All device URLs must be valid';
     }
   }
 
+  // ========================================
   // ✅ Schedule validation - FIXED
+  // ========================================
   if (linkData.schedule?.enabled) {
     if (!linkData.schedule.startDate || !linkData.schedule.endDate) {
-      newErrors.schedule = 'Start and end dates are required';
+      newErrors.schedule = 'Start and end dates are required when scheduling is enabled';
     } else {
       const start = new Date(linkData.schedule.startDate);
       const end = new Date(linkData.schedule.endDate);
@@ -337,22 +350,42 @@ const validateForm = () => {
     }
   }
 
-  // ✅ Pixels validation
+  // ========================================
+  // ✅ Pixels validation - FIXED
+  // ========================================
   if (linkData.pixels && linkData.pixels.length > 0) {
-    const invalidPixels = linkData.pixels.filter(p => {
-      const hasPlatform = p.platform && p.platform.trim().length > 0;
-      const hasPixelId = p.pixelId && p.pixelId.trim().length > 0;
-      return !hasPlatform || !hasPixelId;
-    });
+    // ✅ فقط نتحقق من الـ pixels اللي فيها بيانات
+    const pixelsWithData = linkData.pixels.filter(p => 
+      (p.platform && p.platform.trim()) || 
+      (p.pixelId && p.pixelId.trim())
+    );
     
-    if (invalidPixels.length > 0) {
-      newErrors.pixels = 'All pixels must have platform and pixel ID';
+    if (pixelsWithData.length > 0) {
+      const incompletePixels = pixelsWithData.filter(p => {
+        const hasPlatform = p.platform && p.platform.trim().length > 0;
+        const hasPixelId = p.pixelId && p.pixelId.trim().length > 0;
+        return !hasPlatform || !hasPixelId;
+      });
+      
+      if (incompletePixels.length > 0) {
+        newErrors.pixels = 'All pixels must have both platform and pixel ID';
+      }
     }
   }
 
+  // ========================================
+  // ✅ Debug Logging
+  // ========================================
   console.log('🔍 Validation Result:', {
     hasErrors: Object.keys(newErrors).length > 0,
-    errors: newErrors
+    errors: newErrors,
+    linkData: {
+      originalUrl: linkData.originalUrl,
+      geoRules: linkData.geoRules?.length || 0,
+      deviceRules: !!linkData.deviceRules,
+      schedule: linkData.schedule?.enabled || false,
+      pixels: linkData.pixels?.length || 0
+    }
   });
 
   setErrors(newErrors);
@@ -362,153 +395,198 @@ const validateForm = () => {
   // ========================================
   // ✅ FIXED SUBMIT HANDLER
   // ========================================
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    console.log('📤 Submitting Link:', {
-      originalUrl: linkData.originalUrl,
-      abTestEnabled: linkData.abTest?.enabled,
-      variants: linkData.abTest?.variants?.map(v => ({
-        name: v.name,
-        url: v.url,
-        weight: v.weight
-      }))
-    });
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  console.log('📤 Starting Submit...', {
+    originalUrl: linkData.originalUrl,
+    abTestEnabled: linkData.abTest?.enabled,
+    geoRulesCount: linkData.geoRules?.length || 0,
+    pixelsCount: linkData.pixels?.length || 0
+  });
 
-    if (!validateForm()) {
-      addToast('Please fix all validation errors', 'error');
-      return;
+  if (!validateForm()) {
+    addToast('Please fix all validation errors', 'error');
+    return;
+  }
+
+  setSubmitting(true);
+
+  try {
+    // ========================================
+    // ✅ Build clean payload
+    // ========================================
+    const payload = {
+      title: (linkData.title || '').trim(),
+      description: (linkData.description || '').trim(),
+      tags: linkData.tags || [],
+      expiresAt: linkData.expiresAt || null,
+    };
+
+    // Add fields for new links only
+    if (!editingLink) {
+      payload.originalUrl = linkData.originalUrl.trim();
+      if (linkData.customAlias && linkData.customAlias.trim()) {
+        payload.customAlias = linkData.customAlias.trim();
+      }
     }
 
-    setSubmitting(true);
+    // Password
+    if (linkData.password && linkData.password.trim()) {
+      payload.password = linkData.password;
+    }
 
-    try {
-      // ✅ Build clean payload
-      const payload = {
-        title: (linkData.title || '').trim(),
-        description: (linkData.description || '').trim(),
-        tags: linkData.tags || [],
-        expiresAt: linkData.expiresAt || null,
-      };
+    // ========================================
+    // ✅ A/B Testing - CLEANED
+    // ========================================
+    if (linkData.abTest?.enabled && linkData.abTest.variants && linkData.abTest.variants.length >= 2) {
+      const cleanVariants = linkData.abTest.variants
+        .filter(v => v.name && v.name.trim() && v.url && v.url.trim())
+        .map(v => ({
+          name: v.name.trim(),
+          url: v.url.trim(),
+          weight: parseFloat(v.weight) || 50
+        }));
 
-      // Add fields for new links only
-      if (!editingLink) {
-        payload.originalUrl = linkData.originalUrl.trim();
-        if (linkData.customAlias && linkData.customAlias.trim()) {
-          payload.customAlias = linkData.customAlias.trim();
-        }
+      if (cleanVariants.length >= 2) {
+        payload.abTest = {
+          enabled: true,
+          splitMethod: linkData.abTest.splitMethod || 'weighted',
+          variants: cleanVariants,
+          autoOptimize: {
+            enabled: linkData.abTest.autoOptimize?.enabled || false,
+            minSampleSize: linkData.abTest.autoOptimize?.minSampleSize || 100,
+            confidenceLevel: linkData.abTest.autoOptimize?.confidenceLevel || 0.95
+          }
+        };
+        console.log('✅ A/B Test Added:', payload.abTest);
       }
+    } else if (editingLink) {
+      payload.abTest = { enabled: false, variants: [] };
+    }
 
-      // Password
-      if (linkData.password && linkData.password.trim()) {
-        payload.password = linkData.password;
+    // ========================================
+    // ✅ Geotargeting - COMPLETELY CLEANED
+    // ========================================
+    if (linkData.geoRules && linkData.geoRules.length > 0) {
+      // ✅ فقط القواعد الكاملة
+      const validGeoRules = linkData.geoRules
+        .filter(r => 
+          r.countries && 
+          r.countries.length > 0 && 
+          r.targetUrl && 
+          r.targetUrl.trim()
+        )
+        .map(r => ({
+          countries: r.countries,
+          targetUrl: r.targetUrl.trim(),
+          priority: r.priority || 0
+        }));
+
+      if (validGeoRules.length > 0) {
+        payload.geoRules = validGeoRules;
+        console.log('✅ Geo Rules Added:', payload.geoRules);
       }
+    }
 
-      // ✅ A/B Testing - CRITICAL
-      if (linkData.abTest?.enabled && linkData.abTest.variants && linkData.abTest.variants.length >= 2) {
-        // Filter and clean variants
-        const cleanVariants = linkData.abTest.variants
-          .filter(v => v.name && v.name.trim() && v.url && v.url.trim())
-          .map(v => ({
-            name: v.name.trim(),
-            url: v.url.trim(),
-            weight: parseFloat(v.weight) || 50
-          }));
+    // ========================================
+    // ✅ Device targeting - CLEANED
+    // ========================================
+    if (linkData.deviceRules) {
+      const hasDeviceRules = 
+        (linkData.deviceRules.mobile && linkData.deviceRules.mobile.trim()) ||
+        (linkData.deviceRules.desktop && linkData.deviceRules.desktop.trim()) ||
+        (linkData.deviceRules.tablet && linkData.deviceRules.tablet.trim());
 
-        if (cleanVariants.length >= 2) {
-          payload.abTest = {
-            enabled: true,
-            splitMethod: linkData.abTest.splitMethod || 'weighted',
-            variants: cleanVariants,
-            autoOptimize: {
-              enabled: linkData.abTest.autoOptimize?.enabled || false,
-              minSampleSize: linkData.abTest.autoOptimize?.minSampleSize || 100,
-              confidenceLevel: linkData.abTest.autoOptimize?.confidenceLevel || 0.95
-            }
-          };
-
-          console.log('✅ Sending A/B Test:', payload.abTest);
-        }
-      } else if (editingLink) {
-        // Disable A/B testing if editing
-        payload.abTest = { enabled: false, variants: [] };
-      }
-
-      // Geotargeting
-      if (linkData.geoRules && linkData.geoRules.length > 0) {
-        payload.geoRules = linkData.geoRules
-          .filter(r => r.countries.length > 0 && r.targetUrl && r.targetUrl.trim())
-          .map(r => ({
-            countries: r.countries,
-            targetUrl: r.targetUrl.trim(),
-            priority: r.priority || 0
-          }));
-      }
-
-      // Device targeting
-      if (linkData.deviceRules?.mobile || linkData.deviceRules?.desktop || linkData.deviceRules?.tablet) {
+      if (hasDeviceRules) {
         payload.deviceRules = {
           mobile: linkData.deviceRules.mobile?.trim() || '',
           desktop: linkData.deviceRules.desktop?.trim() || '',
           tablet: linkData.deviceRules.tablet?.trim() || ''
         };
+        console.log('✅ Device Rules Added:', payload.deviceRules);
       }
+    }
 
-      // Scheduling
-      if (linkData.schedule?.enabled) {
+    // ========================================
+    // ✅ Scheduling - CLEANED
+    // ========================================
+    if (linkData.schedule?.enabled) {
+      if (linkData.schedule.startDate && linkData.schedule.endDate) {
         payload.schedule = {
           enabled: true,
           startDate: linkData.schedule.startDate,
           endDate: linkData.schedule.endDate,
           redirectAfterExpiry: linkData.schedule.redirectAfterExpiry?.trim() || ''
         };
+        console.log('✅ Schedule Added:', payload.schedule);
       }
-
-      // Pixels
-      if (linkData.pixels && linkData.pixels.length > 0) {
-        payload.pixels = linkData.pixels
-          .filter(p => p.platform && p.pixelId && p.pixelId.trim())
-          .map(p => ({
-            platform: p.platform,
-            pixelId: p.pixelId.trim(),
-            event: p.event || 'PageView'
-          }));
-      }
-
-      console.log('📦 Final Payload:', JSON.stringify(payload, null, 2));
-
-      // Submit
-      if (editingLink) {
-        await updateLink(editingLink.shortCode, payload);
-        addToast('Link updated successfully! 🎉', 'success');
-      } else {
-        await createLink(payload);
-        addToast('Link created successfully! 🎉', 'success');
-      }
-
-      setShowModal(false);
-      setEditingLink(null);
-      loadLinks();
-    } catch (error) {
-      console.error('❌ Submit Error:', error);
-      
-      const errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          error.message || 
-                          'Failed to save link';
-      
-      // Show specific variant error if available
-      if (error.response?.data?.variantIndex !== undefined) {
-        const variantIndex = error.response.data.variantIndex;
-        const variantName = linkData.abTest?.variants?.[variantIndex]?.name || `Variant ${variantIndex + 1}`;
-        addToast(`${variantName}: ${errorMessage}`, 'error');
-      } else {
-        addToast(errorMessage, 'error');
-      }
-    } finally {
-      setSubmitting(false);
     }
-  };
+
+    // ========================================
+    // ✅ Pixels - COMPLETELY CLEANED
+    // ========================================
+    if (linkData.pixels && linkData.pixels.length > 0) {
+      // ✅ فقط الـ pixels الكاملة
+      const validPixels = linkData.pixels
+        .filter(p => 
+          p.platform && 
+          p.platform.trim() && 
+          p.pixelId && 
+          p.pixelId.trim()
+        )
+        .map(p => ({
+          platform: p.platform.trim(),
+          pixelId: p.pixelId.trim(),
+          event: p.event || 'PageView'
+        }));
+
+      if (validPixels.length > 0) {
+        payload.pixels = validPixels;
+        console.log('✅ Pixels Added:', payload.pixels);
+      }
+    }
+
+    // ========================================
+    // ✅ Final Payload Log
+    // ========================================
+    console.log('📦 Final Payload:', JSON.stringify(payload, null, 2));
+
+    // ========================================
+    // ✅ Submit to Backend
+    // ========================================
+    if (editingLink) {
+      await updateLink(editingLink.shortCode, payload);
+      addToast('Link updated successfully! 🎉', 'success');
+    } else {
+      await createLink(payload);
+      addToast('Link created successfully! 🎉', 'success');
+    }
+
+    setShowModal(false);
+    setEditingLink(null);
+    loadLinks();
+    
+  } catch (error) {
+    console.error('❌ Submit Error:', error);
+    
+    const errorMessage = error.response?.data?.error || 
+                        error.response?.data?.message || 
+                        error.message || 
+                        'Failed to save link';
+    
+    // Show specific variant error if available
+    if (error.response?.data?.variantIndex !== undefined) {
+      const variantIndex = error.response.data.variantIndex;
+      const variantName = linkData.abTest?.variants?.[variantIndex]?.name || `Variant ${variantIndex + 1}`;
+      addToast(`${variantName}: ${errorMessage}`, 'error');
+    } else {
+      addToast(errorMessage, 'error');
+    }
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const handleDelete = async (shortCode) => {
     if (!confirm('Are you sure you want to delete this link?')) return;
