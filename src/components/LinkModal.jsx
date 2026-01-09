@@ -98,7 +98,9 @@ export default function LinkModal({
           <div className="flex-1 overflow-y-auto">
             <form onSubmit={handleSubmit} className="p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6">
               
+              {/* ============================================ */}
               {/* BASIC TAB */}
+              {/* ============================================ */}
               {activeTab === 'basic' && (
                 <BasicTab
                   linkData={linkData}
@@ -108,7 +110,9 @@ export default function LinkModal({
                 />
               )}
 
+              {/* ============================================ */}
               {/* ADVANCED TAB - A/B Testing */}
+              {/* ============================================ */}
               {activeTab === 'advanced' && (
                 <AdvancedTab
                   linkData={linkData}
@@ -120,7 +124,9 @@ export default function LinkModal({
                 />
               )}
 
-              {/* TARGETING TAB */}
+              {/* ============================================ */}
+              {/* TARGETING TAB - FIXED */}
+              {/* ============================================ */}
               {activeTab === 'targeting' && (
                 <TargetingTab
                   linkData={linkData}
@@ -132,13 +138,17 @@ export default function LinkModal({
                 />
               )}
 
-              {/* TRACKING TAB */}
+              {/* ============================================ */}
+              {/* TRACKING TAB - FIXED */}
+              {/* ============================================ */}
               {activeTab === 'tracking' && (
-              <TargetingTab
-  linkData={linkData}
-  setLinkData={setLinkData}
-  errors={errors}
-/>
+                <TrackingTab
+                  linkData={linkData}
+                  setLinkData={setLinkData}
+                  addPixel={addPixel}
+                  removePixel={removePixel}
+                  updatePixel={updatePixel}
+                />
               )}
 
               {/* Action Buttons - STICKY FOOTER */}
@@ -166,8 +176,6 @@ export default function LinkModal({
 
         </div>
       </div>
-
-      {/* Custom Scrollbar Hide - Moved to global CSS or use inline style */}
     </div>
   );
 }
