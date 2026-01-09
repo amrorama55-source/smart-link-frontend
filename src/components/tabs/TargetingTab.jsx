@@ -1,69 +1,125 @@
 import { Plus, Trash2, Globe2, Smartphone, Calendar, AlertCircle, X, Check } from 'lucide-react';
 import { useState } from 'react';
 
-// ✅ قائمة دول شاملة مع أعلام
+// ✅ قائمة دول شاملة مع أعلام - EXPANDED
 const countries = [
-  { code: 'US', name: 'United States', flag: '🇺🇸' },
-  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'CA', name: 'Canada', flag: '🇨🇦' },
-  { code: 'AU', name: 'Australia', flag: '🇦🇺' },
-  { code: 'DE', name: 'Germany', flag: '🇩🇪' },
-  { code: 'FR', name: 'France', flag: '🇫🇷' },
-  { code: 'ES', name: 'Spain', flag: '🇪🇸' },
-  { code: 'IT', name: 'Italy', flag: '🇮🇹' },
-  { code: 'JP', name: 'Japan', flag: '🇯🇵' },
-  { code: 'CN', name: 'China', flag: '🇨🇳' },
-  { code: 'IN', name: 'India', flag: '🇮🇳' },
-  { code: 'BR', name: 'Brazil', flag: '🇧🇷' },
-  { code: 'MX', name: 'Mexico', flag: '🇲🇽' },
-  { code: 'AE', name: 'UAE', flag: '🇦🇪' },
-  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦' },
-  { code: 'EG', name: 'Egypt', flag: '🇪🇬' },
-  { code: 'JO', name: 'Jordan', flag: '🇯🇴' },
-  { code: 'LB', name: 'Lebanon', flag: '🇱🇧' },
-  { code: 'SY', name: 'Syria', flag: '🇸🇾' },
-  { code: 'IQ', name: 'Iraq', flag: '🇮🇶' },
-  { code: 'KW', name: 'Kuwait', flag: '🇰🇼' },
-  { code: 'QA', name: 'Qatar', flag: '🇶🇦' },
-  { code: 'BH', name: 'Bahrain', flag: '🇧🇭' },
-  { code: 'OM', name: 'Oman', flag: '🇴🇲' },
-  { code: 'YE', name: 'Yemen', flag: '🇾🇪' },
-  { code: 'PS', name: 'Palestine', flag: '🇵🇸' },
-  { code: 'MA', name: 'Morocco', flag: '🇲🇦' },
-  { code: 'TN', name: 'Tunisia', flag: '🇹🇳' },
-  { code: 'DZ', name: 'Algeria', flag: '🇩🇿' },
-  { code: 'LY', name: 'Libya', flag: '🇱🇾' },
-  { code: 'SD', name: 'Sudan', flag: '🇸🇩' },
-  { code: 'PK', name: 'Pakistan', flag: '🇵🇰' },
-  { code: 'TR', name: 'Turkey', flag: '🇹🇷' },
-  { code: 'RU', name: 'Russia', flag: '🇷🇺' },
-  { code: 'KR', name: 'South Korea', flag: '🇰🇷' },
-  { code: 'ID', name: 'Indonesia', flag: '🇮🇩' },
-  { code: 'TH', name: 'Thailand', flag: '🇹🇭' },
-  { code: 'VN', name: 'Vietnam', flag: '🇻🇳' },
-  { code: 'PH', name: 'Philippines', flag: '🇵🇭' },
-  { code: 'MY', name: 'Malaysia', flag: '🇲🇾' },
-  { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
-  { code: 'NZ', name: 'New Zealand', flag: '🇳🇿' },
-  { code: 'ZA', name: 'South Africa', flag: '🇿🇦' },
-  { code: 'NG', name: 'Nigeria', flag: '🇳🇬' },
-  { code: 'KE', name: 'Kenya', flag: '🇰🇪' },
-  { code: 'GH', name: 'Ghana', flag: '🇬🇭' },
-  { code: 'AR', name: 'Argentina', flag: '🇦🇷' },
-  { code: 'CL', name: 'Chile', flag: '🇨🇱' },
-  { code: 'CO', name: 'Colombia', flag: '🇨🇴' },
-  { code: 'PE', name: 'Peru', flag: '🇵🇪' },
-  { code: 'VE', name: 'Venezuela', flag: '🇻🇪' }
+  // North America
+  { code: 'US', name: 'United States', flag: '🇺🇸', region: 'North America' },
+  { code: 'CA', name: 'Canada', flag: '🇨🇦', region: 'North America' },
+  { code: 'MX', name: 'Mexico', flag: '🇲🇽', region: 'North America' },
+  
+  // Europe - Western
+  { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', region: 'Europe' },
+  { code: 'DE', name: 'Germany', flag: '🇩🇪', region: 'Europe' },
+  { code: 'FR', name: 'France', flag: '🇫🇷', region: 'Europe' },
+  { code: 'ES', name: 'Spain', flag: '🇪🇸', region: 'Europe' },
+  { code: 'IT', name: 'Italy', flag: '🇮🇹', region: 'Europe' },
+  { code: 'NL', name: 'Netherlands', flag: '🇳🇱', region: 'Europe' },
+  { code: 'BE', name: 'Belgium', flag: '🇧🇪', region: 'Europe' },
+  { code: 'PT', name: 'Portugal', flag: '🇵🇹', region: 'Europe' },
+  { code: 'CH', name: 'Switzerland', flag: '🇨🇭', region: 'Europe' },
+  { code: 'AT', name: 'Austria', flag: '🇦🇹', region: 'Europe' },
+  { code: 'IE', name: 'Ireland', flag: '🇮🇪', region: 'Europe' },
+  { code: 'LU', name: 'Luxembourg', flag: '🇱🇺', region: 'Europe' },
+  
+  // Europe - Northern
+  { code: 'SE', name: 'Sweden', flag: '🇸🇪', region: 'Europe' },
+  { code: 'NO', name: 'Norway', flag: '🇳🇴', region: 'Europe' },
+  { code: 'DK', name: 'Denmark', flag: '🇩🇰', region: 'Europe' },
+  { code: 'FI', name: 'Finland', flag: '🇫🇮', region: 'Europe' },
+  { code: 'IS', name: 'Iceland', flag: '🇮🇸', region: 'Europe' },
+  
+  // Europe - Eastern
+  { code: 'PL', name: 'Poland', flag: '🇵🇱', region: 'Europe' },
+  { code: 'CZ', name: 'Czech Republic', flag: '🇨🇿', region: 'Europe' },
+  { code: 'HU', name: 'Hungary', flag: '🇭🇺', region: 'Europe' },
+  { code: 'RO', name: 'Romania', flag: '🇷🇴', region: 'Europe' },
+  { code: 'BG', name: 'Bulgaria', flag: '🇧🇬', region: 'Europe' },
+  { code: 'UA', name: 'Ukraine', flag: '🇺🇦', region: 'Europe' },
+  { code: 'RU', name: 'Russia', flag: '🇷🇺', region: 'Europe' },
+  
+  // Europe - Southern
+  { code: 'GR', name: 'Greece', flag: '🇬🇷', region: 'Europe' },
+  { code: 'HR', name: 'Croatia', flag: '🇭🇷', region: 'Europe' },
+  { code: 'SI', name: 'Slovenia', flag: '🇸🇮', region: 'Europe' },
+  
+  // South America
+  { code: 'BR', name: 'Brazil', flag: '🇧🇷', region: 'South America' },
+  { code: 'AR', name: 'Argentina', flag: '🇦🇷', region: 'South America' },
+  { code: 'CL', name: 'Chile', flag: '🇨🇱', region: 'South America' },
+  { code: 'CO', name: 'Colombia', flag: '🇨🇴', region: 'South America' },
+  { code: 'PE', name: 'Peru', flag: '🇵🇪', region: 'South America' },
+  { code: 'VE', name: 'Venezuela', flag: '🇻🇪', region: 'South America' },
+  { code: 'EC', name: 'Ecuador', flag: '🇪🇨', region: 'South America' },
+  { code: 'BO', name: 'Bolivia', flag: '🇧🇴', region: 'South America' },
+  { code: 'PY', name: 'Paraguay', flag: '🇵🇾', region: 'South America' },
+  { code: 'UY', name: 'Uruguay', flag: '🇺🇾', region: 'South America' },
+  
+  // Asia - East
+  { code: 'CN', name: 'China', flag: '🇨🇳', region: 'Asia' },
+  { code: 'JP', name: 'Japan', flag: '🇯🇵', region: 'Asia' },
+  { code: 'KR', name: 'South Korea', flag: '🇰🇷', region: 'Asia' },
+  { code: 'TW', name: 'Taiwan', flag: '🇹🇼', region: 'Asia' },
+  { code: 'HK', name: 'Hong Kong', flag: '🇭🇰', region: 'Asia' },
+  
+  // Asia - Southeast
+  { code: 'SG', name: 'Singapore', flag: '🇸🇬', region: 'Asia' },
+  { code: 'MY', name: 'Malaysia', flag: '🇲🇾', region: 'Asia' },
+  { code: 'TH', name: 'Thailand', flag: '🇹🇭', region: 'Asia' },
+  { code: 'VN', name: 'Vietnam', flag: '🇻🇳', region: 'Asia' },
+  { code: 'PH', name: 'Philippines', flag: '🇵🇭', region: 'Asia' },
+  { code: 'ID', name: 'Indonesia', flag: '🇮🇩', region: 'Asia' },
+  
+  // Asia - South
+  { code: 'IN', name: 'India', flag: '🇮🇳', region: 'Asia' },
+  { code: 'PK', name: 'Pakistan', flag: '🇵🇰', region: 'Asia' },
+  { code: 'BD', name: 'Bangladesh', flag: '🇧🇩', region: 'Asia' },
+  
+  // Middle East
+  { code: 'AE', name: 'UAE', flag: '🇦🇪', region: 'Middle East' },
+  { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', region: 'Middle East' },
+  { code: 'QA', name: 'Qatar', flag: '🇶🇦', region: 'Middle East' },
+  { code: 'KW', name: 'Kuwait', flag: '🇰🇼', region: 'Middle East' },
+  { code: 'BH', name: 'Bahrain', flag: '🇧🇭', region: 'Middle East' },
+  { code: 'OM', name: 'Oman', flag: '🇴🇲', region: 'Middle East' },
+  { code: 'JO', name: 'Jordan', flag: '🇯🇴', region: 'Middle East' },
+  { code: 'LB', name: 'Lebanon', flag: '🇱🇧', region: 'Middle East' },
+  { code: 'IQ', name: 'Iraq', flag: '🇮🇶', region: 'Middle East' },
+  { code: 'SY', name: 'Syria', flag: '🇸🇾', region: 'Middle East' },
+  { code: 'YE', name: 'Yemen', flag: '🇾🇪', region: 'Middle East' },
+  { code: 'PS', name: 'Palestine', flag: '🇵🇸', region: 'Middle East' },
+  { code: 'IL', name: 'Israel', flag: '🇮🇱', region: 'Middle East' },
+  { code: 'TR', name: 'Turkey', flag: '🇹🇷', region: 'Middle East' },
+  
+  // Africa - North
+  { code: 'EG', name: 'Egypt', flag: '🇪🇬', region: 'Africa' },
+  { code: 'MA', name: 'Morocco', flag: '🇲🇦', region: 'Africa' },
+  { code: 'TN', name: 'Tunisia', flag: '🇹🇳', region: 'Africa' },
+  { code: 'DZ', name: 'Algeria', flag: '🇩🇿', region: 'Africa' },
+  { code: 'LY', name: 'Libya', flag: '🇱🇾', region: 'Africa' },
+  { code: 'SD', name: 'Sudan', flag: '🇸🇩', region: 'Africa' },
+  
+  // Africa - Sub-Saharan
+  { code: 'ZA', name: 'South Africa', flag: '🇿🇦', region: 'Africa' },
+  { code: 'NG', name: 'Nigeria', flag: '🇳🇬', region: 'Africa' },
+  { code: 'KE', name: 'Kenya', flag: '🇰🇪', region: 'Africa' },
+  { code: 'GH', name: 'Ghana', flag: '🇬🇭', region: 'Africa' },
+  { code: 'ET', name: 'Ethiopia', flag: '🇪🇹', region: 'Africa' },
+  
+  // Oceania
+  { code: 'AU', name: 'Australia', flag: '🇦🇺', region: 'Oceania' },
+  { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', region: 'Oceania' }
 ].sort((a, b) => a.name.localeCompare(b.name));
 
-// ✅ Component for Country Selection
+// ✅ Component for Country Selection - FIXED UI
 function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
 
   const filteredCountries = countries.filter(country =>
     country.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    country.code.toLowerCase().includes(searchTerm.toLowerCase())
+    country.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    country.region.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const toggleCountry = (countryCode) => {
@@ -86,22 +142,22 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
           {selectedCountries.map(code => (
             <span
               key={code}
-              className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-xs"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-sm font-medium"
             >
               {getCountryName(code)}
               <button
                 type="button"
                 onClick={() => toggleCountry(code)}
-                className="hover:text-blue-900 dark:hover:text-blue-200"
+                className="hover:text-blue-900 dark:hover:text-blue-200 ml-1"
               >
-                <X className="w-3 h-3" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </span>
           ))}
         </div>
       )}
 
-      {/* Search Input */}
+      {/* Search Input - FIXED */}
       <div className="relative">
         <input
           type="text"
@@ -111,13 +167,14 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
             setShowDropdown(true);
           }}
           onFocus={() => setShowDropdown(true)}
-          placeholder="🔍 Search and select countries..."
-          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
+          placeholder="🔍 Search countries..."
+          className="w-full px-4 py-3 pr-24 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400"
         />
         
+        {/* Counter Badge - FIXED POSITION */}
         {selectedCountries.length > 0 && (
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 dark:text-gray-400">
-            {selectedCountries.length} selected
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
+            {selectedCountries.length}
           </span>
         )}
       </div>
@@ -132,32 +189,49 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
           />
           
           {/* Dropdown Content */}
-          <div className="absolute z-20 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          <div className="absolute z-20 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-xl max-h-72 overflow-y-auto">
             {filteredCountries.length > 0 ? (
-              filteredCountries.map(country => {
-                const isSelected = selectedCountries.includes(country.code);
-                return (
-                  <button
-                    key={country.code}
-                    type="button"
-                    onClick={() => toggleCountry(country.code)}
-                    className={`w-full flex items-center justify-between px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-                      isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="text-lg">{country.flag}</span>
-                      <span className="text-gray-900 dark:text-white">{country.name}</span>
-                      <span className="text-gray-500 dark:text-gray-400 text-xs">({country.code})</span>
-                    </span>
-                    {isSelected && (
-                      <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    )}
-                  </button>
-                );
-              })
+              <>
+                {/* Group by region */}
+                {['North America', 'Europe', 'South America', 'Asia', 'Middle East', 'Africa', 'Oceania'].map(region => {
+                  const regionCountries = filteredCountries.filter(c => c.region === region);
+                  if (regionCountries.length === 0) return null;
+                  
+                  return (
+                    <div key={region}>
+                      <div className="sticky top-0 px-4 py-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                        <span className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                          {region}
+                        </span>
+                      </div>
+                      {regionCountries.map(country => {
+                        const isSelected = selectedCountries.includes(country.code);
+                        return (
+                          <button
+                            key={country.code}
+                            type="button"
+                            onClick={() => toggleCountry(country.code)}
+                            className={`w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition ${
+                              isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                            }`}
+                          >
+                            <span className="flex items-center gap-2.5">
+                              <span className="text-xl">{country.flag}</span>
+                              <span className="text-gray-900 dark:text-white font-medium">{country.name}</span>
+                              <span className="text-gray-500 dark:text-gray-400 text-xs">({country.code})</span>
+                            </span>
+                            {isSelected && (
+                              <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </>
             ) : (
-              <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">
+              <div className="px-4 py-6 text-sm text-gray-500 dark:text-gray-400 text-center">
                 No countries found
               </div>
             )}
@@ -205,11 +279,11 @@ export default function TargetingTab({
 
         <div className="space-y-4">
           {(linkData.geoRules || []).map((rule, idx) => (
-            <div key={idx} className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-2 border-gray-200 dark:border-gray-600">
-              <div className="flex items-center justify-between mb-3">
+            <div key={idx} className="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border-2 border-gray-200 dark:border-gray-600">
+              <div className="flex items-center justify-between mb-4">
                 <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
                   <Globe2 className="w-4 h-4" />
-                  Rule {idx + 1}
+                  Rule #{idx + 1}
                 </span>
                 <button
                   type="button"
@@ -221,18 +295,18 @@ export default function TargetingTab({
                 </button>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {/* Country Selection */}
                 <div>
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                    Countries
+                    Target Countries
                   </label>
                   <CountrySelector
                     selectedCountries={rule.countries || []}
                     onChange={(countries) => updateGeoRule(idx, 'countries', countries)}
                     ruleIndex={idx}
                   />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                     Select one or more countries to redirect
                   </p>
                 </div>
@@ -248,11 +322,11 @@ export default function TargetingTab({
                     onChange={(e) => updateGeoRule(idx, 'targetUrl', e.target.value)}
                     placeholder="https://example.com/country-specific"
                     autoComplete="off"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
                   />
                 </div>
 
-                {/* Priority (Optional) */}
+                {/* Priority */}
                 <div>
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
                     Priority (Optional)
@@ -263,7 +337,7 @@ export default function TargetingTab({
                     onChange={(e) => updateGeoRule(idx, 'priority', parseInt(e.target.value) || 0)}
                     min="0"
                     max="100"
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
+                    className="w-32 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm"
                   />
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     Higher priority rules are checked first (0-100)
@@ -296,6 +370,9 @@ export default function TargetingTab({
         </div>
       </div>
 
+      {/* Rest of the component (Device Targeting & Scheduling) remains the same... */}
+      {/* Copy from previous TargetingTab-FIXED.jsx */}
+      
       {/* ======================================== */}
       {/* DEVICE TARGETING */}
       {/* ======================================== */}
