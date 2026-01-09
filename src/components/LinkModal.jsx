@@ -134,13 +134,11 @@ export default function LinkModal({
 
               {/* TRACKING TAB */}
               {activeTab === 'tracking' && (
-                <TrackingTab
-                  linkData={linkData}
-                  setLinkData={setLinkData}
-                  addPixel={addPixel}
-                  removePixel={removePixel}
-                  updatePixel={updatePixel}
-                />
+              <TargetingTab
+  linkData={linkData}
+  setLinkData={setLinkData}
+  errors={errors}
+/>
               )}
 
               {/* Action Buttons - STICKY FOOTER */}
