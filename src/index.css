@@ -17,52 +17,603 @@
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  background-color: #fff; /* optional default bg */
   @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors;
 }
 
 /* Responsive images */
-img {
+img,
+picture,
+video,
+canvas,
+svg {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* Touch-friendly elements */
+/* ==========================
+   Touch-Friendly Elements (2025 Standards)
+========================== */
 button,
 a,
 input,
 select,
-textarea {
+textarea,
+[role="button"] {
   -webkit-tap-highlight-color: transparent;
-  min-height: 44px; /* iOS recommended touch target */
-}
-
-/* Minimum touch target size: 44x44px */
-.touch-target {
+  min-height: 44px; /* iOS recommended minimum */
   min-width: 44px;
-  min-height: 44px;
-  padding: 12px;
+  touch-action: manipulation; /* Prevent double-tap zoom */
 }
 
-/* Prevent double-tap zoom */
+/* Ensure buttons are always touch-friendly */
+button,
+.btn,
+[type="button"],
+[type="submit"] {
+  @apply min-h-[44px] min-w-[44px] px-4 py-2;
+  cursor: pointer;
+}
+
+/* Links spacing for touch */
+a {
+  @apply inline-block;
+}
+
+/* Form elements */
+input,
+select,
+textarea {
+  @apply text-base; /* Prevent zoom on iOS */
+  font-size: 16px !important; /* Critical for iOS */
+}
+
+/* Prevent double-tap zoom globally */
 * {
   touch-action: manipulation;
 }
 
 /* Smooth scrolling */
 html {
+  scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
 /* ==========================
-   Container (Responsive)
+   Modern Breakpoints (2025 Standards)
 ========================== */
-.container {
-  @apply w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8;
+
+/* Extra Small - Mobile Portrait (320px - 480px) */
+@media (min-width: 320px) and (max-width: 480px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body {
+    font-size: 0.875rem;
+  }
+  
+  h1 { @apply text-2xl; }
+  h2 { @apply text-xl; }
+  h3 { @apply text-lg; }
+  h4 { @apply text-base; }
+  
+  .container,
+  .max-w-7xl {
+    @apply px-3;
+  }
+  
+  /* Stack everything vertically */
+  .grid {
+    @apply grid-cols-1 gap-3;
+  }
+  
+  /* Smaller buttons on very small screens */
+  button,
+  .btn {
+    @apply text-sm px-3 py-2;
+  }
+  
+  /* Card adjustments */
+  .card,
+  [class*="bg-white"],
+  [class*="bg-gray"] {
+    @apply p-3 rounded-lg;
+  }
+  
+  /* Modal full screen on small devices */
+  .modal,
+  [role="dialog"] {
+    @apply m-2 max-h-[95vh] rounded-lg;
+  }
+}
+
+/* Small - Mobile Landscape (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+  
+  h1 { @apply text-3xl; }
+  h2 { @apply text-2xl; }
+  h3 { @apply text-xl; }
+  
+  .container,
+  .max-w-7xl {
+    @apply px-4;
+  }
+  
+  .grid {
+    @apply gap-4;
+  }
+  
+  button,
+  .btn {
+    @apply px-4 py-2.5;
+  }
+  
+  .card {
+    @apply p-4;
+  }
+}
+
+/* Medium - Tablet (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+  
+  h1 { @apply text-4xl; }
+  h2 { @apply text-3xl; }
+  h3 { @apply text-2xl; }
+  
+  .container,
+  .max-w-7xl {
+    @apply px-6;
+  }
+  
+  .grid {
+    @apply gap-5;
+  }
+  
+  .card {
+    @apply p-5;
+  }
+}
+
+/* Large - Desktop (1025px - 1440px) */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .container,
+  .max-w-7xl {
+    @apply px-8;
+  }
+  
+  .grid {
+    @apply gap-6;
+  }
+  
+  .card {
+    @apply p-6;
+  }
+}
+
+/* Extra Large - Large Desktop (1441px+) */
+@media (min-width: 1441px) {
+  .container,
+  .max-w-7xl {
+    @apply px-10;
+  }
+  
+  .grid {
+    @apply gap-8;
+  }
+}
+
+/* ==========================
+   Responsive Typography
+========================== */
+.text-fluid-sm {
+  font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+.text-fluid-base {
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+}
+
+.text-fluid-lg {
+  font-size: clamp(1.125rem, 3vw, 1.5rem);
+}
+
+.text-fluid-xl {
+  font-size: clamp(1.25rem, 3.5vw, 2rem);
+}
+
+.text-fluid-2xl {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+.text-fluid-3xl {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+/* ==========================
+   Responsive Spacing
+========================== */
+.spacing-responsive {
+  @apply space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6;
+}
+
+.padding-responsive {
+  @apply p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8;
+}
+
+.margin-responsive {
+  @apply m-3 sm:m-4 md:m-5 lg:m-6 xl:m-8;
+}
+
+.gap-responsive {
+  @apply gap-3 sm:gap-4 md:gap-5 lg:gap-6;
+}
+
+/* ==========================
+   Container Queries (Modern Approach)
+========================== */
+@supports (container-type: inline-size) {
+  .container-query {
+    container-type: inline-size;
+  }
+  
+  @container (min-width: 400px) {
+    .container-item {
+      @apply grid-cols-2;
+    }
+  }
+  
+  @container (min-width: 600px) {
+    .container-item {
+      @apply grid-cols-3;
+    }
+  }
+}
+
+/* ==========================
+   Safe Area (Notched Devices - iPhone X+)
+========================== */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+  
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  /* Fixed headers/footers */
+  .fixed-header {
+    top: env(safe-area-inset-top);
+  }
+  
+  .fixed-footer {
+    bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ==========================
+   Responsive Images (Performance Optimized)
+========================== */
+img[loading="lazy"] {
+  content-visibility: auto;
+}
+
+/* Aspect ratio boxes - FIXED VERSION */
+/* Note: Use Tailwind's built-in aspect-video and aspect-square classes directly in your HTML */
+/* Example: <div class="aspect-video">...</div> */
+
+/* Custom aspect ratios */
+.aspect-4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+.aspect-3-2 {
+  aspect-ratio: 3 / 2;
+}
+
+.aspect-21-9 {
+  aspect-ratio: 21 / 9;
+}
+
+/* ==========================
+   Visibility Utilities
+========================== */
+/* Hide on mobile */
+.hidden-mobile {
+  @apply hidden sm:block;
+}
+
+/* Show only on mobile */
+.show-mobile {
+  @apply block sm:hidden;
+}
+
+/* Hide on tablet */
+.hidden-tablet {
+  @apply block md:hidden lg:block;
+}
+
+/* Show only on tablet */
+.show-tablet {
+  @apply hidden md:block lg:hidden;
+}
+
+/* Hide on desktop */
+.hidden-desktop {
+  @apply block lg:hidden;
+}
+
+/* Show only on desktop */
+.show-desktop {
+  @apply hidden lg:block;
+}
+
+/* ==========================
+   Performance Optimizations
+========================== */
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  button,
+  a,
+  input {
+    @apply border-2 border-current;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  img:not([src*=".svg"]) {
+    opacity: 0.9;
+  }
+}
+
+/* ==========================
+   Print Styles
+========================== */
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  
+  a[href]::after {
+    content: " (" attr(href) ")";
+  }
+  
+  img {
+    page-break-inside: avoid;
+  }
+  
+  h2,
+  h3,
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ==========================
+   Accessibility Enhancements
+========================== */
+/* Focus visible for keyboard navigation */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-600 dark:outline-blue-400;
+}
+
+/* Skip to main content link */
+.skip-link {
+  @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* ==========================
+   Component-Specific Responsive Styles
+========================== */
+
+/* Modals */
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 z-40;
+}
+
+.modal-content {
+  @apply fixed z-50 bg-white dark:bg-gray-800 rounded-xl shadow-2xl;
+  @apply m-3 sm:m-6 md:m-8 lg:m-auto;
+  @apply max-h-[95vh] sm:max-h-[90vh] overflow-y-auto;
+  @apply w-[calc(100%-1.5rem)] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%];
+  @apply max-w-4xl;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Cards */
+.card-responsive {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md;
+  @apply p-3 sm:p-4 md:p-5 lg:p-6;
+  @apply space-y-3 sm:space-y-4;
+}
+
+/* Navigation */
+.nav-responsive {
+  @apply flex flex-col sm:flex-row;
+  @apply gap-2 sm:gap-4 md:gap-6;
+}
+
+/* Buttons */
+.btn-responsive {
+  @apply px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3;
+  @apply text-sm sm:text-base;
+  @apply min-h-[44px] min-w-[44px];
+}
+
+/* Forms */
+.form-responsive {
+  @apply space-y-3 sm:space-y-4;
+}
+
+.input-responsive {
+  @apply w-full px-3 py-2 sm:px-4 sm:py-2.5;
+  @apply text-base; /* Prevent zoom on iOS */
+  @apply rounded-lg border;
+  @apply min-h-[44px];
+}
+
+/* Grid layouts */
+.grid-responsive {
+  @apply grid;
+  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  @apply gap-3 sm:gap-4 md:gap-5 lg:gap-6;
+}
+
+/* Flex utilities */
+.flex-responsive {
+  @apply flex flex-col sm:flex-row;
+  @apply gap-3 sm:gap-4 md:gap-5;
+}
+
+/* ==========================
+   Landscape Orientation
+========================== */
+@media (max-height: 600px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .modal-content {
+    @apply max-h-[90vh] py-2;
+  }
+  
+  h1 {
+    @apply text-xl;
+  }
+  
+  .spacing-responsive {
+    @apply space-y-2;
+  }
+}
+
+/* ==========================
+   Foldable Devices Support (2025)
+========================== */
+@media (horizontal-viewport-segments: 2) {
+  .dual-screen {
+    @apply grid grid-cols-2;
+  }
+}
+
+/* ==========================
+   Utility Classes
+========================== */
+.full-bleed {
+  width: 100vw;
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* Smooth transitions */
+.transition-smooth {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Extra small breakpoint (below 375px) */
+@media (max-width: 374px) {
+  .xs\:inline {
+    display: inline;
+  }
+  
+  .xs\:hidden {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  body {
+    padding-bottom: 68px; /* Height of bottom nav + safe area */
+  }
 }

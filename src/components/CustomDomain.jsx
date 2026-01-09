@@ -1,7 +1,8 @@
-// src/components/CustomDomain.jsx - NEW COMPONENT
+// src/components/CustomDomain.jsx - FIXED VERSION
 import { useState, useEffect } from 'react';
 import { Globe, CheckCircle, X, AlertTriangle, Loader, ExternalLink, Shield } from 'lucide-react';
 import api from '../services/api';
+import { API_URL } from '../config'; // ✅ Import API_URL
 
 export default function CustomDomain({ link, onUpdate }) {
   const [domain, setDomain] = useState(link?.customDomain || '');
@@ -27,7 +28,8 @@ export default function CustomDomain({ link, onUpdate }) {
     setError('');
 
     try {
-      const { data } = await api.post(`/api/domains/${link.shortCode}/domain/verify-request`, {
+      // ✅ FIXED: Remove /api prefix (api.js already has it)
+      const { data } = await api.post(`/domains/${link.shortCode}/domain/verify-request`, {
         domain: domain.toLowerCase().trim()
       });
 
@@ -47,7 +49,8 @@ export default function CustomDomain({ link, onUpdate }) {
     setError('');
 
     try {
-      const { data } = await api.post(`/api/domains/${link.shortCode}/domain/verify-check`);
+      // ✅ FIXED: Remove /api prefix
+      const { data } = await api.post(`/domains/${link.shortCode}/domain/verify-check`);
 
       if (data.success) {
         setVerification({
@@ -73,7 +76,8 @@ export default function CustomDomain({ link, onUpdate }) {
     }
 
     try {
-      await api.delete(`/api/domains/${link.shortCode}/domain`);
+      // ✅ FIXED: Remove /api prefix
+      await api.delete(`/domains/${link.shortCode}/domain`);
       setDomain('');
       setVerification(null);
       setShowInstructions(false);
@@ -86,7 +90,8 @@ export default function CustomDomain({ link, onUpdate }) {
 
   const checkSSL = async () => {
     try {
-      const { data } = await api.get(`/api/domains/${link.shortCode}/domain/ssl-status`);
+      // ✅ FIXED: Remove /api prefix
+      const { data } = await api.get(`/domains/${link.shortCode}/domain/ssl-status`);
       alert(data.ssl.enabled ? 'SSL is active ✅' : 'SSL is being issued... Check back in a few hours.');
     } catch (err) {
       alert('Failed to check SSL status');
@@ -225,8 +230,9 @@ export default function CustomDomain({ link, onUpdate }) {
               <h4 className="font-semibold text-gray-900 dark:text-white">
                 DNS Configuration
               </h4>
+              {/* ✅ FIXED: Use API_URL from config */}
               <a
-                href={`${import.meta.env.VITE_API_URL}/api/domains/setup-guide`}
+                href={`${API_URL}/domains/setup-guide`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
@@ -281,7 +287,7 @@ export default function CustomDomain({ link, onUpdate }) {
                         }}
                         className="p-1.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
                       >
-                        <Copy className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        <CopyIcon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                       </button>
                     </div>
                   </div>
@@ -313,8 +319,8 @@ export default function CustomDomain({ link, onUpdate }) {
   );
 }
 
-// Helper component for Copy button
-function Copy({ className }) {
+// ✅ Helper component for Copy icon
+function CopyIcon({ className }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />

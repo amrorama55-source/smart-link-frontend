@@ -1,7 +1,49 @@
 import { SHORT_URL_BASE } from '../../config';
-import { X, AlertCircle, Globe, Shield, CheckCircle2 } from 'lucide-react';
+import { X, AlertCircle, Globe, Shield, Eye, EyeOff, Lock } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function BasicTab({ linkData, setLinkData, editingLink, errors }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [passwordWarning, setPasswordWarning] = useState(false);
+  const passwordInputRef = useRef(null);
+
+  // ✅ ULTIMATE FIX: Detect and warn about autofill
+  useEffect(() => {
+    if (passwordInputRef.current && !passwordTouched) {
+      // Check for autofill after a short delay
+      const timer = setTimeout(() => {
+        const input = passwordInputRef.current;
+        if (input && input.value && input.value.length > 0 && !passwordTouched) {
+          // Browser autofilled! Show warning
+          setPasswordWarning(true);
+          console.warn('⚠️ Browser autofilled password field!');
+        }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [passwordTouched]);
+
+  // ✅ Clear autofill warning when user starts typing
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setLinkData({...linkData, password: value});
+    setPasswordTouched(true);
+    setPasswordWarning(false);
+  };
+
+  // ✅ Clear password field on focus (if not touched yet)
+  const handlePasswordFocus = () => {
+    if (!passwordTouched && passwordInputRef.current?.value) {
+      // Clear autofilled value
+      setLinkData({...linkData, password: ''});
+      passwordInputRef.current.value = '';
+      setPasswordWarning(false);
+    }
+    setPasswordTouched(true);
+  };
+
   return (
     <div className="space-y-4">
       
@@ -16,6 +58,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
             value={linkData.originalUrl}
             onChange={(e) => setLinkData({...linkData, originalUrl: e.target.value})}
             placeholder="https://example.com/your-long-url"
+            autoComplete="off"
             className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
               errors.originalUrl ? 'border-red-500' : 'border-gray-300'
             }`}
@@ -28,7 +71,6 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
             </p>
           )}
           
-          {/* URL Safety Indicator */}
           {linkData.originalUrl && (
             <div className="mt-2 flex items-center gap-2 text-sm">
               <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
@@ -55,6 +97,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
               value={linkData.customAlias}
               onChange={(e) => setLinkData({...linkData, customAlias: e.target.value})}
               placeholder="my-custom-link"
+              autoComplete="off"
               className={`flex-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
                 errors.customAlias ? 'border-red-500' : 'border-gray-300'
               }`}
@@ -82,6 +125,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           value={linkData.title}
           onChange={(e) => setLinkData({...linkData, title: e.target.value})}
           placeholder="My Campaign Link"
+          autoComplete="off"
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           maxLength={200}
         />
@@ -100,6 +144,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           onChange={(e) => setLinkData({...linkData, description: e.target.value})}
           placeholder="Add notes about this link..."
           rows={3}
+          autoComplete="off"
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white resize-none"
           maxLength={1000}
         />
@@ -136,6 +181,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         <input
           type="text"
           placeholder="Add tag..."
+          autoComplete="off"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               e.preventDefault();
@@ -153,7 +199,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         />
       </div>
 
-      {/* Custom Domain (NEW) */}
+      {/* Custom Domain */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Custom Domain (Optional)
@@ -165,6 +211,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
             value={linkData.customDomain || ''}
             onChange={(e) => setLinkData({...linkData, customDomain: e.target.value})}
             placeholder="yourdomain.com"
+            autoComplete="off"
             className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
         </div>
@@ -180,21 +227,154 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         )}
       </div>
 
-      {/* Password Protection */}
+      {/* Password Protection - ULTIMATE FIX */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
+          <Lock className="w-4 h-4" />
           Password Protection (Optional)
         </label>
-        <input
-          type="password"
-          value={linkData.password || ''}
-          onChange={(e) => setLinkData({...linkData, password: e.target.value})}
-          placeholder="Set password to protect this link"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-        />
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Users will need this password to access the link
-        </p>
+        
+        {/* ⚠️ CRITICAL WARNING - Always visible */}
+        <div className="mb-3 p-4 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+              <AlertCircle className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-red-900 dark:text-red-200 mb-1">
+                🚨 STOP! Read This First:
+              </p>
+              <p className="text-sm text-red-800 dark:text-red-300">
+                This password is <strong>ONLY for this link</strong>, NOT your account password!
+                <br/>
+                <span className="text-xs mt-1 block">
+                  Your browser might try to fill your account password automatically - always check before saving!
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ⚠️ AUTOFILL DETECTION WARNING */}
+        {passwordWarning && (
+          <div className="mb-3 p-3 bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-500 dark:border-yellow-600 rounded-lg animate-pulse">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-5 h-5 text-yellow-700 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-bold text-yellow-900 dark:text-yellow-200">
+                  ⚠️ Browser Autofill Detected!
+                </p>
+                <p className="text-xs text-yellow-800 dark:text-yellow-300 mt-1">
+                  Your browser filled in a password automatically. Is this the correct password for THIS LINK (not your account)?
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLinkData({...linkData, password: ''});
+                    if (passwordInputRef.current) {
+                      passwordInputRef.current.value = '';
+                    }
+                    setPasswordWarning(false);
+                    setPasswordTouched(false);
+                  }}
+                  className="mt-2 px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-xs rounded font-medium transition"
+                >
+                  Clear & Re-enter Password
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="relative">
+          <input
+            ref={passwordInputRef}
+            type={showPassword ? "text" : "password"}
+            value={linkData.password || ''}
+            onChange={handlePasswordChange}
+            onFocus={handlePasswordFocus}
+            placeholder="Create a NEW password for this link"
+            autoComplete="new-password"
+            data-form-type="other"
+            data-lpignore="true"
+            data-1p-ignore="true"
+            data-bwignore="true"
+            data-dashlane-ignore="true"
+            name={`link_password_${Date.now()}`}
+            id={`link_password_${Date.now()}`}
+            className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
+              passwordWarning ? 'border-yellow-500 dark:border-yellow-600' : 'border-gray-300'
+            }`}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+            title={showPassword ? "Hide password" : "Show password"}
+          >
+            {showPassword ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
+          </button>
+        </div>
+
+        <div className="mt-2 space-y-2">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            👥 Users will need this password to access the link
+          </p>
+          
+          {linkData.password && passwordTouched && (
+            <>
+              <div className="flex items-center gap-2 text-xs">
+                <span className="text-gray-600 dark:text-gray-400">
+                  Password strength:
+                </span>
+                <span className={`font-medium ${
+                  linkData.password.length >= 8 
+                    ? 'text-green-600 dark:text-green-400' 
+                    : linkData.password.length >= 6 
+                    ? 'text-yellow-600 dark:text-yellow-400' 
+                    : 'text-red-600 dark:text-red-400'
+                }`}>
+                  {linkData.password.length >= 8 ? '✅ Strong' : linkData.password.length >= 6 ? '⚠️ Medium' : '❌ Weak (use 8+ characters)'}
+                </span>
+              </div>
+
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <p className="text-xs text-blue-700 dark:text-blue-400 flex items-start gap-2">
+                  <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  <span>
+                    <strong>Current password for this link:</strong>
+                    <br/>
+                    <code className="bg-blue-100 dark:bg-blue-900/40 px-2 py-1 rounded font-mono text-xs mt-1 inline-block">
+                      {showPassword ? linkData.password : '•'.repeat(linkData.password.length)}
+                    </code>
+                  </span>
+                </p>
+              </div>
+
+              {/* Password Confirmation */}
+              <div className="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <label className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    className="mt-1"
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        console.log('✅ User confirmed password is correct');
+                      }
+                    }}
+                  />
+                  <span className="text-xs text-green-700 dark:text-green-400">
+                    <strong>✓ I confirm</strong> this is a NEW password for this link only (not my account password)
+                  </span>
+                </label>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Expiration */}
@@ -214,7 +394,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         </p>
       </div>
 
-      {/* UTM Parameters (NEW) */}
+      {/* UTM Parameters */}
       <div className="border-t-2 border-gray-200 dark:border-gray-700 pt-4 mt-4">
         <h3 className="text-md font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
           📊 UTM Parameters (Optional)
@@ -230,6 +410,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
               value={linkData.utmSource || ''}
               onChange={(e) => setLinkData({...linkData, utmSource: e.target.value})}
               placeholder="facebook, google, newsletter"
+              autoComplete="off"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
             />
           </div>
@@ -243,6 +424,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
               value={linkData.utmMedium || ''}
               onChange={(e) => setLinkData({...linkData, utmMedium: e.target.value})}
               placeholder="cpc, email, social"
+              autoComplete="off"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
             />
           </div>
@@ -256,6 +438,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
               value={linkData.utmCampaign || ''}
               onChange={(e) => setLinkData({...linkData, utmCampaign: e.target.value})}
               placeholder="summer_sale, product_launch"
+              autoComplete="off"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white text-sm"
             />
           </div>

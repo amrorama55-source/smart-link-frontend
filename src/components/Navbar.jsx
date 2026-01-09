@@ -40,7 +40,7 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   const navItemClass = (path) =>
-    `flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-medium ${
+    `flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-1 sm:gap-2.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-lg transition-all font-medium min-h-[44px] min-w-[60px] sm:min-w-auto ${
       isActive(path)
         ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
         : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white'
@@ -58,62 +58,43 @@ export default function Navbar() {
   return (
     <>
       <EmailVerificationBanner />
-      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
+      
+      {/* Main Navbar - ALL DEVICES */}
+      <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 safe-top">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          
+          {/* Top Row - Logo */}
+          <div className="flex justify-between items-center h-14 sm:h-16 border-b border-gray-200 dark:border-gray-800 sm:border-0">
             <Link
               to="/dashboard"
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity min-h-[44px] -ml-1 pl-1"
             >
-              <div className="w-11 h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md">
-                <Link2 className="w-6 h-6 text-white" />
+              <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-md flex-shrink-0">
+                <Link2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
+              <span className="text-base sm:text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                 Smart Link
               </span>
             </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-2">
-              <Link to="/dashboard" className={navItemClass('/dashboard')}>
-                <LayoutDashboard className="w-5 h-5" />
-                <span>Dashboard</span>
-              </Link>
-              <Link to="/links" className={navItemClass('/links')}>
-                <LinkIcon className="w-5 h-5" />
-                <span>Links</span>
-              </Link>
-              <Link to="/analytics" className={navItemClass('/analytics')}>
-                <BarChart3 className="w-5 h-5" />
-                <span>Analytics</span>
-              </Link>
-              <Link to="/bio" className={navItemClass('/bio')}>
-                <User className="w-5 h-5" />
-                <span>Bio</span>
-              </Link>
-            </div>
-
-            {/* Profile Dropdown - Desktop */}
-            <div className="hidden md:block relative" ref={profileMenuRef}>
+            {/* Profile Button - All Devices */}
+            <div className="relative" ref={profileMenuRef}>
               <button
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200"
+                className="flex items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200 min-h-[44px]"
               >
-                {/* Avatar with better gradient */}
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 p-0.5 shadow-lg">
+                <div className="relative flex-shrink-0">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 p-0.5 shadow-lg">
                     <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center">
-                      <span className="text-sm font-bold bg-gradient-to-br from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                      <span className="text-xs sm:text-sm font-bold bg-gradient-to-br from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                         {(user?.name || 'U').charAt(0).toUpperCase()}
                       </span>
                     </div>
                   </div>
-                  {/* Online indicator */}
-                  <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
+                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></div>
                 </div>
                 
-                <div className="text-left min-w-0">
+                <div className="text-left min-w-0 hidden sm:block">
                   <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight truncate max-w-[120px]">
                     {user?.name || 'User'}
                   </p>
@@ -122,18 +103,17 @@ export default function Navbar() {
                   </p>
                 </div>
                 
-                <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 flex-shrink-0 ${showProfileMenu ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 text-gray-400 dark:text-gray-500 transition-transform duration-200 flex-shrink-0 hidden sm:block ${showProfileMenu ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Dropdown Menu */}
               {showProfileMenu && (
-                <div className="absolute right-0 mt-3 w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {/* User Info Header with gradient background */}
-                  <div className="relative px-5 py-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
+                <div className="absolute right-0 mt-2 w-64 sm:w-72 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50">
+                  <div className="relative px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 p-0.5 shadow-lg">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-blue-600 via-blue-500 to-indigo-600 p-0.5 shadow-lg flex-shrink-0">
                         <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center">
-                          <span className="text-lg font-bold bg-gradient-to-br from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                          <span className="text-base sm:text-lg font-bold bg-gradient-to-br from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                             {(user?.name || 'U').charAt(0).toUpperCase()}
                           </span>
                         </div>
@@ -153,17 +133,16 @@ export default function Navbar() {
                     </div>
                   </div>
 
-                  {/* Menu Items */}
                   <div className="py-2 px-2">
                     <Link
                       to="/profile"
                       onClick={() => setShowProfileMenu(false)}
                       className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-150 group"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
-                        <UserCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors flex-shrink-0">
+                        <UserCircle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold">My Profile</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">View and edit profile</p>
                       </div>
@@ -174,10 +153,10 @@ export default function Navbar() {
                       onClick={() => setShowProfileMenu(false)}
                       className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-150 group"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
-                        <Settings className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors flex-shrink-0">
+                        <Settings className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold">Settings</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">Account preferences</p>
                       </div>
@@ -190,21 +169,20 @@ export default function Navbar() {
                       }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-150 group"
                     >
-                      <div className={`w-9 h-9 rounded-lg ${darkMode ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-indigo-50 dark:bg-indigo-900/20'} flex items-center justify-center group-hover:bg-opacity-80 transition-colors`}>
+                      <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex-shrink-0 ${darkMode ? 'bg-amber-50 dark:bg-amber-900/20' : 'bg-indigo-50 dark:bg-indigo-900/20'} flex items-center justify-center group-hover:bg-opacity-80 transition-colors`}>
                         {darkMode ? (
-                          <Sun className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                          <Sun className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400" />
                         ) : (
-                          <Moon className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                          <Moon className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600 dark:text-indigo-400" />
                         )}
                       </div>
-                      <div className="flex-1 text-left">
+                      <div className="flex-1 text-left min-w-0">
                         <p className="text-sm font-semibold">{darkMode ? 'Light' : 'Dark'} Mode</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">Switch theme</p>
                       </div>
                     </button>
                   </div>
 
-                  {/* Logout */}
                   <div className="border-t border-gray-100 dark:border-gray-700 p-2">
                     <button
                       onClick={() => {
@@ -215,10 +193,10 @@ export default function Navbar() {
                       }}
                       className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-150 group"
                     >
-                      <div className="w-9 h-9 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-colors">
-                        <LogOut className="w-5 h-5" />
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center group-hover:bg-red-100 dark:group-hover:bg-red-900/30 transition-colors flex-shrink-0">
+                        <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
-                      <div className="flex-1 text-left">
+                      <div className="flex-1 text-left min-w-0">
                         <p className="text-sm font-semibold">Sign Out</p>
                         <p className="text-xs text-red-500 dark:text-red-400">Logout from account</p>
                       </div>
@@ -228,29 +206,29 @@ export default function Navbar() {
               )}
             </div>
           </div>
-        </div>
 
-        {/* Mobile Navigation */}
-        <div className="md:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-          <div className="grid grid-cols-5 gap-1 py-2 px-2">
-            {[
-              ['/dashboard', LayoutDashboard, 'Dashboard'],
-              ['/links', LinkIcon, 'Links'],
-              ['/analytics', BarChart3, 'Analytics'],
-              ['/bio', User, 'Bio'],
-              ['/profile', UserCircle, 'Profile']
-            ].map(([path, Icon, label]) => (
-              <Link
-                key={path}
-                to={path}
-                className={`flex flex-col items-center px-2 py-2 rounded-lg transition ${
-                  isActive(path) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-                <span className="text-xs mt-1 font-medium">{label}</span>
-              </Link>
-            ))}
+          {/* Bottom Row - Navigation Tabs (Horizontal Scroll) */}
+          <div className="flex gap-1 sm:gap-2 overflow-x-auto pb-1 pt-1 scrollbar-hide -mx-2 px-2">
+            <Link to="/dashboard" className={navItemClass('/dashboard')}>
+              <LayoutDashboard className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm whitespace-nowrap">Dashboard</span>
+            </Link>
+            <Link to="/links" className={navItemClass('/links')}>
+              <LinkIcon className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm whitespace-nowrap">Links</span>
+            </Link>
+            <Link to="/analytics" className={navItemClass('/analytics')}>
+              <BarChart3 className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm whitespace-nowrap">Analytics</span>
+            </Link>
+            <Link to="/bio" className={navItemClass('/bio')}>
+              <User className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm whitespace-nowrap">Bio</span>
+            </Link>
+            <Link to="/profile" className={navItemClass('/profile')}>
+              <UserCircle className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
+              <span className="text-xs sm:text-sm whitespace-nowrap">Profile</span>
+            </Link>
           </div>
         </div>
       </nav>

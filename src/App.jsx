@@ -1,10 +1,10 @@
-// src/App.jsx
+// src/App.jsx - Complete Fixed Version
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 
-// استيراد الصفحات
+// Import Pages
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
@@ -12,7 +12,7 @@ import ResetPassword from './pages/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail';
 import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
-import Links from './pages/EnhancedLinks'; // ✅ صح
+import Links from './pages/EnhancedLinks';
 import Analytics from './pages/Analytics';
 import BioEditor from './pages/BioEditor';
 import PublicBio from './pages/PublicBio';
@@ -22,8 +22,11 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Profile from './pages/Profile';
 import AuthCallback from './pages/AuthCallback';
+// ✅ NEW
 
+// ==========================================
 // Loading Component
+// ==========================================
 function LoadingScreen() {
   return (
     <div className="min-h-[100dvh] flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -35,6 +38,9 @@ function LoadingScreen() {
   );
 }
 
+// ==========================================
+// Route Guards
+// ==========================================
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
@@ -53,9 +59,13 @@ function LandingRoute({ children }) {
   return children;
 }
 
+// ==========================================
+// App Routes
+// ==========================================
 function AppRoutes() {
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<LandingRoute><Landing /></LandingRoute>} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
@@ -64,6 +74,9 @@ function AppRoutes() {
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
       
+   
+      
+      {/* Protected Routes */}
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/links" element={<PrivateRoute><Links /></PrivateRoute>} />
       <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
@@ -71,20 +84,26 @@ function AppRoutes() {
       <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       
+      {/* Public Bio & Legal Pages */}
       <Route path="/@:username" element={<PublicBio />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
+      
+      {/* 404 - Redirect to home */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }
 
+// ==========================================
+// Main App Component
+// ==========================================
 export default function App() {
   return (
-    <AuthProvider> {/* ✅ 1 */}
-      <ThemeProvider> {/* ✅ 2 */}
-        <ToastProvider> {/* ✅ 3 */}
-          <BrowserRouter> {/* ✅ 4 */}
+    <AuthProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <BrowserRouter>
             <div className="antialiased">
               <AppRoutes />
             </div>

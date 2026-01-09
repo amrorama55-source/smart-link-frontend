@@ -4,13 +4,9 @@ import { SHORT_URL_BASE } from '../config';
 import { validateUrl, validateCustomAlias, sanitizeInput } from '../utils/validation';
 import { useToast } from '../context/ToastContext';
 import Navbar from '../components/Navbar';
-import ConversionTracking from '../components/ConversionTracking';
-import CustomDomain from '../components/CustomDomain'; 
-import LoadingButton from '../components/LoadingButton';
 import QRCode from 'qrcode';
 import {
-  Link2, Plus, Trash2, Copy, ExternalLink, QrCode, CheckCircle, X,
-  Edit3, TrendingUp, Target, Globe2, Calendar, Shield, Zap
+  Link2, Plus
 } from 'lucide-react';
 
 // Import components
@@ -43,7 +39,8 @@ export default function EnhancedLinks() {
       variants: [],
       autoOptimize: {
         enabled: false,
-        minSampleSize: 100
+        minSampleSize: 100,
+        confidenceLevel: 0.95
       }
     },
     
@@ -104,7 +101,11 @@ export default function EnhancedLinks() {
         enabled: false,
         splitMethod: 'weighted',
         variants: [],
-        autoOptimize: { enabled: false, minSampleSize: 100 }
+        autoOptimize: { 
+          enabled: false, 
+          minSampleSize: 100,
+          confidenceLevel: 0.95
+        }
       },
       geoRules: [],
       deviceRules: { mobile: '', desktop: '', tablet: '' },
@@ -131,12 +132,20 @@ export default function EnhancedLinks() {
         enabled: true,
         splitMethod: link.abTest.splitMethod || 'weighted',
         variants: link.abTest.variants || [],
-        autoOptimize: link.abTest.autoOptimize || { enabled: false, minSampleSize: 100 }
+        autoOptimize: link.abTest.autoOptimize || { 
+          enabled: false, 
+          minSampleSize: 100,
+          confidenceLevel: 0.95
+        }
       } : {
         enabled: false,
         splitMethod: 'weighted',
         variants: [],
-        autoOptimize: { enabled: false, minSampleSize: 100 }
+        autoOptimize: { 
+          enabled: false, 
+          minSampleSize: 100,
+          confidenceLevel: 0.95
+        }
       },
       geoRules: link.geoRules || [],
       deviceRules: link.deviceRules || { mobile: '', desktop: '', tablet: '' },
@@ -155,133 +164,360 @@ export default function EnhancedLinks() {
     setShowModal(true);
   };
 
-  const validateForm = () => {
-    const newErrors = {};
+// ✅ استبدل validateForm() في EnhancedLinks.jsx بهذا الكود
 
-    // Basic validation
-    if (!editingLink) {
-      if (!linkData.originalUrl) {
-        newErrors.originalUrl = 'URL is required';
-      } else if (!validateUrl(linkData.originalUrl)) {
-        newErrors.originalUrl = 'Please enter a valid HTTP/HTTPS URL';
-      }
+const validateForm = () => {
+  const newErrors = {};
 
-      if (linkData.customAlias) {
-        const aliasValidation = validateCustomAlias(linkData.customAlias);
-        if (!aliasValidation.isValid) {
-          newErrors.customAlias = aliasValidation.error;
-        }
-      }
-    }
+  // ✅ CRITICAL FIX: Original URL is optional when A/B Testing is enabled
+  if (!editingLink) {
+    // Check if A/B Testing is enabled and has valid variants
+    const hasValidABTest = linkData.abTest?.enabled && 
+                          linkData.abTest.variants?.length >= 2 &&
+                          linkData.abTest.variants.every(v => v.name?.trim() && v.url?.trim());
 
-    // A/B Testing validation
-    if (linkData.abTest.enabled) {
-      if (linkData.abTest.variants.length < 2) {
-        newErrors.abTest = 'A/B testing requires at least 2 variants';
+    // Original URL is REQUIRED only when A/B Testing is NOT properly configured
+    if (!hasValidABTest) {
+      const trimmedUrl = (linkData.originalUrl || '').trim();
+      
+      if (!trimmedUrl) {
+        newErrors.originalUrl = 'URL is required (or enable A/B Testing with at least 2 valid variants)';
       } else {
-        const invalidVariants = linkData.abTest.variants.filter(v => !v.url || !v.name);
-        if (invalidVariants.length > 0) {
-          newErrors.abTest = 'All variants must have a name and URL';
-        }
-
-        if (linkData.abTest.splitMethod === 'weighted') {
-          const totalWeight = linkData.abTest.variants.reduce((sum, v) => sum + (Number(v.weight) || 0), 0);
-          if (Math.abs(totalWeight - 100) > 0.1) {
-            newErrors.abTest = 'Variant weights must sum to 100%';
+        try {
+          const url = new URL(trimmedUrl);
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            newErrors.originalUrl = 'URL must start with http:// or https://';
           }
+        } catch {
+          newErrors.originalUrl = 'Invalid URL format';
+        }
+      }
+    } else {
+      // A/B Testing is enabled and valid, so originalUrl is optional
+      // But if provided, it should be valid
+      const trimmedUrl = (linkData.originalUrl || '').trim();
+      if (trimmedUrl) {
+        try {
+          const url = new URL(trimmedUrl);
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            newErrors.originalUrl = 'URL must start with http:// or https://';
+          }
+        } catch {
+          newErrors.originalUrl = 'Invalid URL format';
         }
       }
     }
 
-    // Geotargeting validation
-    if (linkData.geoRules.length > 0) {
-      const invalidRules = linkData.geoRules.filter(r => !r.targetUrl || r.countries.length === 0);
-      if (invalidRules.length > 0) {
-        newErrors.geoRules = 'All geo rules must have countries and target URL';
+    // Custom alias validation
+    if (linkData.customAlias && linkData.customAlias.trim()) {
+      const alias = linkData.customAlias.trim();
+      if (!/^[a-zA-Z0-9-_]{3,50}$/.test(alias)) {
+        newErrors.customAlias = 'Use 3-50 alphanumeric characters, hyphens, or underscores';
       }
     }
+  }
 
-    // Schedule validation
-    if (linkData.schedule.enabled) {
-      if (!linkData.schedule.startDate || !linkData.schedule.endDate) {
-        newErrors.schedule = 'Start and end dates are required';
-      } else if (new Date(linkData.schedule.startDate) >= new Date(linkData.schedule.endDate)) {
+  // ✅ A/B Testing validation - IMPROVED
+  if (linkData.abTest?.enabled) {
+    console.log('🧪 Validating A/B Test:', {
+      variants: linkData.abTest.variants?.length,
+      splitMethod: linkData.abTest.splitMethod
+    });
+
+    // Check variants count
+    if (!linkData.abTest.variants || linkData.abTest.variants.length < 2) {
+      newErrors.abTest = 'A/B testing requires at least 2 variants';
+    } else {
+      // ✅ Check each variant for name and URL
+      const invalidVariants = linkData.abTest.variants.filter(v => {
+        const hasName = v.name && v.name.trim().length > 0;
+        const hasUrl = v.url && v.url.trim().length > 0;
+        return !hasName || !hasUrl;
+      });
+      
+      if (invalidVariants.length > 0) {
+        newErrors.abTest = 'All variants must have a name and URL';
+        console.log('❌ Invalid variants:', invalidVariants);
+      } else {
+        // ✅ Validate URL format for each variant
+        const badUrls = linkData.abTest.variants.filter(v => {
+          try {
+            const url = new URL(v.url.trim());
+            return !['http:', 'https:'].includes(url.protocol);
+          } catch {
+            return true;
+          }
+        });
+        
+        if (badUrls.length > 0) {
+          newErrors.abTest = 'All variant URLs must be valid (start with http:// or https://)';
+          console.log('❌ Bad URLs:', badUrls);
+        }
+      }
+
+      // ✅ Weight validation - RELAXED (backend will normalize)
+      if (linkData.abTest.splitMethod === 'weighted' && !newErrors.abTest) {
+        const totalWeight = linkData.abTest.variants.reduce((sum, v) => {
+          const weight = parseFloat(v.weight) || 0;
+          return sum + weight;
+        }, 0);
+        
+        console.log('📊 Total Weight:', totalWeight);
+
+        // Only error if completely broken
+        if (totalWeight === 0) {
+          newErrors.abTest = 'At least one variant must have weight > 0';
+        } else if (totalWeight > 200) {
+          newErrors.abTest = 'Total weight seems too high. Try "Auto-Fix Weights" button.';
+        } else if (totalWeight < 50) {
+          newErrors.abTest = 'Total weight seems too low. Try "Auto-Fix Weights" button.';
+        }
+        // Otherwise backend will auto-normalize ✅
+      }
+    }
+  }
+
+  // Geotargeting validation
+  if (linkData.geoRules && linkData.geoRules.length > 0) {
+    const invalidRules = linkData.geoRules.filter(r => {
+      const hasCountries = r.countries && r.countries.length > 0;
+      const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
+      return !hasCountries || !hasUrl;
+    });
+    
+    if (invalidRules.length > 0) {
+      newErrors.geoRules = 'All geo rules must have countries and target URL';
+    } else {
+      const badGeoUrls = linkData.geoRules.filter(r => {
+        try {
+          const url = new URL(r.targetUrl.trim());
+          return !['http:', 'https:'].includes(url.protocol);
+        } catch {
+          return true;
+        }
+      });
+      
+      if (badGeoUrls.length > 0) {
+        newErrors.geoRules = 'All geo rule URLs must be valid';
+      }
+    }
+  }
+
+  // Device targeting validation
+  if (linkData.deviceRules?.mobile || linkData.deviceRules?.desktop || linkData.deviceRules?.tablet) {
+    const deviceUrls = [
+      { key: 'mobile', url: linkData.deviceRules.mobile },
+      { key: 'desktop', url: linkData.deviceRules.desktop },
+      { key: 'tablet', url: linkData.deviceRules.tablet }
+    ].filter(d => d.url && d.url.trim());
+
+    const badDeviceUrls = deviceUrls.filter(d => {
+      try {
+        const url = new URL(d.url.trim());
+        return !['http:', 'https:'].includes(url.protocol);
+      } catch {
+        return true;
+      }
+    });
+    
+    if (badDeviceUrls.length > 0) {
+      newErrors.deviceRules = 'All device URLs must be valid';
+    }
+  }
+
+  // Schedule validation
+  if (linkData.schedule?.enabled) {
+    if (!linkData.schedule.startDate || !linkData.schedule.endDate) {
+      newErrors.schedule = 'Start and end dates are required';
+    } else {
+      const start = new Date(linkData.schedule.startDate);
+      const end = new Date(linkData.schedule.endDate);
+      
+      if (start >= end) {
         newErrors.schedule = 'End date must be after start date';
       }
+
+      if (linkData.schedule.redirectAfterExpiry && linkData.schedule.redirectAfterExpiry.trim()) {
+        try {
+          const url = new URL(linkData.schedule.redirectAfterExpiry.trim());
+          if (!['http:', 'https:'].includes(url.protocol)) {
+            newErrors.schedule = 'Redirect URL must be valid';
+          }
+        } catch {
+          newErrors.schedule = 'Redirect URL must be valid';
+        }
+      }
     }
+  }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  // Pixels validation
+  if (linkData.pixels && linkData.pixels.length > 0) {
+    const invalidPixels = linkData.pixels.filter(p => {
+      const hasPlatform = p.platform && p.platform.trim().length > 0;
+      const hasPixelId = p.pixelId && p.pixelId.trim().length > 0;
+      return !hasPlatform || !hasPixelId;
+    });
+    
+    if (invalidPixels.length > 0) {
+      newErrors.pixels = 'All pixels must have platform and pixel ID';
+    }
+  }
 
+  console.log('🔍 Validation Result:', {
+    hasErrors: Object.keys(newErrors).length > 0,
+    errors: newErrors
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+  // ========================================
+  // ✅ FIXED SUBMIT HANDLER
+  // ========================================
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('📤 Submitting Link:', {
+      originalUrl: linkData.originalUrl,
+      abTestEnabled: linkData.abTest?.enabled,
+      variants: linkData.abTest?.variants?.map(v => ({
+        name: v.name,
+        url: v.url,
+        weight: v.weight
+      }))
+    });
+
     if (!validateForm()) {
-      addToast('Please fix validation errors', 'error');
+      addToast('Please fix all validation errors', 'error');
       return;
     }
 
     setSubmitting(true);
 
     try {
+      // ✅ Build clean payload
       const payload = {
-        title: sanitizeInput(linkData.title, 200),
-        description: sanitizeInput(linkData.description, 1000),
-        tags: linkData.tags,
+        title: (linkData.title || '').trim(),
+        description: (linkData.description || '').trim(),
+        tags: linkData.tags || [],
         expiresAt: linkData.expiresAt || null,
       };
 
+      // Add fields for new links only
       if (!editingLink) {
-        payload.originalUrl = linkData.originalUrl;
-        payload.customAlias = linkData.customAlias;
+        payload.originalUrl = linkData.originalUrl.trim();
+        if (linkData.customAlias && linkData.customAlias.trim()) {
+          payload.customAlias = linkData.customAlias.trim();
+        }
       }
 
-      if (linkData.password) {
+      // Password
+      if (linkData.password && linkData.password.trim()) {
         payload.password = linkData.password;
       }
 
-      if (linkData.abTest.enabled && linkData.abTest.variants.length >= 2) {
-        payload.abTest = {
-          enabled: true,
-          splitMethod: linkData.abTest.splitMethod,
-          variants: linkData.abTest.variants.filter(v => v.url && v.name),
-          autoOptimize: linkData.abTest.autoOptimize
-        };
+      // ✅ A/B Testing - CRITICAL
+      if (linkData.abTest?.enabled && linkData.abTest.variants && linkData.abTest.variants.length >= 2) {
+        // Filter and clean variants
+        const cleanVariants = linkData.abTest.variants
+          .filter(v => v.name && v.name.trim() && v.url && v.url.trim())
+          .map(v => ({
+            name: v.name.trim(),
+            url: v.url.trim(),
+            weight: parseFloat(v.weight) || 50
+          }));
+
+        if (cleanVariants.length >= 2) {
+          payload.abTest = {
+            enabled: true,
+            splitMethod: linkData.abTest.splitMethod || 'weighted',
+            variants: cleanVariants,
+            autoOptimize: {
+              enabled: linkData.abTest.autoOptimize?.enabled || false,
+              minSampleSize: linkData.abTest.autoOptimize?.minSampleSize || 100,
+              confidenceLevel: linkData.abTest.autoOptimize?.confidenceLevel || 0.95
+            }
+          };
+
+          console.log('✅ Sending A/B Test:', payload.abTest);
+        }
       } else if (editingLink) {
+        // Disable A/B testing if editing
         payload.abTest = { enabled: false, variants: [] };
       }
 
-      if (linkData.geoRules.length > 0) {
-        payload.geoRules = linkData.geoRules.filter(r => r.countries.length > 0 && r.targetUrl);
+      // Geotargeting
+      if (linkData.geoRules && linkData.geoRules.length > 0) {
+        payload.geoRules = linkData.geoRules
+          .filter(r => r.countries.length > 0 && r.targetUrl && r.targetUrl.trim())
+          .map(r => ({
+            countries: r.countries,
+            targetUrl: r.targetUrl.trim(),
+            priority: r.priority || 0
+          }));
       }
 
-      if (linkData.deviceRules.mobile || linkData.deviceRules.desktop || linkData.deviceRules.tablet) {
-        payload.deviceRules = linkData.deviceRules;
+      // Device targeting
+      if (linkData.deviceRules?.mobile || linkData.deviceRules?.desktop || linkData.deviceRules?.tablet) {
+        payload.deviceRules = {
+          mobile: linkData.deviceRules.mobile?.trim() || '',
+          desktop: linkData.deviceRules.desktop?.trim() || '',
+          tablet: linkData.deviceRules.tablet?.trim() || ''
+        };
       }
 
-      if (linkData.schedule.enabled) {
-        payload.schedule = linkData.schedule;
+      // Scheduling
+      if (linkData.schedule?.enabled) {
+        payload.schedule = {
+          enabled: true,
+          startDate: linkData.schedule.startDate,
+          endDate: linkData.schedule.endDate,
+          redirectAfterExpiry: linkData.schedule.redirectAfterExpiry?.trim() || ''
+        };
       }
 
-      if (linkData.pixels.length > 0) {
-        payload.pixels = linkData.pixels.filter(p => p.platform && p.pixelId);
+      // Pixels
+      if (linkData.pixels && linkData.pixels.length > 0) {
+        payload.pixels = linkData.pixels
+          .filter(p => p.platform && p.pixelId && p.pixelId.trim())
+          .map(p => ({
+            platform: p.platform,
+            pixelId: p.pixelId.trim(),
+            event: p.event || 'PageView'
+          }));
       }
 
+      console.log('📦 Final Payload:', JSON.stringify(payload, null, 2));
+
+      // Submit
       if (editingLink) {
         await updateLink(editingLink.shortCode, payload);
-        addToast('Link updated successfully!', 'success');
+        addToast('Link updated successfully! 🎉', 'success');
       } else {
         await createLink(payload);
-        addToast('Link created successfully!', 'success');
+        addToast('Link created successfully! 🎉', 'success');
       }
 
       setShowModal(false);
       setEditingLink(null);
       loadLinks();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to save link';
-      addToast(errorMessage, 'error');
+      console.error('❌ Submit Error:', error);
+      
+      const errorMessage = error.response?.data?.error || 
+                          error.response?.data?.message || 
+                          error.message || 
+                          'Failed to save link';
+      
+      // Show specific variant error if available
+      if (error.response?.data?.variantIndex !== undefined) {
+        const variantIndex = error.response.data.variantIndex;
+        const variantName = linkData.abTest?.variants?.[variantIndex]?.name || `Variant ${variantIndex + 1}`;
+        addToast(`${variantName}: ${errorMessage}`, 'error');
+      } else {
+        addToast(errorMessage, 'error');
+      }
     } finally {
       setSubmitting(false);
     }
@@ -299,44 +535,99 @@ export default function EnhancedLinks() {
     }
   };
 
-  // A/B Testing Handlers
+  // ========================================
+  // ✅ A/B TESTING HANDLERS - IMPROVED
+  // ========================================
   const addVariant = () => {
+    const currentVariants = linkData.abTest?.variants || [];
+    const newVariantCount = currentVariants.length + 1;
+    
+    // Calculate equal weights
+    const equalWeight = Math.floor(100 / newVariantCount);
+    const remainder = 100 - (equalWeight * newVariantCount);
+    
+    // Adjust existing variants
+    const adjustedVariants = currentVariants.map((v, i) => ({
+      ...v,
+      weight: i === 0 ? equalWeight + remainder : equalWeight
+    }));
+    
+    // Add new variant
+    const newVariant = { 
+      name: `Variant ${String.fromCharCode(65 + currentVariants.length)}`, 
+      url: '', 
+      weight: equalWeight
+    };
+
     setLinkData({
       ...linkData,
       abTest: {
         ...linkData.abTest,
-        variants: [
-          ...linkData.abTest.variants,
-          { 
-            url: '', 
-            name: `Variant ${String.fromCharCode(65 + linkData.abTest.variants.length)}`, 
-            weight: Math.floor(100 / (linkData.abTest.variants.length + 1))
-          }
-        ]
+        variants: [...adjustedVariants, newVariant]
       }
+    });
+
+    console.log('➕ Added variant:', {
+      totalVariants: newVariantCount,
+      weights: [...adjustedVariants, newVariant].map(v => v.weight)
     });
   };
 
   const removeVariant = (index) => {
-    setLinkData({
-      ...linkData,
-      abTest: {
-        ...linkData.abTest,
-        variants: linkData.abTest.variants.filter((_, i) => i !== index)
-      }
-    });
+    const updatedVariants = (linkData.abTest?.variants || []).filter((_, i) => i !== index);
+    
+    if (updatedVariants.length > 0) {
+      // Redistribute weights equally
+      const equalWeight = Math.floor(100 / updatedVariants.length);
+      const remainder = 100 - (equalWeight * updatedVariants.length);
+      
+      const redistributedVariants = updatedVariants.map((v, i) => ({
+        ...v,
+        weight: i === 0 ? equalWeight + remainder : equalWeight
+      }));
+      
+      setLinkData({
+        ...linkData,
+        abTest: {
+          ...linkData.abTest,
+          variants: redistributedVariants
+        }
+      });
+
+      console.log('➖ Removed variant:', {
+        remainingVariants: redistributedVariants.length,
+        weights: redistributedVariants.map(v => v.weight)
+      });
+    } else {
+      setLinkData({
+        ...linkData,
+        abTest: {
+          ...linkData.abTest,
+          variants: []
+        }
+      });
+    }
   };
 
   const updateVariant = (index, field, value) => {
-    const updatedVariants = [...linkData.abTest.variants];
-    updatedVariants[index][field] = value;
-    setLinkData({
-      ...linkData,
-      abTest: {
-        ...linkData.abTest,
-        variants: updatedVariants
-      }
-    });
+    const updatedVariants = [...(linkData.abTest?.variants || [])];
+    
+    if (updatedVariants[index]) {
+      updatedVariants[index] = {
+        ...updatedVariants[index],
+        [field]: value
+      };
+      
+      setLinkData({
+        ...linkData,
+        abTest: {
+          ...linkData.abTest,
+          variants: updatedVariants
+        }
+      });
+
+      console.log(`🔄 Updated variant ${index} ${field}:`, value);
+    }
   };
 
   // Geotargeting Handlers
@@ -344,7 +635,7 @@ export default function EnhancedLinks() {
     setLinkData({
       ...linkData,
       geoRules: [
-        ...linkData.geoRules,
+        ...(linkData.geoRules || []),
         { countries: [], targetUrl: '', priority: 0 }
       ]
     });
@@ -353,12 +644,12 @@ export default function EnhancedLinks() {
   const removeGeoRule = (index) => {
     setLinkData({
       ...linkData,
-      geoRules: linkData.geoRules.filter((_, i) => i !== index)
+      geoRules: (linkData.geoRules || []).filter((_, i) => i !== index)
     });
   };
 
   const updateGeoRule = (index, field, value) => {
-    const updatedRules = [...linkData.geoRules];
+    const updatedRules = [...(linkData.geoRules || [])];
     updatedRules[index][field] = value;
     setLinkData({
       ...linkData,
@@ -371,7 +662,7 @@ export default function EnhancedLinks() {
     setLinkData({
       ...linkData,
       pixels: [
-        ...linkData.pixels,
+        ...(linkData.pixels || []),
         { platform: 'facebook', pixelId: '', event: 'PageView' }
       ]
     });
@@ -380,12 +671,12 @@ export default function EnhancedLinks() {
   const removePixel = (index) => {
     setLinkData({
       ...linkData,
-      pixels: linkData.pixels.filter((_, i) => i !== index)
+      pixels: (linkData.pixels || []).filter((_, i) => i !== index)
     });
   };
 
   const updatePixel = (index, field, value) => {
-    const updatedPixels = [...linkData.pixels];
+    const updatedPixels = [...(linkData.pixels || [])];
     updatedPixels[index][field] = value;
     setLinkData({
       ...linkData,
@@ -448,32 +739,34 @@ export default function EnhancedLinks() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 mb-20 md:mb-0">
         
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                Your Links
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Create and manage all your smart links
-              </p>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
+                  Your Links
+                </h1>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                  Create and manage all your smart links
+                </p>
+              </div>
+              <button
+                onClick={openCreateModal}
+                className="w-full sm:w-auto min-h-[44px] px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+              >
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span>Create Smart Link</span>
+              </button>
             </div>
-            <button
-              onClick={openCreateModal}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 shadow-lg hover:shadow-xl"
-            >
-              <Plus className="w-5 h-5" />
-              Create Smart Link
-            </button>
           </div>
         </div>
 
         {/* Links List */}
         {links.length > 0 ? (
-          <div className="grid gap-6">
+          <div className="grid gap-4 sm:gap-5 md:gap-6">
             {links.map((link) => (
               <LinkCard
                 key={link.shortCode}
@@ -489,21 +782,21 @@ export default function EnhancedLinks() {
           </div>
         ) : (
           /* Empty State */
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-12 text-center">
-            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Link2 className="w-10 h-10 text-gray-400 dark:text-gray-500" />
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 sm:p-8 md:p-12 text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <Link2 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
               No links yet
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 max-w-md mx-auto px-4">
               Create your first smart link with A/B testing, geotargeting, and advanced analytics
             </p>
             <button
               onClick={openCreateModal}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+              className="w-full sm:w-auto min-h-[44px] px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 text-sm sm:text-base"
             >
-              <Plus className="w-5 h-5" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
               Create Your First Smart Link
             </button>
           </div>

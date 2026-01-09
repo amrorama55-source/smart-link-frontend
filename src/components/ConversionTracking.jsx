@@ -1,6 +1,7 @@
 // src/components/ConversionTracking.jsx - NEW COMPONENT
 import { useState } from 'react';
 import { Copy, CheckCircle, Code, TrendingUp } from 'lucide-react';
+import { SHORT_URL_BASE } from '../config'; 
 import api from '../services/api';
 
 export default function ConversionTracking({ shortCode }) {
@@ -10,7 +11,7 @@ export default function ConversionTracking({ shortCode }) {
   const [loading, setLoading] = useState(false);
 
   const trackingCode = `<!-- Smart Link Conversion Tracking -->
-<script src="${import.meta.env.VITE_API_URL || 'https://api.smart-link.website'}/api/conversions/${shortCode}/tracking-code"></script>
+<script src="${SHORT_URL_BASE}/api/conversions/${shortCode}/tracking-code"></script>
 
 <script>
 // Track conversion when user completes purchase
@@ -34,7 +35,7 @@ document.getElementById('purchase-button').addEventListener('click', function() 
   const loadConversionStats = async () => {
     setLoading(true);
     try {
-      const { data } = await api.get(`/api/conversions/${shortCode}/stats`);
+      const { data } = await api.get(`/conversions/${shortCode}/stats`);
       setStats(data.stats);
     } catch (error) {
       console.error('Failed to load conversion stats:', error);

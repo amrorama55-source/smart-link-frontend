@@ -15,6 +15,29 @@ export default function LinkCard({
   copiedCode,
   onReload 
 }) {
+  // ✅ FIXED: Generate correct short URL
+  const getShortUrl = () => {
+    // Priority 1: Use backend-provided shortUrl (most reliable)
+    if (link.shortUrl) {
+      return link.shortUrl;
+    }
+    
+    // Priority 2: Custom domain (if verified)
+    if (link.customDomain && link.domainVerification?.isVerified) {
+      return `https://${link.customDomain}/${link.customAlias || link.shortCode}`;
+    }
+    
+    // Priority 3: Use custom alias if available
+    if (link.customAlias) {
+      return `${SHORT_URL_BASE}/${link.customAlias}`;
+    }
+    
+    // Priority 4: Default shortCode
+    return `${SHORT_URL_BASE}/${link.shortCode}`;
+  };
+
+  const shortUrl = getShortUrl();
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 sm:p-6 transition-all hover:shadow-lg border border-gray-200 dark:border-gray-700">
       <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
@@ -69,17 +92,19 @@ export default function LinkCard({
           )}
 
           {/* Original URL */}
-          <div className="mb-3 text-sm">
-            <span className="text-gray-500 dark:text-gray-400 mr-1">Original:</span>
-            <a
-              href={link.originalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 dark:text-blue-400 hover:underline break-all"
-            >
-              {link.originalUrl}
-            </a>
-          </div>
+          {link.originalUrl && (
+            <div className="mb-3 text-sm">
+              <span className="text-gray-500 dark:text-gray-400 mr-1">Original:</span>
+              <a
+                href={link.originalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline break-all"
+              >
+                {link.originalUrl}
+              </a>
+            </div>
+          )}
 
           {/* A/B Test Variants Preview */}
           {link.abTest?.enabled && link.abTest.variants?.length > 0 && (
@@ -113,20 +138,22 @@ export default function LinkCard({
             </div>
           )}
 
-          {/* Short URL */}
+          {/* Short URL - FIXED */}
           <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
             <Link2 className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            
             <a
-              href={`${SHORT_URL_BASE}/${link.shortCode}`}
+              href={shortUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 font-medium hover:underline flex items-center gap-1 break-all flex-1 min-w-0 text-sm sm:text-base"
             >
-              {link.customDomain ? link.customDomain : SHORT_URL_BASE}/{link.shortCode}
+              {shortUrl}
               <ExternalLink className="w-3 h-3 flex-shrink-0" />
             </a>
+            
             <button
-              onClick={() => onCopy(`${SHORT_URL_BASE}/${link.shortCode}`, link.shortCode)}
+              onClick={() => onCopy(shortUrl, link.shortCode)}
               className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/40 rounded transition flex-shrink-0 touch-target"
               aria-label="Copy link"
             >
