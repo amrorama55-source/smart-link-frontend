@@ -141,15 +141,15 @@ export default function LinkModal({
               {/* ============================================ */}
               {/* TRACKING TAB - FIXED */}
               {/* ============================================ */}
-              {activeTab === 'tracking' && (
-                <TrackingTab
-                  linkData={linkData}
-                  setLinkData={setLinkData}
-                  addPixel={addPixel}
-                  removePixel={removePixel}
-                  updatePixel={updatePixel}
-                />
-              )}
+             {activeTab === 'tracking' && (
+  <TrackingTab
+    linkData={linkData}           // ✅ CRITICAL: Must pass linkData
+    addPixel={addPixel}            // ✅ CRITICAL: Must pass function
+    removePixel={removePixel}      // ✅ CRITICAL: Must pass function
+    updatePixel={updatePixel}      // ✅ CRITICAL: Must pass function
+    errors={errors}                // ✅ CRITICAL: Must pass errors
+  />
+)}
 
               {/* Action Buttons - STICKY FOOTER */}
               <div className="sticky bottom-0 -mx-4 sm:-mx-6 md:-mx-8 -mb-4 sm:-mb-6 md:-mb-8 mt-6 sm:mt-8 px-4 sm:px-6 md:px-8 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">

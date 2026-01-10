@@ -782,31 +782,37 @@ const validateForm = () => {
   };
 
   // Pixels Handlers
-  const addPixel = () => {
-    setLinkData({
-      ...linkData,
-      pixels: [
-        ...(linkData.pixels || []),
-        { platform: 'facebook', pixelId: '', event: 'PageView' }
-      ]
-    });
-  };
+const addPixel = () => {
+  setLinkData({
+    ...linkData,
+    pixels: [
+      ...(linkData.pixels || []),
+      { platform: 'facebook', pixelId: '', event: 'PageView' }
+    ]
+  });
+};
 
-  const removePixel = (index) => {
-    setLinkData({
-      ...linkData,
-      pixels: (linkData.pixels || []).filter((_, i) => i !== index)
-    });
-  };
+const removePixel = (index) => {
+  setLinkData({
+    ...linkData,
+    pixels: (linkData.pixels || []).filter((_, i) => i !== index)
+  });
+};
 
-  const updatePixel = (index, field, value) => {
-    const updatedPixels = [...(linkData.pixels || [])];
-    updatedPixels[index][field] = value;
+const updatePixel = (index, field, value) => {
+  const updatedPixels = [...(linkData.pixels || [])];
+  if (updatedPixels[index]) {
+    updatedPixels[index] = {
+      ...updatedPixels[index],
+      [field]: value
+    };
     setLinkData({
       ...linkData,
       pixels: updatedPixels
     });
-  };
+  }
+};
+
 
   // Utility Functions
   const copyToClipboard = (text, code) => {
