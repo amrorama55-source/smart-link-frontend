@@ -169,41 +169,62 @@ export default function EnhancedLinks() {
 const validateForm = () => {
   const newErrors = {};
 
+  console.log('🔍 ===== VALIDATION START =====');
+
   // ========================================
-  // ✅ Original URL validation - IMPROVED
+  // ✅ Original URL validation - SOLUTION 3 (Smart Fallback)
   // ========================================
   if (!editingLink) {
     const hasValidABTest = linkData.abTest?.enabled && 
                           linkData.abTest.variants?.length >= 2 &&
                           linkData.abTest.variants.every(v => v.name?.trim() && v.url?.trim());
 
-    if (!hasValidABTest) {
-      const trimmedUrl = (linkData.originalUrl || '').trim();
-      
-      if (!trimmedUrl) {
-        newErrors.originalUrl = 'URL is required (or enable A/B Testing with at least 2 valid variants)';
-      } else {
-        try {
-          const url = new URL(trimmedUrl);
-          if (!['http:', 'https:'].includes(url.protocol)) {
-            newErrors.originalUrl = 'URL must start with http:// or https://';
-          }
-        } catch {
-          newErrors.originalUrl = 'Invalid URL format';
+    // ✅ Check if ANY targeting is configured
+    const hasGeoTargeting = linkData.geoRules && linkData.geoRules.some(r => 
+      r.countries?.length > 0 && r.targetUrl?.trim()
+    );
+    const hasDeviceTargeting = linkData.deviceRules && (
+      linkData.deviceRules.mobile?.trim() ||
+      linkData.deviceRules.desktop?.trim() ||
+      linkData.deviceRules.tablet?.trim()
+    );
+    const hasAnyTargeting = hasGeoTargeting || hasDeviceTargeting || hasValidABTest;
+
+    const trimmedUrl = (linkData.originalUrl || '').trim();
+    
+    console.log('📋 Checking Original URL:', {
+      hasValidABTest,
+      hasGeoTargeting,
+      hasDeviceTargeting,
+      hasAnyTargeting,
+      originalUrl: trimmedUrl,
+      isEmpty: !trimmedUrl
+    });
+
+    // ✅ FLEXIBLE LOGIC (Solution 3):
+    // - If NO targeting → Original URL REQUIRED
+    // - If targeting exists → Original URL OPTIONAL (recommended as fallback)
+
+    if (!trimmedUrl && !hasAnyTargeting) {
+      newErrors.originalUrl = 'Original URL is required (or configure targeting rules)';
+      console.log('❌ Original URL Error: Required when no targeting');
+    } else if (trimmedUrl) {
+      try {
+        const url = new URL(trimmedUrl);
+        if (!['http:', 'https:'].includes(url.protocol)) {
+          newErrors.originalUrl = 'URL must start with http:// or https://';
+          console.log('❌ Original URL Error: Invalid protocol');
         }
+      } catch {
+        newErrors.originalUrl = 'Invalid URL format. Example: https://example.com';
+        console.log('❌ Original URL Error: Invalid format');
       }
-    } else {
-      const trimmedUrl = (linkData.originalUrl || '').trim();
-      if (trimmedUrl) {
-        try {
-          const url = new URL(trimmedUrl);
-          if (!['http:', 'https:'].includes(url.protocol)) {
-            newErrors.originalUrl = 'URL must start with http:// or https://';
-          }
-        } catch {
-          newErrors.originalUrl = 'Invalid URL format';
-        }
-      }
+    }
+
+    // ⚠️ Log warning (not error) if targeting exists but no URL
+    if (!trimmedUrl && hasAnyTargeting) {
+      console.log('⚠️ Warning: Targeting configured without fallback URL');
+      // This is allowed but not recommended
     }
 
     // Custom alias validation
@@ -211,16 +232,22 @@ const validateForm = () => {
       const alias = linkData.customAlias.trim();
       if (!/^[a-zA-Z0-9-_]{3,50}$/.test(alias)) {
         newErrors.customAlias = 'Use 3-50 alphanumeric characters, hyphens, or underscores';
+        console.log('❌ Custom Alias Error');
       }
     }
   }
 
   // ========================================
-  // ✅ A/B Testing validation - IMPROVED
+  // ✅ A/B Testing validation
   // ========================================
   if (linkData.abTest?.enabled) {
+    console.log('📋 Checking A/B Test:', {
+      variantsCount: linkData.abTest.variants?.length || 0
+    });
+
     if (!linkData.abTest.variants || linkData.abTest.variants.length < 2) {
       newErrors.abTest = 'A/B testing requires at least 2 variants';
+      console.log('❌ A/B Test Error: Need 2+ variants');
     } else {
       const invalidVariants = linkData.abTest.variants.filter(v => {
         const hasName = v.name && v.name.trim().length > 0;
@@ -230,6 +257,7 @@ const validateForm = () => {
       
       if (invalidVariants.length > 0) {
         newErrors.abTest = 'All variants must have a name and URL';
+        console.log('❌ A/B Test Error: Incomplete variants');
       } else {
         const badUrls = linkData.abTest.variants.filter(v => {
           try {
@@ -242,6 +270,7 @@ const validateForm = () => {
         
         if (badUrls.length > 0) {
           newErrors.abTest = 'All variant URLs must be valid (start with http:// or https://)';
+          console.log('❌ A/B Test Error: Invalid URLs');
         }
       }
 
@@ -253,38 +282,51 @@ const validateForm = () => {
 
         if (totalWeight === 0) {
           newErrors.abTest = 'At least one variant must have weight > 0';
+          console.log('❌ A/B Test Error: Zero weight');
         }
       }
     }
   }
 
   // ========================================
-  // ✅ Geotargeting validation - COMPLETELY FIXED
+  // ✅ Geotargeting validation - FIXED
   // ========================================
   if (linkData.geoRules && linkData.geoRules.length > 0) {
-    // ✅ Filter: فقط القواعد اللي فيها بيانات فعلية
+    console.log('📋 Checking Geo Rules:', {
+      totalRules: linkData.geoRules.length,
+      rules: linkData.geoRules.map((r, i) => ({
+        index: i,
+        countriesCount: r.countries?.length || 0,
+        hasUrl: !!(r.targetUrl && r.targetUrl.trim())
+      }))
+    });
+
     const rulesWithData = linkData.geoRules.filter(r => {
       const hasCountries = r.countries && r.countries.length > 0;
       const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
-      // ✅ القاعدة فيها بيانات إذا كان فيها countries أو url
       return hasCountries || hasUrl;
     });
     
-    // ✅ فقط نتحقق إذا في قواعد فيها بيانات
+    console.log('📋 Rules with data:', rulesWithData.length);
+
     if (rulesWithData.length > 0) {
-      // ✅ تحقق: كل قاعدة لازم يكون فيها countries و targetUrl معاً
       const incompleteRules = rulesWithData.filter(r => {
         const hasCountries = r.countries && r.countries.length > 0;
         const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
-        // ✅ القاعدة ناقصة إذا كان فيها واحد بس من الاثنين
         return !hasCountries || !hasUrl;
       });
       
       if (incompleteRules.length > 0) {
-        // ✅ رسالة واضحة توضح المشكلة
         newErrors.geoRules = 'Each geo rule must have BOTH countries AND target URL. Please fill both fields or remove the rule.';
+        console.log('❌ Geo Rules Error: Incomplete rules', {
+          incompleteCount: incompleteRules.length,
+          details: incompleteRules.map((r, i) => ({
+            index: i,
+            hasCountries: !!(r.countries && r.countries.length > 0),
+            hasUrl: !!(r.targetUrl && r.targetUrl.trim())
+          }))
+        });
       } else {
-        // ✅ تحقق من صحة الـ URLs
         const badGeoUrls = rulesWithData.filter(r => {
           try {
             const url = new URL(r.targetUrl.trim());
@@ -296,13 +338,14 @@ const validateForm = () => {
         
         if (badGeoUrls.length > 0) {
           newErrors.geoRules = 'All geo rule URLs must be valid and start with http:// or https://';
+          console.log('❌ Geo Rules Error: Invalid URLs');
         }
       }
     }
   }
 
   // ========================================
-  // ✅ Device targeting validation - FIXED
+  // ✅ Device targeting validation
   // ========================================
   if (linkData.deviceRules) {
     const deviceUrls = [
@@ -310,6 +353,10 @@ const validateForm = () => {
       { key: 'desktop', url: linkData.deviceRules.desktop },
       { key: 'tablet', url: linkData.deviceRules.tablet }
     ].filter(d => d.url && d.url.trim().length > 0);
+
+    console.log('📋 Checking Device Rules:', {
+      urlsProvided: deviceUrls.length
+    });
 
     if (deviceUrls.length > 0) {
       const badDeviceUrls = deviceUrls.filter(d => {
@@ -323,22 +370,30 @@ const validateForm = () => {
       
       if (badDeviceUrls.length > 0) {
         newErrors.deviceRules = 'All device URLs must be valid (start with http:// or https://)';
+        console.log('❌ Device Rules Error: Invalid URLs');
       }
     }
   }
 
   // ========================================
-  // ✅ Schedule validation - FIXED
+  // ✅ Schedule validation
   // ========================================
   if (linkData.schedule?.enabled) {
+    console.log('📋 Checking Schedule:', {
+      hasStartDate: !!linkData.schedule.startDate,
+      hasEndDate: !!linkData.schedule.endDate
+    });
+
     if (!linkData.schedule.startDate || !linkData.schedule.endDate) {
       newErrors.schedule = 'Start and end dates are required when scheduling is enabled';
+      console.log('❌ Schedule Error: Missing dates');
     } else {
       const start = new Date(linkData.schedule.startDate);
       const end = new Date(linkData.schedule.endDate);
       
       if (start >= end) {
         newErrors.schedule = 'End date must be after start date';
+        console.log('❌ Schedule Error: Invalid date range');
       }
 
       if (linkData.schedule.redirectAfterExpiry && linkData.schedule.redirectAfterExpiry.trim()) {
@@ -346,19 +401,24 @@ const validateForm = () => {
           const url = new URL(linkData.schedule.redirectAfterExpiry.trim());
           if (!['http:', 'https:'].includes(url.protocol)) {
             newErrors.schedule = 'Redirect URL must be valid';
+            console.log('❌ Schedule Error: Invalid redirect URL');
           }
         } catch {
           newErrors.schedule = 'Redirect URL must be valid';
+          console.log('❌ Schedule Error: Invalid redirect URL format');
         }
       }
     }
   }
 
   // ========================================
-  // ✅ Pixels validation - FIXED
+  // ✅ Pixels validation
   // ========================================
   if (linkData.pixels && linkData.pixels.length > 0) {
-    // ✅ فقط نتحقق من الـ pixels اللي فيها بيانات
+    console.log('📋 Checking Pixels:', {
+      totalPixels: linkData.pixels.length
+    });
+
     const pixelsWithData = linkData.pixels.filter(p => 
       (p.platform && p.platform.trim()) || 
       (p.pixelId && p.pixelId.trim())
@@ -373,32 +433,23 @@ const validateForm = () => {
       
       if (incompletePixels.length > 0) {
         newErrors.pixels = 'All pixels must have both platform and pixel ID';
+        console.log('❌ Pixels Error: Incomplete pixels');
       }
     }
   }
 
   // ========================================
-  // ✅ Debug Logging
+  // ✅ Final Summary
   // ========================================
-  console.log('🔍 Validation Result:', {
-    hasErrors: Object.keys(newErrors).length > 0,
-    errors: newErrors,
-    linkData: {
-      originalUrl: linkData.originalUrl,
-      geoRules: linkData.geoRules?.length || 0,
-      deviceRules: !!linkData.deviceRules,
-      schedule: linkData.schedule?.enabled || false,
-      pixels: linkData.pixels?.length || 0
-    }
-  });
+  console.log('❌ Validation Errors Found:', newErrors);
+  console.log('🔍 ===== VALIDATION END =====');
+  console.log('✅ Validation Result:', Object.keys(newErrors).length === 0 ? 'PASSED' : 'FAILED');
+  console.log('');
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
 
   // ========================================
   // ✅ FIXED SUBMIT HANDLER

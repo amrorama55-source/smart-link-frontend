@@ -14,6 +14,20 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
     domain: `dom_${Math.random().toString(36).substring(7)}`
   });
 
+  // ✅ Check if targeting is being used (for Smart UI)
+  const hasGeoTargeting = linkData.geoRules && linkData.geoRules.some(r => 
+    r.countries?.length > 0 && r.targetUrl?.trim()
+  );
+  const hasDeviceTargeting = linkData.deviceRules && (
+    linkData.deviceRules.mobile?.trim() ||
+    linkData.deviceRules.desktop?.trim() ||
+    linkData.deviceRules.tablet?.trim()
+  );
+  const hasABTest = linkData.abTest?.enabled && 
+                    linkData.abTest.variants?.length >= 2;
+  
+  const hasAnyTargeting = hasGeoTargeting || hasDeviceTargeting || hasABTest;
+
   // ✅ Detect autofill
   useEffect(() => {
     if (!passwordTouched && passwordInputRef.current) {
@@ -57,23 +71,63 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
   return (
     <div className="space-y-4">
       
-      {/* Original URL */}
+      {/* ======================================== */}
+      {/* ORIGINAL URL - SMART UI (Solution 3) */}
+      {/* ======================================== */}
       {!editingLink && (
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Original URL *
+            {hasAnyTargeting ? (
+              <span className="flex items-center gap-2">
+                🔗 Fallback URL
+                <span className="text-xs text-orange-600 dark:text-orange-400 font-normal px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 rounded">
+                  Recommended
+                </span>
+              </span>
+            ) : (
+              <>Original URL *</>
+            )}
           </label>
+          
           <input
             type="url"
             value={linkData.originalUrl}
             onChange={(e) => setLinkData({...linkData, originalUrl: e.target.value})}
-            placeholder="https://example.com/your-long-url"
+            placeholder={
+              hasAnyTargeting 
+                ? "https://example.com/default (users go here if no targeting rule matches)"
+                : "https://example.com/your-long-url"
+            }
             autoComplete="off"
             className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:border-gray-600 dark:text-white ${
               errors.originalUrl ? 'border-red-500' : 'border-gray-300'
             }`}
-            required
+            required={!hasAnyTargeting}
           />
+          
+          {/* ✅ Smart Helper Text - Show only when targeting is enabled */}
+          {!errors.originalUrl && hasAnyTargeting && !linkData.originalUrl?.trim() && (
+            <div className="mt-2 p-3 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800/30 rounded-lg">
+              <p className="text-sm text-orange-700 dark:text-orange-400 flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>
+                  <strong>Tip:</strong> Add a fallback URL for visitors who don't match your targeting rules.
+                  Without it, unmatched users will see an error.
+                </span>
+              </p>
+            </div>
+          )}
+          
+          {/* ✅ Success Message - Show when fallback URL is set */}
+          {hasAnyTargeting && linkData.originalUrl?.trim() && (
+            <div className="mt-2 p-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/30 rounded-lg">
+              <p className="text-xs text-green-700 dark:text-green-400 flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5" />
+                Smart targeting enabled! This URL will be used as fallback.
+              </p>
+            </div>
+          )}
+          
           {errors.originalUrl && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
               <AlertCircle className="w-4 h-4" />
@@ -81,7 +135,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
             </p>
           )}
           
-          {linkData.originalUrl && (
+          {linkData.originalUrl && !hasAnyTargeting && (
             <div className="mt-2 flex items-center gap-2 text-sm">
               <Shield className="w-4 h-4 text-green-600 dark:text-green-400" />
               <span className="text-gray-600 dark:text-gray-400">
@@ -209,7 +263,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         />
       </div>
 
-      {/* Custom Domain - FIXED: Prevent email autofill */}
+      {/* Custom Domain */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           Custom Domain (Optional)
@@ -241,14 +295,14 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         )}
       </div>
 
-      {/* Password Protection - ULTIMATE ANTI-AUTOCOMPLETE */}
+      {/* Password Protection */}
       <div>
         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
           <Lock className="w-4 h-4" />
           Password Protection (Optional)
         </label>
         
-        {/* ⚠️ ALWAYS VISIBLE WARNING */}
+        {/* Warning */}
         <div className="mb-3 p-4 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border-2 border-red-300 dark:border-red-700 rounded-lg">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
@@ -269,7 +323,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           </div>
         </div>
 
-        {/* ⚠️ AUTOFILL WARNING */}
+        {/* Autofill Warning */}
         {passwordWarning && (
           <div className="mb-3 p-3 bg-yellow-100 dark:bg-yellow-900/30 border-2 border-yellow-500 dark:border-yellow-600 rounded-lg animate-pulse">
             <div className="flex items-start gap-2">
@@ -293,7 +347,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           </div>
         )}
 
-        {/* Hidden honeypot fields to confuse browsers */}
+        {/* Honeypot fields */}
         <div style={{position: 'absolute', left: '-9999px', width: '1px', height: '1px', overflow: 'hidden'}}>
           <input type="email" tabIndex="-1" autoComplete="email" />
           <input type="password" tabIndex="-1" autoComplete="current-password" />

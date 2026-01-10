@@ -7,7 +7,7 @@ export default function TrackingTab({
   updatePixel,
   errors 
 }) {
-  // ✅ CRITICAL FIX: Handle undefined linkData
+  // ✅ CRITICAL FIX: Handle undefined linkData FIRST
   if (!linkData) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -17,6 +17,9 @@ export default function TrackingTab({
       </div>
     );
   }
+
+  // ✅ SECOND CHECK: Ensure pixels array exists
+  const pixels = linkData.pixels || [];
 
   return (
     <div className="space-y-6">
@@ -49,7 +52,7 @@ export default function TrackingTab({
 
       {/* Pixels List */}
       <div className="space-y-4">
-        {(linkData.pixels || []).map((pixel, idx) => (
+        {pixels.map((pixel, idx) => (
           <div
             key={idx}
             className="p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border-2 border-gray-200 dark:border-gray-600"
@@ -139,7 +142,7 @@ export default function TrackingTab({
           </div>
         ))}
 
-        {(!linkData.pixels || linkData.pixels.length === 0) && (
+        {(!pixels || pixels.length === 0) && (
           <div className="text-center py-12 bg-gray-50 dark:bg-gray-700/30 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
             <TrendingUp className="w-12 h-12 text-gray-400 dark:text-gray-500 mx-auto mb-3" />
             <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">
