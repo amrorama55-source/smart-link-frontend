@@ -131,7 +131,7 @@ const translations = {
 export default function Landing() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'ar');
+  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'en');
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
