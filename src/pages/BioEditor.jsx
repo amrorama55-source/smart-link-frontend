@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
-import { 
-  Plus, Trash2, Eye, Save, Check, X, Loader, 
-  Link2, Upload, GripVertical, ExternalLink,
-  BarChart3, Copy, CheckCircle
+import { Reorder, AnimatePresence } from 'framer-motion';
+import {
+  Plus, Trash2, Eye, Save, Check, X, Loader,
+  Link2, GripVertical, ExternalLink, Copy, CheckCircle, Image, Upload
 } from 'lucide-react';
+import BioPagePreview from './BioPagePreview';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
@@ -22,30 +23,20 @@ api.interceptors.request.use((config) => {
 });
 
 const themes = [
-  { id: 'default', name: 'Default', preview: 'bg-gradient-to-br from-gray-50 to-gray-100' },
-  { id: 'dark', name: 'Dark', preview: 'bg-gradient-to-br from-gray-900 to-gray-800' },
-  { id: 'gradient', name: 'Gradient', preview: 'bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600' },
-  { id: 'minimal', name: 'Minimal', preview: 'bg-white' },
-  { id: 'neon', name: 'Neon', preview: 'bg-black' },
-  { id: 'ocean', name: 'Ocean', preview: 'bg-gradient-to-br from-cyan-500 to-blue-600' },
-  { id: 'sunset', name: 'Sunset', preview: 'bg-gradient-to-br from-orange-500 to-pink-600' },
-  { id: 'forest', name: 'Forest', preview: 'bg-gradient-to-br from-green-600 to-teal-600' }
-];
-
-const socialPlatforms = [
-  { id: 'twitter', name: 'Twitter', icon: '𝕏', placeholder: 'https://twitter.com/username' },
-  { id: 'instagram', name: 'Instagram', icon: '📷', placeholder: 'https://instagram.com/username' },
-  { id: 'linkedin', name: 'LinkedIn', icon: '💼', placeholder: 'https://linkedin.com/in/username' },
-  { id: 'github', name: 'GitHub', icon: '💻', placeholder: 'https://github.com/username' },
-  { id: 'youtube', name: 'YouTube', icon: '📹', placeholder: 'https://youtube.com/@username' },
-  { id: 'tiktok', name: 'TikTok', icon: '🎵', placeholder: 'https://tiktok.com/@username' }
+  { id: 'default', name: 'Gravatar Light', preview: 'bg-[#f3f4f6]' },
+  { id: 'dark', name: 'Dark Mode', preview: 'bg-[#1e1e1e]' },
+  { id: 'blue', name: 'Soft Blue', preview: 'bg-blue-50' },
+  { id: 'gradient', name: 'Gradient', preview: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500' },
+  { id: 'midnight', name: 'Midnight', preview: 'bg-slate-900' },
 ];
 
 export default function BioEditor() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const fileInputRef = useRef(null);
+  const [showMobilePreview, setShowMobilePreview] = useState(false); // Moved up
+
   const [bioData, setBioData] = useState({
     username: '',
     displayName: '',
@@ -75,14 +66,33 @@ export default function BioEditor() {
         avatar: data.bioPage.avatar || '',
         theme: data.bioPage.theme || 'default',
         socialLinks: data.bioPage.socialLinks || [],
-        customLinks: data.bioPage.customLinks || [],
+        customLinks: (data.bioPage.customLinks || []).map(link => ({
+          ...link,
+          id: link._id || Math.random().toString(36).substr(2, 9)
+        })),
         isPublic: data.bioPage.isPublic !== undefined ? data.bioPage.isPublic : true
       });
     } catch (error) {
-      console.error('Error loading bio settings:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB Limit
+      alert('Image too large (Max 5MB)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setBioData(prev => ({ ...prev, avatar: reader.result })); // Save Base64
+    };
+    reader.readAsDataURL(file);
   };
 
   const checkUsername = async (username) => {
@@ -91,12 +101,11 @@ export default function BioEditor() {
       setCheckingUsername(false);
       return;
     }
-
     try {
       const { data } = await api.get(`/api/bio/check-username/${username}`);
       setUsernameAvailable(data.available);
     } catch (error) {
-      console.error('Error checking username:', error);
+      console.error(error);
     } finally {
       setCheckingUsername(false);
     }
@@ -107,31 +116,24 @@ export default function BioEditor() {
     setBioData({ ...bioData, username: cleanValue });
     setCheckingUsername(true);
     setUsernameAvailable(null);
-
     if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    debounceRef.current = setTimeout(() => {
-      checkUsername(cleanValue);
-    }, 500);
+    debounceRef.current = setTimeout(() => { checkUsername(cleanValue); }, 500);
   };
 
   const handleSave = async () => {
-    if (!bioData.username || bioData.username.length < 3) {
-      alert('Username must be at least 3 characters');
-      return;
-    }
-
-    if (usernameAvailable === false) {
-      alert('Username is not available');
-      return;
-    }
+    if (!bioData.username || bioData.username.length < 3) return alert('Username too short');
+    if (usernameAvailable === false) return alert('Username taken');
 
     setSaving(true);
     try {
-      await api.put('/api/bio/settings', bioData);
-      alert('Bio page saved successfully! 🎉');
+      const dataToSave = {
+        ...bioData,
+        customLinks: bioData.customLinks.map((link, index) => ({ ...link, order: index }))
+      };
+      await api.put('/api/bio/settings', dataToSave);
+      alert('Profile updated! 🚀');
     } catch (error) {
-      alert(error.response?.data?.error || 'Failed to save');
+      alert('Save failed');
     } finally {
       setSaving(false);
     }
@@ -142,22 +144,13 @@ export default function BioEditor() {
       ...bioData,
       customLinks: [
         ...bioData.customLinks,
-        { 
-          title: '', 
-          url: '', 
-          icon: '🔗', 
-          order: bioData.customLinks.length, 
-          isActive: true 
-        }
+        { title: '', url: '', icon: '🔗', order: bioData.customLinks.length, isActive: true, id: Math.random().toString(36).substr(2, 9) }
       ]
     });
   };
 
   const removeCustomLink = (index) => {
-    setBioData({
-      ...bioData,
-      customLinks: bioData.customLinks.filter((_, i) => i !== index)
-    });
+    setBioData({ ...bioData, customLinks: bioData.customLinks.filter((_, i) => i !== index) });
   };
 
   const updateCustomLink = (index, field, value) => {
@@ -166,504 +159,182 @@ export default function BioEditor() {
     setBioData({ ...bioData, customLinks: updated });
   };
 
-  const addSocialLink = (platform) => {
-    const exists = bioData.socialLinks.find(s => s.platform === platform.id);
-    if (exists) return;
-
-    setBioData({
-      ...bioData,
-      socialLinks: [
-        ...bioData.socialLinks,
-        { platform: platform.id, url: '', icon: platform.icon }
-      ]
-    });
+  const handleReorder = (newOrder) => {
+    setBioData({ ...bioData, customLinks: newOrder });
   };
 
-  const removeSocialLink = (platform) => {
-    setBioData({
-      ...bioData,
-      socialLinks: bioData.socialLinks.filter(s => s.platform !== platform)
-    });
-  };
-
-  const updateSocialLink = (platform, url) => {
-    const updated = bioData.socialLinks.map(s =>
-      s.platform === platform ? { ...s, url } : s
-    );
-    setBioData({ ...bioData, socialLinks: updated });
-  };
-
-  const copyBioLink = () => {
-    const link = `${window.location.origin}/@${bioData.username}`;
-    navigator.clipboard.writeText(link);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handlePreview = () => {
-    if (!bioData.username) {
-      alert('Please set a username first');
-      return;
-    }
-    window.open(`/@${bioData.username}`, '_blank');
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        <Navbar />
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-center">
-            <Loader className="w-12 h-12 text-blue-600 dark:text-blue-400 animate-spin mx-auto mb-4" />
-            <p className="text-gray-600 dark:text-gray-400">Loading your bio...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <div className="h-screen flex items-center justify-center"><Loader className="animate-spin text-blue-600" /></div>;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Navbar />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        
-        {/* Header */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-4">
-            <div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                Link in Bio Editor
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400">
-                Create your personal bio page like Linktree
-              </p>
-            </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profile Editor</h1>
 
-            <div className="flex flex-col sm:flex-row gap-3">
-              <button
-                onClick={handlePreview}
-                disabled={!bioData.username}
-                className="px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm hover:shadow"
-              >
-                <Eye className="w-4 h-4" />
-                <span>Preview</span>
-              </button>
-              
-              <button
-                onClick={copyBioLink}
-                disabled={!bioData.username}
-                className="px-4 py-2 border-2 border-blue-600 dark:border-blue-500 rounded-xl font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-sm hover:shadow"
-              >
-                {copied ? (
-                  <>
-                    <CheckCircle className="w-4 h-4" />
-                    <span>Copied!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4" />
-                    <span>Copy Link</span>
-                  </>
-                )}
-              </button>
-            </div>
+          <div className="flex gap-3">
+            {/* Mobile Preview Toggle */}
+            <button
+              onClick={() => setShowMobilePreview(true)}
+              className="lg:hidden px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
+            >
+              <Eye className="w-4 h-4" />
+              Preview
+            </button>
+
+            <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg hover:shadow-blue-500/30 transition-all">
+              {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+              Save
+            </button>
           </div>
-
-          {/* Bio Link Display */}
-          {bioData.username && (
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-xl">
-              <div className="flex items-center gap-3">
-                <Link2 className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Your Bio Page URL:</p>
-                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400 truncate">
-                    {window.location.origin}/@{bioData.username}
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-          
-          {/* Editor Section */}
-          <div className="space-y-6">
-            
-            {/* Basic Information */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
-                <span>📝</span> Basic Information
-              </h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-              {/* Username */}
-              <div className="mb-5">
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                  Username * 
-                  <span className="text-gray-400 dark:text-gray-500 text-xs ml-2">
-                    (letters, numbers, underscore only)
-                  </span>
-                </label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">
-                    @
-                  </span>
-                  <input
-                    type="text"
-                    value={bioData.username}
-                    onChange={(e) => handleUsernameChange(e.target.value)}
-                    className="w-full pl-9 pr-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-                    placeholder="yourusername"
-                  />
+          {/* EDITOR COLUMN */}
+          <div className="space-y-6">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg">Identity</h2>
+              <div className="space-y-5">
+
+                {/* Avatar Upload */}
+                <div>
+                  <label className="block text-sm font-medium mb-2 dark:text-gray-300">Profile Picture</label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                      {bioData.avatar ? (
+                        <img src={bioData.avatar} className="w-full h-full object-cover" />
+                      ) : (
+                        <Upload className="w-6 h-6 text-gray-400" />
+                      )}
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">Change</div>
+                    </div>
+                    <div className="flex-1">
+                      <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                      >
+                        Upload Image
+                      </button>
+                      <p className="text-xs text-gray-500 mt-2">Max size 5MB. JPG, PNG, GIF.</p>
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleImageUpload}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                    </div>
+                  </div>
                 </div>
-                {bioData.username && (
-                  <div className="mt-2">
-                    {checkingUsername && (
-                      <div className="flex items-center gap-2 text-sm text-gray-500">
-                        <Loader className="w-4 h-4 animate-spin" />
-                        <span>Checking availability...</span>
-                      </div>
-                    )}
-                    {!checkingUsername && usernameAvailable === true && (
-                      <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
-                        <Check className="w-4 h-4" />
-                        <span>✨ Username is available!</span>
-                      </div>
-                    )}
-                    {!checkingUsername && usernameAvailable === false && (
-                      <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
-                        <X className="w-4 h-4" />
-                        <span>Username is already taken</span>
-                      </div>
+
+                {/* Inputs */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1 dark:text-gray-300">Display Name</label>
+                    <input type="text" value={bioData.displayName} onChange={e => setBioData({ ...bioData, displayName: e.target.value })} className="w-full p-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Your Name" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1 dark:text-gray-300">Username</label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">@</span>
+                      <input type="text" value={bioData.username} onChange={e => handleUsernameChange(e.target.value)} className="w-full pl-7 p-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="username" />
+                    </div>
+                    {bioData.username && (
+                      <p className={`text-[10px] mt-1 font-bold ${usernameAvailable ? 'text-green-500' : 'text-red-500'}`}>
+                        {usernameAvailable ? '✓ Available' : '✗ Taken'}
+                      </p>
                     )}
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* Display Name */}
-              <div className="mb-5">
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                  Display Name
-                </label>
-                <input
-                  type="text"
-                  value={bioData.displayName}
-                  onChange={(e) => setBioData({ ...bioData, displayName: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-                  placeholder="Your Name"
-                />
-              </div>
-
-              {/* Bio */}
-              <div className="mb-5">
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                  Bio
-                </label>
-                <textarea
-                  value={bioData.bio}
-                  onChange={(e) => setBioData({ ...bioData, bio: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 resize-none transition-all"
-                  rows={4}
-                  placeholder="Tell people about yourself..."
-                  maxLength={200}
-                />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-right">
-                  {bioData.bio.length}/200
-                </p>
-              </div>
-
-              {/* Avatar URL */}
-              <div>
-                <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                  Avatar URL
-                </label>
-                <input
-                  type="url"
-                  value={bioData.avatar}
-                  onChange={(e) => setBioData({ ...bioData, avatar: e.target.value })}
-                  className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-all"
-                  placeholder="https://example.com/avatar.jpg"
-                />
+                <div>
+                  <label className="block text-sm font-medium mb-1 dark:text-gray-300">Bio</label>
+                  <textarea value={bioData.bio} onChange={e => setBioData({ ...bioData, bio: e.target.value })} className="w-full p-3 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500" rows={3} placeholder="Tell the world about yourself..." />
+                </div>
               </div>
             </div>
 
-            {/* Theme Selector */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
-                <span>🎨</span> Theme
-              </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {themes.map((theme) => (
-                  <button
-                    key={theme.id}
-                    onClick={() => setBioData({ ...bioData, theme: theme.id })}
-                    className={`p-4 rounded-xl border-2 transition-all ${
-                      bioData.theme === theme.id
-                        ? 'border-blue-500 dark:border-blue-400 ring-4 ring-blue-200 dark:ring-blue-900/50 shadow-lg'
-                        : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md'
-                    }`}
-                  >
-                    <div className={`w-full h-16 rounded-lg ${theme.preview} shadow-inner`}></div>
-                    <p className="text-xs font-medium mt-2 text-center text-gray-700 dark:text-gray-300">
-                      {theme.name}
-                    </p>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="font-bold text-gray-900 dark:text-white text-lg">Verified Links</h2>
+                <button onClick={addCustomLink} className="text-sm px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-bold hover:bg-blue-200 transition-colors">+ Add New</button>
+              </div>
+              <Reorder.Group axis="y" values={bioData.customLinks} onReorder={handleReorder} className="space-y-3">
+                {bioData.customLinks.map((link, i) => (
+                  <Reorder.Item key={link.id} value={link}>
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 group hover:border-blue-300 transition-colors">
+                      <div className="mt-2 text-gray-400 cursor-grab active:cursor-grabbing"><GripVertical className="w-5 h-5" /></div>
+                      <div className="flex-1 space-y-2">
+                        <div className="flex gap-2">
+                          <input value={link.icon} onChange={e => updateCustomLink(i, 'icon', e.target.value)} className="w-12 text-center p-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl" placeholder="🔗" />
+                          <input value={link.title} onChange={e => updateCustomLink(i, 'title', e.target.value)} className="flex-1 p-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-medium" placeholder="Link Title" />
+                        </div>
+                        <input value={link.url} onChange={e => updateCustomLink(i, 'url', e.target.value)} className="w-full p-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-sm" placeholder="https://" />
+                      </div>
+                      <button onClick={() => removeCustomLink(i)} className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-5 h-5" /></button>
+                    </div>
+                  </Reorder.Item>
+                ))}
+              </Reorder.Group>
+            </div>
+
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg">Appearance</h2>
+              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
+                {themes.map(t => (
+                  <button key={t.id} onClick={() => setBioData({ ...bioData, theme: t.id })} className={`group relative p-1 rounded-xl border-2 transition-all ${bioData.theme === t.id ? 'border-blue-500 scale-105' : 'border-transparent hover:border-gray-200'}`}>
+                    <div className={`h-12 rounded-lg ${t.preview} shadow-sm group-hover:shadow-md transition-shadow`}></div>
+                    <p className="text-[10px] text-center mt-1.5 font-medium dark:text-gray-400">{t.name}</p>
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Social Links */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <h2 className="text-xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
-                <span>🌐</span> Social Links
-              </h2>
-              
-              <div className="space-y-3 mb-4">
-                {socialPlatforms.map((platform) => {
-                  const existing = bioData.socialLinks.find(s => s.platform === platform.id);
-                  
-                  return (
-                    <div key={platform.id} className="flex items-center gap-3">
-                      <button
-                        onClick={() => existing ? removeSocialLink(platform.id) : addSocialLink(platform)}
-                        className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl transition-all ${
-                          existing
-                            ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-600'
-                        }`}
-                      >
-                        {platform.icon}
-                      </button>
-                      
-                      {existing ? (
-                        <input
-                          type="url"
-                          value={existing.url}
-                          onChange={(e) => updateSocialLink(platform.id, e.target.value)}
-                          className="flex-1 px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-                          placeholder={platform.placeholder}
-                        />
-                      ) : (
-                        <span className="flex-1 text-sm text-gray-500 dark:text-gray-400">
-                          Add {platform.name}
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Custom Links */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <span>🔗</span> Custom Links
-                </h2>
-                <button 
-                  onClick={addCustomLink} 
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all flex items-center gap-2 shadow-sm hover:shadow-md"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span className="hidden sm:inline">Add Link</span>
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                {bioData.customLinks.length === 0 ? (
-                  <div className="text-center py-12 px-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl">
-                    <Link2 className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-500 dark:text-gray-400 font-medium mb-2">
-                      No links yet
-                    </p>
-                    <p className="text-sm text-gray-400 dark:text-gray-500">
-                      Add your first custom link!
-                    </p>
-                  </div>
-                ) : (
-                  bioData.customLinks.map((link, index) => (
-                    <div 
-                      key={index} 
-                      className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-700 transition-all"
-                    >
-                      <div className="flex items-start gap-3">
-                        <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 cursor-grab active:cursor-grabbing">
-                          <GripVertical className="w-5 h-5" />
-                        </button>
-                        
-                        <div className="flex-1 space-y-3">
-                          <input
-                            type="text"
-                            value={link.icon || ''}
-                            onChange={(e) => updateCustomLink(index, 'icon', e.target.value)}
-                            className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-center text-2xl"
-                            placeholder="🔗"
-                            maxLength={2}
-                          />
-                          <input
-                            type="text"
-                            value={link.title}
-                            onChange={(e) => updateCustomLink(index, 'title', e.target.value)}
-                            className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            placeholder="Link Title"
-                          />
-                          <input
-                            type="url"
-                            value={link.url}
-                            onChange={(e) => updateCustomLink(index, 'url', e.target.value)}
-                            className="w-full px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                            placeholder="https://example.com"
-                          />
-                        </div>
-                        
-                        <button
-                          onClick={() => removeCustomLink(index)}
-                          className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            {/* Save Button */}
-            <button
-              onClick={handleSave}
-              disabled={saving || usernameAvailable === false || !bioData.username}
-              className="w-full px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl font-bold text-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]"
-            >
-              {saving ? (
-                <>
-                  <Loader className="w-5 h-5 animate-spin" />
-                  <span>Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Save className="w-5 h-5" />
-                  <span>Save Bio Page</span>
-                </>
-              )}
-            </button>
           </div>
 
-          {/* Preview Section */}
-          <div className="lg:sticky lg:top-8 h-fit">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <Eye className="w-5 h-5" />
-                  Live Preview
-                </h2>
+          {/* PREVIEW COLUMN (Desktop) */}
+          <div className="hidden lg:block relative">
+            <div className="sticky top-8">
+              <div className="bg-[#121212] rounded-[3.5rem] p-3 border-[10px] border-[#2a2a2a] shadow-2xl relative overflow-hidden max-w-[380px] mx-auto ring-1 ring-black">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-[#2a2a2a] rounded-b-2xl z-20"></div>
+                <div className="h-[780px] w-full bg-white rounded-[2.5rem] overflow-y-auto no-scrollbar relative">
+                  <BioPagePreview previewData={bioData} />
+                </div>
+              </div>
+              <div className="text-center mt-6">
+                <p className="text-gray-500 text-sm font-medium">Live Pixel-Perfect Preview</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* MOBILE PREVIEW MODAL */}
+        <AnimatePresence>
+          {showMobilePreview && (
+            <div className="fixed inset-0 z-50 lg:hidden bg-black/90 backdrop-blur-sm flex flex-col">
+              {/* Header */}
+              <div className="flex justify-between items-center p-4 bg-gray-900 border-b border-gray-800">
+                <h3 className="text-white font-bold">Live Preview</h3>
                 <button
-                  onClick={handlePreview}
-                  disabled={!bioData.username}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50"
-                  title="Open in new tab"
+                  onClick={() => setShowMobilePreview(false)}
+                  className="p-2 bg-gray-800 rounded-full text-white hover:bg-gray-700"
                 >
-                  <ExternalLink className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
 
-              <div
-                className={`rounded-2xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 min-h-[500px] ${
-                  themes.find((t) => t.id === bioData.theme)?.preview || 'bg-white'
-                } shadow-inner`}
-              >
-                <div className="p-8 text-center">
-                  {/* Avatar Preview */}
-                  {bioData.avatar ? (
-                    <img
-                      src={bioData.avatar}
-                      alt="Avatar"
-                      className="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-white/20 shadow-xl"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/96?text=Avatar';
-                      }}
-                    />
-                  ) : (
-                    <div className="w-24 h-24 rounded-full mx-auto mb-4 bg-white/20 backdrop-blur-xl flex items-center justify-center text-3xl border-4 border-white/30">
-                      👤
-                    </div>
-                  )}
-
-                  {/* Name & Username */}
-                  <h3
-                    className={`text-2xl font-bold mb-2 ${
-                      ['dark', 'neon', 'gradient', 'ocean', 'sunset', 'forest'].includes(bioData.theme)
-                        ? 'text-white'
-                        : 'text-gray-900'
-                    }`}
-                  >
-                    {bioData.displayName || 'Your Name'}
-                  </h3>
-                  
-                  {bioData.username && (
-                    <p
-                      className={`text-sm mb-4 font-medium ${
-                        ['dark', 'neon', 'gradient', 'ocean', 'sunset', 'forest'].includes(bioData.theme)
-                          ? 'text-white/60'
-                          : 'text-gray-600'
-                      }`}
-                    >
-                      @{bioData.username}
-                    </p>
-                  )}
-
-                  {/* Bio Preview */}
-                  {bioData.bio && (
-                    <p
-                      className={`text-sm mb-6 max-w-md mx-auto leading-relaxed ${
-                        ['dark', 'neon', 'gradient', 'ocean', 'sunset', 'forest'].includes(bioData.theme)
-                          ? 'text-white/70'
-                          : 'text-gray-700'
-                      }`}
-                    >
-                      {bioData.bio}
-                    </p>
-                  )}
-
-                  {/* Links Preview */}
-                  <div className="space-y-3 max-w-md mx-auto mt-8">
-                    {bioData.customLinks.length === 0 ? (
-                      <p
-                        className={`text-sm py-6 ${
-                          ['dark', 'neon', 'gradient', 'ocean', 'sunset', 'forest'].includes(bioData.theme)
-                            ? 'text-white/40'
-                            : 'text-gray-500'
-                        }`}
-                      >
-                        Your links will appear here
-                      </p>
-                    ) : (
-                      bioData.customLinks.map((link, index) => (
-                        <div
-                          key={index}
-                          className={`px-6 py-4 rounded-xl font-medium transition-all hover:scale-105 cursor-pointer flex items-center justify-center gap-2 ${
-                            ['dark', 'neon'].includes(bioData.theme)
-                              ? 'bg-white/10 backdrop-blur-xl text-white hover:bg-white/20 border border-white/20'
-                              : ['gradient', 'ocean', 'sunset', 'forest'].includes(bioData.theme)
-                              ? 'bg-white/20 text-white backdrop-blur hover:bg-white/30 border border-white/30'
-                              : 'bg-white/80 backdrop-blur text-gray-900 hover:bg-white shadow-md border border-gray-200/50'
-                          }`}
-                        >
-                          {link.icon && <span className="text-lg">{link.icon}</span>}
-                          <span className="text-sm">{link.title || 'Link Title'}</span>
-                        </div>
-                      ))
-                    )}
-                  </div>
+              {/* Preview Content */}
+              <div className="flex-1 overflow-y-auto bg-gray-900 p-4 flex items-center justify-center">
+                <div className="w-full max-w-[380px] h-[90vh] bg-white rounded-[2.5rem] overflow-y-auto no-scrollbar relative border-8 border-gray-800 shadow-2xl">
+                  <BioPagePreview previewData={bioData} />
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        </AnimatePresence>
+
       </div>
     </div>
   );
 }
-
-

@@ -15,13 +15,14 @@ import Dashboard from './pages/Dashboard';
 import Links from './pages/EnhancedLinks';
 import Analytics from './pages/Analytics';
 import BioEditor from './pages/BioEditor';
-import PublicBio from './pages/PublicBio';
+// import PublicBio from './pages/PublicBio'; // Removed
 import Settings from './pages/Settings';
 import BioPage from './pages/BioPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import Profile from './pages/Profile';
 import AuthCallback from './pages/AuthCallback';
+import FAQ from './pages/FAQ';
 // ✅ NEW
 
 // ==========================================
@@ -73,9 +74,9 @@ function AppRoutes() {
       <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/auth/callback" element={<AuthCallback />} />
-      
-   
-      
+
+
+
       {/* Protected Routes */}
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/links" element={<PrivateRoute><Links /></PrivateRoute>} />
@@ -83,12 +84,13 @@ function AppRoutes() {
       <Route path="/bio" element={<PrivateRoute><BioEditor /></PrivateRoute>} />
       <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
       <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-      
+
       {/* Public Bio & Legal Pages */}
-      <Route path="/@:username" element={<PublicBio />} />
+      <Route path="/@:username" element={<BioPage />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
-      
+      <Route path="/faq" element={<FAQ />} />
+
       {/* 404 - Redirect to home */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

@@ -1,176 +1,224 @@
-export default function PrivacyPolicy() {
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Shield, Lock, Eye, Database, Users, Mail } from 'lucide-react';
+
+export default function Privacy() {
   return (
-    <div className="min-h-[100dvh]bg-gray-50 py-12 px-4">
-      <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm p-8 lg:p-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-        <p className="text-gray-600 mb-8">Last updated: December 27, 2024</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:via-gray-900 dark:to-black">
+      {/* Header */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Home
+          </Link>
+        </div>
+      </div>
 
-        <div className="prose prose-lg max-w-none space-y-8">
+      {/* Content */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Title */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl mb-6 shadow-lg">
+            <Shield className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            Privacy Policy
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 text-lg">
+            Last updated: December 27, 2024
+          </p>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+          
           {/* Introduction */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Welcome to Smart Link ("we," "our," or "us"). We respect your privacy and are committed to protecting your personal data. 
-              This privacy policy explains how we collect, use, and protect your information when you use our URL shortening service.
-            </p>
-          </section>
+          <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  We Respect Your Privacy
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                  At Smart Link, we're committed to protecting your personal data. 
+                  This policy explains how we collect, use, and safeguard your information.
+                </p>
+              </div>
+            </div>
+          </div>
 
-          {/* Information We Collect */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Information We Collect</h2>
-            
-            <h3 className="text-xl font-semibold text-gray-800 mb-3">2.1 Information You Provide</h3>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li>Account information (name, email address, password)</li>
-              <li>Links you create and their metadata (titles, descriptions, tags)</li>
-              <li>Bio page content and customizations</li>
-              <li>Payment information (processed securely through third-party providers)</li>
-            </ul>
+          {/* What We Collect */}
+          <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Database className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  What We Collect
+                </h2>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      Information You Provide:
+                    </h3>
+                    <ul className="space-y-1 text-gray-600 dark:text-gray-300">
+                      <li>• Account details (name, email, password)</li>
+                      <li>• Links and bio page content</li>
+                      <li>• Payment information (via secure providers)</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                      Automatically Collected:
+                    </h3>
+                    <ul className="space-y-1 text-gray-600 dark:text-gray-300">
+                      <li>• Click data (device, browser, location)</li>
+                      <li>• Analytics and usage statistics</li>
+                      <li>• Cookies for better experience</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <h3 className="text-xl font-semibold text-gray-800 mb-3 mt-6">2.2 Automatically Collected Information</h3>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li>Click data (IP addresses, device type, browser, operating system)</li>
-              <li>Geographic location (country and city based on IP)</li>
-              <li>Referrer information (where clicks came from)</li>
-              <li>Usage statistics and analytics</li>
-              <li>Cookies and similar tracking technologies</li>
-            </ul>
-          </section>
-
-          {/* How We Use Your Information */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">3. How We Use Your Information</h2>
-            <p className="text-gray-700 mb-3">We use the collected information for:</p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li>Providing and maintaining our service</li>
-              <li>Creating and managing your account</li>
-              <li>Processing your transactions</li>
-              <li>Generating analytics and insights for your links</li>
-              <li>Improving our service and developing new features</li>
-              <li>Sending service-related notifications</li>
-              <li>Preventing fraud and abuse</li>
-              <li>Complying with legal obligations</li>
-            </ul>
-          </section>
-
-          {/* Data Sharing */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Data Sharing and Disclosure</h2>
-            <p className="text-gray-700 mb-3">We do not sell your personal information. We may share your data with:</p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li><strong>Service Providers:</strong> Third-party companies that help us operate our service (hosting, analytics, payment processing)</li>
-              <li><strong>Legal Requirements:</strong> When required by law or to protect our rights</li>
-              <li><strong>Business Transfers:</strong> In case of merger, acquisition, or asset sale</li>
-            </ul>
-            <p className="text-gray-700 mt-4">
-              We ensure all third parties agree to protect your data in accordance with this policy.
-            </p>
-          </section>
+          {/* How We Use It */}
+          <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Eye className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  How We Use Your Data
+                </h2>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li>• Provide and improve our service</li>
+                  <li>• Generate analytics for your links</li>
+                  <li>• Send important notifications</li>
+                  <li>• Prevent fraud and abuse</li>
+                  <li>• Comply with legal requirements</li>
+                </ul>
+              </div>
+            </div>
+          </div>
 
           {/* Data Security */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">5. Data Security</h2>
-            <p className="text-gray-700 leading-relaxed">
-              We implement appropriate technical and organizational measures to protect your personal data, including:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4 mt-3">
-              <li>Encryption of data in transit (HTTPS/SSL)</li>
-              <li>Secure password hashing (bcrypt)</li>
-              <li>Regular security assessments</li>
-              <li>Access controls and authentication</li>
-              <li>Secure cloud infrastructure (Railway, MongoDB Atlas)</li>
-            </ul>
-          </section>
+          <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Lock className="w-6 h-6 text-red-600 dark:text-red-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  We Keep Your Data Safe
+                </h2>
+                <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                  <li>• SSL/HTTPS encryption</li>
+                  <li>• Secure password hashing (bcrypt)</li>
+                  <li>• Regular security audits</li>
+                  <li>• Access controls and authentication</li>
+                </ul>
+                <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <p className="text-sm text-blue-800 dark:text-blue-300 font-semibold">
+                    🔒 We never sell your personal information
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Your Rights */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">6. Your Rights</h2>
-            <p className="text-gray-700 mb-3">You have the right to:</p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li><strong>Access:</strong> Request a copy of your personal data</li>
-              <li><strong>Correction:</strong> Update or correct inaccurate information</li>
-              <li><strong>Deletion:</strong> Request deletion of your account and data</li>
-              <li><strong>Export:</strong> Download your data in a portable format</li>
-              <li><strong>Opt-out:</strong> Unsubscribe from marketing communications</li>
-              <li><strong>Object:</strong> Object to certain types of data processing</li>
-            </ul>
-            <p className="text-gray-700 mt-4">
-              To exercise these rights, please contact us at <a href="mailto:privacy@smart-link.website" className="text-blue-600 hover:underline">privacy@smart-link.website</a>
-            </p>
-          </section>
-
-          {/* Cookies */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Cookies and Tracking</h2>
-            <p className="text-gray-700 leading-relaxed mb-3">
-              We use cookies and similar technologies to:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 ml-4">
-              <li>Keep you logged in</li>
-              <li>Remember your preferences</li>
-              <li>Analyze site traffic and usage</li>
-              <li>Improve user experience</li>
-            </ul>
-            <p className="text-gray-700 mt-4">
-              You can control cookies through your browser settings. Note that disabling cookies may affect service functionality.
-            </p>
-          </section>
-
-          {/* Data Retention */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Data Retention</h2>
-            <p className="text-gray-700 leading-relaxed">
-              We retain your personal data for as long as necessary to provide our services and comply with legal obligations. 
-              When you delete your account, we remove your personal information within 30 days, except where we're required to retain it by law.
-            </p>
-          </section>
-
-          {/* Children's Privacy */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Children's Privacy</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Our service is not intended for users under 13 years of age. We do not knowingly collect personal information from children. 
-              If you believe we have collected information from a child, please contact us immediately.
-            </p>
-          </section>
-
-          {/* International Users */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">10. International Data Transfers</h2>
-            <p className="text-gray-700 leading-relaxed">
-              Your data may be transferred to and processed in countries other than your own. We ensure appropriate safeguards are in place 
-              to protect your data in accordance with this privacy policy.
-            </p>
-          </section>
-
-          {/* Changes */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">11. Changes to This Policy</h2>
-            <p className="text-gray-700 leading-relaxed">
-              We may update this privacy policy from time to time. We will notify you of significant changes by email or through our service. 
-              The "Last updated" date at the top indicates when the policy was last revised.
-            </p>
-          </section>
+          <div className="p-8 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Users className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  Your Rights
+                </h2>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">Access</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Request your data</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">Correction</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Update information</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">Deletion</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Delete your account</p>
+                  </div>
+                  <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <p className="font-semibold text-gray-900 dark:text-white text-sm">Export</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400">Download your data</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Contact */}
-          <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">12. Contact Us</h2>
-            <p className="text-gray-700 leading-relaxed mb-3">
-              If you have questions about this privacy policy or our data practices, please contact us:
-            </p>
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-              <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@smart-link.website" className="text-blue-600 hover:underline">privacy@smart-link.website</a></p>
-              <p className="text-gray-700 mt-2"><strong>Website:</strong> <a href="https://www.smart-link.website" className="text-blue-600 hover:underline">www.smart-link.website</a></p>
+          <div className="p-8 bg-gradient-to-br from-blue-50 to-sky-50 dark:from-gray-800 dark:to-gray-900">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                <Mail className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                  Questions? Contact Us
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">
+                  If you have any questions about this privacy policy or how we handle your data:
+                </p>
+                <div className="space-y-2">
+                  <a 
+                    href="mailto:privacy@smart-link.website" 
+                    className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
+                  >
+                    <Mail className="w-4 h-4" />
+                    smartlinkpro10@gmail.com
+                  </a>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    We'll respond within 48 hours
+                  </p>
+                </div>
+              </div>
             </div>
-          </section>
+          </div>
+
+          {/* Additional Info */}
+          <div className="p-6 bg-gray-50 dark:bg-gray-900/50">
+            <div className="flex flex-wrap gap-4 justify-center text-sm text-gray-600 dark:text-gray-400">
+              <p>🍪 We use cookies for better experience</p>
+              <p>👶 Not for users under 13</p>
+              <p>🌍 GDPR compliant</p>
+              <p>🗑️ 30-day data deletion</p>
+            </div>
+          </div>
+
         </div>
 
-        {/* Back Button */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
-          <a href="/" className="text-blue-600 hover:text-blue-700 font-medium inline-flex items-center">
-            ← Back to Home
-          </a>
+        {/* Back to Home Button */}
+        <div className="mt-8 text-center">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-800 text-white px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all shadow-lg"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            Back to Home
+          </Link>
         </div>
+
       </div>
     </div>
   );

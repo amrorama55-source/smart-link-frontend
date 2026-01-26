@@ -1,6 +1,6 @@
 import { SHORT_URL_BASE } from '../config';
 import ConversionTracking from '../components/ConversionTracking';
-import CustomDomain from '../components/CustomDomain';
+import CustomDomain from './tabs/CustomDomain';
 import {
   Link2, Copy, ExternalLink, QrCode, CheckCircle,
   Edit3, Trash2, Target, Globe2, Calendar, Shield, Zap, TrendingUp

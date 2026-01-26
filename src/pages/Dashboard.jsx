@@ -115,32 +115,32 @@ export default function Dashboard() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-8">
+        {/* Header - Responsive */}
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
             Dashboard
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             Welcome back! Here's your performance overview.
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           {statCards.map((stat, i) => {
             const Icon = stat.icon;
             return (
               <div 
                 key={i} 
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
+                className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700"
               >
-                <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-lg ${colorClasses[stat.color]}`}>
-                    <Icon className="w-6 h-6 text-white" />
+                <div className="flex justify-between items-start mb-3 sm:mb-4">
+                  <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[stat.color]}`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   {stat.trend && (
-                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${
+                    <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${
                       stat.trend === 'up' 
                         ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                         : stat.trend === 'down'
@@ -149,13 +149,15 @@ export default function Dashboard() {
                     }`}>
                       {stat.trend === 'up' && <TrendingUp className="w-3 h-3" />}
                       {stat.trend === 'down' && <TrendingDown className="w-3 h-3" />}
-                      {stat.trend === 'up' ? '+' : stat.trend === 'down' ? '-' : ''}
-                      {stat.trend !== 'stable' && '10%'}
+                      <span className="hidden sm:inline">
+                        {stat.trend === 'up' ? '+' : stat.trend === 'down' ? '-' : ''}
+                        {stat.trend !== 'stable' && '10%'}
+                      </span>
                     </div>
                   )}
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{stat.title}</p>
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{stat.title}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
                   {stat.value.toLocaleString()}
                 </p>
               </div>
@@ -163,25 +165,25 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Quick Stats - Stack on mobile, 3 columns on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
           {/* Unique Visitors */}
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl p-6 text-white shadow-lg">
-            <div className="flex items-center gap-3 mb-2">
-              <Eye className="w-5 h-5" />
-              <span className="text-sm font-medium opacity-90">Unique Visitors</span>
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-medium opacity-90">Unique Visitors</span>
             </div>
-            <p className="text-3xl font-bold">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</p>
             <p className="text-xs opacity-75 mt-1">All time</p>
           </div>
 
           {/* Top Country */}
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-xl p-6 text-white shadow-lg">
-            <div className="flex items-center gap-3 mb-2">
-              <Globe className="w-5 h-5" />
-              <span className="text-sm font-medium opacity-90">Top Country</span>
+          <div className="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-medium opacity-90">Top Country</span>
             </div>
-            <p className="text-2xl font-bold">
+            <p className="text-xl sm:text-2xl font-bold">
               {stats?.topCountries?.[0]?.country || 'N/A'}
             </p>
             <p className="text-xs opacity-75 mt-1">
@@ -190,12 +192,12 @@ export default function Dashboard() {
           </div>
 
           {/* Mobile Traffic */}
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-xl p-6 text-white shadow-lg">
-            <div className="flex items-center gap-3 mb-2">
-              <Smartphone className="w-5 h-5" />
-              <span className="text-sm font-medium opacity-90">Mobile Traffic</span>
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
+            <div className="flex items-center gap-2 sm:gap-3 mb-2">
+              <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="text-xs sm:text-sm font-medium opacity-90">Mobile Traffic</span>
             </div>
-            <p className="text-3xl font-bold">
+            <p className="text-2xl sm:text-3xl font-bold">
               {stats?.averageClicksPerLink?.toFixed(1) || 0}
             </p>
             <p className="text-xs opacity-75 mt-1">Avg clicks per link</p>
@@ -204,20 +206,20 @@ export default function Dashboard() {
 
         {/* Top Performing Links */}
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex justify-between items-center">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                  <BarChart3 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                   Top Performing Links
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
                   Your most clicked links
                 </p>
               </div>
               <button
                 onClick={() => navigate('/links')}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm"
               >
                 View All
                 <ExternalLink className="w-4 h-4" />
@@ -226,25 +228,25 @@ export default function Dashboard() {
           </div>
 
           {stats?.topLinks?.length ? (
-            <div className="p-6">
-              <div className="space-y-4">
+            <div className="p-3 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
                 {stats.topLinks.map((link, index) => (
                   <div
                     key={link.shortCode}
-                    className="group relative p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all duration-300"
+                    className="group relative p-4 sm:p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all duration-300"
                   >
                     {/* Rank Badge */}
-                    <div className="absolute -top-2 -left-2 w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm shadow-lg">
+                    <div className="absolute -top-2 -left-2 w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-lg">
                       #{index + 1}
                     </div>
 
-                    <div className="flex justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-4">
                       <div className="flex-1 min-w-0">
                         {/* Title */}
-                        <h3 className="font-bold text-lg text-gray-900 dark:text-white mb-2 flex items-center gap-2">
-                          {link.title || 'Untitled Link'}
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white mb-2 flex flex-wrap items-center gap-2">
+                          <span className="truncate">{link.title || 'Untitled Link'}</span>
                           {link.abTest?.enabled && (
-                            <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs rounded-full flex items-center gap-1">
+                            <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs rounded-full flex items-center gap-1 flex-shrink-0">
                               <Target className="w-3 h-3" />
                               A/B Test
                             </span>
@@ -252,20 +254,20 @@ export default function Dashboard() {
                         </h3>
 
                         {/* Short URL */}
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
                           <a
                             href={`${SHORT_URL_BASE}/${link.shortCode}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 dark:text-blue-400 text-sm font-medium hover:underline flex items-center gap-1"
+                            className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-medium hover:underline flex items-center gap-1"
                           >
-                            {SHORT_URL_BASE}/{link.shortCode}
-                            <ExternalLink className="w-3 h-3" />
+                            <span className="truncate">{SHORT_URL_BASE}/{link.shortCode}</span>
+                            <ExternalLink className="w-3 h-3 flex-shrink-0" />
                           </a>
 
                           <button
                             onClick={() => copyToClipboard(`${SHORT_URL_BASE}/${link.shortCode}`, link.shortCode)}
-                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition"
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition flex-shrink-0"
                           >
                             {copiedCode === link.shortCode ? (
                               <CheckCircle className="w-4 h-4 text-green-600" />
@@ -281,17 +283,17 @@ export default function Dashboard() {
                         </p>
 
                         {/* Actions */}
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                           <button
                             onClick={() => navigate(`/analytics?link=${link.shortCode}`)}
-                            className="text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium flex items-center gap-1"
+                            className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium flex items-center justify-center sm:justify-start gap-1 py-1.5 sm:py-0"
                           >
                             <BarChart3 className="w-4 h-4" />
                             View Analytics
                           </button>
                           <button
                             onClick={() => navigate('/links')}
-                            className="text-sm text-gray-600 dark:text-gray-400 hover:underline flex items-center gap-1"
+                            className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:underline flex items-center justify-center sm:justify-start gap-1 py-1.5 sm:py-0"
                           >
                             <Zap className="w-4 h-4" />
                             Manage
@@ -300,19 +302,21 @@ export default function Dashboard() {
                       </div>
 
                       {/* Stats */}
-                      <div className="text-right flex flex-col justify-center">
-                        <div className="flex items-center gap-2 mb-1">
-                          <MousePointerClick className="w-5 h-5 text-green-600 dark:text-green-400" />
-                          <p className="text-3xl font-bold text-gray-900 dark:text-white">
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 sm:gap-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-200 dark:border-gray-600">
+                        <div className="flex items-center gap-2 sm:mb-1">
+                          <MousePointerClick className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+                          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
                             {link.totalClicks.toLocaleString()}
                           </p>
                         </div>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">total clicks</p>
-                        {link.clickRate && (
-                          <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-semibold">
-                            {link.clickRate.toFixed(1)}% CTR
-                          </p>
-                        )}
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">total clicks</p>
+                          {link.clickRate && (
+                            <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-semibold">
+                              {link.clickRate.toFixed(1)}% CTR
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -321,21 +325,21 @@ export default function Dashboard() {
             </div>
           ) : (
             /* Empty State */
-            <div className="p-12 text-center">
-              <div className="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Link2 className="w-10 h-10 text-gray-400 dark:text-gray-500" />
+            <div className="p-8 sm:p-12 text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Link2 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
                 No links yet
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">
                 Create your first smart link to start tracking performance
               </p>
               <button
                 onClick={() => navigate('/links')}
-                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2"
+                className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 text-sm sm:text-base"
               >
-                <Link2 className="w-5 h-5" />
+                <Link2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 Create Your First Link
               </button>
             </div>
