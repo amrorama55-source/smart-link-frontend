@@ -5,7 +5,8 @@ import Navbar from '../components/Navbar';
 import { Reorder, AnimatePresence } from 'framer-motion';
 import {
   Plus, Trash2, Eye, Save, Check, X, Loader,
-  Link2, GripVertical, ExternalLink, Copy, CheckCircle, Image, Upload
+  Link2, GripVertical, ExternalLink, Copy, CheckCircle, Image, Upload,
+  User, List, Palette, Layout
 } from 'lucide-react';
 import BioPagePreview from './BioPagePreview';
 
@@ -34,8 +35,12 @@ export default function BioEditor() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+
+  // Mobile Tabs: 'identity' | 'links' | 'appearance'
+  const [activeTab, setActiveTab] = useState('identity');
+
   const fileInputRef = useRef(null);
-  const [showMobilePreview, setShowMobilePreview] = useState(false); // Moved up
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
 
   const [bioData, setBioData] = useState({
     username: '',
@@ -79,7 +84,45 @@ export default function BioEditor() {
     }
   };
 
-  const handleImageUpload = (e) => {
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Resize if too large (max 500px)
+          const MAX_SIZE = 500;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Compress to JPEG 0.7
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+      };
+    });
+  };
+
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -88,11 +131,13 @@ export default function BioEditor() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setBioData(prev => ({ ...prev, avatar: reader.result })); // Save Base64
-    };
-    reader.readAsDataURL(file);
+    try {
+      const compressedBase64 = await compressImage(file);
+      setBioData(prev => ({ ...prev, avatar: compressedBase64 }));
+    } catch (error) {
+      console.error("Image compression failed", error);
+      alert("Failed to process image");
+    }
   };
 
   const checkUsername = async (username) => {
@@ -166,38 +211,55 @@ export default function BioEditor() {
   if (loading) return <div className="h-screen flex items-center justify-center"><Loader className="animate-spin text-blue-600" /></div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 pb-24 lg:pb-0">
       <Navbar />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+      {/* HEADER (Desktop Only) */}
+      <div className="hidden lg:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profile Editor</h1>
-
-          <div className="flex gap-3">
-            {/* Mobile Preview Toggle */}
-            <button
-              onClick={() => setShowMobilePreview(true)}
-              className="lg:hidden px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-white rounded-xl font-bold hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
-            >
-              <Eye className="w-4 h-4" />
-              Preview
-            </button>
-
-            <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg hover:shadow-blue-500/30 transition-all">
-              {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
-              Save
-            </button>
-          </div>
+          <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg hover:shadow-blue-500/30 transition-all">
+            {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+            Save Changes
+          </button>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-0 py-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
           {/* EDITOR COLUMN */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg">Identity</h2>
-              <div className="space-y-5">
 
-                {/* Avatar Upload */}
+            {/* Mobile Tab Navigation */}
+            <div className="lg:hidden flex bg-white dark:bg-gray-800 p-1.5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sticky top-20 z-30">
+              {[
+                { id: 'identity', label: 'Identity', icon: User },
+                { id: 'links', label: 'Links', icon: List },
+                { id: 'appearance', label: 'Theme', icon: Palette }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
+                      ? 'bg-blue-600 text-white shadow-md'
+                      : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* IDENTITY SECTION */}
+            <div className={`${activeTab === 'identity' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
+              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">
+                <User className="w-5 h-5 text-blue-500" />
+                Identity
+              </h2>
+              <div className="space-y-5">
+                {/* Avatar */}
                 <div>
                   <label className="block text-sm font-medium mb-2 dark:text-gray-300">Profile Picture</label>
                   <div className="flex items-center gap-4">
@@ -207,29 +269,21 @@ export default function BioEditor() {
                       ) : (
                         <Upload className="w-6 h-6 text-gray-400" />
                       )}
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition-opacity">Change</div>
                     </div>
-                    <div className="flex-1">
+                    <div>
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                        className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                       >
                         Upload Image
                       </button>
-                      <p className="text-xs text-gray-500 mt-2">Max size 5MB. JPG, PNG, GIF.</p>
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleImageUpload}
-                        accept="image/*"
-                        className="hidden"
-                      />
+                      <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
                     </div>
                   </div>
                 </div>
 
                 {/* Inputs */}
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-1 dark:text-gray-300">Display Name</label>
                     <input type="text" value={bioData.displayName} onChange={e => setBioData({ ...bioData, displayName: e.target.value })} className="w-full p-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Your Name" />
@@ -255,9 +309,13 @@ export default function BioEditor() {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+            {/* LINKS SECTION */}
+            <div className={`${activeTab === 'links' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
               <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold text-gray-900 dark:text-white text-lg">Verified Links</h2>
+                <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
+                  <List className="w-5 h-5 text-blue-500" />
+                  Links
+                </h2>
                 <button onClick={addCustomLink} className="text-sm px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-bold hover:bg-blue-200 transition-colors">+ Add New</button>
               </div>
               <Reorder.Group axis="y" values={bioData.customLinks} onReorder={handleReorder} className="space-y-3">
@@ -279,8 +337,12 @@ export default function BioEditor() {
               </Reorder.Group>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg">Appearance</h2>
+            {/* APPEARANCE SECTION */}
+            <div className={`${activeTab === 'appearance' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
+              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">
+                <Palette className="w-5 h-5 text-blue-500" />
+                Appearance
+              </h2>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                 {themes.map(t => (
                   <button key={t.id} onClick={() => setBioData({ ...bioData, theme: t.id })} className={`group relative p-1 rounded-xl border-2 transition-all ${bioData.theme === t.id ? 'border-blue-500 scale-105' : 'border-transparent hover:border-gray-200'}`}>
@@ -301,9 +363,6 @@ export default function BioEditor() {
                   <BioPagePreview previewData={bioData} />
                 </div>
               </div>
-              <div className="text-center mt-6">
-                <p className="text-gray-500 text-sm font-medium">Live Pixel-Perfect Preview</p>
-              </div>
             </div>
           </div>
 
@@ -313,7 +372,6 @@ export default function BioEditor() {
         <AnimatePresence>
           {showMobilePreview && (
             <div className="fixed inset-0 z-50 lg:hidden bg-black/90 backdrop-blur-sm flex flex-col">
-              {/* Header */}
               <div className="flex justify-between items-center p-4 bg-gray-900 border-b border-gray-800">
                 <h3 className="text-white font-bold">Live Preview</h3>
                 <button
@@ -323,16 +381,35 @@ export default function BioEditor() {
                   <X className="w-6 h-6" />
                 </button>
               </div>
-
-              {/* Preview Content */}
               <div className="flex-1 overflow-y-auto bg-gray-900 p-4 flex items-center justify-center">
-                <div className="w-full max-w-[380px] h-[90vh] bg-white rounded-[2.5rem] overflow-y-auto no-scrollbar relative border-8 border-gray-800 shadow-2xl">
+                <div className="w-full max-w-[380px] h-[80vh] bg-white rounded-[2.5rem] overflow-y-auto no-scrollbar relative border-8 border-gray-800 shadow-2xl">
                   <BioPagePreview previewData={bioData} />
                 </div>
               </div>
             </div>
           )}
         </AnimatePresence>
+
+        {/* MOBILE FIXED BOTTOM BAR */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-4 z-40 safe-bottom">
+          <div className="flex gap-3 max-w-md mx-auto">
+            <button
+              onClick={() => setShowMobilePreview(true)}
+              className="flex-1 py-3 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold font-medium flex items-center justify-center gap-2"
+            >
+              <Eye className="w-5 h-5" />
+              Preview
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex-1 py-3 bg-blue-600 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-blue-500/20"
+            >
+              {saving ? <Loader className="animate-spin w-5 h-5" /> : <Save className="w-5 h-5" />}
+              Save Changes
+            </button>
+          </div>
+        </div>
 
       </div>
     </div>

@@ -70,8 +70,8 @@ function ProductDemo() {
 
           {/* Button Click Animation */}
           <motion.div
-            animate={{ scale: [1, 0.95, 1] }}
-            transition={{ duration: 0.3, delay: 1.5, repeat: Infinity, repeatDelay: 4.7 }}
+            animate={{ scale: [1, 0.98, 1] }}
+            transition={{ duration: 0.5, delay: 1.5, repeat: Infinity, repeatDelay: 6 }}
             className="w-full h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg"
           >
             Shorten Link
@@ -105,7 +105,7 @@ function ProductDemo() {
             y: [300, 100, 160, 400],
             opacity: [0, 1, 1, 0]
           }}
-          transition={{ duration: 4, repeat: Infinity, repeatDelay: 1 }}
+          transition={{ duration: 4, repeat: Infinity, repeatDelay: 4 }}
           className="absolute z-50 pointer-events-none"
         >
           <MousePointerClick className="w-6 h-6 text-black fill-white dark:text-white dark:fill-black drop-shadow-xl" />
@@ -366,6 +366,258 @@ function DemoModal({ isOpen, onClose }) {
 }
 
 
+/* 
+  ========================================
+  Dedicated "How It Works" Section (Inline "Video")
+  ========================================
+*/
+function HowItWorksSection() {
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setStep((s) => (s + 1) % 4);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const steps = [
+    { title: "Create Smart Links", desc: "Paste URL, customize alias, and add tags.", icon: Link2, color: 'blue' },
+    { title: "Smart Targeting", desc: "Route users by Device (iOS/Android) or Location.", icon: Target, color: 'red' },
+    { title: "Build Bio Page", desc: "Drag & drop links, choose themes, and publish.", icon: Layout, color: 'purple' },
+    { title: "Track Analytics", desc: "Real-time insights on clicks, location, and OS.", icon: BarChart3, color: 'green' }
+  ];
+
+  return (
+    <section id="how-it-works" className="py-24 bg-gray-50 dark:bg-gray-800/30 scroll-mt-20 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-6">
+            Everything You Need,
+            <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">
+              In One Platform
+            </span>
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Take a tour of how Smart Link helps you manage and optimize your digital presence.
+          </p>
+        </div>
+
+        <div className="bg-white dark:bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row min-h-[600px]">
+          {/* Left: Steps Selection */}
+          <div className="w-full md:w-1/3 bg-gray-50 dark:bg-gray-900/50 p-8 border-r border-gray-100 dark:border-gray-800 flex flex-col justify-center">
+            <div className="space-y-4">
+              {steps.map((s, i) => (
+                <div
+                  key={i}
+                  className={`flex items-start gap-4 p-4 rounded-2xl transition-all duration-500 cursor-pointer ${step === i ? `bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 scale-[1.02]` : 'opacity-40 hover:opacity-60'}`}
+                  onClick={() => setStep(i)}
+                >
+                  <div className={`w-10 h-10 rounded-full bg-${s.color}-600 flex items-center justify-center text-white font-bold flex-shrink-0 mt-1 shadow-lg`}>
+                    <s.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-gray-900 dark:text-white text-lg">{s.title}</p>
+                    <p className="text-sm text-gray-50 dark:text-gray-400 leading-snug">{s.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: The "video" Animation */}
+          <div className="w-full md:w-2/3 bg-gray-950 p-8 relative overflow-hidden flex items-center justify-center min-h-[400px]">
+            <div className="w-full max-w-md relative z-10">
+              {/* Background Glow */}
+              <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full -z-10"></div>
+
+              <AnimatePresence mode="wait">
+                {/* Scene 1: Shorten */}
+                {step === 0 && (
+                  <motion.div
+                    key="step1"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    className="bg-white rounded-xl p-6 shadow-2xl w-full"
+                  >
+                    <p className="text-gray-500 mb-4 text-xs font-bold tracking-widest uppercase">1. Paste & Create</p>
+                    <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-200 mb-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Link2 className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm font-medium text-gray-600">Destination URL</span>
+                      </div>
+                      <div className="bg-white border rounded px-2 py-1 text-gray-800 text-sm overflow-hidden">
+                        https://myshop.com/products/super-sale-2026/ref=twitter
+                      </div>
+                    </div>
+                    <div className="flex gap-2 items-center mb-4">
+                      <Settings className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">Custom Alias:</span>
+                      <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-sm font-bold">summer-sale</span>
+                    </div>
+                    <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold shadow-lg">
+                      Create Smart Link
+                    </button>
+                  </motion.div>
+                )}
+
+                {/* Scene 2: Targeting */}
+                {step === 1 && (
+                  <motion.div
+                    key="step2"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    className="bg-white rounded-xl p-6 shadow-2xl w-full"
+                  >
+                    <p className="text-red-500 mb-4 text-xs font-bold tracking-widest uppercase">2. Add Targeting Rules</p>
+                    <div className="space-y-3">
+                      {[
+                        { icon: Smartphone, bg: 'black', title: 'Device: iOS', desc: 'Redirect to App Store' },
+                        { icon: Smartphone, bg: 'green-600', title: 'Device: Android', desc: 'Redirect to Play Store' },
+                        { icon: Globe, bg: 'blue-600', title: 'Location: France', desc: 'Redirect to /fr-fr' }
+                      ].map((rule, idx) => (
+                        <div key={idx} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
+                          <div className={`bg-${rule.bg} text-white p-2 rounded-lg`}><rule.icon className="w-4 h-4" /></div>
+                          <div className="flex-1">
+                            <p className="text-sm font-bold text-gray-800">{rule.title}</p>
+                            <p className="text-xs text-gray-500">{rule.desc}</p>
+                          </div>
+                          <CheckCircle className="w-5 h-5 text-green-500" />
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Scene 3: Bio Page */}
+                {step === 2 && (
+                  <motion.div
+                    key="step3"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    className="bg-gray-900 rounded-xl p-6 shadow-2xl border border-gray-800 text-center w-full"
+                  >
+                    <p className="text-purple-400 mb-4 text-xs font-bold tracking-widest uppercase">3. Design Bio Page</p>
+                    <div className="w-16 h-16 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mx-auto mb-4 border-4 border-white/20 shadow-lg"></div>
+                    <h4 className="text-white font-bold text-xl mb-1">Sarah Creator</h4>
+                    <p className="text-gray-400 text-sm mb-6">@sarah_designs</p>
+                    <div className="space-y-2">
+                      {[1, 2, 3].map(i => (
+                        <div key={i} className="p-3 bg-white/10 rounded-lg text-white font-medium flex items-center justify-between border border-white/5">
+                          <div className="flex items-center gap-3">
+                            <div className="w-6 h-6 rounded bg-white/20"></div>
+                            <span>My Product #{i}</span>
+                          </div>
+                          <ArrowRight className="w-4 h-4 opacity-50" />
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Scene 4: Analytics */}
+                {step === 3 && (
+                  <motion.div
+                    key="step4"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    className="bg-white rounded-xl p-6 shadow-2xl w-full"
+                  >
+                    <p className="text-green-600 mb-4 text-xs font-bold tracking-widest uppercase">4. Analyze Results</p>
+                    <div className="flex justify-between items-end h-32 gap-2 px-2 pb-4 border-b border-gray-200">
+                      {[30, 50, 40, 70, 90, 60, 80, 95, 85].map((h, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ height: 0 }}
+                          animate={{ height: `${h}%` }}
+                          className="flex-1 bg-gradient-to-t from-green-500 to-emerald-400 rounded-t-sm"
+                        ></motion.div>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      <div className="bg-gray-50 p-3 rounded-lg text-center">
+                        <p className="text-2xl font-bold text-gray-900">12.5k</p>
+                        <p className="text-xs text-gray-500 uppercase font-bold">Total Clicks</p>
+                      </div>
+                      <div className="bg-gray-50 p-3 rounded-lg text-center">
+                        <p className="text-2xl font-bold text-blue-600">iOS</p>
+                        <p className="text-xs text-gray-500 uppercase font-bold">Top Device</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-100 ease-linear" style={{ width: `${((step + 1) / 4) * 100}%` }}></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* 
+  ========================================
+  FAQ Section (SEO Magnet)
+  ========================================
+*/
+function FAQSection() {
+  const faqs = [
+    {
+      question: "How to create a free link in bio?",
+      answer: "Simply sign up for a free account, paste your long URLs, and customize your bio page. You can go live in less than 2 minutes."
+    },
+    {
+      question: "What is the best alternative to Linktree for free?",
+      answer: "Smart Link offers advanced features like Device Targeting and detailed analytics for free, making it the most powerful free Linktree alternative for creators."
+    },
+    {
+      question: "Can I track my link clicks for free?",
+      answer: "Yes! Smart Link provides real-time analytics for all your links and bio pages, including device, location, and click-through data—all 100% free."
+    }
+  ];
+
+  return (
+    <section id="faq" className="py-24 bg-white dark:bg-gray-900 scroll-mt-20 border-t border-gray-100 dark:border-gray-800">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">
+            Everything you need to know about Smart Link.
+          </p>
+        </div>
+        <div className="space-y-6">
+          {faqs.map((faq, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="p-6 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-700"
+            >
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                {faq.question}
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400">
+                {faq.answer}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -383,7 +635,15 @@ export default function LandingPage() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      // Throttle or debouncing scroll state updates can help, but for just one boolean it's usually fine.
+      // However, we can use requestAnimationFrame for better performance.
+      if (!window.requestAnimationFrame) {
+        setScrolled(window.scrollY > 20);
+        return;
+      }
+      window.requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20);
+      });
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -597,14 +857,14 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6 tracking-tight">
-                The All-in-One Link
+                Free Smart Link & Bio Page
                 <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-2 pb-2">
-                  for Modern Creators
+                  Tool for Creators
                 </span>
               </motion.h1>
 
               <motion.p variants={itemVariants} className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Stop losing followers to broken links. Create a beautiful Bio Page, track every click, and grow your audience—all in one place.
+                Shorten links, track analytics, and build your bio page in minutes—100% Free.
               </motion.p>
 
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
@@ -638,7 +898,10 @@ export default function LandingPage() {
                   </motion.button>
                 </Link>
                 <motion.button
-                  onClick={() => setDemoOpen(true)}
+                  onClick={() => {
+                    const el = document.getElementById('how-it-works');
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold text-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 shadow-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
@@ -646,17 +909,25 @@ export default function LandingPage() {
                   <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
                     <Play className="w-4 h-4 fill-current ml-0.5" />
                   </div>
-                  View Demo
+                  How It Works
                 </motion.button>
               </motion.div>
 
-              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm text-gray-800 dark:text-gray-200 font-medium">
+              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-gray-800 dark:text-gray-200 font-medium">
                 {['No credit card required', 'Free forever plan', 'Setup in 2 minutes'].map((text, i) => (
                   <div key={i} className="flex items-center gap-2 bg-white/50 dark:bg-gray-800/50 px-3 py-1.5 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     {text}
                   </div>
                 ))}
+              </motion.div>
+
+              <motion.div
+                variants={itemVariants}
+                className="mt-8 flex items-center justify-center lg:justify-start gap-3 text-sm text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50 inline-flex"
+              >
+                <Users className="w-5 h-5 text-blue-500" />
+                <span>Join our first 10+ creators who started using Smart Link this week</span>
               </motion.div>
             </motion.div>
 
@@ -702,13 +973,16 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* HOW IT WORKS SECTION */}
+      <HowItWorksSection />
+
       {/* Features Section */}
       <section id="features" className="py-24 bg-white dark:bg-gray-900 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-20"
           >
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-6">
@@ -738,8 +1012,8 @@ export default function LandingPage() {
               },
               {
                 icon: Smartphone,
-                title: 'Device Targeting',
-                description: 'Smart routing sends mobile users to app stores and desktop users to your website automatically.',
+                title: 'Redirect users based on their device',
+                description: 'Smart routing sends mobile users to app stores and desktop users to your website automatically. A premium feature, free forever on Smart Link.',
                 color: 'green'
               },
               {
@@ -765,7 +1039,7 @@ export default function LandingPage() {
                 key={index}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -10 }}
                 className="group p-8 bg-gray-50 dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300"
@@ -813,7 +1087,7 @@ export default function LandingPage() {
                 key={i}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: i * 0.1 }}
                 className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl relative"
               >
@@ -874,7 +1148,7 @@ export default function LandingPage() {
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-50px" }}
                 transition={{ delay: index * 0.1 }}
                 className={`relative p-8 rounded-3xl flex flex-col ${plan.primary
                   ? 'bg-gradient-to-b from-blue-600 to-indigo-700 text-white shadow-2xl scale-100 lg:scale-105 z-10'
@@ -930,7 +1204,7 @@ export default function LandingPage() {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-8"
           >
             Ready to link smarter?
@@ -938,7 +1212,7 @@ export default function LandingPage() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: 0.1 }}
             className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto"
           >
@@ -947,7 +1221,7 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
             transition={{ delay: 0.2 }}
           >
             <Link to="/register">
@@ -961,6 +1235,9 @@ export default function LandingPage() {
           </p>
         </div>
       </section>
+
+      {/* FAQ SECTION */}
+      <FAQSection />
 
       {/* Footer */}
       <footer className="bg-gray-50 dark:bg-gray-900 pt-20 pb-10 border-t border-gray-200 dark:border-gray-800">
