@@ -178,7 +178,11 @@ function DemoModal({ isOpen, onClose }) {
         {/* Right: The Animation (The "Video") */}
         <div className="w-full md:w-2/3 bg-gray-950 p-8 relative overflow-hidden flex items-center justify-center">
           <div className="absolute top-4 right-4 z-10">
-            <button onClick={onClose} className="p-2 bg-gray-800 rounded-full hover:bg-gray-700 text-white transition-colors">
+            <button
+              onClick={onClose}
+              className="p-2 bg-gray-800 rounded-full hover:bg-gray-700 text-white transition-colors"
+              aria-label="Close modal"
+            >
               <X className="w-6 h-6" />
             </button>
           </div>
@@ -618,6 +622,91 @@ function FAQSection() {
   );
 }
 
+/* 
+  ========================================
+  About Us Section (Mission & Trust)
+  ========================================
+*/
+function AboutUsSection() {
+  return (
+    <section id="about-us" className="py-24 bg-gray-50 dark:bg-gray-800/30 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="relative"
+          >
+            <div className="absolute -top-10 -left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-6">
+              Our Mission: Empowering
+              <span className="block text-blue-600 mt-2">Founders & Creators</span>
+            </h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+              Smart Link was born from a simple idea: professional-grade marketing tools shouldn't be locked behind expensive subscriptions for those just starting out.
+            </p>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+              Whether you are a SaaS founder launching your first product, a marketer optimizing campaigns, or a creator building your brand, we provide the analytics and targeting tools you need to succeed—100% free.
+            </p>
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="w-12 h-12 rounded-full border-4 border-white dark:border-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="Team member" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">
+                Built with ❤️ by a global team of specialists.
+              </p>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 relative"
+          >
+            <div className="absolute -top-6 -right-6 p-4 bg-green-500 text-white rounded-2xl shadow-lg rotate-12">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <div className="space-y-6">
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 flex-shrink-0">
+                  <Shield className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">Privacy First</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">We don't track your users personally. Only clean, actionable data.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 flex-shrink-0">
+                  <Zap className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">Performance DNA</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Lightweight links that load in milliseconds across the globe.</p>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 flex-shrink-0">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">Secure & Reliable</h4>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">99.9% uptime with enterprise-grade security for every link.</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -780,12 +869,14 @@ export default function LandingPage() {
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
+                aria-label="Toggle dark mode"
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
+                aria-label="Toggle mobile menu"
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -853,7 +944,7 @@ export default function LandingPage() {
             >
               <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium mb-6 hover:shadow-md transition-shadow cursor-default">
                 <Sparkles className="w-4 h-4" />
-                <span className="font-semibold">Simpler. Smarter. Faster.</span>
+                <span className="font-semibold">The Ultimate Growth Tool for Founders & Marketers</span>
               </motion.div>
 
               <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl lg:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-6 tracking-tight">
@@ -864,7 +955,7 @@ export default function LandingPage() {
               </motion.h1>
 
               <motion.p variants={itemVariants} className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Shorten links, track analytics, and build your bio page in minutes—100% Free.
+                The best free Bio Page tool and URL shortener for Creators, SaaS Founders, and Marketers. Track analytics, smart targeting, and A/B testing—all in one place.
               </motion.p>
 
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
@@ -927,7 +1018,7 @@ export default function LandingPage() {
                 className="mt-8 flex items-center justify-center lg:justify-start gap-3 text-sm text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50 inline-flex"
               >
                 <Users className="w-5 h-5 text-blue-500" />
-                <span>Join our first 10+ creators who started using Smart Link this week</span>
+                <span>Join our first 10+ founders and creators who started using Smart Link this week</span>
               </motion.div>
             </motion.div>
 
@@ -962,7 +1053,7 @@ export default function LandingPage() {
       <section className="py-12 border-y border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-8">
-            Trusted by creators and teams at
+            Trusted by founders, marketers, and teams at
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 sm:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
             <div className="flex items-center gap-2 font-bold text-xl"><Globe className="w-6 h-6" /> GlobalInc</div>
@@ -988,7 +1079,7 @@ export default function LandingPage() {
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-6">
               Powerful Tools for
               <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">
-                Modern Creators
+                Founders & Marketers
               </span>
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -1000,9 +1091,15 @@ export default function LandingPage() {
             {[
               {
                 icon: Link2,
-                title: 'Beautiful Bio Pages',
-                description: 'Create stunning link-in-bio pages that showcase all your content. Customizable themes to match your brand.',
+                title: 'High-Conversion Bio Pages',
+                description: 'Create stunning bio pages that showcase your SaaS or personal brand. Professional themes designed for maximum marketing ROI.',
                 color: 'blue'
+              },
+              {
+                icon: TrendingUp,
+                title: 'A/B Testing Links',
+                description: 'Split traffic between two URLs to optimize conversion. Perfect for testing landing pages and marketing campaigns.',
+                color: 'orange'
               },
               {
                 icon: BarChart3,
@@ -1012,27 +1109,21 @@ export default function LandingPage() {
               },
               {
                 icon: Smartphone,
-                title: 'Redirect users based on their device',
-                description: 'Smart routing sends mobile users to app stores and desktop users to your website automatically. A premium feature, free forever on Smart Link.',
+                title: 'Smart Device Targeting',
+                description: 'Route mobile users to app stores and desktop users to your website automatically. A premium feature, free on Smart Link.',
                 color: 'green'
               },
               {
                 icon: QrCode,
-                title: 'Custom QR Codes',
-                description: 'Generate branded QR codes for your links. Perfect for physical marketing and print materials.',
+                title: 'Branded QR Codes',
+                description: 'Generate customizable QR codes for your links. Perfect for SaaS marketing and offline campaigns.',
                 color: 'pink'
               },
               {
-                icon: Shield,
-                title: 'Password Protection',
-                description: 'Secure your sensitive links with passwords to control who has access to your content.',
-                color: 'red'
-              },
-              {
                 icon: Code,
-                title: 'Custom Domains',
-                description: 'Connect your own domain to build trust and brand recognition with every link you share.',
-                color: 'orange'
+                title: 'Developer API',
+                description: 'Integrate Smart Link directly into your SaaS product workflow with our robust and easy-to-use API.',
+                color: 'indigo'
               }
             ].map((feature, index) => (
               <motion.div
@@ -1239,6 +1330,9 @@ export default function LandingPage() {
       {/* FAQ SECTION */}
       <FAQSection />
 
+      {/* ABOUT US SECTION */}
+      <AboutUsSection />
+
       {/* Footer */}
       <footer className="bg-gray-50 dark:bg-gray-900 pt-20 pb-10 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1256,7 +1350,7 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Product</h4>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-6">Product</h3>
               <ul className="space-y-4 text-gray-500 dark:text-gray-400">
                 <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dashboard</Link></li>
                 <li><Link to="/register" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</Link></li>
@@ -1264,7 +1358,7 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Resources</h4>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-6">Resources</h3>
               <ul className="space-y-4 text-gray-500 dark:text-gray-400">
                 <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
                 <li><a href="mailto:support@smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
@@ -1272,7 +1366,7 @@ export default function LandingPage() {
             </div>
 
             <div>
-              <h4 className="font-bold text-gray-900 dark:text-white mb-6">Legal</h4>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-6">Legal</h3>
               <ul className="space-y-4 text-gray-500 dark:text-gray-400">
                 <li><Link to="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</Link></li>
