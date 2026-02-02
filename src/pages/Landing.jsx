@@ -1344,14 +1344,14 @@ export default function LandingPage() {
                 </div>
                 <span className="text-xl font-bold text-gray-900 dark:text-white">Smart Link</span>
               </Link>
-              <p className="text-gray-500 dark:text-gray-400 mb-6">
+              <p className="text-gray-700 dark:text-gray-400 mb-6">
                 The advanced link management platform for modern creators.
               </p>
             </div>
 
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-6">Product</h3>
-              <ul className="space-y-4 text-gray-500 dark:text-gray-400">
+              <ul className="space-y-4 text-gray-700 dark:text-gray-400">
                 <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dashboard</Link></li>
                 <li><Link to="/register" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</Link></li>
               </ul>
@@ -1359,7 +1359,7 @@ export default function LandingPage() {
 
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-6">Resources</h3>
-              <ul className="space-y-4 text-gray-500 dark:text-gray-400">
+              <ul className="space-y-4 text-gray-700 dark:text-gray-400">
                 <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
                 <li><a href="mailto:support@smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
               </ul>
@@ -1367,7 +1367,7 @@ export default function LandingPage() {
 
             <div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-6">Legal</h3>
-              <ul className="space-y-4 text-gray-500 dark:text-gray-400">
+              <ul className="space-y-4 text-gray-700 dark:text-gray-400">
                 <li><Link to="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</Link></li>
               </ul>
@@ -1375,7 +1375,7 @@ export default function LandingPage() {
           </div>
 
           <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 dark:text-gray-400 text-sm">
+            <p className="text-gray-700 dark:text-gray-400 text-sm">
               © 2026 Smart Link. All rights reserved.
             </p>
             <div className="flex gap-6">
