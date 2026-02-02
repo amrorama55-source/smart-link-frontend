@@ -653,7 +653,7 @@ function AboutUsSection() {
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="w-12 h-12 rounded-full border-4 border-white dark:border-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="Team member" className="w-full h-full object-cover" />
+                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="Team member" className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 ))}
               </div>
@@ -677,8 +677,8 @@ function AboutUsSection() {
                   <Shield className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">Privacy First</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">We don't track your users personally. Only clean, actionable data.</p>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Privacy First</h3>
+                  <p className="text-sm text-gray-700 dark:text-gray-400">We don't track your users personally. Only clean, actionable data.</p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -686,8 +686,8 @@ function AboutUsSection() {
                   <Zap className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">Performance DNA</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">Lightweight links that load in milliseconds across the globe.</p>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Performance DNA</h3>
+                  <p className="text-sm text-gray-700 dark:text-gray-400">Lightweight links that load in milliseconds across the globe.</p>
                 </div>
               </div>
               <div className="flex gap-4">
@@ -695,8 +695,8 @@ function AboutUsSection() {
                   <Lock className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-1">Secure & Reliable</h4>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">99.9% uptime with enterprise-grade security for every link.</p>
+                  <h3 className="font-bold text-gray-900 dark:text-white mb-1">Secure & Reliable</h3>
+                  <p className="text-sm text-gray-700 dark:text-gray-400">99.9% uptime with enterprise-grade security for every link.</p>
                 </div>
               </div>
             </div>
@@ -1141,7 +1141,7 @@ export default function LandingPage() {
                 <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-gray-700 dark:text-gray-400 leading-relaxed">
                   {feature.description}
                 </p>
               </motion.div>
@@ -1183,10 +1183,10 @@ export default function LandingPage() {
                 className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl relative"
               >
                 <Quote className="w-10 h-10 text-blue-100 dark:text-blue-900/30 absolute top-6 right-6" />
-                <div className="flex gap-1 mb-4 text-yellow-400">
+                <div className="flex gap-1 mb-4 text-yellow-500">
                   {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-4 h-4 fill-current" />)}
                 </div>
-                <p className="text-gray-600 dark:text-gray-300 mb-6 italic">"{t.quote}"</p>
+                <p className="text-gray-700 dark:text-gray-300 mb-6 italic">"{t.quote}"</p>
                 <div>
                   <p className="font-bold text-gray-900 dark:text-white">{t.author}</p>
                   <p className="text-sm text-blue-600 dark:text-blue-400">{t.role}</p>
@@ -1254,7 +1254,7 @@ export default function LandingPage() {
                 <h3 className={`text-2xl font-bold mb-2 ${plan.primary ? 'text-white' : ''}`}>{plan.name}</h3>
                 <div className="mb-6 flex items-baseline gap-1">
                   <span className="text-4xl font-extrabold">{plan.price}</span>
-                  {plan.period && <span className={`text-lg ${plan.primary ? 'text-blue-100' : 'text-gray-500'}`}>{plan.period}</span>}
+                  {plan.period && <span className={`text-lg ${plan.primary ? 'text-blue-100' : 'text-gray-600'}`}>{plan.period}</span>}
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   {plan.features.map((feature, i) => (
