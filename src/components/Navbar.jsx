@@ -238,9 +238,9 @@ export default function Navbar() {
               <User className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
               <span className="text-xs sm:text-sm whitespace-nowrap">Bio</span>
             </Link>
-            <Link to="/profile" className={navItemClass('/profile')}>
+            <Link to="/settings" className={navItemClass('/settings')}>
               <UserCircle className="w-5 h-5 sm:w-5 sm:h-5 flex-shrink-0" />
-              <span className="text-xs sm:text-sm whitespace-nowrap">Profile</span>
+              <span className="text-xs sm:text-sm whitespace-nowrap">Setting</span>
             </Link>
           </div>
         </div>
