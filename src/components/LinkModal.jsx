@@ -72,34 +72,32 @@ export default function LinkModal({
             </button>
           </div>
 
-          {/* Tabs - Horizontal scroll on mobile */}
+          {/* Tabs - Equal width for all tabs */}
           <div className="bg-gray-900 border-b border-gray-800 shrink-0">
-            <div className="overflow-x-auto scrollbar-hide">
-              <div className="flex min-w-max">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`
-                        flex items-center gap-2 whitespace-nowrap
-                        px-4 py-3 text-xs font-medium 
-                        transition-all duration-200 border-b-2 min-h-[44px]
-                        ${isActive
-                          ? 'text-blue-400 border-blue-500 bg-blue-500/10'
-                          : 'text-gray-400 border-transparent hover:text-gray-200 hover:bg-gray-800/50'
-                        }
-                      `}
-                    >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      <span>{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
+            <div className="grid grid-cols-5 w-full">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`
+                      flex flex-col items-center justify-center gap-1
+                      px-2 py-2.5 text-[10px] sm:text-xs font-medium 
+                      transition-all duration-200 border-b-2 min-h-[50px]
+                      ${isActive
+                        ? 'text-blue-400 border-blue-500 bg-blue-500/10'
+                        : 'text-gray-400 border-transparent hover:text-gray-200 hover:bg-gray-800/50'
+                      }
+                    `}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate w-full text-center">{tab.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
