@@ -11,7 +11,7 @@ export default function CustomDomain({ linkData, setLinkData }) {
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setLinkData({ ...linkData, password: newPassword });
-    
+
     if (newPassword && newPassword.length < 6) {
       setPasswordWarning(true);
     } else {
@@ -28,8 +28,8 @@ export default function CustomDomain({ linkData, setLinkData }) {
   };
 
   return (
-    <div className="space-y-6">
-      
+    <div className="space-y-6 min-h-full">
+
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 p-4 rounded-lg border-2 border-indigo-200 dark:border-indigo-800">
         <div className="flex items-start gap-3">
@@ -200,9 +200,8 @@ export default function CustomDomain({ linkData, setLinkData }) {
             data-form-type="other"
             data-lpignore="true"
             readOnly
-            className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white ${
-              passwordWarning ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10' : 'border-gray-300 dark:border-gray-600'
-            }`}
+            className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white ${passwordWarning ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10' : 'border-gray-300 dark:border-gray-600'
+              }`}
           />
           <button
             type="button"
@@ -212,14 +211,14 @@ export default function CustomDomain({ linkData, setLinkData }) {
             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
         </div>
-        
+
         {passwordWarning && (
           <div className="mt-2 flex items-start gap-2 text-sm text-yellow-700 dark:text-yellow-400">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
             <p>Password should be at least 6 characters for better security</p>
           </div>
         )}
-        
+
         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
           🔒 Visitors will need to enter this password to access the link
         </p>

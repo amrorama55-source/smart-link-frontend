@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { 
-  User, Mail, Calendar, Crown, Link2, MousePointerClick, 
+import {
+  User, Mail, Calendar, Crown, Link2, MousePointerClick,
   Globe, TrendingUp, Award, Settings, Edit2, Camera,
   CheckCircle, Shield, Zap, Star, Lock, CreditCard,
   Trash2, LogOut, Monitor, Smartphone, Eye, EyeOff,
@@ -17,13 +17,18 @@ export default function Profile() {
   const { darkMode, toggleDarkMode } = useTheme();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   const [activeTab, setActiveTab] = useState('profile');
   const [profile, setProfile] = useState(null);
-  const [stats, setStats] = useState(null);
+  const [stats, setStats] = useState({
+    totalLinks: 0,
+    totalClicks: 0,
+    countries: 0,
+    clicksThisMonth: 0
+  });
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-  
+
   // Profile data
   const [profileData, setProfileData] = useState({
     name: '',
@@ -67,15 +72,12 @@ export default function Profile() {
 
   const loadProfileData = async () => {
     try {
-      const [profileRes, statsRes] = await Promise.all([
-        api.get('/api/profile'),
-        api.get('/api/profile/stats')
-      ]);
-
-      setProfile(profileRes.data);
-      setStats(statsRes.data);
-      setSelectedPlan(profileRes.data.plan || 'free');
+      // Load profile data
+      const profileRes = await api.get('/api/profile');
       
+      setProfile(profileRes.data);
+      setSelectedPlan(profileRes.data.plan || 'free');
+
       setProfileData({
         name: profileRes.data.name || '',
         bio: profileRes.data.bio || '',
@@ -83,8 +85,19 @@ export default function Profile() {
         location: profileRes.data.location || '',
         email: profileRes.data.email || ''
       });
+
+      // Try to load stats, but don't fail if endpoint doesn't exist
+      try {
+        const statsRes = await api.get('/api/profile/stats');
+        setStats(statsRes.data);
+      } catch (statsError) {
+        console.warn('Stats endpoint not available:', statsError);
+        // Keep default stats values
+      }
+
     } catch (error) {
       console.error('Failed to load profile:', error);
+      alert('Failed to load profile data. Please refresh the page.');
     } finally {
       setLoading(false);
     }
@@ -174,7 +187,7 @@ export default function Profile() {
     if (!confirmed) return;
 
     setLoading(true);
-    
+
     try {
       await api.delete('/api/settings/account', {
         data: {
@@ -182,11 +195,11 @@ export default function Profile() {
           confirmDelete: true
         }
       });
-      
+
       alert('Account deleted successfully. You will be logged out now.');
       logout();
       navigate('/login');
-      
+
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to delete account. Please try again.';
       alert(errorMessage);
@@ -236,33 +249,33 @@ export default function Profile() {
     );
   }
 
+  // Safe access to current plan
   const currentPlan = profile?.plan || 'free';
-  const PlanIcon = planBadges[currentPlan]?.icon || User;
+  const safePlanBadge = planBadges[currentPlan] || planBadges.free;
+  const PlanIcon = safePlanBadge.icon;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Tab Navigation */}
         <div className="mb-6 flex gap-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab('profile')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'profile'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-            }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${activeTab === 'profile'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
           >
             Profile
           </button>
           <button
             onClick={() => setActiveTab('settings')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'settings'
-                ? 'bg-blue-600 text-white'
-                : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-            }`}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${activeTab === 'settings'
+              ? 'bg-blue-600 text-white'
+              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+              }`}
           >
             Settings
           </button>
@@ -274,7 +287,7 @@ export default function Profile() {
             {/* Header with Cover */}
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl h-32 sm:h-48 mb-16 sm:mb-20 relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10"></div>
-              
+
               {/* Profile Picture */}
               <div className="absolute -bottom-12 sm:-bottom-16 left-4 sm:left-8">
                 <div className="relative">
@@ -307,13 +320,13 @@ export default function Profile() {
                           {profile?.name || 'User'}
                         </h1>
                       )}
-                      
+
                       <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-3">
                         <Mail className="w-4 h-4" />
                         <span className="text-sm">{profile?.email}</span>
                       </div>
 
-                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${planBadges[currentPlan]?.color} font-semibold text-sm`}>
+                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${safePlanBadge.color} font-semibold text-sm`}>
                         <PlanIcon className="w-4 h-4" />
                         <span className="capitalize">{currentPlan} Plan</span>
                       </div>
@@ -321,7 +334,8 @@ export default function Profile() {
 
                     <button
                       onClick={() => editMode ? handleSaveProfile() : setEditMode(true)}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                      disabled={loading}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
                     >
                       {editMode ? (
                         <>
@@ -401,7 +415,7 @@ export default function Profile() {
                   <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                       <Calendar className="w-4 h-4" />
-                      <span>Member since {new Date(profile?.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                      <span>Member since {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Unknown'}</span>
                     </div>
                   </div>
                 </div>
@@ -424,19 +438,18 @@ export default function Profile() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[
                       { id: 1, name: 'First Link', description: 'Created your first link', icon: '🎉', unlocked: true },
-                      { id: 2, name: '100 Clicks', description: 'Reached 100 total clicks', icon: '💯', unlocked: stats?.totalClicks >= 100 },
-                      { id: 3, name: 'Global Reach', description: 'Clicks from 10+ countries', icon: '🌍', unlocked: stats?.countries >= 10 },
-                      { id: 4, name: 'Power User', description: 'Created 50+ links', icon: '⚡', unlocked: stats?.totalLinks >= 50 },
+                      { id: 2, name: '100 Clicks', description: 'Reached 100 total clicks', icon: '💯', unlocked: (stats?.totalClicks || 0) >= 100 },
+                      { id: 3, name: 'Global Reach', description: 'Clicks from 10+ countries', icon: '🌍', unlocked: (stats?.countries || 0) >= 10 },
+                      { id: 4, name: 'Power User', description: 'Created 50+ links', icon: '⚡', unlocked: (stats?.totalLinks || 0) >= 50 },
                       { id: 5, name: 'Viral Hit', description: 'Single link with 1000+ clicks', icon: '🚀', unlocked: false },
                       { id: 6, name: 'Early Adopter', description: 'Joined in first year', icon: '🏆', unlocked: true }
                     ].map((achievement) => (
                       <div
                         key={achievement.id}
-                        className={`p-4 rounded-lg border-2 transition-all ${
-                          achievement.unlocked
-                            ? 'border-yellow-400 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900/20'
-                            : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 opacity-60'
-                        }`}
+                        className={`p-4 rounded-lg border-2 transition-all ${achievement.unlocked
+                          ? 'border-yellow-400 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900/20'
+                          : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 opacity-60'
+                          }`}
                       >
                         <div className="text-3xl mb-2">{achievement.icon}</div>
                         <h3 className="font-bold text-gray-900 dark:text-white mb-1">{achievement.name}</h3>
@@ -484,7 +497,7 @@ export default function Profile() {
                       </div>
                       <CheckCircle className="w-5 h-5 text-green-500" />
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Star className="w-5 h-5 text-blue-500" />
@@ -631,11 +644,10 @@ export default function Profile() {
                 {plans.map((plan) => (
                   <div
                     key={plan.id}
-                    className={`p-6 rounded-lg border-2 ${
-                      selectedPlan === plan.id
-                        ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
-                    }`}
+                    className={`p-6 rounded-lg border-2 ${selectedPlan === plan.id
+                      ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
+                      }`}
                   >
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h3>
@@ -660,9 +672,9 @@ export default function Profile() {
                         disabled={loading}
                         className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
                       >
-                        {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' : 
-                         selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' : 
-                         'Switch Plan'}
+                        {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' :
+                          selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' :
+                            'Switch Plan'}
                       </button>
                     )}
                   </div>

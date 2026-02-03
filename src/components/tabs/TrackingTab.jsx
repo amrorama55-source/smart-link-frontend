@@ -1,11 +1,11 @@
 import { Plus, Trash2, TrendingUp, AlertCircle } from 'lucide-react';
 
-export default function TrackingTab({ 
-  linkData, 
-  addPixel, 
-  removePixel, 
+export default function TrackingTab({
+  linkData,
+  addPixel,
+  removePixel,
   updatePixel,
-  errors 
+  errors
 }) {
   // ✅ CRITICAL: Handle all edge cases
   if (!linkData) {
@@ -34,8 +34,8 @@ export default function TrackingTab({
   const hasPixels = pixels.length > 0;
 
   return (
-    <div className="space-y-6">
-      
+    <div className="space-y-6 min-h-full">
+
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">

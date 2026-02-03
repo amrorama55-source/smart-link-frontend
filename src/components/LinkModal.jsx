@@ -35,7 +35,7 @@ export default function LinkModal({
     { id: 'advanced', label: 'Advanced', icon: Target },
     { id: 'targeting', label: 'Targeting', icon: Smartphone },
     { id: 'tracking', label: 'Tracking', icon: TrendingUp },
-    { id: 'domains', label: 'Custom Domain', icon: Globe }
+    { id: 'domains', label: 'Domain', icon: Globe }
   ];
 
   const handleFormSubmit = (e) => {
@@ -54,10 +54,10 @@ export default function LinkModal({
 
       {/* Modal: full-screen on mobile, centered on desktop */}
       <div className="fixed inset-0 sm:inset-0 sm:p-4 flex items-end sm:items-center justify-center z-50 sm:bg-black/40">
-        <div className="bg-gray-900 w-full sm:max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col border-0 sm:border border-gray-800 overflow-hidden h-[88dvh] sm:h-auto sm:max-h-[85vh] safe-bottom">
+        <div className="bg-gray-900 w-full sm:max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col border-0 sm:border border-gray-800 overflow-hidden max-h-[92vh] safe-bottom">
 
-          {/* Header — X always visible, one place to close */}
-          <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 bg-gray-900 border-b border-gray-800/50 shrink-0 safe-top">
+          {/* Header — Sticky & Always Visible */}
+          <div className="sticky top-0 z-50 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 bg-gray-900 border-b border-gray-800/50 shrink-0 safe-top">
             <h2 id="link-modal-title" className="text-base sm:text-xl font-bold text-white flex items-center gap-2 truncate min-w-0">
               <Link2 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 flex-shrink-0" />
               <span className="truncate">{editingLink ? 'Edit Link' : 'Create Link'}</span>
@@ -72,28 +72,11 @@ export default function LinkModal({
             </button>
           </div>
 
-          {/* Tabs: dropdown on mobile (all options visible), chips on desktop */}
+          {/* Tabs - موحدة بنفس الحجم لجميع الأجهزة */}
           <div className="bg-gray-900/80 border-b border-gray-800/50 shrink-0">
-            {/* Mobile: single dropdown - no hidden options */}
-            <div className="sm:hidden p-3">
-              <label className="sr-only">Section</label>
-              <div className="relative">
-                <select
-                  value={activeTab}
-                  onChange={(e) => setActiveTab(e.target.value)}
-                  className="w-full pl-4 pr-10 py-3 text-base font-semibold rounded-xl border-2 border-gray-700 bg-gray-800 text-white appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none min-h-[48px]"
-                  aria-label="Choose section"
-                >
-                  {tabs.map((tab) => (
-                    <option key={tab.id} value={tab.id}>{tab.label}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" aria-hidden="true" />
-              </div>
-            </div>
-            {/* Desktop: horizontal chips */}
-            <div className="hidden sm:block">
-              <div className="flex gap-2 p-3 sm:p-4 overflow-x-auto scrollbar-hide">
+            {/* Mobile & Desktop: horizontal scroll with equal width tabs */}
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex gap-0 p-0 min-w-full">
                 {tabs.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
@@ -103,16 +86,18 @@ export default function LinkModal({
                       type="button"
                       onClick={() => setActiveTab(tab.id)}
                       className={`
-                        flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200
-                        min-h-[40px]
+                        flex-1 min-w-0 flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 
+                        px-3 sm:px-4 py-3 sm:py-3.5 text-xs sm:text-sm font-semibold 
+                        transition-all duration-200 border-b-2 touch-manipulation
                         ${isActive
-                          ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 border border-blue-500'
-                          : 'bg-gray-800/40 text-gray-400 hover:bg-gray-800 hover:text-gray-200 border border-gray-700/50'
+                          ? 'bg-blue-600/10 text-blue-400 border-blue-500'
+                          : 'bg-transparent text-gray-400 hover:bg-gray-800/40 hover:text-gray-200 border-transparent'
                         }
                       `}
+                      style={{ minWidth: '20%' }} // Each tab takes 20% on larger screens
                     >
-                      <Icon className="w-4 h-4 flex-shrink-0" />
-                      <span>{tab.label}</span>
+                      <Icon className="w-4 h-4 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="truncate text-center sm:text-left">{tab.label}</span>
                     </button>
                   );
                 })}
@@ -120,25 +105,22 @@ export default function LinkModal({
             </div>
           </div>
 
-          {/* Content - scrollable form so Enter key submits (no page navigation) */}
+          {/* Content - Fixed height for all tabs with scroll */}
           <form onSubmit={handleFormSubmit} className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain bg-gray-900 min-h-0 relative">
-              {/* Mobile: sticky close bar so X is always visible when scrolling long Basic/Targeting */}
-              <div className="sticky top-0 z-20 flex justify-end px-2 py-2 sm:hidden bg-gray-900/95 backdrop-blur-sm border-b border-gray-800/50 -mb-px">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="p-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 min-h-[48px] min-w-[48px] flex items-center justify-center touch-manipulation"
-                  aria-label="Close"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              <div className="px-4 sm:px-6 py-4">
+            {/* Fixed height scrollable area - SAME FOR ALL TABS */}
+            <div 
+              className="overflow-y-auto overflow-x-hidden overscroll-contain bg-gray-900 custom-scrollbar"
+              style={{ 
+                height: 'calc(92vh - 250px)',
+                minHeight: '400px',
+                maxHeight: '600px'
+              }}
+            >
+              <div className="px-4 sm:px-6 py-4 min-h-full">
 
                 {/* Basic Tab */}
                 {activeTab === 'basic' && (
-                  <div className="h-[500px] overflow-y-auto pr-2 -mr-2">
+                  <div className="min-h-full">
                     <BasicTab
                       linkData={linkData}
                       setLinkData={setLinkData}
@@ -148,21 +130,23 @@ export default function LinkModal({
                   </div>
                 )}
 
-                {/* Advanced Tab - flexible height */}
+                {/* Advanced Tab */}
                 {activeTab === 'advanced' && (
-                  <AdvancedTab
-                    linkData={linkData}
-                    setLinkData={setLinkData}
-                    errors={errors}
-                    addVariant={addVariant}
-                    removeVariant={removeVariant}
-                    updateVariant={updateVariant}
-                  />
+                  <div className="min-h-full">
+                    <AdvancedTab
+                      linkData={linkData}
+                      setLinkData={setLinkData}
+                      errors={errors}
+                      addVariant={addVariant}
+                      removeVariant={removeVariant}
+                      updateVariant={updateVariant}
+                    />
+                  </div>
                 )}
 
                 {/* Targeting Tab */}
                 {activeTab === 'targeting' && (
-                  <div className="h-[500px] overflow-y-auto pr-2 -mr-2">
+                  <div className="min-h-full">
                     <TargetingTab
                       linkData={linkData}
                       setLinkData={setLinkData}
@@ -176,7 +160,7 @@ export default function LinkModal({
 
                 {/* Tracking Tab */}
                 {activeTab === 'tracking' && (
-                  <div className="h-[500px] overflow-y-auto pr-2 -mr-2">
+                  <div className="min-h-full">
                     <TrackingTab
                       linkData={linkData}
                       addPixel={addPixel}
@@ -189,7 +173,7 @@ export default function LinkModal({
 
                 {/* Custom Domains Tab */}
                 {activeTab === 'domains' && (
-                  <div className="h-[500px] overflow-y-auto pr-2 -mr-2">
+                  <div className="min-h-full">
                     <CustomDomain
                       linkData={linkData}
                       setLinkData={setLinkData}
@@ -201,16 +185,8 @@ export default function LinkModal({
               </div>
             </div>
 
-            {/* Footer — Cancel and Create link equal width */}
-            <div className="grid grid-cols-2 gap-3 px-4 sm:px-6 py-4 pb-[env(safe-area-inset-bottom)] sm:pb-4 bg-gray-900 border-t border-gray-800/50 shrink-0">
-              <button
-                type="button"
-                onClick={onClose}
-                disabled={submitting}
-                className="w-full px-4 py-3 text-sm font-semibold text-gray-400 bg-gray-800/80 hover:bg-gray-800 hover:text-white rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-gray-700/50 hover:border-gray-600 min-h-[48px] touch-manipulation"
-              >
-                Cancel
-              </button>
+            {/* Footer — Create link full width */}
+            <div className="px-4 sm:px-6 py-4 pb-[env(safe-area-inset-bottom)] sm:pb-4 bg-gray-900 border-t border-gray-800/50 shrink-0">
               <LoadingButton
                 type="submit"
                 loading={submitting}

@@ -49,10 +49,8 @@ textarea,
 [role="button"] {
   -webkit-tap-highlight-color: transparent;
   min-height: 44px;
-  /* iOS recommended minimum */
   min-width: 44px;
   touch-action: manipulation;
-  /* Prevent double-tap zoom */
 }
 
 /* Ensure buttons are always touch-friendly */
@@ -74,9 +72,7 @@ input,
 select,
 textarea {
   @apply text-base;
-  /* Prevent zoom on iOS */
   font-size: 16px !important;
-  /* Critical for iOS */
 }
 
 /* Prevent double-tap zoom globally */
@@ -88,6 +84,137 @@ textarea {
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================
+   MODAL FIXES - CRITICAL
+========================== */
+
+/* Custom scrollbar for all content areas */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(31, 41, 55, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.6);
+  border-radius: 4px;
+  border: 2px solid rgba(31, 41, 55, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+/* Modal container - Fixed height */
+.link-modal-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  overflow: hidden;
+}
+
+/* Modal header - Fixed at top */
+.link-modal-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: inherit;
+}
+
+/* Modal tabs - Fixed below header */
+.link-modal-tabs {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  background: inherit;
+}
+
+/* Modal content - Scrollable area */
+.link-modal-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0; /* Important for flex scrolling */
+}
+
+/* Modal footer - Fixed at bottom */
+.link-modal-footer {
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: inherit;
+}
+
+/* Custom scrollbar for modal content */
+.link-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.link-modal-content::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 4px;
+}
+
+.link-modal-content::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.6);
+  border-radius: 4px;
+  border: 2px solid rgba(31, 41, 55, 0.3);
+}
+
+.link-modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+/* Firefox scrollbar */
+.link-modal-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(31, 41, 55, 0.3);
+}
+
+/* Mobile specific fixes */
+@media (max-width: 640px) {
+  .link-modal-container {
+    max-height: 92vh;
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
+  
+  .link-modal-content {
+    /* Account for: Header (60px) + Tabs (60px) + Footer (80px) + Safe area (20px) */
+    max-height: calc(92vh - 220px);
+  }
+  
+  /* Ensure close button is always visible */
+  .link-modal-header {
+    min-height: 60px;
+  }
+}
+
+/* Desktop specific */
+@media (min-width: 641px) {
+  .link-modal-container {
+    max-height: 85vh;
+  }
+  
+  .link-modal-content {
+    /* Account for: Header (70px) + Tabs (60px) + Footer (80px) */
+    max-height: calc(85vh - 210px);
+  }
 }
 
 /* ==========================
@@ -125,28 +252,19 @@ html {
     @apply px-3;
   }
 
-  /* Stack everything vertically */
   .grid {
     @apply grid-cols-1 gap-3;
   }
 
-  /* Smaller buttons on very small screens */
   button,
   .btn {
     @apply text-sm px-3 py-2;
   }
 
-  /* Card adjustments */
   .card,
   [class*="bg-white"],
   [class*="bg-gray"] {
     @apply p-3 rounded-lg;
-  }
-
-  /* Modal full screen on small devices */
-  .modal,
-  [role="dialog"] {
-    @apply m-2 max-h-[95vh] rounded-lg;
   }
 }
 
@@ -221,7 +339,6 @@ html {
 
 /* Large - Desktop (1025px - 1440px) */
 @media (min-width: 1025px) and (max-width: 1440px) {
-
   .container,
   .max-w-7xl {
     @apply px-8;
@@ -238,7 +355,6 @@ html {
 
 /* Extra Large - Large Desktop (1441px+) */
 @media (min-width: 1441px) {
-
   .container,
   .max-w-7xl {
     @apply px-10;
@@ -277,46 +393,6 @@ html {
 }
 
 /* ==========================
-   Responsive Spacing
-========================== */
-.spacing-responsive {
-  @apply space-y-3 sm:space-y-4 md:space-y-5 lg:space-y-6;
-}
-
-.padding-responsive {
-  @apply p-3 sm:p-4 md:p-5 lg:p-6 xl:p-8;
-}
-
-.margin-responsive {
-  @apply m-3 sm:m-4 md:m-5 lg:m-6 xl:m-8;
-}
-
-.gap-responsive {
-  @apply gap-3 sm:gap-4 md:gap-5 lg:gap-6;
-}
-
-/* ==========================
-   Container Queries (Modern Approach)
-========================== */
-@supports (container-type: inline-size) {
-  .container-query {
-    container-type: inline-size;
-  }
-
-  @container (min-width: 400px) {
-    .container-item {
-      @apply grid-cols-2;
-    }
-  }
-
-  @container (min-width: 600px) {
-    .container-item {
-      @apply grid-cols-3;
-    }
-  }
-}
-
-/* ==========================
    Safe Area (Notched Devices - iPhone X+)
 ========================== */
 @supports (padding: max(0px)) {
@@ -333,7 +409,6 @@ html {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 
-  /* Fixed headers/footers */
   .fixed-header {
     top: env(safe-area-inset-top);
   }
@@ -344,17 +419,8 @@ html {
 }
 
 /* ==========================
-   Responsive Images (Performance Optimized)
+   Custom Aspect Ratios
 ========================== */
-img[loading="lazy"] {
-  content-visibility: auto;
-}
-
-/* Aspect ratio boxes - FIXED VERSION */
-/* Note: Use Tailwind's built-in aspect-video and aspect-square classes directly in your HTML */
-/* Example: <div class="aspect-video">...</div> */
-
-/* Custom aspect ratios */
 .aspect-4-3 {
   aspect-ratio: 4 / 3;
 }
@@ -370,32 +436,26 @@ img[loading="lazy"] {
 /* ==========================
    Visibility Utilities
 ========================== */
-/* Hide on mobile */
 .hidden-mobile {
   @apply hidden sm:block;
 }
 
-/* Show only on mobile */
 .show-mobile {
   @apply block sm:hidden;
 }
 
-/* Hide on tablet */
 .hidden-tablet {
   @apply block md:hidden lg:block;
 }
 
-/* Show only on tablet */
 .show-tablet {
   @apply hidden md:block lg:hidden;
 }
 
-/* Hide on desktop */
 .hidden-desktop {
   @apply block lg:hidden;
 }
 
-/* Show only on desktop */
 .show-desktop {
   @apply hidden lg:block;
 }
@@ -403,9 +463,7 @@ img[loading="lazy"] {
 /* ==========================
    Performance Optimizations
 ========================== */
-/* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -416,9 +474,7 @@ img[loading="lazy"] {
   }
 }
 
-/* High contrast mode support */
 @media (prefers-contrast: high) {
-
   button,
   a,
   input {
@@ -426,7 +482,6 @@ img[loading="lazy"] {
   }
 }
 
-/* Dark mode optimizations */
 @media (prefers-color-scheme: dark) {
   img:not([src*=".svg"]) {
     opacity: 0.9;
@@ -434,63 +489,16 @@ img[loading="lazy"] {
 }
 
 /* ==========================
-   Print Styles
-========================== */
-@media print {
-
-  *,
-  *::before,
-  *::after {
-    background: transparent !important;
-    color: #000 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
-  }
-
-  a,
-  a:visited {
-    text-decoration: underline;
-  }
-
-  a[href]::after {
-    content: " (" attr(href) ")";
-  }
-
-  img {
-    page-break-inside: avoid;
-  }
-
-  h2,
-  h3,
-  p {
-    orphans: 3;
-    widows: 3;
-  }
-
-  h2,
-  h3 {
-    page-break-after: avoid;
-  }
-
-  .no-print {
-    display: none !important;
-  }
-}
-
-/* ==========================
    Accessibility Enhancements
 ========================== */
-/* Focus visible for keyboard navigation */
 :focus-visible {
   @apply outline-2 outline-offset-2 outline-blue-600 dark:outline-blue-400;
 }
 
-/* Skip to main content link */
 .skip-link {
   @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded;
 }
 
-/* Screen reader only text */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -515,46 +523,34 @@ img[loading="lazy"] {
 }
 
 /* ==========================
-   Component-Specific Responsive Styles
+   Cards
 ========================== */
-
-/* Modals */
-.modal-overlay {
-  @apply fixed inset-0 bg-black/50 z-40;
-}
-
-.modal-content {
-  @apply fixed z-50 bg-white dark:bg-gray-800 rounded-xl shadow-2xl;
-  @apply m-3 sm:m-6 md:m-8 lg:m-auto;
-  @apply max-h-[95vh] sm:max-h-[90vh] overflow-y-auto;
-  @apply w-[calc(100%-1.5rem)] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%];
-  @apply max-w-4xl;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-/* Cards */
 .card-responsive {
   @apply bg-white dark:bg-gray-800 rounded-lg shadow-md;
   @apply p-3 sm:p-4 md:p-5 lg:p-6;
   @apply space-y-3 sm:space-y-4;
 }
 
-/* Navigation */
+/* ==========================
+   Navigation
+========================== */
 .nav-responsive {
   @apply flex flex-col sm:flex-row;
   @apply gap-2 sm:gap-4 md:gap-6;
 }
 
-/* Buttons */
+/* ==========================
+   Buttons
+========================== */
 .btn-responsive {
   @apply px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3;
   @apply text-sm sm:text-base;
   @apply min-h-[44px] min-w-[44px];
 }
 
-/* Forms */
+/* ==========================
+   Forms
+========================== */
 .form-responsive {
   @apply space-y-3 sm:space-y-4;
 }
@@ -562,19 +558,22 @@ img[loading="lazy"] {
 .input-responsive {
   @apply w-full px-3 py-2 sm:px-4 sm:py-2.5;
   @apply text-base;
-  /* Prevent zoom on iOS */
   @apply rounded-lg border;
   @apply min-h-[44px];
 }
 
-/* Grid layouts */
+/* ==========================
+   Grid layouts
+========================== */
 .grid-responsive {
   @apply grid;
   @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
   @apply gap-3 sm:gap-4 md:gap-5 lg:gap-6;
 }
 
-/* Flex utilities */
+/* ==========================
+   Flex utilities
+========================== */
 .flex-responsive {
   @apply flex flex-col sm:flex-row;
   @apply gap-3 sm:gap-4 md:gap-5;
@@ -584,27 +583,12 @@ img[loading="lazy"] {
    Landscape Orientation
 ========================== */
 @media (max-height: 600px) and (orientation: landscape) {
-
-  /* Reduce vertical spacing in landscape */
-  .modal-content {
-    @apply max-h-[90vh] py-2;
+  .link-modal-content {
+    max-height: calc(90vh - 180px);
   }
 
   h1 {
     @apply text-xl;
-  }
-
-  .spacing-responsive {
-    @apply space-y-2;
-  }
-}
-
-/* ==========================
-   Foldable Devices Support (2025)
-========================== */
-@media (horizontal-viewport-segments: 2) {
-  .dual-screen {
-    @apply grid grid-cols-2;
   }
 }
 
@@ -625,7 +609,6 @@ img[loading="lazy"] {
   text-wrap: pretty;
 }
 
-/* Smooth transitions */
 .transition-smooth {
   @apply transition-all duration-300 ease-in-out;
 }
@@ -640,7 +623,7 @@ img[loading="lazy"] {
   display: none;
 }
 
-/* Extra small breakpoint (below 375px) */
+/* Extra small breakpoint */
 @media (max-width: 374px) {
   .xs\:inline {
     display: inline;
@@ -654,6 +637,5 @@ img[loading="lazy"] {
 @media (max-width: 768px) {
   body {
     padding-bottom: 68px;
-    /* Height of bottom nav + safe area */
   }
 }

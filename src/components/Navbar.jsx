@@ -10,6 +10,7 @@ import {
   User,
   UserCircle,
   SlidersHorizontal,
+  Settings,
   Sun,
   Moon,
   ChevronDown,
@@ -56,8 +57,15 @@ export default function Navbar() {
     business: { color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Crown }
   };
 
+  // Ultra-safe fallback
   const currentPlan = user?.plan || 'free';
-  const PlanIcon = planBadges[currentPlan]?.icon || User;
+  const safePlan = planBadges[currentPlan] || planBadges.free;
+  const PlanIcon = safePlan.icon;
+  const planColor = safePlan.color;
+
+  useEffect(() => {
+    console.log('Navbar Loaded v0.0.6 FIXED');
+  }, []);
 
   return (
     <>
@@ -129,9 +137,9 @@ export default function Navbar() {
                         <p className="text-xs text-gray-600 dark:text-gray-400 truncate">
                           {user?.email}
                         </p>
-                        <div className={`inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${planBadges[currentPlan]?.color}`}>
+                        <div className={`inline-flex items-center gap-1.5 mt-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${planColor}`}>
                           <PlanIcon className="w-3.5 h-3.5" />
-                          <span className="capitalize">{currentPlan} Plan</span>
+                          <span className="capitalize">{user?.plan || 'free'} Plan</span>
                         </div>
                       </div>
                     </div>

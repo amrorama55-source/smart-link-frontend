@@ -1,9 +1,0 @@
-# Allow all search engines
-User-agent: *
-Allow: /
-
-# Sitemap location
-Sitemap: https://www.smart-link.website/sitemap.xml
-
-# Crawl-delay
-Crawl-delay: 1

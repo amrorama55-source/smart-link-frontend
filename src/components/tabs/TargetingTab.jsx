@@ -7,7 +7,7 @@ const countries = [
   { code: 'US', name: 'United States', flag: '🇺🇸', region: 'North America' },
   { code: 'CA', name: 'Canada', flag: '🇨🇦', region: 'North America' },
   { code: 'MX', name: 'Mexico', flag: '🇲🇽', region: 'North America' },
-  
+
   // Europe - Western
   { code: 'GB', name: 'United Kingdom', flag: '🇬🇧', region: 'Europe' },
   { code: 'DE', name: 'Germany', flag: '🇩🇪', region: 'Europe' },
@@ -21,14 +21,14 @@ const countries = [
   { code: 'AT', name: 'Austria', flag: '🇦🇹', region: 'Europe' },
   { code: 'IE', name: 'Ireland', flag: '🇮🇪', region: 'Europe' },
   { code: 'LU', name: 'Luxembourg', flag: '🇱🇺', region: 'Europe' },
-  
+
   // Europe - Northern
   { code: 'SE', name: 'Sweden', flag: '🇸🇪', region: 'Europe' },
   { code: 'NO', name: 'Norway', flag: '🇳🇴', region: 'Europe' },
   { code: 'DK', name: 'Denmark', flag: '🇩🇰', region: 'Europe' },
   { code: 'FI', name: 'Finland', flag: '🇫🇮', region: 'Europe' },
   { code: 'IS', name: 'Iceland', flag: '🇮🇸', region: 'Europe' },
-  
+
   // Europe - Eastern
   { code: 'PL', name: 'Poland', flag: '🇵🇱', region: 'Europe' },
   { code: 'CZ', name: 'Czech Republic', flag: '🇨🇿', region: 'Europe' },
@@ -37,12 +37,12 @@ const countries = [
   { code: 'BG', name: 'Bulgaria', flag: '🇧🇬', region: 'Europe' },
   { code: 'UA', name: 'Ukraine', flag: '🇺🇦', region: 'Europe' },
   { code: 'RU', name: 'Russia', flag: '🇷🇺', region: 'Europe' },
-  
+
   // Europe - Southern
   { code: 'GR', name: 'Greece', flag: '🇬🇷', region: 'Europe' },
   { code: 'HR', name: 'Croatia', flag: '🇭🇷', region: 'Europe' },
   { code: 'SI', name: 'Slovenia', flag: '🇸🇮', region: 'Europe' },
-  
+
   // South America
   { code: 'BR', name: 'Brazil', flag: '🇧🇷', region: 'South America' },
   { code: 'AR', name: 'Argentina', flag: '🇦🇷', region: 'South America' },
@@ -54,14 +54,14 @@ const countries = [
   { code: 'BO', name: 'Bolivia', flag: '🇧🇴', region: 'South America' },
   { code: 'PY', name: 'Paraguay', flag: '🇵🇾', region: 'South America' },
   { code: 'UY', name: 'Uruguay', flag: '🇺🇾', region: 'South America' },
-  
+
   // Asia - East
   { code: 'CN', name: 'China', flag: '🇨🇳', region: 'Asia' },
   { code: 'JP', name: 'Japan', flag: '🇯🇵', region: 'Asia' },
   { code: 'KR', name: 'South Korea', flag: '🇰🇷', region: 'Asia' },
   { code: 'TW', name: 'Taiwan', flag: '🇹🇼', region: 'Asia' },
   { code: 'HK', name: 'Hong Kong', flag: '🇭🇰', region: 'Asia' },
-  
+
   // Asia - Southeast
   { code: 'SG', name: 'Singapore', flag: '🇸🇬', region: 'Asia' },
   { code: 'MY', name: 'Malaysia', flag: '🇲🇾', region: 'Asia' },
@@ -69,12 +69,12 @@ const countries = [
   { code: 'VN', name: 'Vietnam', flag: '🇻🇳', region: 'Asia' },
   { code: 'PH', name: 'Philippines', flag: '🇵🇭', region: 'Asia' },
   { code: 'ID', name: 'Indonesia', flag: '🇮🇩', region: 'Asia' },
-  
+
   // Asia - South
   { code: 'IN', name: 'India', flag: '🇮🇳', region: 'Asia' },
   { code: 'PK', name: 'Pakistan', flag: '🇵🇰', region: 'Asia' },
   { code: 'BD', name: 'Bangladesh', flag: '🇧🇩', region: 'Asia' },
-  
+
   // Middle East
   { code: 'AE', name: 'UAE', flag: '🇦🇪', region: 'Middle East' },
   { code: 'SA', name: 'Saudi Arabia', flag: '🇸🇦', region: 'Middle East' },
@@ -90,7 +90,7 @@ const countries = [
   { code: 'PS', name: 'Palestine', flag: '🇵🇸', region: 'Middle East' },
   { code: 'IL', name: 'Israel', flag: '🇮🇱', region: 'Middle East' },
   { code: 'TR', name: 'Turkey', flag: '🇹🇷', region: 'Middle East' },
-  
+
   // Africa - North
   { code: 'EG', name: 'Egypt', flag: '🇪🇬', region: 'Africa' },
   { code: 'MA', name: 'Morocco', flag: '🇲🇦', region: 'Africa' },
@@ -98,14 +98,14 @@ const countries = [
   { code: 'DZ', name: 'Algeria', flag: '🇩🇿', region: 'Africa' },
   { code: 'LY', name: 'Libya', flag: '🇱🇾', region: 'Africa' },
   { code: 'SD', name: 'Sudan', flag: '🇸🇩', region: 'Africa' },
-  
+
   // Africa - Sub-Saharan
   { code: 'ZA', name: 'South Africa', flag: '🇿🇦', region: 'Africa' },
   { code: 'NG', name: 'Nigeria', flag: '🇳🇬', region: 'Africa' },
   { code: 'KE', name: 'Kenya', flag: '🇰🇪', region: 'Africa' },
   { code: 'GH', name: 'Ghana', flag: '🇬🇭', region: 'Africa' },
   { code: 'ET', name: 'Ethiopia', flag: '🇪🇹', region: 'Africa' },
-  
+
   // Oceania
   { code: 'AU', name: 'Australia', flag: '🇦🇺', region: 'Oceania' },
   { code: 'NZ', name: 'New Zealand', flag: '🇳🇿', region: 'Oceania' }
@@ -170,7 +170,7 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
           placeholder="🔍 Search countries..."
           className="w-full px-4 py-3 pr-24 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white text-sm placeholder-gray-500 dark:placeholder-gray-400"
         />
-        
+
         {/* Counter Badge - FIXED POSITION */}
         {selectedCountries.length > 0 && (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 px-2.5 py-1 bg-blue-600 text-white text-xs font-bold rounded-full">
@@ -183,11 +183,11 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
       {showDropdown && (
         <>
           {/* Backdrop */}
-          <div 
+          <div
             className="fixed inset-0 z-10"
             onClick={() => setShowDropdown(false)}
           />
-          
+
           {/* Dropdown Content */}
           <div className="absolute z-20 w-full mt-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-xl max-h-72 overflow-y-auto">
             {filteredCountries.length > 0 ? (
@@ -196,7 +196,7 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
                 {['North America', 'Europe', 'South America', 'Asia', 'Middle East', 'Africa', 'Oceania'].map(region => {
                   const regionCountries = filteredCountries.filter(c => c.region === region);
                   if (regionCountries.length === 0) return null;
-                  
+
                   return (
                     <div key={region}>
                       <div className="sticky top-0 px-4 py-2 bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
@@ -211,9 +211,8 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
                             key={country.code}
                             type="button"
                             onClick={() => toggleCountry(country.code)}
-                            className={`w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition ${
-                              isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''
-                            }`}
+                            className={`w-full flex items-center justify-between px-4 py-2.5 text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition ${isSelected ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                              }`}
                           >
                             <span className="flex items-center gap-2.5">
                               <span className="text-xl">{country.flag}</span>
@@ -242,13 +241,13 @@ function CountrySelector({ selectedCountries, onChange, ruleIndex }) {
   );
 }
 
-export default function TargetingTab({ 
-  linkData, 
-  setLinkData, 
-  errors, 
-  addGeoRule, 
-  removeGeoRule, 
-  updateGeoRule 
+export default function TargetingTab({
+  linkData,
+  setLinkData,
+  errors,
+  addGeoRule,
+  removeGeoRule,
+  updateGeoRule
 }) {
   const [showDeviceSchedule, setShowDeviceSchedule] = useState(false);
 
@@ -264,7 +263,7 @@ export default function TargetingTab({
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-6 min-h-full">
       {/* ======================================== */}
       {/* GEOTARGETING */}
       {/* ======================================== */}
@@ -396,172 +395,172 @@ export default function TargetingTab({
           {showDeviceSchedule ? <ChevronUp className="w-5 h-5 text-slate-500" /> : <ChevronDown className="w-5 h-5 text-slate-500" />}
         </button>
         <div className={`${showDeviceSchedule ? 'block' : 'hidden'} sm:block`}>
-      {/* ======================================== */}
-      {/* DEVICE TARGETING */}
-      {/* ======================================== */}
-      <div>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-            <Smartphone className="w-6 h-6 text-green-600 dark:text-green-400" />
-          </div>
+          {/* ======================================== */}
+          {/* DEVICE TARGETING */}
+          {/* ======================================== */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white">Device Targeting</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Redirect based on device type</p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
-              📱 Mobile URL
-            </label>
-            <input
-              type="url"
-              value={linkData.deviceRules?.mobile || ''}
-              onChange={(e) => setLinkData({
-                ...linkData,
-                deviceRules: {...(linkData.deviceRules || {}), mobile: e.target.value}
-              })}
-              placeholder="https://m.example.com"
-              autoComplete="off"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
-              💻 Desktop URL
-            </label>
-            <input
-              type="url"
-              value={linkData.deviceRules?.desktop || ''}
-              onChange={(e) => setLinkData({
-                ...linkData,
-                deviceRules: {...(linkData.deviceRules || {}), desktop: e.target.value}
-              })}
-              placeholder="https://www.example.com"
-              autoComplete="off"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
-              📱 Tablet URL
-            </label>
-            <input
-              type="url"
-              value={linkData.deviceRules?.tablet || ''}
-              onChange={(e) => setLinkData({
-                ...linkData,
-                deviceRules: {...(linkData.deviceRules || {}), tablet: e.target.value}
-              })}
-              placeholder="https://tablet.example.com"
-              autoComplete="off"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* ======================================== */}
-      {/* LINK SCHEDULING */}
-      {/* ======================================== */}
-      <div>
-        <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900/10 rounded-lg border border-orange-200 dark:border-orange-800/30 mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white">Link Scheduling</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Set active time period</p>
-            </div>
-          </div>
-          
-          <label className="relative inline-flex items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={linkData.schedule?.enabled || false}
-              onChange={(e) => setLinkData({
-                ...linkData,
-                schedule: {...(linkData.schedule || {}), enabled: e.target.checked}
-              })}
-              className="sr-only peer"
-            />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
-          </label>
-        </div>
-
-        {linkData.schedule?.enabled && (
-          <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-600">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <Smartphone className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                  🕐 Start Date & Time
+                <h3 className="font-semibold text-gray-900 dark:text-white">Device Targeting</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Redirect based on device type</p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  📱 Mobile URL
                 </label>
                 <input
-                  type="datetime-local"
-                  value={linkData.schedule?.startDate || ''}
+                  type="url"
+                  value={linkData.deviceRules?.mobile || ''}
                   onChange={(e) => setLinkData({
                     ...linkData,
-                    schedule: {...(linkData.schedule || {}), startDate: e.target.value}
+                    deviceRules: { ...(linkData.deviceRules || {}), mobile: e.target.value }
                   })}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  placeholder="https://m.example.com"
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                  🕐 End Date & Time
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  💻 Desktop URL
                 </label>
                 <input
-                  type="datetime-local"
-                  value={linkData.schedule?.endDate || ''}
+                  type="url"
+                  value={linkData.deviceRules?.desktop || ''}
                   onChange={(e) => setLinkData({
                     ...linkData,
-                    schedule: {...(linkData.schedule || {}), endDate: e.target.value}
+                    deviceRules: { ...(linkData.deviceRules || {}), desktop: e.target.value }
                   })}
-                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  placeholder="https://www.example.com"
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  📱 Tablet URL
+                </label>
+                <input
+                  type="url"
+                  value={linkData.deviceRules?.tablet || ''}
+                  onChange={(e) => setLinkData({
+                    ...linkData,
+                    deviceRules: { ...(linkData.deviceRules || {}), tablet: e.target.value }
+                  })}
+                  placeholder="https://tablet.example.com"
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 />
               </div>
             </div>
+          </div>
 
-            <div>
-              <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                🔗 Redirect After Expiry (Optional)
+          {/* ======================================== */}
+          {/* LINK SCHEDULING */}
+          {/* ======================================== */}
+          <div>
+            <div className="flex items-center justify-between p-4 bg-orange-50 dark:bg-orange-900/10 rounded-lg border border-orange-200 dark:border-orange-800/30 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                  <Calendar className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Link Scheduling</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Set active time period</p>
+                </div>
+              </div>
+
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={linkData.schedule?.enabled || false}
+                  onChange={(e) => setLinkData({
+                    ...linkData,
+                    schedule: { ...(linkData.schedule || {}), enabled: e.target.checked }
+                  })}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-orange-600"></div>
               </label>
-              <input
-                type="url"
-                value={linkData.schedule?.redirectAfterExpiry || ''}
-                onChange={(e) => setLinkData({
-                  ...linkData,
-                  schedule: {...(linkData.schedule || {}), redirectAfterExpiry: e.target.value}
-                })}
-                placeholder="https://example.com/expired"
-                autoComplete="off"
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-              />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Where to redirect users after the link expires
-              </p>
             </div>
 
-            {errors.schedule && (
-              <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-                <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  {errors.schedule}
-                </p>
+            {linkData.schedule?.enabled && (
+              <div className="space-y-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      🕐 Start Date & Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={linkData.schedule?.startDate || ''}
+                      onChange={(e) => setLinkData({
+                        ...linkData,
+                        schedule: { ...(linkData.schedule || {}), startDate: e.target.value }
+                      })}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      🕐 End Date & Time
+                    </label>
+                    <input
+                      type="datetime-local"
+                      value={linkData.schedule?.endDate || ''}
+                      onChange={(e) => setLinkData({
+                        ...linkData,
+                        schedule: { ...(linkData.schedule || {}), endDate: e.target.value }
+                      })}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                    🔗 Redirect After Expiry (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={linkData.schedule?.redirectAfterExpiry || ''}
+                    onChange={(e) => setLinkData({
+                      ...linkData,
+                      schedule: { ...(linkData.schedule || {}), redirectAfterExpiry: e.target.value }
+                    })}
+                    placeholder="https://example.com/expired"
+                    autoComplete="off"
+                    className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                  />
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Where to redirect users after the link expires
+                  </p>
+                </div>
+
+                {errors.schedule && (
+                  <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                    <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.schedule}
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
 
         </div>
       </div>
-      
+
     </div>
   );
 }

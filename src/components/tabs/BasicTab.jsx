@@ -47,7 +47,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-6 min-h-full">
 
       {/* Original URL */}
       <div>
@@ -113,155 +113,176 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         />
       </div>
 
-      {/* Description - fewer rows on mobile */}
-      <div>
-        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
-          <FileText className="inline w-4 h-4 mr-1" />
-          Description
-        </label>
-        <textarea
-          value={linkData.description || ''}
-          onChange={(e) => setLinkData({ ...linkData, description: e.target.value })}
-          placeholder="Add notes about this link..."
-          autoComplete="off"
-          rows={2}
-          maxLength={1000}
-          className="w-full px-4 py-3 min-h-[80px] sm:min-h-[96px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white resize-none sm:resize-y"
-        />
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 text-right">
-          {linkData.description?.length || 0}/1000
-        </p>
-      </div>
-
-      {/* Tags */}
-      <div>
-        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
-          <Tag className="inline w-4 h-4 mr-1" />
-          Tags (Optional)
-        </label>
-        <div className="flex flex-wrap gap-2 p-3 min-h-[48px] bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:border-blue-500">
-          {tags.map((tag, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium border border-blue-200/50 dark:border-blue-700/50"
-            >
-              {tag}
-              <button
-                type="button"
-                onClick={() => removeTag(tag)}
-                className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-1 min-w-[28px] min-h-[28px] flex items-center justify-center transition-colors touch-manipulation"
-                aria-label={`Remove tag ${tag}`}
-              >
-                <X className="w-3.5 h-3.5" />
-              </button>
-            </span>
-          ))}
-          <input
-            type="text"
-            value={tagInput}
-            onChange={handleTagInput}
-            onKeyDown={handleTagKeyDown}
-            placeholder={tags.length === 0 ? "Add tags..." : ""}
-            autoComplete="off"
-            className="flex-1 min-w-[100px] outline-none bg-transparent dark:text-white text-base"
-          />
-        </div>
-      </div>
-
-      {/* Expiration Date */}
-      <div>
-        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
-          <Calendar className="inline w-4 h-4 mr-1" />
-          Expiration Date (Optional)
-        </label>
-        <input
-          type="datetime-local"
-          value={linkData.expiresAt || ''}
-          onChange={(e) => setLinkData({ ...linkData, expiresAt: e.target.value })}
-          className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white dark:[color-scheme:dark]"
-        />
-      </div>
-
-      {/* UTM Parameters - Collapsible */}
-      <div className="border-t border-slate-200 dark:border-slate-800 pt-3 mt-3 sm:pt-4 sm:mt-4">
+      {/* More Options Toggle (Mobile Only) */}
+      <div className="sm:hidden border-t border-slate-200 dark:border-slate-800 pt-4">
         <button
           type="button"
-          onClick={() => setShowUTM(!showUTM)}
-          className="w-full flex items-center justify-between p-3 min-h-[48px] bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all group touch-manipulation"
-          aria-expanded={showUTM}
+          onClick={() => setShowMoreOptions(!showMoreOptions)}
+          className="w-full flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
         >
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-inner">
-              📊
-            </div>
-            <div className="text-left">
-              <h3 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                UTM Parameters
-              </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Campaign tracking (Optional)
-              </p>
-            </div>
-          </div>
-          <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all text-xs ${showUTM ? 'bg-blue-600 text-white rotate-180 shadow-lg shadow-blue-500/30' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
-            ▼
-          </div>
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            {showMoreOptions ? 'Hide optional fields' : 'More options (Description, Tags...)'}
+          </span>
+          {showMoreOptions ? (
+            <ChevronUp className="w-5 h-5 text-slate-500" />
+          ) : (
+            <ChevronDown className="w-5 h-5 text-slate-500" />
+          )}
         </button>
+      </div>
 
-        {showUTM && (
-          <div className="space-y-3 p-3 mt-2 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/50 rounded-lg p-2">
-              <p className="text-xs text-amber-800 dark:text-amber-200 flex gap-2">
-                <span className="shrink-0">💡</span>
-                <span>Leave empty if you don't use Google Analytics.</span>
-              </p>
-            </div>
+      {/* Collapsible Content */}
+      <div className={`${showMoreOptions ? 'block' : 'hidden'} sm:block space-y-6 animate-in fade-in slide-in-from-top-4 duration-300`}>
+        {/* Description - fewer rows on mobile */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
+            <FileText className="inline w-4 h-4 mr-1" />
+            Description
+          </label>
+          <textarea
+            value={linkData.description || ''}
+            onChange={(e) => setLinkData({ ...linkData, description: e.target.value })}
+            placeholder="Add notes about this link..."
+            autoComplete="off"
+            rows={2}
+            maxLength={1000}
+            className="w-full px-4 py-3 min-h-[80px] sm:min-h-[96px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white resize-none sm:resize-y"
+          />
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 text-right">
+            {linkData.description?.length || 0}/1000
+          </p>
+        </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
-                  Source
-                </label>
-                <input
-                  type="text"
-                  value={linkData.utmSource || ''}
-                  onChange={(e) => setLinkData({ ...linkData, utmSource: e.target.value })}
-                  placeholder="e.g. facebook"
-                  autoComplete="off"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
-                  Medium
-                </label>
-                <input
-                  type="text"
-                  value={linkData.utmMedium || ''}
-                  onChange={(e) => setLinkData({ ...linkData, utmMedium: e.target.value })}
-                  placeholder="e.g. cpc"
-                  autoComplete="off"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
-                  Campaign
-                </label>
-                <input
-                  type="text"
-                  value={linkData.utmCampaign || ''}
-                  onChange={(e) => setLinkData({ ...linkData, utmCampaign: e.target.value })}
-                  placeholder="e.g. summer_sale"
-                  autoComplete="off"
-                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
-                />
-              </div>
-            </div>
+        {/* Tags */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
+            <Tag className="inline w-4 h-4 mr-1" />
+            Tags (Optional)
+          </label>
+          <div className="flex flex-wrap gap-2 p-3 min-h-[48px] bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:border-blue-500">
+            {tags.map((tag, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium border border-blue-200/50 dark:border-blue-700/50"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag)}
+                  className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-1 min-w-[28px] min-h-[28px] flex items-center justify-center transition-colors touch-manipulation"
+                  aria-label={`Remove tag ${tag}`}
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </span>
+            ))}
+            <input
+              type="text"
+              value={tagInput}
+              onChange={handleTagInput}
+              onKeyDown={handleTagKeyDown}
+              placeholder={tags.length === 0 ? "Add tags..." : ""}
+              autoComplete="off"
+              className="flex-1 min-w-[100px] outline-none bg-transparent dark:text-white text-base"
+            />
           </div>
-        )}
+        </div>
+
+        {/* Expiration Date */}
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
+            <Calendar className="inline w-4 h-4 mr-1" />
+            Expiration Date (Optional)
+          </label>
+          <input
+            type="datetime-local"
+            value={linkData.expiresAt || ''}
+            onChange={(e) => setLinkData({ ...linkData, expiresAt: e.target.value })}
+            className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white dark:[color-scheme:dark]"
+          />
+        </div>
+
+        {/* UTM Parameters - Collapsible */}
+        <div className="border-t border-slate-200 dark:border-slate-800 pt-3 mt-3 sm:pt-4 sm:mt-4">
+          <button
+            type="button"
+            onClick={() => setShowUTM(!showUTM)}
+            className="w-full flex items-center justify-between p-3 min-h-[48px] bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all group touch-manipulation"
+            aria-expanded={showUTM}
+          >
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-inner">
+                📊
+              </div>
+              <div className="text-left">
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                  UTM Parameters
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Campaign tracking (Optional)
+                </p>
+              </div>
+            </div>
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all text-xs ${showUTM ? 'bg-blue-600 text-white rotate-180 shadow-lg shadow-blue-500/30' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+              ▼
+            </div>
+          </button>
+
+          {showUTM && (
+            <div className="space-y-3 p-3 mt-2 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-2 duration-300">
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/50 rounded-lg p-2">
+                <p className="text-xs text-amber-800 dark:text-amber-200 flex gap-2">
+                  <span className="shrink-0">💡</span>
+                  <span>Leave empty if you don't use Google Analytics.</span>
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
+                    Source
+                  </label>
+                  <input
+                    type="text"
+                    value={linkData.utmSource || ''}
+                    onChange={(e) => setLinkData({ ...linkData, utmSource: e.target.value })}
+                    placeholder="e.g. facebook"
+                    autoComplete="off"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
+                    Medium
+                  </label>
+                  <input
+                    type="text"
+                    value={linkData.utmMedium || ''}
+                    onChange={(e) => setLinkData({ ...linkData, utmMedium: e.target.value })}
+                    placeholder="e.g. cpc"
+                    autoComplete="off"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
+                    Campaign
+                  </label>
+                  <input
+                    type="text"
+                    value={linkData.utmCampaign || ''}
+                    onChange={(e) => setLinkData({ ...linkData, utmCampaign: e.target.value })}
+                    placeholder="e.g. summer_sale"
+                    autoComplete="off"
+                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
     </div>

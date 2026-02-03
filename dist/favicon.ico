@@ -1,208 +1,0 @@
-import React, { useState } from 'react';
-import { Download, Link2, AlertCircle, CheckCircle2 } from 'lucide-react';
-
-export default function FaviconIcoGenerator() {
-  const [status, setStatus] = useState('idle');
-
-  const generateFaviconIco = () => {
-    setStatus('generating');
-    
-    const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    
-    if (!ctx) return;
-
-    // Background gradient
-    const gradient = ctx.createLinearGradient(0, 0, 32, 32);
-    gradient.addColorStop(0, '#3b82f6');
-    gradient.addColorStop(1, '#1d4ed8');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 32, 32);
-
-    // Draw link chain icon
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2.5;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    // Left link part
-    ctx.beginPath();
-    ctx.arc(12, 12, 4, Math.PI * 0.75, Math.PI * 1.75);
-    ctx.stroke();
-
-    // Right link part
-    ctx.beginPath();
-    ctx.arc(20, 20, 4, Math.PI * 1.75, Math.PI * 0.75);
-    ctx.stroke();
-
-    // Middle connector
-    ctx.beginPath();
-    ctx.moveTo(14, 10);
-    ctx.lineTo(18, 22);
-    ctx.stroke();
-
-    // Convert to ICO format (using PNG as fallback since ICO requires special encoding)
-    canvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'favicon.ico';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      setStatus('success');
-      setTimeout(() => setStatus('idle'), 3000);
-    }, 'image/png');
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-2xl mb-4">
-            <Link2 className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Favicon.ico Generator
-          </h1>
-          <p className="text-gray-600">
-            حل مشكلة 404 - إنشاء favicon.ico للمتصفحات القديمة
-          </p>
-        </div>
-
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
-            <div className="flex gap-3">
-              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-amber-900 mb-1">
-                  المشكلة الحالية:
-                </h3>
-                <p className="text-sm text-amber-800">
-                  <code className="bg-amber-100 px-2 py-1 rounded">
-                    GET /favicon.ico 404 (Not Found)
-                  </code>
-                </p>
-                <p className="text-sm text-amber-700 mt-2">
-                  بعض المتصفحات بتدور على الملف التقليدي favicon.ico
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center mb-6">
-            <div className="inline-block p-4 bg-gray-50 rounded-xl">
-              <div 
-                className="w-32 h-32 rounded-lg shadow-lg"
-                style={{
-                  background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Link2 className="w-16 h-16 text-white" strokeWidth={2.5} />
-              </div>
-            </div>
-            <p className="text-sm text-gray-600 mt-3">
-              32x32 pixels - متوافق مع جميع المتصفحات
-            </p>
-          </div>
-
-          <button
-            onClick={generateFaviconIco}
-            disabled={status === 'generating'}
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl disabled:cursor-not-allowed"
-          >
-            {status === 'generating' ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>جاري الإنشاء...</span>
-              </>
-            ) : status === 'success' ? (
-              <>
-                <CheckCircle2 className="w-5 h-5" />
-                <span>تم التنزيل بنجاح!</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-5 h-5" />
-                <span>📦 تنزيل favicon.ico</span>
-              </>
-            )}
-          </button>
-
-          <div className="mt-8 space-y-4">
-            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-              <span className="flex items-center justify-center w-6 h-6 bg-blue-100 text-blue-600 rounded-full text-sm">
-                1
-              </span>
-              خطوات التطبيق:
-            </h3>
-            
-            <div className="space-y-3 text-sm">
-              <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-                <span className="font-mono text-blue-600">→</span>
-                <div>
-                  <p className="font-medium text-gray-900 mb-1">اضغط على الزر أعلاه</p>
-                  <p className="text-gray-600">راح ينزّل ملف <code className="bg-white px-2 py-0.5 rounded">favicon.ico</code></p>
-                </div>
-              </div>
-
-              <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-                <span className="font-mono text-blue-600">→</span>
-                <div>
-                  <p className="font-medium text-gray-900 mb-1">انقل الملف للمشروع</p>
-                  <code className="block bg-white px-3 py-2 rounded mt-2 text-xs">
-                    cp favicon.ico frontend/public/
-                  </code>
-                </div>
-              </div>
-
-              <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-                <span className="font-mono text-blue-600">→</span>
-                <div>
-                  <p className="font-medium text-gray-900 mb-1">حدّث index.html</p>
-                  <code className="block bg-white px-3 py-2 rounded mt-2 text-xs overflow-x-auto">
-                    {'<link rel="icon" href="/favicon.ico" sizes="any" />'}
-                  </code>
-                </div>
-              </div>
-
-              <div className="flex gap-3 p-3 bg-gray-50 rounded-lg">
-                <span className="font-mono text-blue-600">→</span>
-                <div>
-                  <p className="font-medium text-gray-900 mb-1">امسح الـ cache وجرّب</p>
-                  <p className="text-gray-600">Ctrl + Shift + R (أو Cmd + Shift + R على Mac)</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
-            <div className="flex gap-3">
-              <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-green-900 mb-1">النتيجة:</h4>
-                <div className="text-sm text-green-800 space-y-1">
-                  <p>✅ مافي خطأ 404</p>
-                  <p>✅ الأيقونة تظهر في جميع المتصفحات</p>
-                  <p>✅ متوافق مع المتصفحات القديمة والحديثة</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>
-            💡 <strong>ملاحظة:</strong> favicon.ico هو الشكل التقليدي اللي بتدور عليه المتصفحات تلقائياً
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
