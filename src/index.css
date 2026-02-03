@@ -39,7 +39,7 @@ svg {
 }
 
 /* ==========================
-   Touch-Friendly Elements (2025 Standards)
+   Touch-Friendly Elements
 ========================== */
 button,
 a,
@@ -53,7 +53,6 @@ textarea,
   touch-action: manipulation;
 }
 
-/* Ensure buttons are always touch-friendly */
 button,
 .btn,
 [type="button"],
@@ -62,12 +61,10 @@ button,
   cursor: pointer;
 }
 
-/* Links spacing for touch */
 a {
   @apply inline-block;
 }
 
-/* Form elements */
 input,
 select,
 textarea {
@@ -75,325 +72,56 @@ textarea {
   font-size: 16px !important;
 }
 
-/* Prevent double-tap zoom globally */
 * {
   touch-action: manipulation;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
 /* ==========================
-   MODAL FIXES - CRITICAL
+   Custom Scrollbar
 ========================== */
-
-/* Custom scrollbar for all content areas */
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: rgba(59, 130, 246, 0.6) rgba(31, 41, 55, 0.3);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
   background: rgba(31, 41, 55, 0.3);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(59, 130, 246, 0.6);
-  border-radius: 4px;
-  border: 2px solid rgba(31, 41, 55, 0.3);
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(59, 130, 246, 0.8);
 }
 
-/* Modal container - Fixed height */
-.link-modal-container {
-  display: flex;
-  flex-direction: column;
-  max-height: 92vh;
-  overflow: hidden;
-}
-
-/* Modal header - Fixed at top */
-.link-modal-header {
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: inherit;
-}
-
-/* Modal tabs - Fixed below header */
-.link-modal-tabs {
-  flex-shrink: 0;
-  position: sticky;
-  top: 0;
-  z-index: 9;
-  background: inherit;
-}
-
-/* Modal content - Scrollable area */
-.link-modal-content {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  min-height: 0; /* Important for flex scrolling */
-}
-
-/* Modal footer - Fixed at bottom */
-.link-modal-footer {
-  flex-shrink: 0;
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-  background: inherit;
-}
-
-/* Custom scrollbar for modal content */
-.link-modal-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.link-modal-content::-webkit-scrollbar-track {
-  background: rgba(31, 41, 55, 0.3);
-  border-radius: 4px;
-}
-
-.link-modal-content::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.6);
-  border-radius: 4px;
-  border: 2px solid rgba(31, 41, 55, 0.3);
-}
-
-.link-modal-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.8);
-}
-
-/* Firefox scrollbar */
-.link-modal-content {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(31, 41, 55, 0.3);
-}
-
-/* Mobile specific fixes */
-@media (max-width: 640px) {
-  .link-modal-container {
-    max-height: 92vh;
-    border-radius: 1.5rem 1.5rem 0 0;
-  }
-  
-  .link-modal-content {
-    /* Account for: Header (60px) + Tabs (60px) + Footer (80px) + Safe area (20px) */
-    max-height: calc(92vh - 220px);
-  }
-  
-  /* Ensure close button is always visible */
-  .link-modal-header {
-    min-height: 60px;
-  }
-}
-
-/* Desktop specific */
-@media (min-width: 641px) {
-  .link-modal-container {
-    max-height: 85vh;
-  }
-  
-  .link-modal-content {
-    /* Account for: Header (70px) + Tabs (60px) + Footer (80px) */
-    max-height: calc(85vh - 210px);
-  }
-}
-
 /* ==========================
-   Modern Breakpoints (2025 Standards)
+   Hide Scrollbar
 ========================== */
-
-/* Extra Small - Mobile Portrait (320px - 480px) */
-@media (min-width: 320px) and (max-width: 480px) {
-  html {
-    font-size: 14px;
-  }
-
-  body {
-    font-size: 0.875rem;
-  }
-
-  h1 {
-    @apply text-2xl;
-  }
-
-  h2 {
-    @apply text-xl;
-  }
-
-  h3 {
-    @apply text-lg;
-  }
-
-  h4 {
-    @apply text-base;
-  }
-
-  .container,
-  .max-w-7xl {
-    @apply px-3;
-  }
-
-  .grid {
-    @apply grid-cols-1 gap-3;
-  }
-
-  button,
-  .btn {
-    @apply text-sm px-3 py-2;
-  }
-
-  .card,
-  [class*="bg-white"],
-  [class*="bg-gray"] {
-    @apply p-3 rounded-lg;
-  }
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-/* Small - Mobile Landscape (481px - 768px) */
-@media (min-width: 481px) and (max-width: 768px) {
-  html {
-    font-size: 15px;
-  }
-
-  h1 {
-    @apply text-3xl;
-  }
-
-  h2 {
-    @apply text-2xl;
-  }
-
-  h3 {
-    @apply text-xl;
-  }
-
-  .container,
-  .max-w-7xl {
-    @apply px-4;
-  }
-
-  .grid {
-    @apply gap-4;
-  }
-
-  button,
-  .btn {
-    @apply px-4 py-2.5;
-  }
-
-  .card {
-    @apply p-4;
-  }
-}
-
-/* Medium - Tablet (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  html {
-    font-size: 16px;
-  }
-
-  h1 {
-    @apply text-4xl;
-  }
-
-  h2 {
-    @apply text-3xl;
-  }
-
-  h3 {
-    @apply text-2xl;
-  }
-
-  .container,
-  .max-w-7xl {
-    @apply px-6;
-  }
-
-  .grid {
-    @apply gap-5;
-  }
-
-  .card {
-    @apply p-5;
-  }
-}
-
-/* Large - Desktop (1025px - 1440px) */
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .container,
-  .max-w-7xl {
-    @apply px-8;
-  }
-
-  .grid {
-    @apply gap-6;
-  }
-
-  .card {
-    @apply p-6;
-  }
-}
-
-/* Extra Large - Large Desktop (1441px+) */
-@media (min-width: 1441px) {
-  .container,
-  .max-w-7xl {
-    @apply px-10;
-  }
-
-  .grid {
-    @apply gap-8;
-  }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* ==========================
-   Responsive Typography
-========================== */
-.text-fluid-sm {
-  font-size: clamp(0.875rem, 2vw, 1rem);
-}
-
-.text-fluid-base {
-  font-size: clamp(1rem, 2.5vw, 1.125rem);
-}
-
-.text-fluid-lg {
-  font-size: clamp(1.125rem, 3vw, 1.5rem);
-}
-
-.text-fluid-xl {
-  font-size: clamp(1.25rem, 3.5vw, 2rem);
-}
-
-.text-fluid-2xl {
-  font-size: clamp(1.5rem, 4vw, 3rem);
-}
-
-.text-fluid-3xl {
-  font-size: clamp(2rem, 5vw, 4rem);
-}
-
-/* ==========================
-   Safe Area (Notched Devices - iPhone X+)
+   Safe Area Support
 ========================== */
 @supports (padding: max(0px)) {
   body {
@@ -408,95 +136,64 @@ html {
   .safe-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
-
-  .fixed-header {
-    top: env(safe-area-inset-top);
-  }
-
-  .fixed-footer {
-    bottom: env(safe-area-inset-bottom);
-  }
 }
 
 /* ==========================
-   Custom Aspect Ratios
+   Mobile Optimizations
 ========================== */
-.aspect-4-3 {
-  aspect-ratio: 4 / 3;
-}
-
-.aspect-3-2 {
-  aspect-ratio: 3 / 2;
-}
-
-.aspect-21-9 {
-  aspect-ratio: 21 / 9;
-}
-
-/* ==========================
-   Visibility Utilities
-========================== */
-.hidden-mobile {
-  @apply hidden sm:block;
-}
-
-.show-mobile {
-  @apply block sm:hidden;
-}
-
-.hidden-tablet {
-  @apply block md:hidden lg:block;
-}
-
-.show-tablet {
-  @apply hidden md:block lg:hidden;
-}
-
-.hidden-desktop {
-  @apply block lg:hidden;
-}
-
-.show-desktop {
-  @apply hidden lg:block;
-}
-
-/* ==========================
-   Performance Optimizations
-========================== */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+@media (max-width: 640px) {
+  /* Smaller font sizes for very small screens */
+  html {
+    font-size: 14px;
   }
-}
 
-@media (prefers-contrast: high) {
+  body {
+    padding-bottom: 68px;
+  }
+
+  /* Better button sizing */
   button,
-  a,
-  input {
-    @apply border-2 border-current;
+  .btn {
+    @apply text-sm px-3 py-2;
   }
-}
 
-@media (prefers-color-scheme: dark) {
-  img:not([src*=".svg"]) {
-    opacity: 0.9;
+  /* Compact cards */
+  .card {
+    @apply p-3 rounded-lg;
+  }
+
+  /* Headings */
+  h1 {
+    @apply text-xl;
+  }
+
+  h2 {
+    @apply text-lg;
+  }
+
+  h3 {
+    @apply text-base;
   }
 }
 
 /* ==========================
-   Accessibility Enhancements
+   Landscape Mode
+========================== */
+@media (max-height: 600px) and (orientation: landscape) {
+  h1 {
+    @apply text-lg;
+  }
+
+  h2 {
+    @apply text-base;
+  }
+}
+
+/* ==========================
+   Accessibility
 ========================== */
 :focus-visible {
-  @apply outline-2 outline-offset-2 outline-blue-600 dark:outline-blue-400;
-}
-
-.skip-link {
-  @apply sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded;
+  @apply outline-2 outline-offset-2 outline-blue-600;
 }
 
 .sr-only {
@@ -511,94 +208,25 @@ html {
   border-width: 0;
 }
 
-.sr-only-focusable:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: 0;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-}
-
 /* ==========================
-   Cards
+   Reduced Motion
 ========================== */
-.card-responsive {
-  @apply bg-white dark:bg-gray-800 rounded-lg shadow-md;
-  @apply p-3 sm:p-4 md:p-5 lg:p-6;
-  @apply space-y-3 sm:space-y-4;
-}
-
-/* ==========================
-   Navigation
-========================== */
-.nav-responsive {
-  @apply flex flex-col sm:flex-row;
-  @apply gap-2 sm:gap-4 md:gap-6;
-}
-
-/* ==========================
-   Buttons
-========================== */
-.btn-responsive {
-  @apply px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-3;
-  @apply text-sm sm:text-base;
-  @apply min-h-[44px] min-w-[44px];
-}
-
-/* ==========================
-   Forms
-========================== */
-.form-responsive {
-  @apply space-y-3 sm:space-y-4;
-}
-
-.input-responsive {
-  @apply w-full px-3 py-2 sm:px-4 sm:py-2.5;
-  @apply text-base;
-  @apply rounded-lg border;
-  @apply min-h-[44px];
-}
-
-/* ==========================
-   Grid layouts
-========================== */
-.grid-responsive {
-  @apply grid;
-  @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
-  @apply gap-3 sm:gap-4 md:gap-5 lg:gap-6;
-}
-
-/* ==========================
-   Flex utilities
-========================== */
-.flex-responsive {
-  @apply flex flex-col sm:flex-row;
-  @apply gap-3 sm:gap-4 md:gap-5;
-}
-
-/* ==========================
-   Landscape Orientation
-========================== */
-@media (max-height: 600px) and (orientation: landscape) {
-  .link-modal-content {
-    max-height: calc(90vh - 180px);
-  }
-
-  h1 {
-    @apply text-xl;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
 /* ==========================
    Utility Classes
 ========================== */
-.full-bleed {
-  width: 100vw;
-  margin-left: 50%;
-  transform: translateX(-50%);
+.transition-smooth {
+  @apply transition-all duration-300 ease-in-out;
 }
 
 .text-balance {
@@ -607,35 +235,4 @@ html {
 
 .text-pretty {
   text-wrap: pretty;
-}
-
-.transition-smooth {
-  @apply transition-all duration-300 ease-in-out;
-}
-
-/* Hide scrollbar but keep functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* Extra small breakpoint */
-@media (max-width: 374px) {
-  .xs\:inline {
-    display: inline;
-  }
-
-  .xs\:hidden {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  body {
-    padding-bottom: 68px;
-  }
 }
