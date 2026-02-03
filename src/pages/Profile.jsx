@@ -8,7 +8,15 @@ import {
   Trash2, LogOut, Monitor, Smartphone, Eye, EyeOff,
   AlertTriangle, Save, Sun, Moon
 } from 'lucide-react';
-import api from '../services/api';
+import {
+  getProfile,
+  getDashboardStats,
+  updateProfile,
+  changePassword,
+  updateSubscription,
+  deleteAccount,
+  getSessions
+} from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -73,23 +81,33 @@ export default function Profile() {
   const loadProfileData = async () => {
     try {
       // Load profile data
-      const profileRes = await api.get('/api/profile');
-      
-      setProfile(profileRes.data);
-      setSelectedPlan(profileRes.data.plan || 'free');
+      const data = await getProfile();
+
+      // Handle nested user object structure
+      const userProfile = data.user || data;
+
+      setProfile(userProfile);
+      setSelectedPlan(userProfile.plan || 'free');
 
       setProfileData({
-        name: profileRes.data.name || '',
-        bio: profileRes.data.bio || '',
-        website: profileRes.data.website || '',
-        location: profileRes.data.location || '',
-        email: profileRes.data.email || ''
+        name: userProfile.name || '',
+        bio: userProfile.bio || '',
+        website: userProfile.website || '',
+        location: userProfile.location || '',
+        email: userProfile.email || ''
       });
 
-      // Try to load stats, but don't fail if endpoint doesn't exist
+      // Load stats
       try {
-        const statsRes = await api.get('/api/profile/stats');
-        setStats(statsRes.data);
+        const statsRes = await getDashboardStats();
+        if (statsRes.success && statsRes.stats) {
+          setStats({
+            totalLinks: statsRes.stats.totalLinks || 0,
+            totalClicks: statsRes.stats.totalClicks || 0,
+            countries: statsRes.stats.topCountries?.length || 0,
+            clicksThisMonth: statsRes.stats.clicksThisMonth || 0
+          });
+        }
       } catch (statsError) {
         console.warn('Stats endpoint not available:', statsError);
         // Keep default stats values
@@ -105,8 +123,8 @@ export default function Profile() {
 
   const loadSessions = async () => {
     try {
-      const { data } = await api.get('/api/settings/sessions');
-      setSessions(data.sessions);
+      const { sessions } = await getSessions();
+      setSessions(sessions);
     } catch (error) {
       console.error('Failed to load sessions:', error);
     }
@@ -115,7 +133,7 @@ export default function Profile() {
   const handleSaveProfile = async () => {
     setLoading(true);
     try {
-      await api.put('/api/profile', profileData);
+      await updateProfile(profileData);
       alert('Profile updated successfully!');
       setEditMode(false);
       loadProfileData();
@@ -139,7 +157,7 @@ export default function Profile() {
 
     setLoading(true);
     try {
-      await api.post('/api/settings/change-password', {
+      await changePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       });
@@ -161,7 +179,7 @@ export default function Profile() {
 
     setLoading(true);
     try {
-      await api.put('/api/settings/subscription', { plan });
+      await updateSubscription(plan);
       alert('Plan updated successfully!');
       setSelectedPlan(plan);
       loadProfileData();
@@ -189,11 +207,9 @@ export default function Profile() {
     setLoading(true);
 
     try {
-      await api.delete('/api/settings/account', {
-        data: {
-          password: deletePassword,
-          confirmDelete: true
-        }
+      await deleteAccount({
+        password: deletePassword,
+        confirmDelete: true
       });
 
       alert('Account deleted successfully. You will be logged out now.');
