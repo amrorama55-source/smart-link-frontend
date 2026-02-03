@@ -69,12 +69,12 @@ export default function Analytics() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <Navbar />
         <div className="flex justify-center items-center py-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400 text-sm sm:text-base">Loading analytics...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading analytics...</p>
           </div>
         </div>
       </div>
@@ -84,15 +84,15 @@ export default function Analytics() {
   // No links state
   if (!links.length) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <Navbar />
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 sm:p-8 text-center">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BarChart3 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+          <div className="bg-white dark:bg-gray-800/80 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 text-center">
+            <div className="w-14 h-14 bg-gray-100 dark:bg-gray-700/80 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <BarChart3 className="w-7 h-7 text-gray-500 dark:text-gray-400" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">No links yet</h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Create a link to see analytics</p>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No links yet</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Create a link to see clicks and insights here.</p>
           </div>
         </div>
       </div>
@@ -108,18 +108,18 @@ export default function Analytics() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
 
-        {/* Header - Responsive */}
-        <div className="mb-4 sm:mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
-            Analytics Dashboard
+        {/* Header */}
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
+            Analytics
           </h1>
           <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-            Comprehensive insights into your links
+            See how your links are performing
           </p>
         </div>
 

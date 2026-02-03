@@ -1,4 +1,4 @@
-import { Plus, Trash2, Globe2, Smartphone, Calendar, AlertCircle, X, Check } from 'lucide-react';
+import { Plus, Trash2, Globe2, Smartphone, Calendar, AlertCircle, X, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 // ✅ قائمة دول شاملة مع أعلام - EXPANDED
@@ -250,6 +250,8 @@ export default function TargetingTab({
   removeGeoRule, 
   updateGeoRule 
 }) {
+  const [showDeviceSchedule, setShowDeviceSchedule] = useState(false);
+
   // ✅ CRITICAL FIX: Handle undefined linkData
   if (!linkData) {
     return (
@@ -262,7 +264,7 @@ export default function TargetingTab({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* ======================================== */}
       {/* GEOTARGETING */}
       {/* ======================================== */}
@@ -380,9 +382,20 @@ export default function TargetingTab({
         </div>
       </div>
 
-      {/* Rest of the component (Device Targeting & Scheduling) remains the same... */}
-      {/* Copy from previous TargetingTab-FIXED.jsx */}
-      
+      {/* Mobile: collapsible "Device & schedule" so Targeting tab is short */}
+      <div className="sm:block">
+        <button
+          type="button"
+          onClick={() => setShowDeviceSchedule(!showDeviceSchedule)}
+          className="sm:hidden w-full flex items-center justify-between p-3 min-h-[48px] bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-all touch-manipulation"
+          aria-expanded={showDeviceSchedule}
+        >
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+            {showDeviceSchedule ? 'Hide device & schedule' : 'Device & schedule (optional)'}
+          </span>
+          {showDeviceSchedule ? <ChevronUp className="w-5 h-5 text-slate-500" /> : <ChevronDown className="w-5 h-5 text-slate-500" />}
+        </button>
+        <div className={`${showDeviceSchedule ? 'block' : 'hidden'} sm:block`}>
       {/* ======================================== */}
       {/* DEVICE TARGETING */}
       {/* ======================================== */}
@@ -544,6 +557,9 @@ export default function TargetingTab({
             )}
           </div>
         )}
+      </div>
+
+        </div>
       </div>
       
     </div>

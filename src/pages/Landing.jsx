@@ -864,18 +864,18 @@ export default function LandingPage() {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="flex items-center gap-3 lg:hidden">
+            {/* Mobile Menu Button - touch-friendly */}
+            <div className="flex items-center gap-2 lg:hidden">
               <button
                 onClick={() => setDarkMode(!darkMode)}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
+                className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation"
                 aria-label="Toggle dark mode"
               >
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center"
+                className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation"
                 aria-label="Toggle mobile menu"
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -892,13 +892,13 @@ export default function LandingPage() {
                 exit={{ opacity: 0, height: 0 }}
                 className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden"
               >
-                <div className="flex flex-col gap-3 px-4 py-4">
+                <div className="flex flex-col gap-2 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
                   {['Features', 'How It Works', 'Pricing'].map((item) => (
                     <a
                       key={item}
                       href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="px-4 py-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-gray-700 dark:text-gray-200"
+                      className="min-h-[48px] flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-gray-700 dark:text-gray-200 touch-manipulation"
                     >
                       {item}
                     </a>
@@ -906,14 +906,14 @@ export default function LandingPage() {
                   <Link
                     to="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 font-semibold text-center text-gray-900 dark:text-white"
+                    className="min-h-[48px] flex items-center justify-center px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 font-semibold text-gray-900 dark:text-white touch-manipulation"
                   >
                     Login
                   </Link>
                   <Link
                     to="/register"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold text-center hover:opacity-90"
+                    className="min-h-[48px] flex items-center justify-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 touch-manipulation"
                   >
                     Get Started Free
                   </Link>
@@ -978,11 +978,11 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
-                <Link to="/register">
+                <Link to="/register" className="w-full sm:w-auto">
                   <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-2"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full sm:w-auto min-h-[48px] px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-2 touch-manipulation"
                   >
                     Start for Free
                     <ArrowRight className="w-5 h-5" />
@@ -993,9 +993,9 @@ export default function LandingPage() {
                     const el = document.getElementById('how-it-works');
                     if (el) el.scrollIntoView({ behavior: 'smooth' });
                   }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold text-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 shadow-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 group"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full sm:w-auto min-h-[48px] px-8 py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold text-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 shadow-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 group touch-manipulation"
                 >
                   <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
                     <Play className="w-4 h-4 fill-current ml-0.5" />

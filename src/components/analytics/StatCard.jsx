@@ -7,13 +7,13 @@ export default function StatCard({ icon: Icon, title, value, subtitle, color }) 
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
-      <div className={`w-12 h-12 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3`}>
-        <Icon size={24} />
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-2 sm:mb-3`}>
+        <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{title}</p>
-      <p className="text-3xl font-bold text-gray-900 dark:text-white">{value}</p>
-      {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{subtitle}</p>}
+      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-0.5 sm:mb-1 truncate">{title}</p>
+      <p className="text-xl sm:text-3xl font-bold text-gray-900 dark:text-white truncate">{value}</p>
+      {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 truncate">{subtitle}</p>}
     </div>
   );
 }

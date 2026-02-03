@@ -852,12 +852,12 @@ const updatePixel = (index, field, value) => {
   // Render Loading State
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
         <Navbar />
         <div className="flex justify-center items-center py-20">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
-            <p className="mt-4 text-gray-600 dark:text-gray-400">Loading your links...</p>
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Loading your links...</p>
           </div>
         </div>
       </div>
@@ -866,29 +866,30 @@ const updatePixel = (index, field, value) => {
 
   // Main Render
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8 mb-20 md:mb-0">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 mb-20 md:mb-0">
         
-        {/* Header */}
+        {/* Header — clear, not corporate */}
         <div className="mb-6 sm:mb-8">
           <div className="flex flex-col gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
-                  Your Links
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
+                  Your links
                 </h1>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                  Create and manage all your smart links
+                  One place for all your short links
                 </p>
               </div>
               <button
+                type="button"
                 onClick={openCreateModal}
-                className="w-full sm:w-auto min-h-[44px] px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base"
+                className="w-full sm:w-auto min-h-[44px] px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base active:scale-[0.98] touch-manipulation"
               >
                 <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>Create Smart Link</span>
+                <span>New link</span>
               </button>
             </div>
           </div>
@@ -911,23 +912,24 @@ const updatePixel = (index, field, value) => {
             ))}
           </div>
         ) : (
-          /* Empty State */
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 sm:p-8 md:p-12 text-center">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-              <Link2 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
+          /* Empty State — friendly, human */
+          <div className="bg-white dark:bg-gray-800/80 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 sm:p-12 text-center">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 dark:bg-gray-700/80 rounded-2xl flex items-center justify-center mx-auto mb-4">
+              <Link2 className="w-7 h-7 sm:w-8 sm:h-8 text-gray-500 dark:text-gray-400" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
               No links yet
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 max-w-md mx-auto px-4">
-              Create your first smart link with A/B testing, geotargeting, and advanced analytics
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
+              Paste a URL and get a short link. You can add targeting and analytics later.
             </p>
             <button
+              type="button"
               onClick={openCreateModal}
-              className="w-full sm:w-auto min-h-[44px] px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 text-sm sm:text-base"
+              className="w-full sm:w-auto min-h-[48px] px-5 sm:px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 text-sm sm:text-base active:scale-[0.98] touch-manipulation"
             >
               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-              Create Your First Smart Link
+              Create your first link
             </button>
           </div>
         )}

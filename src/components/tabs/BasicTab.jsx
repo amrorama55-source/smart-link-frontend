@@ -1,11 +1,12 @@
 import { SHORT_URL_BASE } from '../../config';
-import { X, Link2, FileText, Tag, Calendar } from 'lucide-react';
+import { X, Link2, FileText, Tag, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 
 export default function BasicTab({ linkData, setLinkData, editingLink, errors }) {
   const [tags, setTags] = useState(linkData.tags || []);
   const [tagInput, setTagInput] = useState('');
   const [showUTM, setShowUTM] = useState(false);
+  const [showMoreOptions, setShowMoreOptions] = useState(false);
 
   const handleTagInput = (e) => {
     const value = e.target.value;
@@ -46,11 +47,11 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
   };
 
   return (
-    <div className="space-y-6">
-      
+    <div className="space-y-3 sm:space-y-4">
+
       {/* Original URL */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
           <Link2 className="inline w-4 h-4 mr-1" />
           Original URL *
         </label>
@@ -60,9 +61,8 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           onChange={(e) => setLinkData({ ...linkData, originalUrl: e.target.value })}
           placeholder="https://example.com/your-long-url"
           autoComplete="off"
-          className={`w-full px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white ${
-            errors.originalUrl ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-          }`}
+          className={`w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 ${errors.originalUrl ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
+            } dark:text-white`}
           required
         />
         {errors.originalUrl && (
@@ -70,14 +70,14 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         )}
       </div>
 
-      {/* Custom Alias */}
+      {/* Custom Alias - stacked on mobile so nothing truncates */}
       {!editingLink && (
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
             Custom Alias (Optional)
           </label>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-500 dark:text-gray-400 text-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <span className="text-slate-500 dark:text-slate-400 text-sm font-medium bg-slate-100 dark:bg-slate-800 px-3 py-2.5 rounded-xl border-2 border-transparent truncate sm:max-w-[200px]">
               {SHORT_URL_BASE}/
             </span>
             <input
@@ -86,23 +86,19 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
               onChange={(e) => setLinkData({ ...linkData, customAlias: e.target.value })}
               placeholder="my-custom-link"
               autoComplete="off"
-              className={`flex-1 px-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white ${
-                errors.customAlias ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'
-              }`}
+              className={`w-full sm:flex-1 px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 ${errors.customAlias ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
+                } dark:text-white`}
             />
           </div>
           {errors.customAlias && (
             <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.customAlias}</p>
           )}
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-            Leave empty for random short code
-          </p>
         </div>
       )}
 
       {/* Title */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
           <FileText className="inline w-4 h-4 mr-1" />
           Title
         </label>
@@ -113,16 +109,13 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           placeholder="My Campaign Link"
           autoComplete="off"
           maxLength={200}
-          className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+          className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white"
         />
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-right">
-          {linkData.title?.length || 0}/200
-        </p>
       </div>
 
-      {/* Description */}
+      {/* Description - fewer rows on mobile */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
           <FileText className="inline w-4 h-4 mr-1" />
           Description
         </label>
@@ -131,34 +124,35 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           onChange={(e) => setLinkData({ ...linkData, description: e.target.value })}
           placeholder="Add notes about this link..."
           autoComplete="off"
-          rows={3}
+          rows={2}
           maxLength={1000}
-          className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white resize-none"
+          className="w-full px-4 py-3 min-h-[80px] sm:min-h-[96px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white resize-none sm:resize-y"
         />
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-right">
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 text-right">
           {linkData.description?.length || 0}/1000
         </p>
       </div>
 
       {/* Tags */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
           <Tag className="inline w-4 h-4 mr-1" />
-          Tags (Press Enter to add)
+          Tags (Optional)
         </label>
-        <div className="flex flex-wrap gap-2 p-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700">
+        <div className="flex flex-wrap gap-2 p-3 min-h-[48px] bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all focus-within:ring-2 focus-within:ring-blue-500/50 focus-within:border-blue-500">
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium border border-blue-200/50 dark:border-blue-700/50"
             >
               {tag}
               <button
                 type="button"
                 onClick={() => removeTag(tag)}
-                className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-0.5"
+                className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-full p-1 min-w-[28px] min-h-[28px] flex items-center justify-center transition-colors touch-manipulation"
+                aria-label={`Remove tag ${tag}`}
               >
-                <X className="w-3 h-3" />
+                <X className="w-3.5 h-3.5" />
               </button>
             </span>
           ))}
@@ -169,17 +163,14 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
             onKeyDown={handleTagKeyDown}
             placeholder={tags.length === 0 ? "Add tags..." : ""}
             autoComplete="off"
-            className="flex-1 min-w-[120px] outline-none bg-transparent dark:text-white"
+            className="flex-1 min-w-[100px] outline-none bg-transparent dark:text-white text-base"
           />
         </div>
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Press Enter or comma to add a tag
-        </p>
       </div>
 
       {/* Expiration Date */}
       <div>
-        <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
           <Calendar className="inline w-4 h-4 mr-1" />
           Expiration Date (Optional)
         </label>
@@ -187,85 +178,87 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           type="datetime-local"
           value={linkData.expiresAt || ''}
           onChange={(e) => setLinkData({ ...linkData, expiresAt: e.target.value })}
-          className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:[color-scheme:dark]"
+          className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white dark:[color-scheme:dark]"
         />
-        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Link will automatically expire after this date
-        </p>
       </div>
 
       {/* UTM Parameters - Collapsible */}
-      <div className="border-t-2 border-gray-200 dark:border-gray-700 pt-4 mt-4">
+      <div className="border-t border-slate-200 dark:border-slate-800 pt-3 mt-3 sm:pt-4 sm:mt-4">
         <button
           type="button"
           onClick={() => setShowUTM(!showUTM)}
-          className="w-full flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors mb-3"
+          className="w-full flex items-center justify-between p-3 min-h-[48px] bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all group touch-manipulation"
+          aria-expanded={showUTM}
         >
           <div className="flex items-center gap-2">
-            <span className="text-lg">📊</span>
+            <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-sm shadow-inner">
+              📊
+            </div>
             <div className="text-left">
-              <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                UTM Parameters (Advanced - Optional)
+              <h3 className="text-xs font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                UTM Parameters
               </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                Track campaign performance in Google Analytics
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Campaign tracking (Optional)
               </p>
             </div>
           </div>
-          <span className="text-blue-600 dark:text-blue-400 font-bold text-lg">
-            {showUTM ? '▼' : '▶'}
-          </span>
+          <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all text-xs ${showUTM ? 'bg-blue-600 text-white rotate-180 shadow-lg shadow-blue-500/30' : 'bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400'}`}>
+            ▼
+          </div>
         </button>
-        
+
         {showUTM && (
-          <div className="space-y-3 animate-fadeIn">
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 mb-3">
-              <p className="text-xs text-amber-800 dark:text-amber-200">
-                💡 <strong>Pro Tip:</strong> UTM parameters help you track where your traffic comes from. 
-                Leave empty if you don't use Google Analytics.
+          <div className="space-y-3 p-3 mt-2 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/50 rounded-lg p-2">
+              <p className="text-xs text-amber-800 dark:text-amber-200 flex gap-2">
+                <span className="shrink-0">💡</span>
+                <span>Leave empty if you don't use Google Analytics.</span>
               </p>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                UTM Source <span className="text-gray-400">(e.g., facebook, google, newsletter)</span>
-              </label>
-              <input
-                type="text"
-                value={linkData.utmSource || ''}
-                onChange={(e) => setLinkData({ ...linkData, utmSource: e.target.value })}
-                placeholder="facebook"
-                autoComplete="off"
-                className="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
+                  Source
+                </label>
+                <input
+                  type="text"
+                  value={linkData.utmSource || ''}
+                  onChange={(e) => setLinkData({ ...linkData, utmSource: e.target.value })}
+                  placeholder="e.g. facebook"
+                  autoComplete="off"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                UTM Medium <span className="text-gray-400">(e.g., cpc, email, social)</span>
-              </label>
-              <input
-                type="text"
-                value={linkData.utmMedium || ''}
-                onChange={(e) => setLinkData({ ...linkData, utmMedium: e.target.value })}
-                placeholder="cpc"
-                autoComplete="off"
-                className="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
-              />
-            </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
+                  Medium
+                </label>
+                <input
+                  type="text"
+                  value={linkData.utmMedium || ''}
+                  onChange={(e) => setLinkData({ ...linkData, utmMedium: e.target.value })}
+                  placeholder="e.g. cpc"
+                  autoComplete="off"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">
-                UTM Campaign <span className="text-gray-400">(e.g., summer_sale, product_launch)</span>
-              </label>
-              <input
-                type="text"
-                value={linkData.utmCampaign || ''}
-                onChange={(e) => setLinkData({ ...linkData, utmCampaign: e.target.value })}
-                placeholder="summer_sale"
-                autoComplete="off"
-                className="w-full px-3 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
-              />
+              <div>
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
+                  Campaign
+                </label>
+                <input
+                  type="text"
+                  value={linkData.utmCampaign || ''}
+                  onChange={(e) => setLinkData({ ...linkData, utmCampaign: e.target.value })}
+                  placeholder="e.g. summer_sale"
+                  autoComplete="off"
+                  className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                />
+              </div>
             </div>
           </div>
         )}

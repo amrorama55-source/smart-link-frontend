@@ -24,7 +24,7 @@ html {
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors;
+  @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300;
 }
 
 /* Responsive images */
@@ -48,9 +48,11 @@ select,
 textarea,
 [role="button"] {
   -webkit-tap-highlight-color: transparent;
-  min-height: 44px; /* iOS recommended minimum */
+  min-height: 44px;
+  /* iOS recommended minimum */
   min-width: 44px;
-  touch-action: manipulation; /* Prevent double-tap zoom */
+  touch-action: manipulation;
+  /* Prevent double-tap zoom */
 }
 
 /* Ensure buttons are always touch-friendly */
@@ -71,8 +73,10 @@ a {
 input,
 select,
 textarea {
-  @apply text-base; /* Prevent zoom on iOS */
-  font-size: 16px !important; /* Critical for iOS */
+  @apply text-base;
+  /* Prevent zoom on iOS */
+  font-size: 16px !important;
+  /* Critical for iOS */
 }
 
 /* Prevent double-tap zoom globally */
@@ -95,39 +99,50 @@ html {
   html {
     font-size: 14px;
   }
-  
+
   body {
     font-size: 0.875rem;
   }
-  
-  h1 { @apply text-2xl; }
-  h2 { @apply text-xl; }
-  h3 { @apply text-lg; }
-  h4 { @apply text-base; }
-  
+
+  h1 {
+    @apply text-2xl;
+  }
+
+  h2 {
+    @apply text-xl;
+  }
+
+  h3 {
+    @apply text-lg;
+  }
+
+  h4 {
+    @apply text-base;
+  }
+
   .container,
   .max-w-7xl {
     @apply px-3;
   }
-  
+
   /* Stack everything vertically */
   .grid {
     @apply grid-cols-1 gap-3;
   }
-  
+
   /* Smaller buttons on very small screens */
   button,
   .btn {
     @apply text-sm px-3 py-2;
   }
-  
+
   /* Card adjustments */
   .card,
   [class*="bg-white"],
   [class*="bg-gray"] {
     @apply p-3 rounded-lg;
   }
-  
+
   /* Modal full screen on small devices */
   .modal,
   [role="dialog"] {
@@ -140,25 +155,33 @@ html {
   html {
     font-size: 15px;
   }
-  
-  h1 { @apply text-3xl; }
-  h2 { @apply text-2xl; }
-  h3 { @apply text-xl; }
-  
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+
   .container,
   .max-w-7xl {
     @apply px-4;
   }
-  
+
   .grid {
     @apply gap-4;
   }
-  
+
   button,
   .btn {
     @apply px-4 py-2.5;
   }
-  
+
   .card {
     @apply p-4;
   }
@@ -169,20 +192,28 @@ html {
   html {
     font-size: 16px;
   }
-  
-  h1 { @apply text-4xl; }
-  h2 { @apply text-3xl; }
-  h3 { @apply text-2xl; }
-  
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+
   .container,
   .max-w-7xl {
     @apply px-6;
   }
-  
+
   .grid {
     @apply gap-5;
   }
-  
+
   .card {
     @apply p-5;
   }
@@ -190,15 +221,16 @@ html {
 
 /* Large - Desktop (1025px - 1440px) */
 @media (min-width: 1025px) and (max-width: 1440px) {
+
   .container,
   .max-w-7xl {
     @apply px-8;
   }
-  
+
   .grid {
     @apply gap-6;
   }
-  
+
   .card {
     @apply p-6;
   }
@@ -206,11 +238,12 @@ html {
 
 /* Extra Large - Large Desktop (1441px+) */
 @media (min-width: 1441px) {
+
   .container,
   .max-w-7xl {
     @apply px-10;
   }
-  
+
   .grid {
     @apply gap-8;
   }
@@ -269,13 +302,13 @@ html {
   .container-query {
     container-type: inline-size;
   }
-  
+
   @container (min-width: 400px) {
     .container-item {
       @apply grid-cols-2;
     }
   }
-  
+
   @container (min-width: 600px) {
     .container-item {
       @apply grid-cols-3;
@@ -291,20 +324,20 @@ html {
     padding-left: max(0px, env(safe-area-inset-left));
     padding-right: max(0px, env(safe-area-inset-right));
   }
-  
+
   .safe-top {
     padding-top: max(1rem, env(safe-area-inset-top));
   }
-  
+
   .safe-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
-  
+
   /* Fixed headers/footers */
   .fixed-header {
     top: env(safe-area-inset-top);
   }
-  
+
   .fixed-footer {
     bottom: env(safe-area-inset-bottom);
   }
@@ -372,6 +405,7 @@ img[loading="lazy"] {
 ========================== */
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -384,6 +418,7 @@ img[loading="lazy"] {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
+
   button,
   a,
   input {
@@ -402,6 +437,7 @@ img[loading="lazy"] {
    Print Styles
 ========================== */
 @media print {
+
   *,
   *::before,
   *::after {
@@ -410,32 +446,32 @@ img[loading="lazy"] {
     box-shadow: none !important;
     text-shadow: none !important;
   }
-  
+
   a,
   a:visited {
     text-decoration: underline;
   }
-  
+
   a[href]::after {
     content: " (" attr(href) ")";
   }
-  
+
   img {
     page-break-inside: avoid;
   }
-  
+
   h2,
   h3,
   p {
     orphans: 3;
     widows: 3;
   }
-  
+
   h2,
   h3 {
     page-break-after: avoid;
   }
-  
+
   .no-print {
     display: none !important;
   }
@@ -525,7 +561,8 @@ img[loading="lazy"] {
 
 .input-responsive {
   @apply w-full px-3 py-2 sm:px-4 sm:py-2.5;
-  @apply text-base; /* Prevent zoom on iOS */
+  @apply text-base;
+  /* Prevent zoom on iOS */
   @apply rounded-lg border;
   @apply min-h-[44px];
 }
@@ -547,15 +584,16 @@ img[loading="lazy"] {
    Landscape Orientation
 ========================== */
 @media (max-height: 600px) and (orientation: landscape) {
+
   /* Reduce vertical spacing in landscape */
   .modal-content {
     @apply max-h-[90vh] py-2;
   }
-  
+
   h1 {
     @apply text-xl;
   }
-  
+
   .spacing-responsive {
     @apply space-y-2;
   }
@@ -607,13 +645,15 @@ img[loading="lazy"] {
   .xs\:inline {
     display: inline;
   }
-  
+
   .xs\:hidden {
     display: none;
   }
 }
+
 @media (max-width: 768px) {
   body {
-    padding-bottom: 68px; /* Height of bottom nav + safe area */
+    padding-bottom: 68px;
+    /* Height of bottom nav + safe area */
   }
 }
