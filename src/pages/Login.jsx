@@ -266,8 +266,8 @@ export default function Login() {
               <Link
                 to="/forgot-password"
                 className={`text-sm font-medium ${isDark
-                    ? 'text-blue-400 hover:text-blue-300'
-                    : 'text-blue-600 hover:text-blue-700'
+                  ? 'text-blue-400 hover:text-blue-300'
+                  : 'text-blue-600 hover:text-blue-700'
                   }`}
               >
                 Forgot password?

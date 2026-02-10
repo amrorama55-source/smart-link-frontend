@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PLANS } from '../utils/plans';
 import {
   Link2, Menu, X, Moon, Sun, ChevronRight,
   BarChart3, Globe, Smartphone, Target, TrendingUp,
@@ -617,6 +618,11 @@ function FAQSection() {
             </motion.div>
           ))}
         </div>
+        <div className="text-center mt-10">
+          <Link to="/faq" className="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-2">
+            View all frequently asked questions <ChevronRight className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -653,7 +659,7 @@ function AboutUsSection() {
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-4 border-white dark:border-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt="Team member" className="w-full h-full object-cover" loading="lazy" />
+                    <img src={`https://i.pravatar.cc/150?u=${i}`} alt={`Smart Link user testimonial ${i}`} className="w-full h-full object-cover" loading="lazy" />
                   </div>
                 ))}
               </div>
@@ -712,6 +718,7 @@ export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [demoOpen, setDemoOpen] = useState(false);
+  const [isYearly, setIsYearly] = useState(false);
 
   useEffect(() => {
     if (darkMode) {
@@ -766,6 +773,27 @@ export default function LandingPage() {
       repeat: Infinity,
       ease: "easeInOut"
     }
+  };
+
+  const handleCheckout = (plan, isYearly) => {
+    // If free plan, navigate to register
+    if (plan.id === 'free') {
+      window.location.href = '/register';
+      return;
+    }
+
+    // Get Checkout URL according to subscription type (monthly or yearly)
+    const checkoutUrl = isYearly
+      ? plan.checkoutUrl.yearly
+      : plan.checkoutUrl.monthly;
+
+    if (!checkoutUrl) {
+      alert('Checkout link not available');
+      return;
+    }
+
+    // Open Checkout URL
+    window.location.href = checkoutUrl;
   };
 
   return (
@@ -1197,84 +1225,132 @@ export default function LandingPage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-16 sm:py-24 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-20">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6">
-              Simple Pricing
+      <section id="pricing" className="py-20 sm:py-32 bg-white dark:bg-gray-900 scroll-mt-20 relative overflow-hidden">
+        {/* Background Gradients */}
+        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-blue-500/5 blur-[120px] rounded-full -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-500/5 blur-[120px] rounded-full -z-10"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16 sm:mb-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-bold mb-6"
+            >
+              <Zap className="w-4 h-4" />
+              <span>Investment for Growth</span>
+            </motion.div>
+
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 tracking-tight">
+              Flexible Plans for <span className="text-blue-600">Every Stage</span>
             </h2>
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300">
-              Start for free, upgrade when you need more power.
+            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">
+              Start for free, upgrade as you grow. No hidden fees, cancel anytime.
             </p>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className={`text-sm font-bold ${!isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>Monthly</span>
+              <button
+                onClick={() => setIsYearly(!isYearly)}
+                className="relative w-14 h-8 bg-gray-200 dark:bg-gray-800 rounded-full p-1 transition-colors hover:bg-gray-300 dark:hover:bg-gray-700 active:scale-95"
+              >
+                <motion.div
+                  animate={{ x: isYearly ? 24 : 0 }}
+                  className="w-6 h-6 bg-blue-600 rounded-full shadow-md"
+                />
+              </button>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-bold ${isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>Yearly</span>
+                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] font-black uppercase px-2 py-0.5 rounded-full ring-1 ring-green-600/20">
+                  Save 25%
+                </span>
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-            {[
-              {
-                name: 'Free',
-                price: '$0',
-                features: ['Unlimited Links', 'Basic Analytics', 'Standard Bio Page', 'QR Codes'],
-                cta: 'Get Started',
-                primary: false
-              },
-              {
-                name: 'Pro',
-                price: '$15',
-                period: '/mo',
-                features: ['Everything in Free', 'Advanced Analytics', 'Custom QR Codes', 'Password Protection', 'Link Scheduling'],
-                cta: 'Start Pro Trial',
-                primary: true
-              },
-              {
-                name: 'Business',
-                price: '$49',
-                period: '/mo',
-                features: ['Everything in Pro', 'Custom Domains', 'Team Collaboration', 'API Access', 'Priority Support'],
-                cta: 'Contact Sales',
-                primary: false
-              }
-            ].map((plan, index) => (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+            {PLANS.map((plan, index) => (
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
+                key={plan.id}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative p-6 sm:p-8 rounded-2xl sm:rounded-3xl flex flex-col ${plan.primary
-                  ? 'bg-gradient-to-b from-blue-600 to-indigo-700 text-white shadow-2xl scale-100 lg:scale-105 z-10'
-                  : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-lg border border-gray-100 dark:border-gray-700'
+                whileHover={{ y: -10 }}
+                className={`relative p-8 sm:p-10 rounded-[2.5rem] flex flex-col transition-all duration-300 ${plan.popular
+                  ? 'bg-gray-900 dark:bg-gray-800 text-white shadow-[0_30px_60px_-15px_rgba(37,99,235,0.3)] scale-100 lg:scale-105 z-10 border-4 border-blue-500'
+                  : 'bg-white dark:bg-gray-800/50 text-gray-900 dark:text-white shadow-xl border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm'
                   }`}
               >
-                {plan.primary && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-orange-400 to-pink-500 text-white px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg whitespace-nowrap">
+                {plan.popular && (
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest shadow-xl ring-4 ring-white dark:ring-gray-900">
                     Most Popular
                   </div>
                 )}
-                <h3 className={`text-xl sm:text-2xl font-bold mb-2 ${plan.primary ? 'text-white' : ''}`}>{plan.name}</h3>
-                <div className="mb-4 sm:mb-6 flex items-baseline gap-1">
-                  <span className="text-3xl sm:text-4xl font-extrabold">{plan.price}</span>
-                  {plan.period && <span className={`text-base sm:text-lg ${plan.primary ? 'text-blue-100' : 'text-gray-600 dark:text-gray-400'}`}>{plan.period}</span>}
+
+                <div className="mb-8">
+                  <h3 className={`text-2xl font-black mb-2 uppercase tracking-tight ${plan.popular ? 'text-blue-400' : 'text-blue-600'}`}>
+                    {plan.name}
+                  </h3>
+                  <p className={`text-sm font-medium ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>
+                    {plan.description}
+                  </p>
                 </div>
-                <ul className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 flex-1">
+
+                <div className="mb-10 flex items-baseline gap-1">
+                  <span className="text-5xl sm:text-6xl font-black tracking-tighter">
+                    {isYearly ? plan.price.yearly : plan.price.monthly}
+                  </span>
+                  <span className={`text-lg font-bold ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>/mo</span>
+                </div>
+
+                <div className={`h-px w-full mb-10 ${plan.popular ? 'bg-gray-700' : 'bg-gray-100 dark:bg-gray-700'}`}></div>
+
+                <ul className="space-y-5 mb-12 flex-1">
                   {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-2 sm:gap-3">
-                      <CheckCircle className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5 ${plan.primary ? 'text-blue-200' : 'text-green-500'}`} />
-                      <span className={`${plan.primary ? 'text-blue-50' : 'text-gray-600 dark:text-gray-300'} text-xs sm:text-sm lg:text-base`}>
-                        {feature.includes('Advanced') || feature.includes('Domain') || feature.includes('Priority') ? <strong>{feature}</strong> : feature}
+                    <li key={i} className="flex items-start gap-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${plan.popular ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'}`}>
+                        <CheckCircle className="w-4 h-4" />
+                      </div>
+                      <span className={`text-sm sm:text-base font-semibold leading-snug ${plan.popular ? 'text-gray-300' : 'text-gray-600 dark:text-gray-300'}`}>
+                        {feature}
                       </span>
                     </li>
                   ))}
                 </ul>
-                <Link to="/register" className="block mt-auto">
-                  <button className={`w-full py-3 sm:py-4 rounded-xl font-bold transition-all min-h-[48px] text-sm sm:text-base ${plan.primary
-                    ? 'bg-white text-blue-600 hover:bg-blue-50'
-                    : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600'
-                    }`}>
-                    {plan.cta}
-                  </button>
+
+                <Link to="/register" className="block mt-auto group">
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    className={`w-full py-5 rounded-2xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-2 ${plan.popular
+                      ? 'bg-blue-600 text-white hover:bg-blue-500 hover:shadow-blue-500/40'
+                      : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-90'
+                      }`}
+                  >
+                    <span>{plan.cta}</span>
+                    <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </motion.button>
                 </Link>
+
+                {plan.id !== 'free' && (
+                  <p className={`text-center mt-4 text-[10px] font-bold uppercase tracking-widest ${plan.popular ? 'text-gray-500' : 'text-gray-400'}`}>
+                    ✨ Cancel anytime, no questions asked
+                  </p>
+                )}
               </motion.div>
             ))}
+          </div>
+
+          {/* FAQ or Support Link */}
+          <div className="mt-20 text-center">
+            <p className="text-gray-500 dark:text-gray-400 font-medium">
+              Have questions about our plans?
+              <Link to="/faq" className="text-blue-600 dark:text-blue-400 font-bold ml-1 hover:underline underline-offset-4">
+                Check our FAQ
+              </Link>
+            </p>
           </div>
         </div>
       </section>
@@ -1352,7 +1428,7 @@ export default function LandingPage() {
               <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Product</h3>
               <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dashboard</Link></li>
-                <li><Link to="/register" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</Link></li>
+                <li><Link to="/pricing" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</Link></li>
               </ul>
             </div>
 
@@ -1360,7 +1436,8 @@ export default function LandingPage() {
               <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Resources</h3>
               <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
-                <li><a href="mailto:support@smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
+                <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Blog</Link></li>
+                <li><a href="mailto:smartlinkpro10@gmail.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
               </ul>
             </div>
 

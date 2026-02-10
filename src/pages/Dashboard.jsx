@@ -74,30 +74,30 @@ export default function Dashboard() {
   const clicksTrend = stats?.clickTrend || 'stable';
 
   const statCards = [
-    { 
-      title: 'Total Links', 
-      value: stats?.totalLinks || 0, 
+    {
+      title: 'Total Links',
+      value: stats?.totalLinks || 0,
       icon: Link2,
       color: 'blue',
       trend: null
     },
-    { 
-      title: 'Total Clicks', 
-      value: stats?.totalClicks || 0, 
+    {
+      title: 'Total Clicks',
+      value: stats?.totalClicks || 0,
       icon: MousePointerClick,
       color: 'green',
       trend: clicksTrend
     },
-    { 
-      title: 'Active Links', 
-      value: stats?.activeLinks || 0, 
+    {
+      title: 'Active Links',
+      value: stats?.activeLinks || 0,
       icon: Eye,
       color: 'purple',
       trend: null
     },
-    { 
-      title: 'Clicks Today', 
-      value: stats?.clicksToday || 0, 
+    {
+      title: 'Clicks Today',
+      value: stats?.clicksToday || 0,
       icon: Calendar,
       color: 'orange',
       trend: null
@@ -117,13 +117,22 @@ export default function Dashboard() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Header — human, not corporate */}
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
-            Good to see you
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-            Here’s how your links are doing.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
+              Good to see you
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Here’s how your links are doing.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/pricing')}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all text-sm group"
+          >
+            <Zap className="w-4 h-4 group-hover:animate-pulse" />
+            Upgrade Plan
+          </button>
         </div>
 
         {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
@@ -131,8 +140,8 @@ export default function Dashboard() {
           {statCards.map((stat, i) => {
             const Icon = stat.icon;
             return (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="bg-white dark:bg-gray-800/80 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 dark:border-gray-800"
               >
                 <div className="flex justify-between items-start mb-3 sm:mb-4">
@@ -140,13 +149,12 @@ export default function Dashboard() {
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   {stat.trend && (
-                    <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${
-                      stat.trend === 'up' 
+                    <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${stat.trend === 'up'
                         ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                         : stat.trend === 'down'
-                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
-                    }`}>
+                          ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                          : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
+                      }`}>
                       {stat.trend === 'up' && <TrendingUp className="w-3 h-3" />}
                       {stat.trend === 'down' && <TrendingDown className="w-3 h-3" />}
                       <span className="hidden sm:inline">

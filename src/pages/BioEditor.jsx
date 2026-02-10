@@ -23,13 +23,9 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-const themes = [
-  { id: 'default', name: 'Gravatar Light', preview: 'bg-[#f3f4f6]' },
-  { id: 'dark', name: 'Dark Mode', preview: 'bg-[#1e1e1e]' },
-  { id: 'blue', name: 'Soft Blue', preview: 'bg-blue-50' },
-  { id: 'gradient', name: 'Gradient', preview: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500' },
-  { id: 'midnight', name: 'Midnight', preview: 'bg-slate-900' },
-];
+import { themes as themeData } from '../utils/bioThemes';
+
+const themes = Object.values(themeData);
 
 export default function BioEditor() {
   const navigate = useNavigate();
@@ -208,31 +204,54 @@ export default function BioEditor() {
     setBioData({ ...bioData, customLinks: newOrder });
   };
 
-  if (loading) return <div className="h-screen flex items-center justify-center"><Loader className="animate-spin text-blue-600" /></div>;
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <Navbar />
+        <div className="flex justify-center items-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Just a sec...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300 pb-24 lg:pb-0">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300 pb-24 lg:pb-0">
       <Navbar />
 
       {/* HEADER (Desktop Only) */}
-      <div className="hidden lg:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Profile Editor</h1>
-          <button onClick={handleSave} disabled={saving} className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg hover:shadow-blue-500/30 transition-all">
-            {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 tracking-tight">
+              Profile Editor
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Customize your bio page and manage your links
+            </p>
+          </div>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="hidden sm:flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg hover:shadow-blue-500/30 transition-all"
+          >
+            {saving ? <Loader className="animate-spin w-5 h-5" /> : <Save className="w-5 h-5" />}
             Save Changes
           </button>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:py-0 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
 
           {/* EDITOR COLUMN */}
           <div className="space-y-6">
 
             {/* Mobile Tab Navigation */}
-            <div className="lg:hidden flex bg-white dark:bg-gray-800 p-1.5 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sticky top-20 z-30">
+            <div className="lg:hidden flex bg-white dark:bg-gray-800/80 p-1.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-6 sticky top-20 z-30">
               {[
                 { id: 'identity', label: 'Identity', icon: User },
                 { id: 'links', label: 'Links', icon: List },
@@ -242,8 +261,8 @@ export default function BioEditor() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id
-                      ? 'bg-blue-600 text-white shadow-md'
-                      : 'text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                     }`}
                 >
                   <tab.icon className="w-4 h-4" />
@@ -253,15 +272,15 @@ export default function BioEditor() {
             </div>
 
             {/* IDENTITY SECTION */}
-            <div className={`${activeTab === 'identity' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
+            <div className={`${activeTab === 'identity' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
               <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-500" />
+                <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 Identity
               </h2>
               <div className="space-y-5">
                 {/* Avatar */}
                 <div>
-                  <label className="block text-sm font-medium mb-2 dark:text-gray-300">Profile Picture</label>
+                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Profile Picture</label>
                   <div className="flex items-center gap-4">
                     <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center overflow-hidden relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
                       {bioData.avatar ? (
@@ -285,17 +304,29 @@ export default function BioEditor() {
                 {/* Inputs */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-1 dark:text-gray-300">Display Name</label>
-                    <input type="text" value={bioData.displayName} onChange={e => setBioData({ ...bioData, displayName: e.target.value })} className="w-full p-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="Your Name" />
+                    <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Display Name</label>
+                    <input
+                      type="text"
+                      value={bioData.displayName}
+                      onChange={e => setBioData({ ...bioData, displayName: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                      placeholder="Your Name"
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-1 dark:text-gray-300">Username</label>
+                    <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Username</label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">@</span>
-                      <input type="text" value={bioData.username} onChange={e => handleUsernameChange(e.target.value)} className="w-full pl-7 p-2.5 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600" placeholder="username" />
+                      <input
+                        type="text"
+                        value={bioData.username}
+                        onChange={e => handleUsernameChange(e.target.value)}
+                        className="w-full pl-7 p-2.5 rounded-xl border border-gray-300 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                        placeholder="username"
+                      />
                     </div>
                     {bioData.username && (
-                      <p className={`text-[10px] mt-1 font-bold ${usernameAvailable ? 'text-green-500' : 'text-red-500'}`}>
+                      <p className={`text-xs mt-1 font-bold ${usernameAvailable ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                         {usernameAvailable ? '✓ Available' : '✗ Taken'}
                       </p>
                     )}
@@ -303,34 +334,67 @@ export default function BioEditor() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-1 dark:text-gray-300">Bio</label>
-                  <textarea value={bioData.bio} onChange={e => setBioData({ ...bioData, bio: e.target.value })} className="w-full p-3 rounded-xl border bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500" rows={3} placeholder="Tell the world about yourself..." />
+                  <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Bio</label>
+                  <textarea
+                    value={bioData.bio}
+                    onChange={e => setBioData({ ...bioData, bio: e.target.value })}
+                    className="w-full p-3 rounded-xl border border-gray-300 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    rows={3}
+                    placeholder="Tell the world about yourself..."
+                  />
                 </div>
               </div>
             </div>
 
             {/* LINKS SECTION */}
-            <div className={`${activeTab === 'links' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
+            <div className={`${activeTab === 'links' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                  <List className="w-5 h-5 text-blue-500" />
+                  <List className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   Links
                 </h2>
-                <button onClick={addCustomLink} className="text-sm px-3 py-1.5 bg-blue-100 text-blue-700 rounded-lg font-bold hover:bg-blue-200 transition-colors">+ Add New</button>
+                <button
+                  onClick={addCustomLink}
+                  className="text-sm px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors"
+                >
+                  + Add New
+                </button>
               </div>
               <Reorder.Group axis="y" values={bioData.customLinks} onReorder={handleReorder} className="space-y-3">
                 {bioData.customLinks.map((link, i) => (
                   <Reorder.Item key={link.id} value={link}>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 group hover:border-blue-300 transition-colors">
-                      <div className="mt-2 text-gray-400 cursor-grab active:cursor-grabbing"><GripVertical className="w-5 h-5" /></div>
+                    <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 group hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
+                      <div className="mt-2 text-gray-400 dark:text-gray-500 cursor-grab active:cursor-grabbing">
+                        <GripVertical className="w-5 h-5" />
+                      </div>
                       <div className="flex-1 space-y-2">
                         <div className="flex gap-2">
-                          <input value={link.icon} onChange={e => updateCustomLink(i, 'icon', e.target.value)} className="w-12 text-center p-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl" placeholder="🔗" />
-                          <input value={link.title} onChange={e => updateCustomLink(i, 'title', e.target.value)} className="flex-1 p-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-medium" placeholder="Link Title" />
+                          <input
+                            value={link.icon}
+                            onChange={e => updateCustomLink(i, 'icon', e.target.value)}
+                            className="w-12 text-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="🔗"
+                          />
+                          <input
+                            value={link.title}
+                            onChange={e => updateCustomLink(i, 'title', e.target.value)}
+                            className="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="Link Title"
+                          />
                         </div>
-                        <input value={link.url} onChange={e => updateCustomLink(i, 'url', e.target.value)} className="w-full p-2 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-sm" placeholder="https://" />
+                        <input
+                          value={link.url}
+                          onChange={e => updateCustomLink(i, 'url', e.target.value)}
+                          className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="https://"
+                        />
                       </div>
-                      <button onClick={() => removeCustomLink(i)} className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-5 h-5" /></button>
+                      <button
+                        onClick={() => removeCustomLink(i)}
+                        className="p-2 text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </Reorder.Item>
                 ))}
@@ -338,16 +402,31 @@ export default function BioEditor() {
             </div>
 
             {/* APPEARANCE SECTION */}
-            <div className={`${activeTab === 'appearance' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700`}>
+            <div className={`${activeTab === 'appearance' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
               <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                <Palette className="w-5 h-5 text-blue-500" />
+                <Palette className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 Appearance
               </h2>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                 {themes.map(t => (
-                  <button key={t.id} onClick={() => setBioData({ ...bioData, theme: t.id })} className={`group relative p-1 rounded-xl border-2 transition-all ${bioData.theme === t.id ? 'border-blue-500 scale-105' : 'border-transparent hover:border-gray-200'}`}>
-                    <div className={`h-12 rounded-lg ${t.preview} shadow-sm group-hover:shadow-md transition-shadow`}></div>
-                    <p className="text-[10px] text-center mt-1.5 font-medium dark:text-gray-400">{t.name}</p>
+                  <button
+                    key={t.id}
+                    onClick={() => setBioData({ ...bioData, theme: t.id })}
+                    className={`group relative p-1 rounded-xl border-2 transition-all ${bioData.theme === t.id ? 'border-blue-600 dark:border-blue-400 scale-105 shadow-lg' : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'}`}
+                  >
+                    <div
+                      className={`h-12 rounded-lg shadow-inner border border-black/5 dark:border-white/10 group-hover:shadow-md transition-shadow flex items-center justify-center overflow-hidden`}
+                      style={{
+                        background: t.variables['--bio-bg'],
+                      }}
+                    >
+                      {/* Sub-preview for Card */}
+                      <div
+                        className="w-1/2 h-4 rounded-sm shadow-sm"
+                        style={{ backgroundColor: t.variables['--bio-card-bg'], border: `1px solid ${t.variables['--bio-card-border']}` }}
+                      ></div>
+                    </div>
+                    <p className="text-xs text-center mt-1.5 font-bold text-gray-600 dark:text-gray-400 truncate px-1">{t.name}</p>
                   </button>
                 ))}
               </div>
@@ -356,7 +435,7 @@ export default function BioEditor() {
 
           {/* PREVIEW COLUMN (Desktop) */}
           <div className="hidden lg:block relative">
-            <div className="sticky top-8">
+            <div className="sticky top-24">
               <div className="bg-[#121212] rounded-[3.5rem] p-3 border-[10px] border-[#2a2a2a] shadow-2xl relative overflow-hidden max-w-[380px] mx-auto ring-1 ring-black">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-[#2a2a2a] rounded-b-2xl z-20"></div>
                 <div className="h-[780px] w-full bg-white rounded-[2.5rem] overflow-y-auto no-scrollbar relative">

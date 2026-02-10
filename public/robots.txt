@@ -2,6 +2,21 @@
 User-agent: *
 Allow: /
 
+# Disallow sensitive paths
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /links/
+Disallow: /analytics/
+Disallow: /bio/
+Disallow: /profile/
+Disallow: /auth/
+
+# Ignore tracking parameters to prevent duplicate content
+Disallow: /*?utm_*
+Disallow: /*?ref*
+
 # Sitemap location
 Sitemap: https://www.smart-link.website/sitemap.xml
 

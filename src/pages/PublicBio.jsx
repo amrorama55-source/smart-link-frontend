@@ -13,6 +13,8 @@ const socialIcons = {
   website: Globe
 };
 
+import { themes } from '../utils/bioThemes';
+
 export default function PublicBio() {
   const { username } = useParams();
   const [bioData, setBioData] = useState(null);
@@ -38,7 +40,7 @@ export default function PublicBio() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -46,10 +48,10 @@ export default function PublicBio() {
 
   if (notFound) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="text-center">
-          <h1 className="text-6xl font-bold text-gray-300 mb-4">404</h1>
-          <p className="text-xl text-gray-600 mb-4">Bio page not found</p>
+          <h1 className="text-6xl font-bold text-gray-300 dark:text-gray-700 mb-4">404</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400 mb-4">Bio page not found</p>
           <a href="/" className="text-blue-600 hover:text-blue-700 font-medium">
             Go to Homepage
           </a>
@@ -58,76 +60,47 @@ export default function PublicBio() {
     );
   }
 
-  const getThemeClasses = () => {
-    switch (bioData.theme) {
-      case 'dark':
-        return {
-          bg: 'bg-gray-900',
-          text: 'text-white',
-          subtext: 'text-gray-300',
-          button: 'bg-white text-gray-900 hover:bg-gray-100'
-        };
-      case 'gradient':
-        return {
-          bg: 'bg-gradient-to-br from-purple-500 via-pink-500 to-red-500',
-          text: 'text-white',
-          subtext: 'text-white/90',
-          button: 'bg-white/20 text-white backdrop-blur hover:bg-white/30'
-        };
-      case 'minimal':
-        return {
-          bg: 'bg-gray-50',
-          text: 'text-gray-900',
-          subtext: 'text-gray-600',
-          button: 'bg-white text-gray-900 border border-gray-200 hover:bg-gray-100'
-        };
-      case 'neon':
-        return {
-          bg: 'bg-black',
-          text: 'text-cyan-400',
-          subtext: 'text-cyan-300',
-          button: 'bg-cyan-500 text-black hover:bg-cyan-400 shadow-lg shadow-cyan-500/50'
-        };
-      default:
-        return {
-          bg: 'bg-white',
-          text: 'text-gray-900',
-          subtext: 'text-gray-600',
-          button: 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-        };
-    }
-  };
-
-  const theme = getThemeClasses();
+  const currentTheme = themes[bioData.theme] || themes.default;
 
   return (
-    <div className={`min-h-screen ${theme.bg} py-12 px-4`}>
+  return (
+    <div
+      className={`min-h-screen py-12 px-4 transition-colors duration-500`}
+      style={{
+        ...currentTheme.variables,
+        background: currentTheme.variables['--bio-bg']
+      }}
+    >
       <div className="max-w-2xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           {bioData.avatar && (
-            <img
-              src={bioData.avatar}
-              alt={bioData.displayName}
-              className="w-32 h-32 rounded-full mx-auto mb-6 object-cover border-4 border-white/20"
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
-            />
+            <div className="relative inline-block mb-6">
+              <div className="w-32 h-32 rounded-full p-1 bg-white/20 backdrop-blur-sm shadow-xl mx-auto overflow-hidden border-4 border-white/30">
+                <img
+                  src={bioData.avatar}
+                  alt={bioData.displayName}
+                  className="w-full h-full rounded-full object-cover"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              </div>
+            </div>
           )}
-          
-          <h1 className={`text-4xl font-bold mb-3 ${theme.text}`}>
+
+          <h1 className={`text-4xl sm:text-5xl font-extrabold mb-4 tracking-tight`} style={{ color: 'var(--bio-text-primary)' }}>
             {bioData.displayName}
           </h1>
-          
+
           {bioData.bio && (
-            <p className={`text-lg ${theme.subtext} max-w-lg mx-auto`}>
+            <p className={`text-lg sm:text-xl font-medium opacity-90 max-w-lg mx-auto leading-relaxed`} style={{ color: 'var(--bio-text-primary)' }}>
               {bioData.bio}
             </p>
           )}
 
           {/* Social Links */}
           {bioData.socialLinks && bioData.socialLinks.length > 0 && (
-            <div className="flex justify-center space-x-4 mt-6">
+            <div className="flex justify-center flex-wrap gap-4 mt-8">
               {bioData.socialLinks.map((social, index) => {
                 const Icon = socialIcons[social.platform] || Globe;
                 return (
@@ -136,7 +109,8 @@ export default function PublicBio() {
                     href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`p-3 rounded-full ${theme.button} transition-all transform hover:scale-110`}
+                    className={`p-3.5 rounded-full transition-all transform hover:scale-110 active:scale-95 shadow-md`}
+                    style={{ backgroundColor: 'var(--bio-link-bg)', color: 'var(--bio-text-primary)' }}
                   >
                     <Icon className="w-6 h-6" />
                   </a>
@@ -154,23 +128,30 @@ export default function PublicBio() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`block w-full px-6 py-4 rounded-xl font-medium text-center transition-all transform hover:scale-105 hover:shadow-lg ${theme.button}`}
+              className={`block w-full px-6 py-4 rounded-2xl font-bold text-center transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg border-2`}
+              style={{
+                backgroundColor: 'var(--bio-link-bg)',
+                borderColor: 'var(--bio-link-border)',
+                color: 'var(--bio-text-primary)'
+              }}
             >
-              <div className="flex items-center justify-center space-x-2">
-                <span>{link.title}</span>
-                <ExternalLink className="w-4 h-4" />
+              <div className="flex items-center justify-between">
+                <span className="w-8 flex justify-center text-xl">{link.icon || '🔗'}</span>
+                <span className="flex-1">{link.title || link.url}</span>
+                <ExternalLink className="w-5 h-5 opacity-40" />
               </div>
             </a>
           ))}
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-12">
-          <p className={`text-sm ${theme.subtext}`}>
+        <div className="text-center mt-16">
+          <p className={`text-sm font-medium opacity-60`} style={{ color: 'var(--bio-text-primary)' }}>
             Powered by{' '}
             <a
               href="/"
-              className={`font-medium ${theme.text} hover:underline`}
+              className={`font-bold hover:underline`}
+              style={{ color: 'var(--bio-text-primary)' }}
             >
               Smart Link
             </a>

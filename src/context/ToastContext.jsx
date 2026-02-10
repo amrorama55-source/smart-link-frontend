@@ -1,5 +1,6 @@
 // src/context/ToastContext.jsx
 import { createContext, useContext, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 
 const ToastContext = createContext();
@@ -25,49 +26,57 @@ export function ToastProvider({ children }) {
   };
 
   const colors = {
-    success: 'bg-green-50 dark:bg-green-900/20 border-green-500 text-green-900 dark:text-green-100',
-    error: 'bg-red-50 dark:bg-red-900/20 border-red-500 text-red-900 dark:text-red-100',
-    warning: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-500 text-yellow-900 dark:text-yellow-100',
-    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-500 text-blue-900 dark:text-blue-100'
+    success: 'from-emerald-500 to-teal-600 shadow-emerald-500/20',
+    error: 'from-rose-500 to-red-600 shadow-red-500/20',
+    warning: 'from-amber-400 to-orange-500 shadow-orange-500/20',
+    info: 'from-blue-500 to-indigo-600 shadow-blue-500/20'
   };
 
   return (
     <ToastContext.Provider value={{ addToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
-        {toasts.map(toast => {
-          const Icon = icons[toast.type];
-          return (
-            <div
-              key={toast.id}
-              className={`flex items-center gap-3 p-4 rounded-lg border-l-4 shadow-lg ${colors[toast.type]} animate-slide-in min-w-[300px] max-w-md`}
-            >
-              <Icon className="w-5 h-5 flex-shrink-0" />
-              <p className="flex-1 text-sm font-medium">{toast.message}</p>
-              <button 
-                onClick={() => removeToast(toast.id)}
-                className="p-1 hover:bg-black/10 dark:hover:bg-white/10 rounded transition"
+      <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 items-end pointer-events-none">
+        <AnimatePresence>
+          {toasts.map(toast => {
+            const Icon = icons[toast.type];
+            return (
+              <motion.div
+                key={toast.id}
+                initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }}
+                layout
+                className={`pointer-events-auto flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-br ${colors[toast.type]} text-white shadow-2xl min-w-[320px] max-w-md border border-white/20 backdrop-blur-xl relative overflow-hidden group`}
               >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          );
-        })}
+                {/* Shine effect */}
+                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shine transition-all duration-1000"></div>
+
+                <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex-shrink-0">
+                  <Icon className="w-6 h-6 text-white drop-shadow-md" />
+                </div>
+
+                <div className="flex-1">
+                  <p className="text-sm font-bold tracking-wide drop-shadow-sm">{toast.message}</p>
+                </div>
+
+                <button
+                  onClick={() => removeToast(toast.id)}
+                  className="p-1.5 hover:bg-white/20 rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
 
       <style>{`
-        @keyframes slide-in {
-          from {
-            transform: translateX(100%);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0);
-            opacity: 1;
-          }
+        @keyframes shine {
+          100% { transform: translateX(100%); }
         }
-        .animate-slide-in {
-          animation: slide-in 0.3s ease-out;
+        .animate-shine {
+          animation: shine 1.5s ease;
         }
       `}</style>
     </ToastContext.Provider>

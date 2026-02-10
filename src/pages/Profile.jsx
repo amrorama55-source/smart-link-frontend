@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import {
@@ -19,6 +19,7 @@ import {
 } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { PLANS } from '../utils/plans';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -43,7 +44,8 @@ export default function Profile() {
     bio: '',
     website: '',
     location: '',
-    email: ''
+    email: '',
+    avatar: ''
   });
 
   // Password data
@@ -61,6 +63,7 @@ export default function Profile() {
   // Subscription
   const [subscription, setSubscription] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('free');
+  const [isYearly, setIsYearly] = useState(false);
 
   // Delete account
   const [deleteConfirm, setDeleteConfirm] = useState('');
@@ -69,6 +72,20 @@ export default function Profile() {
 
   // Sessions
   const [sessions, setSessions] = useState([]);
+
+  // Helper function to get initial from name
+  const getInitial = () => {
+    if (profileData.name && profileData.name.trim()) {
+      return profileData.name.trim().charAt(0).toUpperCase();
+    }
+    if (profile?.name && profile.name.trim()) {
+      return profile.name.trim().charAt(0).toUpperCase();
+    }
+    if (profile?.email && profile.email.trim()) {
+      return profile.email.trim().charAt(0).toUpperCase();
+    }
+    return 'U'; // Default to 'U' for User
+  };
 
   useEffect(() => {
     const tab = searchParams.get('tab');
@@ -91,10 +108,11 @@ export default function Profile() {
 
       setProfileData({
         name: userProfile.name || '',
-        bio: userProfile.bio || '',
+        bio: userProfile.bioPage?.bio || userProfile.bio || '',
         website: userProfile.website || '',
         location: userProfile.location || '',
-        email: userProfile.email || ''
+        email: userProfile.email || '',
+        avatar: userProfile.avatar || userProfile.bioPage?.avatar || ''
       });
 
       // Load stats
@@ -127,6 +145,59 @@ export default function Profile() {
       setSessions(sessions);
     } catch (error) {
       console.error('Failed to load sessions:', error);
+    }
+  };
+
+  const fileInputRef = useRef(null);
+
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 500;
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+      };
+    });
+  };
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image too large (Max 5MB)');
+      return;
+    }
+    try {
+      const compressedBase64 = await compressImage(file);
+      setProfileData(prev => ({ ...prev, avatar: compressedBase64 }));
+      await updateProfile({ ...profileData, avatar: compressedBase64 });
+      loadProfileData();
+    } catch (error) {
+      console.error("Image compression failed", error);
+      alert("Failed to process image");
     }
   };
 
@@ -233,26 +304,7 @@ export default function Profile() {
     business: { color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Crown }
   };
 
-  const plans = [
-    {
-      id: 'free',
-      name: 'Free',
-      price: '$0',
-      features: ['1,000 links/month', '100 API requests/day', 'Basic Analytics']
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: '$15',
-      features: ['10,000 links/month', '1,000 API requests/day', 'Password Protection', 'Advanced Analytics']
-    },
-    {
-      id: 'business',
-      name: 'Business',
-      price: '$49',
-      features: ['Unlimited links', 'Unlimited API requests', 'Custom Domains', 'Team Collaboration']
-    }
-  ];
+  const plans = PLANS;
 
   if (loading && !profile) {
     return (
@@ -300,95 +352,77 @@ export default function Profile() {
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <>
-            {/* Header with Cover */}
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl h-32 sm:h-48 mb-16 sm:mb-20 relative overflow-hidden">
+            {/* Header with Cover - CLEAN VERSION */}
+            <div className="relative rounded-2xl h-32 sm:h-40 mb-8 overflow-hidden shadow-2xl group border border-gray-200 dark:border-gray-700">
+              {/* Simplified Background */}
+              <div className="absolute inset-0 bg-gray-900 border-b border-gray-800">
+                {/* Very subtle decorative elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/5 rounded-full -ml-24 -mb-24 blur-3xl"></div>
+              </div>
               <div className="absolute inset-0 bg-black/10"></div>
 
-              {/* Profile Picture */}
-              <div className="absolute -bottom-12 sm:-bottom-16 left-4 sm:left-8">
-                <div className="relative">
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-white dark:bg-gray-800 border-4 border-white dark:border-gray-900 flex items-center justify-center shadow-xl">
-                    <User className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-600" />
+              {/* Content */}
+              <div className="absolute inset-0 flex items-center justify-center sm:justify-start sm:px-8">
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  {/* Profile Avatar In Header */}
+                  <div className="relative group/avatar">
+                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white font-bold text-4xl shadow-2xl ring-4 ring-white/30 overflow-hidden transition-transform duration-500 group-hover/avatar:scale-105 group-hover/avatar:rotate-3">
+                      {profile?.avatar || profile?.bioPage?.avatar ? (
+                        <img
+                          src={profile.avatar || profile.bioPage.avatar}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <span>{getInitial()}</span>
+                      )}
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-4 border-indigo-600 shadow-xl"></div>
                   </div>
-                  <button className="absolute bottom-0 right-0 p-2 bg-blue-600 rounded-full text-white hover:bg-blue-700 transition shadow-lg">
-                    <Camera className="w-4 h-4" />
-                  </button>
+
+                  <div className="text-center sm:text-left">
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">
+                      {profile?.name || 'User'}
+                    </h1>
+                    <div className="flex items-center justify-center sm:justify-start gap-2 text-white/90 mt-2 text-sm sm:text-base drop-shadow">
+                      <Mail className="w-4 h-4" />
+                      <span>{profile?.email}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Left Column - Profile Details */}
+            {/* Profile Content */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4 sm:mt-6">
               <div className="lg:col-span-2 space-y-6">
-                {/* Basic Info Card */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex-1">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700/50">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
+                    <div className="flex-1 space-y-2">
                       {editMode ? (
-                        <input
-                          type="text"
-                          value={profileData.name}
-                          onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
-                          className="text-2xl font-bold mb-2 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        />
+                        <input type="text" value={profileData.name} onChange={(e) => setProfileData({ ...profileData, name: e.target.value })} className="text-3xl font-bold w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Your Name" />
                       ) : (
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                          {profile?.name || 'User'}
-                        </h1>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">{profile?.name || 'User'}</h1>
+                          <div className={`px-3 py-1 rounded-full ${safePlanBadge.color} font-bold text-xs uppercase tracking-wider flex items-center gap-1.5`}><PlanIcon className="w-3.5 h-3.5" />{currentPlan}</div>
+                        </div>
                       )}
-
-                      <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 mb-3">
-                        <Mail className="w-4 h-4" />
-                        <span className="text-sm">{profile?.email}</span>
-                      </div>
-
-                      <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full ${safePlanBadge.color} font-semibold text-sm`}>
-                        <PlanIcon className="w-4 h-4" />
-                        <span className="capitalize">{currentPlan} Plan</span>
+                      <div className="flex flex-wrap items-center gap-4 text-gray-500 dark:text-gray-400 text-sm">
+                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5 rounded-lg"><Mail className="w-4 h-4" /><span>{profile?.email}</span></div>
+                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5 rounded-lg"><Calendar className="w-4 h-4" /><span>Joined {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '...'}</span></div>
                       </div>
                     </div>
-
-                    <button
-                      onClick={() => editMode ? handleSaveProfile() : setEditMode(true)}
-                      disabled={loading}
-                      className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 disabled:opacity-50"
-                    >
-                      {editMode ? (
-                        <>
-                          <CheckCircle className="w-4 h-4" />
-                          <span>Save</span>
-                        </>
-                      ) : (
-                        <>
-                          <Edit2 className="w-4 h-4" />
-                          <span>Edit</span>
-                        </>
-                      )}
-                    </button>
+                    <button onClick={() => editMode ? handleSaveProfile() : setEditMode(true)} disabled={loading} className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${editMode ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-500/20' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20'} disabled:opacity-50 active:scale-95`}>{editMode ? (<><CheckCircle className="w-5 h-5" /><span>Save Changes</span></>) : (<><Edit2 className="w-5 h-5" /><span>Edit Profile</span></>)}</button>
                   </div>
-
-                  {/* Bio */}
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Bio
-                    </label>
-                    {editMode ? (
-                      <textarea
-                        value={profileData.bio}
-                        onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
-                        rows="3"
-                        className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        placeholder="Tell us about yourself..."
-                      />
-                    ) : (
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {profile?.bio || 'No bio yet. Click Edit to add one!'}
-                      </p>
-                    )}
+                  <div className="space-y-3">
+                    <label className="text-xs font-black uppercase text-gray-400 dark:text-gray-500 tracking-widest">Biography</label>
+                    <div className="relative group">
+                      {editMode ? (<textarea value={profileData.bio} onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })} rows="4" className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all resize-none" placeholder="Tell us about yourself..." />) : (<p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg italic">"{profile?.bioPage?.bio || profile?.bio || 'You haven\'t added a bio yet. Click Edit to tell your story!'}"</p>)}
+                    </div>
                   </div>
 
                   {/* Additional Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Website
@@ -644,53 +678,96 @@ export default function Profile() {
             </div>
 
             {/* Subscription */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <CreditCard className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Subscription Plan</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-10 shadow-xl border border-gray-100 dark:border-gray-700/50">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 flex-shrink-0">
+                    <CreditCard className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Subscription Plan</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Manage your subscription and billing cycle</p>
+                  </div>
+                </div>
+
+                {/* Billing Toggle */}
+                <div className="flex items-center gap-4 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-2xl border border-gray-100 dark:border-gray-800">
+                  <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-blue-600' : 'text-gray-400'}`}>Monthly</span>
+                  <button
+                    onClick={() => setIsYearly(!isYearly)}
+                    className="relative w-14 h-8 bg-gray-200 dark:bg-gray-700 rounded-full p-1 transition-colors hover:bg-gray-300 active:scale-95"
+                  >
+                    <div
+                      className={`w-6 h-6 bg-blue-600 rounded-full shadow-md transition-transform duration-300 ${isYearly ? 'translate-x-6' : 'translate-x-0'}`}
+                    />
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm font-bold transition-colors ${isYearly ? 'text-blue-600' : 'text-gray-400'}`}>Yearly</span>
+                    <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] font-black uppercase px-2 py-0.5 rounded-full ring-1 ring-green-600/20">
+                      Save 25%
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="mb-6">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Current Plan: <span className="font-semibold text-gray-900 dark:text-white capitalize">{selectedPlan}</span>
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {plans.map((plan) => (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {plans.map((plan, index) => (
                   <div
                     key={plan.id}
-                    className={`p-6 rounded-lg border-2 ${selectedPlan === plan.id
-                      ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                      : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
+                    className={`relative p-8 rounded-[2rem] flex flex-col transition-all duration-300 border-2 ${selectedPlan === plan.id
+                      ? 'bg-white dark:bg-gray-800 border-blue-600 shadow-xl scale-100'
+                      : 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md'
                       }`}
                   >
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h3>
-                      {selectedPlan === plan.id && (
-                        <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                      )}
+                    {plan.popular && (
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                        Recommended
+                      </div>
+                    )}
+
+                    <div className="mb-6">
+                      <h3 className={`text-lg font-bold mb-1 uppercase tracking-tight ${selectedPlan === plan.id ? 'text-blue-600' : 'text-gray-900 dark:text-white'}`}>
+                        {plan.name}
+                      </h3>
+                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {plan.description}
+                      </p>
                     </div>
-                    <p className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                      {plan.price}<span className="text-sm text-gray-500 dark:text-gray-400">/mo</span>
-                    </p>
-                    <ul className="space-y-2 mb-4">
-                      {plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-start text-sm text-gray-600 dark:text-gray-300">
-                          <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                          {feature}
+
+                    <div className="mb-8 flex items-baseline gap-1">
+                      <span className={`text-4xl font-black tracking-tighter ${selectedPlan === plan.id ? 'text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white'}`}>
+                        {isYearly ? plan.price.yearly : plan.price.monthly}
+                      </span>
+                      <span className="text-sm font-bold text-gray-500">/mo</span>
+                    </div>
+
+                    <div className={`h-px w-full mb-8 ${selectedPlan === plan.id ? 'bg-gray-100 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-800'}`}></div>
+
+                    <ul className="space-y-4 mb-10 flex-1">
+                      {plan.features.slice(0, 5).map((feature, i) => (
+                        <li key={i} className="flex items-start gap-3">
+                          <CheckCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${selectedPlan === plan.id ? 'text-blue-600' : 'text-gray-400'}`} />
+                          <span className={`text-xs font-medium leading-snug ${selectedPlan === plan.id ? 'text-gray-700 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'}`}>
+                            {feature}
+                          </span>
                         </li>
                       ))}
                     </ul>
-                    {selectedPlan !== plan.id && (
+
+                    {selectedPlan === plan.id ? (
+                      <div className="w-full py-3.5 bg-gray-50 dark:bg-gray-800 rounded-xl font-bold text-center text-xs uppercase tracking-widest text-gray-400 border border-gray-100 dark:border-gray-700">
+                        Active Now
+                      </div>
+                    ) : (
                       <button
                         onClick={() => handleChangePlan(plan.id)}
                         disabled={loading}
-                        className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
+                        className={`w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${plan.id === 'free'
+                          ? 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                          : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/10'
+                          }`}
                       >
-                        {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' :
-                          selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' :
-                            'Switch Plan'}
+                        {plan.id === 'free' ? 'Back to Free' : 'Choose Plan'}
                       </button>
                     )}
                   </div>

@@ -49,7 +49,7 @@ export default function CustomDomain({ linkData, setLinkData }) {
       <div>
         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
           <Globe className="inline w-4 h-4 mr-1" />
-          Custom Domain (Optional)
+          Custom Domain
         </label>
         <input
           type="text"
@@ -156,7 +156,7 @@ export default function CustomDomain({ linkData, setLinkData }) {
       {linkData.customDomain && (
         <div>
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-            Custom Alias (Optional)
+            Custom Alias
           </label>
           <div className="flex items-center gap-2">
             <span className="text-gray-500 dark:text-gray-400 text-sm">

@@ -22,9 +22,9 @@ export default function VerifyEmail() {
     try {
       console.log('🔍 Verifying with token:', token);
       console.log('🔗 API URL:', `${API_URL}/api/auth/verify-email/${token}`);
-      
+
       const { data } = await axios.get(`${API_URL}/api/auth/verify-email/${token}`);
-      
+
       console.log('✅ Success response:', data);
       setStatus('success');
       setMessage(data.message || 'Email verified successfully!');
@@ -32,7 +32,7 @@ export default function VerifyEmail() {
       console.error('❌ Error response:', error.response?.data);
       console.error('❌ Error status:', error.response?.status);
       console.error('❌ Full error:', error);
-      
+
       setStatus('error');
       setMessage(error.response?.data?.error || 'Verification failed. Please try again.');
     }
@@ -47,11 +47,10 @@ export default function VerifyEmail() {
       <div className="max-w-md w-full">
         {/* Status Icon */}
         <div className="text-center mb-8">
-          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${
-            status === 'verifying' ? 'bg-blue-100' :
+          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${status === 'verifying' ? 'bg-blue-100' :
             status === 'success' ? 'bg-green-100' :
-            'bg-red-100'
-          }`}>
+              'bg-red-100'
+            }`}>
             {status === 'verifying' && (
               <Loader className="w-8 h-8 text-blue-600 animate-spin" />
             )}
@@ -62,13 +61,13 @@ export default function VerifyEmail() {
               <XCircle className="w-8 h-8 text-red-600" />
             )}
           </div>
-          
+
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {status === 'verifying' && 'Verifying Email...'}
             {status === 'success' && 'Email Verified!'}
             {status === 'error' && 'Verification Failed'}
           </h1>
-          
+
           {message && (
             <p className="text-gray-600 mt-2">{message}</p>
           )}
@@ -81,11 +80,11 @@ export default function VerifyEmail() {
               <p className="text-gray-600 mb-6">
                 Your email has been verified successfully. You can now access all features.
               </p>
-              <Link 
-                to="/dashboard" 
+              <Link
+                to="/pricing"
                 className="btn-primary inline-flex items-center justify-center w-full"
               >
-                Go to Dashboard
+                Choose Your Plan
               </Link>
             </>
           )}
@@ -96,8 +95,8 @@ export default function VerifyEmail() {
                 The verification link may have expired or is invalid. Please try logging in or request a new verification email.
               </p>
               <div className="space-y-3">
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="btn-primary inline-flex items-center justify-center w-full"
                 >
                   Back to Login
@@ -111,7 +110,7 @@ export default function VerifyEmail() {
               </div>
             </>
           )}
-          
+
           {status === 'verifying' && (
             <div className="space-y-3">
               <p className="text-gray-500">

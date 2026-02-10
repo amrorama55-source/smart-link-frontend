@@ -1,28 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { 
-  User, Lock, CreditCard, Trash2, LogOut, Monitor, 
+import {
+  User, Lock, CreditCard, Trash2, LogOut, Monitor,
   Smartphone, Globe, Shield, CheckCircle, XCircle,
   Save, Eye, EyeOff, AlertTriangle
 } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { PLANS } from '../utils/plans';
 
 export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  
+
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
   const [sessions, setSessions] = useState([]);
-  
+
   // Profile state
   const [profileData, setProfileData] = useState({
     name: '',
     email: ''
   });
-  
+
   // Password state
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
@@ -34,11 +35,11 @@ export default function Settings() {
     new: false,
     confirm: false
   });
-  
+
   // Subscription state
   const [subscription, setSubscription] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('free');
-  
+
   // Delete account state
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deletePassword, setDeletePassword] = useState('');
@@ -179,7 +180,7 @@ export default function Settings() {
     if (!confirmed) return;
 
     setLoading(true);
-    
+
     try {
       const response = await api.delete('/api/settings/account', {
         data: {
@@ -187,11 +188,11 @@ export default function Settings() {
           confirmDelete: true
         }
       });
-      
+
       alert('Account deleted successfully. You will be logged out now.');
       logout();
       navigate('/login');
-      
+
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to delete account. Please try again.';
       alert(errorMessage);
@@ -211,33 +212,14 @@ export default function Settings() {
     { id: 'security', label: 'Account Security', icon: Shield, shortLabel: 'Security' }
   ];
 
-  const plans = [
-    {
-      id: 'free',
-      name: 'Free',
-      price: '$0',
-      features: ['1,000 links/month', '100 API requests/day', 'Basic Analytics']
-    },
-    {
-      id: 'pro',
-      name: 'Pro',
-      price: '$15',
-      features: ['10,000 links/month', '1,000 API requests/day', 'Password Protection', 'Advanced Analytics']
-    },
-    {
-      id: 'business',
-      name: 'Business',
-      price: '$49',
-      features: ['Unlimited links', 'Unlimited API requests', 'Custom Domains', 'Team Collaboration']
-    }
-  ];
+  const plans = PLANS;
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Navbar />
-      
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        
+
         {/* Header */}
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Settings</h1>
@@ -247,10 +229,10 @@ export default function Settings() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
-          
+
           {/* Sidebar - Dropdown on Mobile, Sidebar on Desktop */}
           <div className="lg:col-span-1">
-            
+
             {/* Mobile: Dropdown (< 1024px) */}
             <div className="lg:hidden bg-white dark:bg-gray-800 rounded-xl p-3 shadow-sm mb-4">
               <select
@@ -274,11 +256,10 @@ export default function Settings() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all text-sm ${
-                      activeTab === tab.id
-                        ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm font-semibold'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium'
-                    }`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all text-sm ${activeTab === tab.id
+                      ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm font-semibold'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium'
+                      }`}
                   >
                     <Icon className="w-5 h-5 flex-shrink-0" />
                     <span className="truncate">{tab.label}</span>
@@ -290,7 +271,7 @@ export default function Settings() {
 
           {/* Content */}
           <div className="lg:col-span-3">
-            
+
             {/* Profile Tab - RESPONSIVE */}
             {activeTab === 'profile' && (
               <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
@@ -428,7 +409,7 @@ export default function Settings() {
               </div>
             )}
 
-                 {/* Sessions Tab - RESPONSIVE */}
+            {/* Sessions Tab - RESPONSIVE */}
             {activeTab === 'sessions' && (
               <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -505,7 +486,7 @@ export default function Settings() {
                   <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                     Current Plan: <span className="font-semibold text-gray-900 dark:text-white capitalize">{selectedPlan}</span>
                   </p>
-                  
+
                   {subscription?.subscription?.status && (
                     <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4 border border-blue-200 dark:border-blue-800">
                       <p className="text-sm text-gray-700 dark:text-gray-300">
@@ -524,11 +505,10 @@ export default function Settings() {
                   {plans.map((plan) => (
                     <div
                       key={plan.id}
-                      className={`p-4 sm:p-5 md:p-6 rounded-lg border-2 ${
-                        selectedPlan === plan.id
-                          ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                          : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
-                      }`}
+                      className={`p-4 sm:p-5 md:p-6 rounded-lg border-2 ${selectedPlan === plan.id
+                        ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
+                        }`}
                     >
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h3>
@@ -537,7 +517,7 @@ export default function Settings() {
                         )}
                       </div>
                       <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                        {plan.price}
+                        {plan.price.monthly}
                         <span className="text-sm text-gray-500 dark:text-gray-400">/mo</span>
                       </p>
                       <ul className="space-y-2 mb-4">
@@ -554,9 +534,9 @@ export default function Settings() {
                           disabled={loading}
                           className="w-full min-h-[44px] px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                         >
-                          {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' : 
-                           selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' : 
-                           'Switch Plan'}
+                          {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' :
+                            selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' :
+                              'Switch Plan'}
                         </button>
                       )}
                     </div>
@@ -568,7 +548,7 @@ export default function Settings() {
             {/* Account Security Tab - RESPONSIVE */}
             {activeTab === 'security' && (
               <div className="space-y-4 sm:space-y-6">
-                
+
                 {/* Logout Section */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
                   <div className="flex items-center gap-3 mb-4 sm:mb-6">

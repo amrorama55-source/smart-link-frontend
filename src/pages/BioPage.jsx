@@ -5,14 +5,7 @@ import { Loader, ExternalLink, LinkIcon, Instagram, Twitter, Github, Linkedin, G
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
-// Gravatar-inspired themes (cleaner, card-based)
-const themes = {
-  default: 'bg-[#f3f4f6]', // Gravatar light gray
-  dark: 'bg-[#1e1e1e]',
-  blue: 'bg-blue-50',
-  gradient: 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500',
-  midnight: 'bg-slate-900',
-};
+import { themes as themeData } from '../utils/bioThemes';
 
 const socialIcons = {
   instagram: Instagram,
@@ -83,24 +76,36 @@ export default function BioPage({ previewData = null }) {
   }
 
   // Theme Logic
-  const currentTheme = bioData.theme || 'default';
-  const themeClass = themes[currentTheme] || themes.default;
-  const isDark = ['dark', 'midnight', 'gradient'].includes(currentTheme);
-  const cardClass = isDark ? 'bg-black/20 backdrop-blur-md border-white/10 text-white' : 'bg-white border-gray-200 text-gray-900';
+  const currentTheme = themeData[bioData.theme] || themeData.default;
 
   return (
-    <div className={`min-h-screen w-full ${themeClass} transition-colors duration-500 overflow-x-hidden ${previewData ? 'rounded-[2rem]' : ''} flex flex-col`}>
+    <div
+      className={`min-h-screen w-full transition-colors duration-500 overflow-x-hidden ${previewData ? 'rounded-[2rem]' : ''} flex flex-col`}
+      style={{
+        ...currentTheme.variables,
+        background: currentTheme.variables['--bio-bg'],
+        backdropFilter: currentTheme.variables['--bio-backdrop'] || 'none'
+      }}
+    >
 
       {/* Top Banner / Cover Area (Optional, for now just spacing) */}
-      <div className={`h-32 w-full ${isDark ? 'bg-white/5' : 'bg-gray-200/50'}`}></div>
+      <div className={`h-32 w-full`} style={{ opacity: 0.2, background: 'currentColor' }}></div>
 
       <div className="max-w-xl mx-auto px-4 -mt-16 w-full flex-1 pb-12">
         {/* Profile Card */}
-        <div className={`rounded-3xl shadow-xl p-8 border ${cardClass} text-center relative overflow-hidden`}>
+        <div
+          className={`rounded-3xl shadow-xl p-8 border text-center relative overflow-hidden`}
+          style={{
+            backgroundColor: 'var(--bio-card-bg)',
+            borderColor: 'var(--bio-card-border)',
+            color: 'var(--bio-text-primary)',
+            boxShadow: 'var(--bio-shadow, 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1))'
+          }}
+        >
 
           {/* Avatar */}
           <div className="relative inline-block mb-4">
-            <div className={`w-36 h-36 rounded-full p-1.5 ${isDark ? 'bg-black' : 'bg-white'} shadow-lg mx-auto`}>
+            <div className={`w-36 h-36 rounded-full p-1.5 bg-white/20 backdrop-blur-sm shadow-lg mx-auto`}>
               {bioData.avatar ? (
                 <img
                   src={bioData.avatar}
@@ -116,17 +121,17 @@ export default function BioPage({ previewData = null }) {
 
           {/* Name & Handle */}
           <div className="mb-6">
-            <h1 className="text-3xl font-extrabold tracking-tight mb-1">
+            <h1 className={`text-3xl font-extrabold tracking-tight mb-1`} style={{ color: 'var(--bio-text-primary)' }}>
               {bioData.displayName || (previewData ? "Your Name" : "")}
             </h1>
-            <p className={`text-lg font-medium ${isDark ? 'text-white/60' : 'text-gray-500'}`}>
+            <p className={`text-lg font-medium`} style={{ color: 'var(--bio-text-secondary)' }}>
               @{bioData.username}
             </p>
           </div>
 
           {/* Verified / Location / Bio */}
           {bioData.bio && (
-            <p className={`text-base leading-relaxed mb-8 max-w-sm mx-auto ${isDark ? 'text-white/80' : 'text-gray-600'}`}>
+            <p className={`text-base leading-relaxed mb-8 max-w-sm mx-auto opacity-90`} style={{ color: 'var(--bio-text-primary)' }}>
               {bioData.bio}
             </p>
           )}
@@ -141,25 +146,34 @@ export default function BioPage({ previewData = null }) {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackLinkClick(index)}
-                  className={`group flex items-center p-3 rounded-xl transition-all border hover:shadow-md ${isDark
-                      ? 'bg-white/5 border-white/10 hover:bg-white/10'
-                      : 'bg-gray-50 border-gray-100 hover:bg-white hover:border-gray-200'
-                    }`}
+                  className={`group flex items-center p-3 rounded-xl transition-all border hover:shadow-md hover:scale-[1.02] active:scale-[0.98]`}
+                  style={{
+                    backgroundColor: 'var(--bio-link-bg)',
+                    borderColor: 'var(--bio-link-border)',
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--bio-link-hover-bg)';
+                    if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-link-hover-text)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--bio-link-bg)';
+                    if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-text-primary)';
+                  }}
                 >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl mr-3 ${isDark ? 'bg-white/10' : 'bg-white shadow-sm'}`}>
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl mr-3 bg-white/10`}>
                     {link.icon || '🔗'}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm truncate">{link.title || link.url}</p>
-                    <p className={`text-xs truncate ${isDark ? 'text-white/50' : 'text-gray-400'}`}>{link.url}</p>
+                    <p className={`font-bold text-sm truncate`} style={{ color: 'var(--bio-text-primary)' }}>{link.title || link.url}</p>
+                    <p className={`text-xs truncate`} style={{ color: 'var(--bio-text-secondary)' }}>{link.url}</p>
                   </div>
-                  <CheckCircle className={`w-5 h-5 ${isDark ? 'text-white/20' : 'text-gray-300'} group-hover:text-blue-500 transition-colors`} />
+                  <CheckCircle className={`w-5 h-5 opacity-30 group-hover:text-blue-500 transition-colors`} style={{ color: 'var(--bio-text-primary)' }} />
                 </a>
               ))
             ) : (
               previewData && (
                 <div className="p-6 border-2 border-dashed border-gray-300/50 rounded-xl text-center">
-                  <p className={isDark ? "text-white/50" : "text-gray-400"}>Add verified links</p>
+                  <p className={currentTheme.subtext}>Add verified links</p>
                 </div>
               )
             )}
@@ -171,7 +185,15 @@ export default function BioPage({ previewData = null }) {
               {bioData.socialLinks.map((s, i) => {
                 const Icon = socialIcons[s.platform] || Globe;
                 return (
-                  <a key={i} href={s.url} target="_blank" className={`text-gray-400 hover:text-blue-500 transition-colors`}>
+                  <a
+                    key={i}
+                    href={s.url}
+                    target="_blank"
+                    className={`transition-all transform hover:scale-110`}
+                    style={{ color: 'var(--bio-text-secondary)' }}
+                    onMouseOver={(e) => e.currentTarget.style.color = 'var(--bio-text-primary)'}
+                    onMouseOut={(e) => e.currentTarget.style.color = 'var(--bio-text-secondary)'}
+                  >
                     <Icon className="w-6 h-6" />
                   </a>
                 )

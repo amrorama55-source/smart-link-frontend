@@ -52,7 +52,7 @@ export default function ResetPassword() {
         password: formData.password
       });
       setSuccess(true);
-      
+
       setTimeout(() => {
         navigate('/login');
       }, 3000);

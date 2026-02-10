@@ -1,5 +1,5 @@
 import { SHORT_URL_BASE } from '../../config';
-import { X, Link2, FileText, Tag, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Link2, FileText, Tag, Calendar, ChevronDown, ChevronUp, Shield } from 'lucide-react';
 import { useState } from 'react';
 
 export default function BasicTab({ linkData, setLinkData, editingLink, errors }) {
@@ -70,7 +70,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         )}
       </div>
 
-      {/* Custom Alias - stacked on mobile so nothing truncates */}
+      {/* Custom Alias */}
       {!editingLink && (
         <div className="animate-in fade-in slide-in-from-top-2 duration-300">
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
@@ -133,7 +133,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
 
       {/* Collapsible Content */}
       <div className={`${showMoreOptions ? 'block' : 'hidden'} sm:block space-y-6 animate-in fade-in slide-in-from-top-4 duration-300`}>
-        {/* Description - fewer rows on mobile */}
+        {/* Description */}
         <div>
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
             <FileText className="inline w-4 h-4 mr-1" />
@@ -189,20 +189,37 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         </div>
 
         {/* Expiration Date */}
-        <div>
-          <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
-            <Calendar className="inline w-4 h-4 mr-1" />
-            Expiration Date (Optional)
-          </label>
-          <input
-            type="datetime-local"
-            value={linkData.expiresAt || ''}
-            onChange={(e) => setLinkData({ ...linkData, expiresAt: e.target.value })}
-            className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white dark:[color-scheme:dark]"
-          />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
+              <Calendar className="inline w-4 h-4 mr-1" />
+              Expiration Date
+            </label>
+            <input
+              type="datetime-local"
+              value={linkData.expiresAt || ''}
+              onChange={(e) => setLinkData({ ...linkData, expiresAt: e.target.value })}
+              className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white dark:[color-scheme:dark]"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
+              <Shield className="inline w-4 h-4 mr-1" />
+              Password Protection
+            </label>
+            <input
+              type="password"
+              value={linkData.password || ''}
+              onChange={(e) => setLinkData({ ...linkData, password: e.target.value })}
+              placeholder="Optional"
+              autoComplete="new-password"
+              className="w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white"
+            />
+          </div>
         </div>
 
-        {/* UTM Parameters - Collapsible */}
+        {/* UTM Parameters */}
         <div className="border-t border-slate-200 dark:border-slate-800 pt-3 mt-3 sm:pt-4 sm:mt-4">
           <button
             type="button"
@@ -230,13 +247,6 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
 
           {showUTM && (
             <div className="space-y-3 p-3 mt-2 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 animate-in fade-in slide-in-from-top-2 duration-300">
-              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 dark:border-amber-800/50 rounded-lg p-2">
-                <p className="text-xs text-amber-800 dark:text-amber-200 flex gap-2">
-                  <span className="shrink-0">💡</span>
-                  <span>Leave empty if you don't use Google Analytics.</span>
-                </p>
-              </div>
-
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
@@ -247,11 +257,9 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
                     value={linkData.utmSource || ''}
                     onChange={(e) => setLinkData({ ...linkData, utmSource: e.target.value })}
                     placeholder="e.g. facebook"
-                    autoComplete="off"
                     className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
                   />
                 </div>
-
                 <div>
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
                     Medium
@@ -261,11 +269,9 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
                     value={linkData.utmMedium || ''}
                     onChange={(e) => setLinkData({ ...linkData, utmMedium: e.target.value })}
                     placeholder="e.g. cpc"
-                    autoComplete="off"
                     className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
                   />
                 </div>
-
                 <div>
                   <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">
                     Campaign
@@ -275,7 +281,6 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
                     value={linkData.utmCampaign || ''}
                     onChange={(e) => setLinkData({ ...linkData, utmCampaign: e.target.value })}
                     placeholder="e.g. summer_sale"
-                    autoComplete="off"
                     className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
                   />
                 </div>
@@ -284,7 +289,6 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           )}
         </div>
       </div>
-
     </div>
   );
 }
