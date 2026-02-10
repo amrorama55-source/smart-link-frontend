@@ -7,7 +7,7 @@ export const BLOG_POSTS = [
     description: 'Detailed comparison of Smart Link vs Linktree in 2026. Discover why Smart Link is the best free Linktree alternative with unlimited links, analytics, and targeting - no subscription needed.',
     canonical: 'https://www.smart-link.website/blog/smart-link-vs-linktree',
     date: '2026-02-10',
-    image: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop',
+    image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&q=80&w=1000',
     category: 'Comparisons',
     readTime: '15 min',
     author: {
