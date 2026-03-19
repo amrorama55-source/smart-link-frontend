@@ -464,6 +464,170 @@ export default function TargetingTab({
           </div>
 
           {/* ======================================== */}
+          {/* OS TARGETING */}
+          {/* ======================================== */}
+          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                <Smartphone className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-white">OS Targeting</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Deep link directly to app stores</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  🍎 iOS URL (App Store)
+                </label>
+                <input
+                  type="url"
+                  value={linkData.osRules?.ios || ''}
+                  onChange={(e) => setLinkData({
+                    ...linkData,
+                    osRules: { ...(linkData.osRules || {}), ios: e.target.value }
+                  })}
+                  placeholder="https://apps.apple.com/..."
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  🤖 Android URL (Play Store)
+                </label>
+                <input
+                  type="url"
+                  value={linkData.osRules?.android || ''}
+                  onChange={(e) => setLinkData({
+                    ...linkData,
+                    osRules: { ...(linkData.osRules || {}), android: e.target.value }
+                  })}
+                  placeholder="https://play.google.com/..."
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  🪟 Windows URL
+                </label>
+                <input
+                  type="url"
+                  value={linkData.osRules?.windows || ''}
+                  onChange={(e) => setLinkData({
+                    ...linkData,
+                    osRules: { ...(linkData.osRules || {}), windows: e.target.value }
+                  })}
+                  placeholder="https://windows.example.com"
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
+                  🍏 Mac URL
+                </label>
+                <input
+                  type="url"
+                  value={linkData.osRules?.mac || ''}
+                  onChange={(e) => setLinkData({
+                    ...linkData,
+                    osRules: { ...(linkData.osRules || {}), mac: e.target.value }
+                  })}
+                  placeholder="https://mac.example.com"
+                  autoComplete="off"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ======================================== */}
+          {/* LANGUAGE TARGETING */}
+          {/* ======================================== */}
+          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+                  <Globe2 className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Language Targeting</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Route by browser language (e.g. 'ar', 'en')</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const currentRules = linkData.languageRules || [];
+                  setLinkData({
+                    ...linkData,
+                    languageRules: [...currentRules, { language: '', targetUrl: '' }]
+                  });
+                }}
+                className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition flex items-center gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Add Language
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              {(linkData.languageRules || []).map((rule, idx) => (
+                <div key={idx} className="flex gap-3 items-start">
+                  <div className="w-1/3">
+                    <input
+                      type="text"
+                      value={rule.language || ''}
+                      onChange={(e) => {
+                        const newRules = [...linkData.languageRules];
+                        newRules[idx].language = e.target.value.toLowerCase().trim();
+                        setLinkData({ ...linkData, languageRules: newRules });
+                      }}
+                      placeholder="e.g., ar, en, fr"
+                      maxLength="2"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent dark:bg-gray-700 dark:text-white uppercase font-mono text-center"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <input
+                      type="url"
+                      value={rule.targetUrl || ''}
+                      onChange={(e) => {
+                        const newRules = [...linkData.languageRules];
+                        newRules[idx].targetUrl = e.target.value;
+                        setLinkData({ ...linkData, languageRules: newRules });
+                      }}
+                      placeholder="https://example.com/ar"
+                      autoComplete="off"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newRules = linkData.languageRules.filter((_, i) => i !== idx);
+                      setLinkData({ ...linkData, languageRules: newRules });
+                    }}
+                    className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition dark:bg-red-900/20 dark:hover:bg-red-900/40 dark:text-red-400 border border-red-200 dark:border-red-800"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              ))}
+              {(!linkData.languageRules || linkData.languageRules.length === 0) && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 italic">No language rules added. Default URL will be used.</p>
+              )}
+            </div>
+          </div>
+
+          {/* ======================================== */}
           {/* LINK SCHEDULING */}
           {/* ======================================== */}
           <div>

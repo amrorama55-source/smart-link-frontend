@@ -1,12 +1,14 @@
 import { useEffect, useState, useMemo } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import {
   Activity, Clock, Globe, Smartphone,
-  TrendingUp, Eye, ExternalLink, BarChart3, Download
+  TrendingUp, Eye, ExternalLink, BarChart3, Download,
+  AlertCircle, Lock
 } from 'lucide-react';
 import { getLinks, getAnalytics } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/ToastProvider';
 
 // Import view components
 import OverviewView from '../analytics/OverviewView';
@@ -26,6 +28,47 @@ export default function Analytics() {
   const [view, setView] = useState('overview');
   const [loading, setLoading] = useState(true);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  // Determine if user can view advanced analytics
+  const hasAdvancedAnalytics = () => {
+    if (!user) return false;
+    if (user.plan === 'admin' || user.plan === 'pro' || user.plan === 'business') return true;
+
+    // Check if valid trial
+    if (user.plan === 'trial') {
+      const trialStart = user.trialStartedAt ? new Date(user.trialStartedAt) : null;
+      if (trialStart) {
+        // 7 days trial
+        const trialEnd = new Date(trialStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+        if (new Date() < trialEnd) return true;
+      }
+    }
+    return false; // Free or expired trial
+  };
+
+  const canViewAdvanced = hasAdvancedAnalytics();
+
+  const LockedFeatureOverlay = ({ title }) => (
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-8 sm:p-12 text-center relative overflow-hidden mt-6">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50/90 dark:to-gray-900/90 pointer-events-none"></div>
+      <div className="relative z-10">
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/40 dark:to-indigo-900/40 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-200 dark:border-blue-800">
+          <Lock className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+        </div>
+        <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">{title} is Locked</h3>
+        <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
+          Advanced analytics are only available on premium plans. Upgrade to see detailed {title.toLowerCase()} and grow your audience faster.
+        </p>
+        <button
+          onClick={() => navigate('/pricing')}
+          className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 transition-all"
+        >
+          Upgrade to Unlock
+        </button>
+      </div>
+    </div>
+  );
 
   useEffect(() => {
     loadLinks();
@@ -211,8 +254,8 @@ export default function Analytics() {
                 key={key}
                 onClick={() => setView(key)}
                 className={`flex-1 min-w-[120px] px-4 py-3 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-all ${view === key
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
-                    : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20'
+                  : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                   }`}
               >
                 <Icon className="w-4 h-4" />
@@ -231,9 +274,9 @@ export default function Analytics() {
         ) : processed ? (
           <div className="space-y-6">
             {view === 'overview' && <OverviewView data={processed} analytics={analytics} />}
-            {view === 'time' && <TimeView data={processed} />}
-            {view === 'location' && <LocationView data={processed} />}
-            {view === 'device' && <DeviceView data={processed} />}
+            {view === 'time' && (canViewAdvanced ? <TimeView data={processed} /> : <LockedFeatureOverlay title="Time Analysis" />)}
+            {view === 'location' && (canViewAdvanced ? <LocationView data={processed} /> : <LockedFeatureOverlay title="Geographic Data" />)}
+            {view === 'device' && (canViewAdvanced ? <DeviceView data={processed} /> : <LockedFeatureOverlay title="Tech Stack Insights" />)}
           </div>
         ) : (
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-12 text-center">

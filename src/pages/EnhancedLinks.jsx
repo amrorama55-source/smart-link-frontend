@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getLinks, createLink, updateLink, deleteLink } from '../services/api';
 import { SHORT_URL_BASE } from '../config';
 import { validateUrl, validateCustomAlias, sanitizeInput } from '../utils/validation';
-import { useToast } from '../context/ToastContext';
+import { useToast } from '../context/ToastProvider';
 import Navbar from '../components/Navbar';
 import QRCode from 'qrcode';
 import {
@@ -619,7 +619,7 @@ const validateForm = () => {
       addToast('Link updated successfully! 🎉', 'success');
     } else {
       await createLink(payload);
-      addToast('Link created successfully! 🎉', 'success');
+      addToast('Link created! 🚀 Now share this Smart Link to see analytics.', 'success', { duration: 6000 });
     }
 
     setShowModal(false);
@@ -633,14 +633,20 @@ const validateForm = () => {
                         error.response?.data?.message || 
                         error.message || 
                         'Failed to save link';
-    
+
     // Show specific variant error if available
     if (error.response?.data?.variantIndex !== undefined) {
       const variantIndex = error.response.data.variantIndex;
       const variantName = linkData.abTest?.variants?.[variantIndex]?.name || `Variant ${variantIndex + 1}`;
-      addToast(`${variantName}: ${errorMessage}`, 'error');
+      const msg = `${variantName}: ${errorMessage}`;
+      // Show inline inside modal AND as toast (toast is now above modal via z-[99999])
+      setErrors(prev => ({ ...prev, abTest: msg }));
+      addToast(msg, 'error');
     } else {
+      // Show toast (always visible now) + set a general inline error inside the modal
       addToast(errorMessage, 'error');
+      // Surface the error inline so it's readable even without toast
+      setErrors(prev => ({ ...prev, _submit: errorMessage }));
     }
   } finally {
     setSubmitting(false);

@@ -1,5 +1,5 @@
 import { SHORT_URL_BASE } from '../../config';
-import { X, Link2, FileText, Tag, Calendar, ChevronDown, ChevronUp, Shield } from 'lucide-react';
+import { X, Link2, FileText, Tag, Calendar, ChevronDown, ChevronUp, Shield, Lock, Zap } from 'lucide-react';
 import { useState } from 'react';
 
 export default function BasicTab({ linkData, setLinkData, editingLink, errors }) {
@@ -49,24 +49,57 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
   return (
     <div className="space-y-6 min-h-full">
 
-      {/* Original URL */}
+      {/* Destination URL (formerly Original URL) */}
       <div>
         <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
-          <Link2 className="inline w-4 h-4 mr-1" />
-          Original URL *
+          <Link2 className="inline w-4 h-4 mr-1 text-blue-500" />
+          Destination URL (Long URL) {!editingLink && '*'}
         </label>
-        <input
-          type="url"
-          value={linkData.originalUrl || ''}
-          onChange={(e) => setLinkData({ ...linkData, originalUrl: e.target.value })}
-          placeholder="https://example.com/your-long-url"
-          autoComplete="off"
-          className={`w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 ${errors.originalUrl ? 'border-red-500/50 bg-red-50/10' : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
-            } dark:text-white`}
-          required
-        />
-        {errors.originalUrl && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.originalUrl}</p>
+
+        {editingLink ? (
+          /* Read-only display when editing — URL cannot be changed after creation */
+          <div className="relative">
+            <div className="w-full px-4 py-3 min-h-[48px] text-base bg-slate-100 dark:bg-slate-800/60 border-2 border-slate-200 dark:border-slate-700 rounded-xl flex items-center gap-2 overflow-hidden">
+              <Lock className="w-4 h-4 text-slate-400 dark:text-slate-500 flex-shrink-0" />
+              <span className="truncate text-slate-500 dark:text-slate-400 text-sm">
+                {linkData.originalUrl || '—'}
+              </span>
+            </div>
+            <p className="mt-1.5 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+              <Lock className="w-3 h-3 mt-0.5 flex-shrink-0 text-amber-500" />
+              <span>
+                The destination URL is locked after creation and cannot be changed.{' '}
+                <a
+                  href="/pricing"
+                  className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Upgrade to Pro
+                </a>{' '}
+                to create new links with any URL.
+              </span>
+            </p>
+          </div>
+        ) : (
+          /* Editable input when creating */
+          <>
+            <input
+              type="url"
+              value={linkData.originalUrl || ''}
+              onChange={(e) => setLinkData({ ...linkData, originalUrl: e.target.value })}
+              placeholder="https://example.com/your-long-url"
+              autoComplete="off"
+              className={`w-full px-4 py-3 min-h-[48px] text-base bg-white dark:bg-slate-800 border-2 rounded-xl transition-all outline-none focus:ring-2 focus:ring-blue-500/50 ${
+                errors.originalUrl
+                  ? 'border-red-500/50 bg-red-50/10'
+                  : 'border-slate-200 dark:border-slate-700 focus:border-blue-500'
+              } dark:text-white`}
+              required
+            />
+            {errors.originalUrl && (
+              <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.originalUrl}</p>
+            )}
+          </>
         )}
       </div>
 
@@ -113,8 +146,8 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
         />
       </div>
 
-      {/* More Options Toggle (Mobile Only) */}
-      <div className="sm:hidden border-t border-slate-200 dark:border-slate-800 pt-4">
+      {/* More Options Toggle (Desktop & Mobile) */}
+      <div className="border-t border-slate-200 dark:border-slate-800 pt-4">
         <button
           type="button"
           onClick={() => setShowMoreOptions(!showMoreOptions)}
@@ -132,7 +165,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
       </div>
 
       {/* Collapsible Content */}
-      <div className={`${showMoreOptions ? 'block' : 'hidden'} sm:block space-y-6 animate-in fade-in slide-in-from-top-4 duration-300`}>
+      <div className={`${showMoreOptions ? 'block' : 'hidden'} space-y-6 animate-in fade-in slide-in-from-top-4 duration-300`}>
         {/* Description */}
         <div>
           <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5 sm:mb-2">
@@ -257,7 +290,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
                     value={linkData.utmSource || ''}
                     onChange={(e) => setLinkData({ ...linkData, utmSource: e.target.value })}
                     placeholder="e.g. facebook"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
                   />
                 </div>
                 <div>
@@ -269,7 +302,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
                     value={linkData.utmMedium || ''}
                     onChange={(e) => setLinkData({ ...linkData, utmMedium: e.target.value })}
                     placeholder="e.g. cpc"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white"
                   />
                 </div>
                 <div>
@@ -281,7 +314,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
                     value={linkData.utmCampaign || ''}
                     onChange={(e) => setLinkData({ ...linkData, utmCampaign: e.target.value })}
                     placeholder="e.g. summer_sale"
-                    className="w-full px-3 py-2 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
+                    className="w-full px-4 py-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-lg transition-all outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 dark:text-white text-sm"
                   />
                 </div>
               </div>

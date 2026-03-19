@@ -29,83 +29,40 @@ export default function Profile() {
 
   const [activeTab, setActiveTab] = useState('profile');
   const [profile, setProfile] = useState(null);
-  const [stats, setStats] = useState({
-    totalLinks: 0,
-    totalClicks: 0,
-    countries: 0,
-    clicksThisMonth: 0
-  });
+  const [stats, setStats] = useState({ totalLinks: 0, totalClicks: 0, countries: 0, clicksThisMonth: 0 });
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
-  // Profile data
-  const [profileData, setProfileData] = useState({
-    name: '',
-    bio: '',
-    website: '',
-    location: '',
-    email: '',
-    avatar: ''
-  });
-
-  // Password data
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false
-  });
-
-  // Subscription
+  const [profileData, setProfileData] = useState({ name: '', bio: '', website: '', location: '', email: '', avatar: '' });
+  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false });
   const [subscription, setSubscription] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('free');
   const [isYearly, setIsYearly] = useState(false);
-
-  // Delete account
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deletePassword, setDeletePassword] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
-  // Sessions
   const [sessions, setSessions] = useState([]);
 
-  // Helper function to get initial from name
   const getInitial = () => {
-    if (profileData.name && profileData.name.trim()) {
-      return profileData.name.trim().charAt(0).toUpperCase();
-    }
-    if (profile?.name && profile.name.trim()) {
-      return profile.name.trim().charAt(0).toUpperCase();
-    }
-    if (profile?.email && profile.email.trim()) {
-      return profile.email.trim().charAt(0).toUpperCase();
-    }
-    return 'U'; // Default to 'U' for User
+    if (profileData.name?.trim()) return profileData.name.trim().charAt(0).toUpperCase();
+    if (profile?.name?.trim()) return profile.name.trim().charAt(0).toUpperCase();
+    if (profile?.email?.trim()) return profile.email.trim().charAt(0).toUpperCase();
+    return 'U';
   };
 
   useEffect(() => {
     const tab = searchParams.get('tab');
-    if (tab === 'settings') {
-      setActiveTab('settings');
-    }
+    if (tab === 'settings') setActiveTab('settings');
     loadProfileData();
   }, [searchParams]);
 
   const loadProfileData = async () => {
     try {
-      // Load profile data
       const data = await getProfile();
-
-      // Handle nested user object structure
       const userProfile = data.user || data;
-
       setProfile(userProfile);
       setSelectedPlan(userProfile.plan || 'free');
-
       setProfileData({
         name: userProfile.name || '',
         bio: userProfile.bioPage?.bio || userProfile.bio || '',
@@ -115,7 +72,6 @@ export default function Profile() {
         avatar: userProfile.avatar || userProfile.bioPage?.avatar || ''
       });
 
-      // Load stats
       try {
         const statsRes = await getDashboardStats();
         if (statsRes.success && statsRes.stats) {
@@ -126,25 +82,11 @@ export default function Profile() {
             clicksThisMonth: statsRes.stats.clicksThisMonth || 0
           });
         }
-      } catch (statsError) {
-        console.warn('Stats endpoint not available:', statsError);
-        // Keep default stats values
-      }
-
+      } catch { }
     } catch (error) {
       console.error('Failed to load profile:', error);
-      alert('Failed to load profile data. Please refresh the page.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const loadSessions = async () => {
-    try {
-      const { sessions } = await getSessions();
-      setSessions(sessions);
-    } catch (error) {
-      console.error('Failed to load sessions:', error);
     }
   };
 
@@ -162,19 +104,9 @@ export default function Profile() {
           let width = img.width;
           let height = img.height;
           const MAX_SIZE = 500;
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height *= MAX_SIZE / width;
-              width = MAX_SIZE;
-            }
-          } else {
-            if (height > MAX_SIZE) {
-              width *= MAX_SIZE / height;
-              height = MAX_SIZE;
-            }
-          }
-          canvas.width = width;
-          canvas.height = height;
+          if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } }
+          else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+          canvas.width = width; canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
           resolve(canvas.toDataURL('image/jpeg', 0.7));
@@ -186,19 +118,13 @@ export default function Profile() {
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Image too large (Max 5MB)');
-      return;
-    }
+    if (file.size > 5 * 1024 * 1024) { alert('Image too large (Max 5MB)'); return; }
     try {
       const compressedBase64 = await compressImage(file);
       setProfileData(prev => ({ ...prev, avatar: compressedBase64 }));
       await updateProfile({ ...profileData, avatar: compressedBase64 });
       loadProfileData();
-    } catch (error) {
-      console.error("Image compression failed", error);
-      alert("Failed to process image");
-    }
+    } catch (error) { alert('Failed to process image'); }
   };
 
   const handleSaveProfile = async () => {
@@ -210,44 +136,24 @@ export default function Profile() {
       loadProfileData();
     } catch (error) {
       alert(error.response?.data?.error || 'Failed to update profile');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleChangePassword = async () => {
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match');
-      return;
-    }
-
-    if (passwordData.newPassword.length < 6) {
-      alert('Password must be at least 6 characters');
-      return;
-    }
-
+    if (passwordData.newPassword !== passwordData.confirmPassword) { alert('New passwords do not match'); return; }
+    if (passwordData.newPassword.length < 6) { alert('Password must be at least 6 characters'); return; }
     setLoading(true);
     try {
-      await changePassword({
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
-      });
+      await changePassword({ currentPassword: passwordData.currentPassword, newPassword: passwordData.newPassword });
       alert('Password changed successfully!');
-      setPasswordData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (error) {
       alert(error.response?.data?.error || 'Failed to change password');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleChangePlan = async (plan) => {
     if (!confirm(`Are you sure you want to ${plan === 'free' ? 'downgrade' : 'upgrade'} to ${plan} plan?`)) return;
-
     setLoading(true);
     try {
       await updateSubscription(plan);
@@ -256,40 +162,21 @@ export default function Profile() {
       loadProfileData();
     } catch (error) {
       alert(error.response?.data?.error || 'Failed to update plan');
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const handleDeleteAccount = async () => {
-    if (deleteConfirm !== 'DELETE') {
-      alert('Please type DELETE to confirm');
-      return;
-    }
-
-    if (!deletePassword) {
-      alert('Please enter your password');
-      return;
-    }
-
-    const confirmed = confirm('⚠️ FINAL WARNING: This will permanently delete your account and all data. Are you absolutely sure?');
-    if (!confirmed) return;
-
+    if (deleteConfirm !== 'DELETE') { alert('Please type DELETE to confirm'); return; }
+    if (!deletePassword) { alert('Please enter your password'); return; }
+    if (!confirm('⚠️ FINAL WARNING: This will permanently delete your account and all data. Are you absolutely sure?')) return;
     setLoading(true);
-
     try {
-      await deleteAccount({
-        password: deletePassword,
-        confirmDelete: true
-      });
-
+      await deleteAccount({ password: deletePassword, confirmDelete: true });
       alert('Account deleted successfully. You will be logged out now.');
       logout();
       navigate('/login');
-
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to delete account. Please try again.';
-      alert(errorMessage);
+      alert(error.response?.data?.error || 'Failed to delete account. Please try again.');
     } finally {
       setLoading(false);
       setShowDeleteModal(false);
@@ -300,6 +187,7 @@ export default function Profile() {
 
   const planBadges = {
     free: { color: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300', icon: User },
+    trial: { color: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400', icon: Zap },
     pro: { color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: Zap },
     business: { color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Crown }
   };
@@ -317,172 +205,184 @@ export default function Profile() {
     );
   }
 
-  // Safe access to current plan
   const currentPlan = profile?.plan || 'free';
-  const safePlanBadge = planBadges[currentPlan] || planBadges.free;
+
+  // Check if trial has expired (same logic as backend)
+  const trialExpired = currentPlan === 'trial' &&
+    profile?.trialEndsAt && new Date() > new Date(profile.trialEndsAt);
+
+  // Use effective plan for display: if trial expired, show as free
+  const effectivePlan = trialExpired ? 'free' : currentPlan;
+
+  // Get display name without a PLANS entry for trial (to avoid pricing page side effects)
+  const getPlanDisplayName = (planId) => {
+    if (planId === 'trial') return 'Business Elite';
+    return PLANS.find(p => p.id === planId)?.name || 'Starter';
+  };
+  const planDisplayName = getPlanDisplayName(effectivePlan);
+
+  const safePlanBadge = planBadges[effectivePlan] || planBadges.free;
   const PlanIcon = safePlanBadge.icon;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f172a] transition-colors duration-300">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Tab Navigation */}
-        <div className="mb-6 flex gap-2 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${activeTab === 'profile'
-              ? 'bg-blue-600 text-white'
-              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
-          >
-            Profile
-          </button>
-          <button
-            onClick={() => setActiveTab('settings')}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors whitespace-nowrap ${activeTab === 'settings'
-              ? 'bg-blue-600 text-white'
-              : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-              }`}
-          >
-            Settings
-          </button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Tab Navigation - Glassmorphism style */}
+        <div className="mb-8 flex p-1.5 bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/5 w-fit shadow-inner">
+          {['profile', 'settings'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`px-8 py-2.5 rounded-xl font-bold transition-all duration-300 whitespace-nowrap capitalize flex items-center gap-2 ${activeTab === tab
+                ? 'bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-xl scale-105'
+                : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
+                }`}
+            >
+              {tab === 'profile' ? <User className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
+              {tab}
+            </button>
+          ))}
         </div>
 
-        {/* Profile Tab */}
+        {/* ====== PROFILE TAB ====== */}
         {activeTab === 'profile' && (
-          <>
-            {/* Header with Cover - CLEAN VERSION */}
-            <div className="relative rounded-2xl h-32 sm:h-40 mb-8 overflow-hidden shadow-2xl group border border-gray-200 dark:border-gray-700">
-              {/* Simplified Background */}
-              <div className="absolute inset-0 bg-gray-900 border-b border-gray-800">
-                {/* Very subtle decorative elements */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/5 rounded-full -ml-24 -mb-24 blur-3xl"></div>
-              </div>
-              <div className="absolute inset-0 bg-black/10"></div>
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Premium Header Card */}
+            <div className="relative rounded-[2.5rem] p-8 sm:p-12 mb-10 overflow-hidden shadow-2xl border border-white/20 dark:border-white/10 group">
+              {/* Animated Background Gradients */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/90 via-indigo-700/90 to-purple-800/90 dark:from-blue-900/40 dark:via-indigo-900/40 dark:to-purple-900/40 backdrop-blur-3xl"></div>
+              <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl group-hover:bg-blue-400/30 transition-all duration-700"></div>
+              <div className="absolute -bottom-24 -left-24 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-500/30 transition-all duration-700"></div>
 
-              {/* Content */}
-              <div className="absolute inset-0 flex items-center justify-center sm:justify-start sm:px-8">
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  {/* Profile Avatar In Header */}
-                  <div className="relative group/avatar">
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white font-bold text-4xl shadow-2xl ring-4 ring-white/30 overflow-hidden transition-transform duration-500 group-hover/avatar:scale-105 group-hover/avatar:rotate-3">
-                      {profile?.avatar || profile?.bioPage?.avatar ? (
-                        <img
-                          src={profile.avatar || profile.bioPage.avatar}
-                          alt="Profile"
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <span>{getInitial()}</span>
-                      )}
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-4 border-indigo-600 shadow-xl"></div>
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                {/* Avatar Section */}
+                <div className="relative">
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[2rem] bg-white/10 backdrop-blur-2xl flex items-center justify-center text-white font-black text-5xl shadow-2xl ring-1 ring-white/30 overflow-hidden group-hover:ring-white/50 transition-all">
+                    {profile?.avatar || profile?.bioPage?.avatar ? (
+                      <img src={profile.avatar || profile.bioPage.avatar} alt="Profile" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    ) : (
+                      <span>{getInitial()}</span>
+                    )}
                   </div>
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute -bottom-2 -right-2 w-12 h-12 bg-white dark:bg-blue-600 rounded-2xl flex items-center justify-center shadow-2xl border-4 border-[#6366f1] dark:border-[#1e293b] hover:scale-110 transition-transform cursor-pointer"
+                  >
+                    <Camera className="w-5 h-5 text-blue-600 dark:text-white" />
+                  </button>
+                  <input type="file" ref={fileInputRef} onChange={handleImageUpload} className="hidden" accept="image/*" />
+                </div>
 
-                  <div className="text-center sm:text-left">
-                    <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight drop-shadow-lg">
+                {/* Info Section */}
+                <div className="flex-1 text-center md:text-left">
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                    <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight drop-shadow-sm">
                       {profile?.name || 'User'}
                     </h1>
-                    <div className="flex items-center justify-center sm:justify-start gap-2 text-white/90 mt-2 text-sm sm:text-base drop-shadow">
-                      <Mail className="w-4 h-4" />
-                      <span>{profile?.email}</span>
+                    <div className={`w-fit mx-auto md:mx-0 px-4 py-1.5 rounded-full ${safePlanBadge.color} backdrop-blur-xl border border-white/20 font-black text-xs uppercase tracking-[0.2em] flex items-center gap-2 shadow-lg`}>
+                      <PlanIcon className="w-4 h-4" />
+                      {planDisplayName}{currentPlan === 'trial' && !trialExpired ? ' Trial' : ''}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-white/80">
+                    <div className="flex items-center justify-center md:justify-start gap-3 bg-white/10 px-4 py-2.5 rounded-2xl backdrop-blur-md border border-white/10 hover:bg-white/20 transition-colors">
+                      <div className="p-2 bg-blue-500/20 rounded-xl"><Mail className="w-4 h-4" /></div>
+                      <span className="font-medium truncate">{profile?.email}</span>
+                    </div>
+                    <div className="flex items-center justify-center md:justify-start gap-3 bg-white/10 px-4 py-2.5 rounded-2xl backdrop-blur-md border border-white/10 hover:bg-white/20 transition-colors">
+                      <div className="p-2 bg-purple-500/20 rounded-xl"><Calendar className="w-4 h-4" /></div>
+                      <span className="font-medium">Member since {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '...'}</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            {/* Profile Content */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4 sm:mt-6">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-100 dark:border-gray-700/50">
-                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-8">
-                    <div className="flex-1 space-y-2">
-                      {editMode ? (
-                        <input type="text" value={profileData.name} onChange={(e) => setProfileData({ ...profileData, name: e.target.value })} className="text-3xl font-bold w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all" placeholder="Your Name" />
-                      ) : (
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">{profile?.name || 'User'}</h1>
-                          <div className={`px-3 py-1 rounded-full ${safePlanBadge.color} font-bold text-xs uppercase tracking-wider flex items-center gap-1.5`}><PlanIcon className="w-3.5 h-3.5" />{currentPlan}</div>
-                        </div>
-                      )}
-                      <div className="flex flex-wrap items-center gap-4 text-gray-500 dark:text-gray-400 text-sm">
-                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5 rounded-lg"><Mail className="w-4 h-4" /><span>{profile?.email}</span></div>
-                        <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700/50 px-3 py-1.5 rounded-lg"><Calendar className="w-4 h-4" /><span>Joined {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '...'}</span></div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Main Info */}
+              <div className="lg:col-span-2 space-y-8">
+                <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2rem] p-8 sm:p-10 shadow-xl border border-white/20 dark:border-white/5">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-10 pb-10 border-b border-gray-100 dark:border-white/5">
+                    <div className="space-y-4 text-center sm:text-left">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-[0.2em]">Full Name</label>
+                        {editMode ? (
+                          <input type="text" value={profileData.name} onChange={(e) => setProfileData({ ...profileData, name: e.target.value })} className="text-3xl font-bold w-full px-6 py-4 border-2 border-blue-100 dark:border-blue-900/30 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-white focus:ring-4 focus:ring-blue-500/10 transition-all outline-none" />
+                        ) : (
+                          <h2 className="text-4xl font-black text-gray-900 dark:text-white leading-tight">{profile?.name || 'User'}</h2>
+                        )}
                       </div>
                     </div>
-                    <button onClick={() => editMode ? handleSaveProfile() : setEditMode(true)} disabled={loading} className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 shadow-lg ${editMode ? 'bg-green-600 hover:bg-green-700 text-white shadow-green-500/20' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-500/20'} disabled:opacity-50 active:scale-95`}>{editMode ? (<><CheckCircle className="w-5 h-5" /><span>Save Changes</span></>) : (<><Edit2 className="w-5 h-5" /><span>Edit Profile</span></>)}</button>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-xs font-black uppercase text-gray-400 dark:text-gray-500 tracking-widest">Biography</label>
-                    <div className="relative group">
-                      {editMode ? (<textarea value={profileData.bio} onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })} rows="4" className="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 transition-all resize-none" placeholder="Tell us about yourself..." />) : (<p className="text-gray-600 dark:text-gray-300 leading-relaxed text-lg italic">"{profile?.bioPage?.bio || profile?.bio || 'You haven\'t added a bio yet. Click Edit to tell your story!'}"</p>)}
-                    </div>
+                    <button
+                      onClick={() => editMode ? handleSaveProfile() : setEditMode(true)}
+                      disabled={loading}
+                      className={`px-8 py-4 rounded-2xl font-black transition-all duration-300 flex items-center gap-3 shadow-xl hover:scale-105 active:scale-95 ${editMode ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/20' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20'} disabled:opacity-50`}
+                    >
+                      {editMode ? (<><Save className="w-5 h-5" /><span>Save profile</span></>) : (<><Edit2 className="w-5 h-5" /><span>Edit profile</span></>)}
+                    </button>
                   </div>
 
-                  {/* Additional Info */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Website
-                      </label>
+                  <div className="space-y-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-[0.2em]">Professional Bio</label>
                       {editMode ? (
-                        <input
-                          type="url"
-                          value={profileData.website}
-                          onChange={(e) => setProfileData({ ...profileData, website: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                          placeholder="https://example.com"
-                        />
+                        <textarea value={profileData.bio} onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })} rows="4" className="w-full px-6 py-4 border-2 border-blue-100 dark:border-blue-900/30 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-white resize-none focus:ring-4 focus:ring-blue-500/10 transition-all outline-none" placeholder="Tell the world who you are..." />
                       ) : (
-                        <p className="text-blue-600 dark:text-blue-400">
-                          {profile?.website || 'Not set'}
-                        </p>
+                        <div className="relative p-6 bg-blue-50/30 dark:bg-blue-900/10 rounded-2xl border border-blue-100/50 dark:border-blue-900/20">
+                          <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-lg font-medium italic">
+                            "{profile?.bioPage?.bio || profile?.bio || 'No bio provided yet. Click edit to add one!'}"
+                          </p>
+                        </div>
                       )}
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Location
-                      </label>
-                      {editMode ? (
-                        <input
-                          type="text"
-                          value={profileData.location}
-                          onChange={(e) => setProfileData({ ...profileData, location: e.target.value })}
-                          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                          placeholder="City, Country"
-                        />
-                      ) : (
-                        <p className="text-gray-600 dark:text-gray-400">
-                          {profile?.location || 'Not set'}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                      <Calendar className="w-4 h-4" />
-                      <span>Member since {profile?.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Unknown'}</span>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em]">Website</label>
+                        {editMode ? (
+                          <input type="url" value={profileData.website} onChange={(e) => setProfileData({ ...profileData, website: e.target.value })} className="w-full px-6 py-4 border-2 border-gray-100 dark:border-white/5 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-white outline-none focus:border-blue-500 transition-colors" placeholder="https://..." />
+                        ) : (
+                          <div className="flex items-center gap-3 text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-4 py-3 rounded-xl border border-blue-100 dark:border-blue-900/30">
+                            <Globe className="w-4 h-4" />
+                            <a href={profile?.website} target="_blank" rel="noopener noreferrer" className="hover:underline truncate">{profile?.website || 'Not linked'}</a>
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em]">Location</label>
+                        {editMode ? (
+                          <input type="text" value={profileData.location} onChange={(e) => setProfileData({ ...profileData, location: e.target.value })} className="w-full px-6 py-4 border-2 border-gray-100 dark:border-white/5 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-white outline-none focus:border-blue-500 transition-colors" placeholder="e.g. London, UK" />
+                        ) : (
+                          <div className="flex items-center gap-3 text-gray-700 dark:text-gray-300 font-bold bg-gray-50 dark:bg-gray-900/30 px-4 py-3 rounded-xl border border-gray-100 dark:border-white/5">
+                            <Monitor className="w-4 h-4" />
+                            <span>{profile?.location || 'Remote'}</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Stats Cards */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Stats Grid - Glassmorphism */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   <StatCard icon={Link2} label="Total Links" value={stats?.totalLinks || 0} color="blue" />
-                  <StatCard icon={MousePointerClick} label="Total Clicks" value={stats?.totalClicks || 0} color="green" />
-                  <StatCard icon={Globe} label="Countries" value={stats?.countries || 0} color="purple" />
-                  <StatCard icon={TrendingUp} label="This Month" value={stats?.clicksThisMonth || 0} color="orange" />
+                  <StatCard icon={MousePointerClick} label="Total Clicks" value={stats?.totalClicks || 0} color="indigo" />
+                  <StatCard icon={Globe} label="Geo Reach" value={stats?.countries || 0} color="purple" />
+                  <StatCard icon={TrendingUp} label="Monthly growth" value={stats?.clicksThisMonth || 0} color="emerald" />
                 </div>
 
                 {/* Achievements */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Award className="w-6 h-6 text-yellow-500" />
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Achievements</h2>
+                <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2rem] p-8 shadow-xl border border-white/20 dark:border-white/5">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 bg-yellow-500/10 rounded-2xl">
+                        <Award className="w-8 h-8 text-yellow-500" />
+                      </div>
+                      <h2 className="text-2xl font-black text-gray-900 dark:text-white">Achievements</h2>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -494,18 +394,14 @@ export default function Profile() {
                       { id: 5, name: 'Viral Hit', description: 'Single link with 1000+ clicks', icon: '🚀', unlocked: false },
                       { id: 6, name: 'Early Adopter', description: 'Joined in first year', icon: '🏆', unlocked: true }
                     ].map((achievement) => (
-                      <div
-                        key={achievement.id}
-                        className={`p-4 rounded-lg border-2 transition-all ${achievement.unlocked
-                          ? 'border-yellow-400 dark:border-yellow-600 bg-yellow-50 dark:bg-yellow-900/20'
-                          : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 opacity-60'
-                          }`}
-                      >
-                        <div className="text-3xl mb-2">{achievement.icon}</div>
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-1">{achievement.name}</h3>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">{achievement.description}</p>
+                      <div key={achievement.id} className={`group relative p-5 rounded-2xl border-2 transition-all duration-300 ${achievement.unlocked ? 'border-yellow-400/50 bg-yellow-400/5 shadow-lg shadow-yellow-400/5' : 'border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-gray-900/50 grayscale opacity-40 hover:grayscale-0 hover:opacity-100'}`}>
+                        <div className="text-4xl mb-4 transform group-hover:scale-110 transition-transform duration-300">{achievement.icon}</div>
+                        <h3 className="font-black text-gray-900 dark:text-white mb-1">{achievement.name}</h3>
+                        <p className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{achievement.description}</p>
                         {achievement.unlocked && (
-                          <CheckCircle className="w-4 h-4 text-yellow-500 mt-2" />
+                          <div className="absolute top-4 right-4 animate-bounce">
+                            <CheckCircle className="w-5 h-5 text-yellow-500" />
+                          </div>
                         )}
                       </div>
                     ))}
@@ -514,399 +410,217 @@ export default function Profile() {
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
-                {/* Quick Actions */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
-                  <div className="space-y-3">
-                    <button
-                      onClick={() => navigate('/links')}
-                      className="w-full px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      <Link2 className="w-4 h-4" />
-                      <span>Create New Link</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/analytics')}
-                      className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                    >
-                      <TrendingUp className="w-4 h-4" />
-                      <span>View Analytics</span>
-                    </button>
+              <div className="space-y-8">
+                {/* Account Status Card */}
+                <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/20 dark:border-white/5 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+
+                  <h3 className="text-xl font-black text-gray-900 dark:text-white mb-8 flex items-center gap-3">
+                    <Shield className="w-6 h-6 text-blue-600" />
+                    Account Status
+                  </h3>
+
+                  <div className="space-y-6">
+                    {[
+                      { icon: CheckCircle, label: 'Identity Verified', status: true, color: 'text-emerald-500' },
+                      { icon: Star, label: 'API Access', status: effectivePlan !== 'free', color: 'text-blue-500' },
+                      { icon: Zap, label: 'Priority Support', status: effectivePlan === 'business' || (effectivePlan === 'trial' && !trialExpired), color: 'text-indigo-500' },
+                      { icon: Crown, label: 'Premium Tokens', status: effectivePlan === 'business' || (effectivePlan === 'trial' && !trialExpired), color: 'text-purple-500' }
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-4 bg-gray-50/50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-white/5 group hover:border-blue-500/30 transition-all">
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-xl bg-white dark:bg-gray-800 shadow-sm ${item.color}`}>
+                            <item.icon className="w-4 h-4" />
+                          </div>
+                          <span className="text-sm font-black text-gray-700 dark:text-gray-300">{item.label}</span>
+                        </div>
+                        {item.status ? (
+                          <div className="w-6 h-6 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                            <CheckCircle className="w-4 h-4 text-emerald-500" />
+                          </div>
+                        ) : (
+                          <div className="px-3 py-1 rounded-full bg-gray-200 dark:bg-gray-700 text-[10px] font-black uppercase text-gray-500">Locked</div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Account Status */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-                  <h3 className="font-bold text-gray-900 dark:text-white mb-4">Account Status</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Shield className="w-5 h-5 text-green-500" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Verified Email</span>
-                      </div>
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Star className="w-5 h-5 text-blue-500" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">API Access</span>
-                      </div>
-                      {currentPlan !== 'free' ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <span className="text-xs text-gray-500">Upgrade</span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Crown className="w-5 h-5 text-purple-500" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">Premium Features</span>
-                      </div>
-                      {currentPlan === 'business' ? (
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                      ) : (
-                        <span className="text-xs text-gray-500">Upgrade</span>
-                      )}
-                    </div>
-                  </div>
-
-                  {currentPlan === 'free' && (
-                    <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <button
-                        onClick={() => setActiveTab('settings')}
-                        className="w-full px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-colors"
-                      >
-                        Upgrade Plan
+                {/* Quick Shortcuts */}
+                <div className="bg-gradient-to-br from-indigo-600 to-blue-700 rounded-[2.5rem] p-8 shadow-2xl text-white relative overflow-hidden group">
+                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                  <div className="relative z-10 space-y-6">
+                    <h3 className="text-xl font-black mb-2">Need help?</h3>
+                    <p className="text-white/70 text-sm font-medium leading-relaxed">
+                      Our support team is available 24/7 for Business Elite members.
+                    </p>
+                    <div className="space-y-3">
+                      <button onClick={() => navigate('/links')} className="w-full px-6 py-4 bg-white text-blue-600 rounded-2xl font-black text-sm shadow-xl hover:scale-[1.02] transition-transform flex items-center justify-center gap-3">
+                        <Link2 className="w-4 h-4" />
+                        Explore links
+                      </button>
+                      <button onClick={() => navigate('/analytics')} className="w-full px-6 py-4 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-2xl font-black text-sm backdrop-blur-md transition-all flex items-center justify-center gap-3">
+                        <TrendingUp className="w-4 h-4" />
+                        Deep analytics
                       </button>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
-        {/* Settings Tab */}
+        {/* ====== SETTINGS TAB ====== */}
         {activeTab === 'settings' && (
-          <div className="max-w-4xl mx-auto space-y-6">
-            {/* Email & Password */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <Lock className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Security & Password</h2>
+          <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Security Section */}
+            <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2.5rem] p-8 sm:p-10 shadow-xl border border-white/20 dark:border-white/5">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-blue-500/10 rounded-2xl">
+                  <Lock className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white leading-tight">Security Vault</h2>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Manage your credentials</p>
+                </div>
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Current Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPasswords.current ? 'text' : 'password'}
-                      value={passwordData.currentPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Enter current password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPasswords({ ...showPasswords, current: !showPasswords.current })}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400"
-                    >
-                      {showPasswords.current ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
+              <div className="space-y-6">
+                {[
+                  { key: 'currentPassword', label: 'Current Key', field: 'current' },
+                  { key: 'newPassword', label: 'New Authentication Key', field: 'new' },
+                  { key: 'confirmPassword', label: 'Verify New Key', field: 'confirm' }
+                ].map(({ key, label, field }) => (
+                  <div key={key} className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-blue-600 dark:text-blue-400 tracking-[0.2em]">{label}</label>
+                    <div className="relative group">
+                      <input
+                        type={showPasswords[field] ? 'text' : 'password'}
+                        value={passwordData[key]}
+                        onChange={(e) => setPasswordData({ ...passwordData, [key]: e.target.value })}
+                        className="w-full px-6 py-4 border-2 border-gray-100 dark:border-white/5 rounded-2xl bg-gray-50/50 dark:bg-gray-900/50 text-gray-900 dark:text-white outline-none focus:border-blue-500 transition-all font-mono"
+                        placeholder="••••••••"
+                      />
+                      <button type="button" onClick={() => setShowPasswords({ ...showPasswords, [field]: !showPasswords[field] })} className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 hover:text-blue-600 transition-colors">
+                        {showPasswords[field] ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
                   </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    New Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPasswords.new ? 'text' : 'password'}
-                      value={passwordData.newPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Enter new password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPasswords({ ...showPasswords, new: !showPasswords.new })}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400"
-                    >
-                      {showPasswords.new ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Confirm New Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPasswords.confirm ? 'text' : 'password'}
-                      value={passwordData.confirmPassword}
-                      onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                      placeholder="Confirm new password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPasswords({ ...showPasswords, confirm: !showPasswords.confirm })}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400"
-                    >
-                      {showPasswords.confirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleChangePassword}
-                  disabled={loading}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  <Lock className="w-4 h-4" />
-                  <span>{loading ? 'Changing...' : 'Change Password'}</span>
+                ))}
+                <button onClick={handleChangePassword} disabled={loading} className="w-full sm:w-auto px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-black transition-all shadow-xl shadow-blue-600/20 disabled:opacity-50 flex items-center justify-center gap-3">
+                  <Shield className="w-5 h-5" />
+                  <span>{loading ? 'Processing...' : 'Update credentials'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Subscription */}
-            <div className="bg-white dark:bg-gray-800 rounded-3xl p-8 sm:p-10 shadow-xl border border-gray-100 dark:border-gray-700/50">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            {/* Customization Section */}
+            <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/20 dark:border-white/5">
+              <div className="flex items-center justify-between gap-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 flex-shrink-0">
-                    <CreditCard className="w-7 h-7" />
+                  <div className="p-3 bg-purple-500/10 rounded-2xl">
+                    {darkMode ? <Sun className="w-8 h-8 text-purple-600" /> : <Moon className="w-8 h-8 text-purple-600" />}
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Subscription Plan</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Manage your subscription and billing cycle</p>
-                  </div>
-                </div>
-
-                {/* Billing Toggle */}
-                <div className="flex items-center gap-4 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-2xl border border-gray-100 dark:border-gray-800">
-                  <span className={`text-sm font-bold transition-colors ${!isYearly ? 'text-blue-600' : 'text-gray-400'}`}>Monthly</span>
-                  <button
-                    onClick={() => setIsYearly(!isYearly)}
-                    className="relative w-14 h-8 bg-gray-200 dark:bg-gray-700 rounded-full p-1 transition-colors hover:bg-gray-300 active:scale-95"
-                  >
-                    <div
-                      className={`w-6 h-6 bg-blue-600 rounded-full shadow-md transition-transform duration-300 ${isYearly ? 'translate-x-6' : 'translate-x-0'}`}
-                    />
-                  </button>
-                  <div className="flex items-center gap-2">
-                    <span className={`text-sm font-bold transition-colors ${isYearly ? 'text-blue-600' : 'text-gray-400'}`}>Yearly</span>
-                    <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] font-black uppercase px-2 py-0.5 rounded-full ring-1 ring-green-600/20">
-                      Save 25%
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {plans.map((plan, index) => (
-                  <div
-                    key={plan.id}
-                    className={`relative p-8 rounded-[2rem] flex flex-col transition-all duration-300 border-2 ${selectedPlan === plan.id
-                      ? 'bg-white dark:bg-gray-800 border-blue-600 shadow-xl scale-100'
-                      : 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md'
-                      }`}
-                  >
-                    {plan.popular && (
-                      <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
-                        Recommended
-                      </div>
-                    )}
-
-                    <div className="mb-6">
-                      <h3 className={`text-lg font-bold mb-1 uppercase tracking-tight ${selectedPlan === plan.id ? 'text-blue-600' : 'text-gray-900 dark:text-white'}`}>
-                        {plan.name}
-                      </h3>
-                      <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                        {plan.description}
-                      </p>
-                    </div>
-
-                    <div className="mb-8 flex items-baseline gap-1">
-                      <span className={`text-4xl font-black tracking-tighter ${selectedPlan === plan.id ? 'text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white'}`}>
-                        {isYearly ? plan.price.yearly : plan.price.monthly}
-                      </span>
-                      <span className="text-sm font-bold text-gray-500">/mo</span>
-                    </div>
-
-                    <div className={`h-px w-full mb-8 ${selectedPlan === plan.id ? 'bg-gray-100 dark:bg-gray-800' : 'bg-gray-100 dark:bg-gray-800'}`}></div>
-
-                    <ul className="space-y-4 mb-10 flex-1">
-                      {plan.features.slice(0, 5).map((feature, i) => (
-                        <li key={i} className="flex items-start gap-3">
-                          <CheckCircle className={`w-4 h-4 mt-0.5 flex-shrink-0 ${selectedPlan === plan.id ? 'text-blue-600' : 'text-gray-400'}`} />
-                          <span className={`text-xs font-medium leading-snug ${selectedPlan === plan.id ? 'text-gray-700 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'}`}>
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {selectedPlan === plan.id ? (
-                      <div className="w-full py-3.5 bg-gray-50 dark:bg-gray-800 rounded-xl font-bold text-center text-xs uppercase tracking-widest text-gray-400 border border-gray-100 dark:border-gray-700">
-                        Active Now
-                      </div>
-                    ) : (
-                      <button
-                        onClick={() => handleChangePlan(plan.id)}
-                        disabled={loading}
-                        className={`w-full py-3.5 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${plan.id === 'free'
-                          ? 'bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                          : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/10'
-                          }`}
-                      >
-                        {plan.id === 'free' ? 'Back to Free' : 'Choose Plan'}
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Theme Toggle */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {darkMode ? <Sun className="w-6 h-6 text-blue-600 dark:text-blue-400" /> : <Moon className="w-6 h-6 text-blue-600 dark:text-blue-400" />}
-                  <div>
-                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Theme</h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Choose your preferred theme</p>
+                    <h2 className="text-2xl font-black text-gray-900 dark:text-white">Interface Theme</h2>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Personalize your view</p>
                   </div>
                 </div>
                 <button
                   onClick={toggleDarkMode}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
+                  className="p-1 px-5 py-3 bg-gray-100 dark:bg-gray-900/50 rounded-2xl border border-gray-200 dark:border-white/5 flex items-center gap-3 hover:scale-105 transition-all"
                 >
-                  {darkMode ? (
-                    <>
-                      <Sun className="w-4 h-4" />
-                      <span>Light Mode</span>
-                    </>
-                  ) : (
-                    <>
-                      <Moon className="w-4 h-4" />
-                      <span>Dark Mode</span>
-                    </>
-                  )}
+                  <div className={`w-12 h-6 rounded-full p-1 transition-colors ${darkMode ? 'bg-blue-600' : 'bg-gray-300'}`}>
+                    <div className={`w-4 h-4 bg-white rounded-full transition-transform ${darkMode ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                  </div>
+                  <span className="text-sm font-black text-gray-700 dark:text-white uppercase tracking-wider">{darkMode ? 'Dark' : 'Light'}</span>
                 </button>
               </div>
             </div>
 
-            {/* Sign Out */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
-              <div className="flex items-center gap-3 mb-6">
-                <LogOut className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Sign Out</h2>
-              </div>
-              <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  Sign out from your account. You will need to sign in again to access your account.
-                </p>
-                <button
-                  onClick={() => {
-                    if (confirm('Are you sure you want to sign out?')) {
-                      logout();
-                      navigate('/login');
-                    }
-                  }}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Delete Account */}
-            <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border-2 border-red-200 dark:border-red-900/50">
-              <div className="flex items-center gap-3 mb-6">
-                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
-                <h2 className="text-xl font-bold text-red-900 dark:text-red-400">Delete Account</h2>
-              </div>
-
-              <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
-                <h3 className="font-semibold text-red-900 dark:text-red-300 mb-2">Permanent Account Deletion</h3>
-                <p className="text-sm text-red-700 dark:text-red-300 mb-4">
-                  Once you delete your account, there is no going back. This will permanently delete all your links, analytics data, and account information.
-                </p>
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete Account</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Delete Modal */}
-            {showDeleteModal && (
-              <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
-                <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full shadow-2xl">
-                  <h3 className="text-xl font-bold text-red-900 dark:text-red-400 mb-4">Delete Account</h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    This action cannot be undone. All your data will be permanently deleted.
-                  </p>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Type DELETE to confirm
-                      </label>
-                      <input
-                        type="text"
-                        value={deleteConfirm}
-                        onChange={(e) => setDeleteConfirm(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        placeholder="DELETE"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        Enter your password
-                      </label>
-                      <input
-                        type="password"
-                        value={deletePassword}
-                        onChange={(e) => setDeletePassword(e.target.value)}
-                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                        placeholder="Your password"
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={handleDeleteAccount}
-                        disabled={loading || deleteConfirm !== 'DELETE'}
-                        className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
-                      >
-                        {loading ? 'Deleting...' : 'Delete Account'}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setShowDeleteModal(false);
-                          setDeleteConfirm('');
-                          setDeletePassword('');
-                        }}
-                        className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
-                      >
-                        Cancel
-                      </button>
-                    </div>
+            {/* Session Management */}
+            <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-xl border border-white/20 dark:border-white/5">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-red-500/10 rounded-2xl">
+                    <LogOut className="w-8 h-8 text-red-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-gray-900 dark:text-white">Session Control</h2>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Manage your active logins</p>
                   </div>
                 </div>
               </div>
-            )}
+              <button
+                onClick={() => { if (confirm('Are you sure you want to sign out?')) { logout(); navigate('/login'); } }}
+                className="group px-8 py-4 border-2 border-red-100 dark:border-red-900/30 text-red-600 rounded-2xl font-black hover:bg-red-50 dark:hover:bg-red-900/10 transition-all flex items-center gap-3"
+              >
+                <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                <span>Terminate current session</span>
+              </button>
+            </div>
+
+            {/* Account Danger Zone */}
+            <div className="relative group rounded-[2.5rem] p-1 shadow-2xl overflow-hidden bg-gradient-to-br from-red-500/20 to-orange-500/20">
+              <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-3xl rounded-[2.4rem] p-8 sm:p-10">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="p-3 bg-red-600/10 rounded-2xl">
+                    <AlertTriangle className="w-8 h-8 text-red-600" />
+                  </div>
+                  <h2 className="text-2xl font-black text-red-600">Danger Zone</h2>
+                </div>
+                <p className="text-gray-500 dark:text-gray-400 font-medium mb-8 leading-relaxed max-w-xl">
+                  Deleting your account will permanently wipe all your short links, tracking pixels, and analytics history. This process is irreversible.
+                </p>
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  className="px-8 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black shadow-lg shadow-red-600/20 transition-all hover:scale-105 flex items-center gap-3"
+                >
+                  <Trash2 className="w-5 h-5" />
+                  <span>Request Account Deletion</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-in fade-in duration-300">
+            <div className="bg-white dark:bg-gray-800 rounded-[2.5rem] p-8 sm:p-10 max-w-md w-full shadow-[0_0_100px_rgba(0,0,0,0.3)] border border-white/20 dark:border-white/5 relative">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-3 bg-red-100 dark:bg-red-900/30 rounded-2xl">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white">Delete Account</h3>
+              </div>
+
+              <p className="text-gray-500 dark:text-gray-400 font-medium mb-8 leading-relaxed">
+                This is a <span className="text-red-600 font-black italic underline decoration-wavy">destructive</span> action. All data will be wiped across our globally distributed servers.
+              </p>
+
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-gray-500 tracking-[0.2em]">Confirm Verification Text</label>
+                  <input type="text" value={deleteConfirm} onChange={(e) => setDeleteConfirm(e.target.value)} className="w-full px-6 py-4 border-2 border-red-50 dark:border-red-900/10 rounded-2xl bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white outline-none focus:border-red-500 transition-colors" placeholder="Type 'DELETE' to proceed" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase text-gray-500 tracking-[0.2em]">Master Password</label>
+                  <input type="password" value={deletePassword} onChange={(e) => setDeletePassword(e.target.value)} className="w-full px-6 py-4 border-2 border-red-50 dark:border-red-900/10 rounded-2xl bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white outline-none focus:border-red-500 transition-colors" placeholder="••••••••" />
+                </div>
+                <div className="flex gap-4 pt-4">
+                  <button onClick={() => { setShowDeleteModal(false); setDeleteConfirm(''); setDeletePassword(''); }} className="flex-1 px-6 py-4 rounded-2xl font-black border-2 border-gray-100 dark:border-white/5 text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+                    Cancel
+                  </button>
+                  <button onClick={handleDeleteAccount} disabled={loading || deleteConfirm !== 'DELETE'} className="flex-[2] px-6 py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-black shadow-xl shadow-red-600/20 disabled:opacity-50 transition-all">
+                    {loading ? 'Processing...' : 'Delete Everything'}
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -916,19 +630,27 @@ export default function Profile() {
 
 const StatCard = ({ icon: Icon, label, value, color }) => {
   const colorClasses = {
-    blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
-    green: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
-    purple: 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400',
-    orange: 'bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400'
+    blue: 'text-blue-600 bg-blue-500/10 border-blue-200/50 dark:border-blue-500/20',
+    indigo: 'text-indigo-600 bg-indigo-500/10 border-indigo-200/50 dark:border-indigo-500/20',
+    purple: 'text-purple-600 bg-purple-500/10 border-purple-200/50 dark:border-purple-500/20',
+    emerald: 'text-emerald-600 bg-emerald-500/10 border-emerald-200/50 dark:border-emerald-500/20'
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-      <div className={`w-10 h-10 rounded-lg ${colorClasses[color]} flex items-center justify-center mb-3`}>
-        <Icon className="w-5 h-5" />
+    <div className="relative group bg-white/70 dark:bg-gray-800/40 backdrop-blur-md rounded-[2rem] p-6 shadow-lg border border-white/20 dark:border-white/5 overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+      <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/20 to-transparent rounded-full -mr-10 -mt-10"></div>
+      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 border ${colorClasses[color]}`}>
+        <Icon className="w-6 h-6" />
       </div>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-      <p className="text-2xl font-bold text-gray-900 dark:text-white">{value.toLocaleString()}</p>
+      <div className="space-y-1">
+        <p className="text-[10px] font-black uppercase text-gray-500 dark:text-gray-400 tracking-[0.15em] leading-none">{label}</p>
+        <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
+          {typeof value === 'number' ? value.toLocaleString() : value}
+        </p>
+      </div>
+      <div className="mt-4 h-1.5 w-full bg-gray-100 dark:bg-gray-700/50 rounded-full overflow-hidden">
+        <div className={`h-full rounded-full transition-all duration-1000 ${color.includes('blue') ? 'bg-blue-500' : color.includes('indigo') ? 'bg-indigo-500' : color.includes('purple') ? 'bg-purple-500' : 'bg-emerald-500'}`} style={{ width: '65%' }}></div>
+      </div>
     </div>
   );
 };

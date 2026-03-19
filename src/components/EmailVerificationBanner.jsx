@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { Mail, X } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 export default function EmailVerificationBanner() {
   const { user } = useAuth();
@@ -19,8 +18,9 @@ export default function EmailVerificationBanner() {
     setSending(true);
     try {
       const token = localStorage.getItem('token');
+      const fullUrl = `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/resend-verification`;
       await axios.post(
-        `${API_URL}/api/auth/resend-verification`,
+        fullUrl,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

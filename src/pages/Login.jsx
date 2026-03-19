@@ -4,8 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link2, Mail, CheckCircle } from 'lucide-react';
 import PasswordInput from '../components/PasswordInput';
 import axios from 'axios';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -82,7 +81,7 @@ export default function Login() {
       console.log('📧 Resending verification email to:', email);
 
       const { data } = await axios.post(
-        `${API_URL}/api/auth/resend-verification-public`,
+        `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/resend-verification-public`,
         { email: email.toLowerCase().trim() }
       );
 
@@ -108,7 +107,7 @@ export default function Login() {
 
   const handleGoogleLogin = () => {
     console.log('🔵 Redirecting to Google OAuth');
-    window.location.href = `${API_URL}/api/auth/google`;
+    window.location.href = `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/google`;
   };
 
   return (

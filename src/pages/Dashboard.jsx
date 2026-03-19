@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { getDashboardStats } from '../services/api';
 import Navbar from '../components/Navbar';
+import TrialBanner from '../components/TrialBanner';
+import ActivationChecklist from '../components/ActivationChecklist';
+import UpgradeModal from '../components/UpgradeModal';
+import DowngradeNotice from '../components/DowngradeNotice';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastProvider';
 import { SHORT_URL_BASE } from '../config';
 import {
   Link2,
@@ -17,18 +23,83 @@ import {
   Smartphone,
   ExternalLink,
   Zap,
-  Target
+  Target,
+  Crown,
+  Shield
 } from 'lucide-react';
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { success, info, warning } = useToast();
 
   useEffect(() => {
     loadStats();
+    checkTrialStatus();
   }, []);
+
+  const checkTrialStatus = () => {
+    if (!user) return;
+
+    // Day 0: Welcome message for new trial users
+    if (user.plan === 'trial' && user.trialStartedAt) {
+      const trialStart = new Date(user.trialStartedAt);
+      const now = new Date();
+      const daysSinceStart = Math.floor((now - trialStart) / (1000 * 60 * 60 * 24));
+
+      if (daysSinceStart === 0) {
+        // Day 0: Welcome message
+        setTimeout(() => {
+          success('🎉 You\'ve unlocked Business Elite for 7 days. You have full access to all premium features!', {
+            duration: 6000,
+            action: {
+              label: 'Explore Features',
+              onClick: () => navigate('/analytics')
+            }
+          });
+        }, 2000);
+      } else if (daysSinceStart >= 1 && daysSinceStart <= 3) {
+        // Day 1-3: Feature discovery nudges
+        const features = [
+          { day: 1, message: '🚀 Try creating a custom domain for professional branding!', action: () => navigate('/links') },
+          { day: 2, message: '📊 Check your advanced analytics to see detailed insights!', action: () => navigate('/analytics') },
+          { day: 3, message: '🧪 Test different link variations with A/B testing!', action: () => navigate('/links') }
+        ];
+
+        const feature = features.find(f => f.day === daysSinceStart);
+        if (feature) {
+          setTimeout(() => {
+            info(feature.message, {
+              duration: 5000,
+              action: {
+                label: 'Try Now',
+                onClick: feature.action
+              }
+            });
+          }, 3000);
+        }
+      } else if (daysSinceStart >= 5 && daysSinceStart <= 6) {
+        // Day 5-6: Loss aversion reminders
+        const daysLeft = 7 - daysSinceStart;
+        setTimeout(() => {
+          warning(`⏰ Only ${daysLeft} days left to keep your Business features. Don't lose access to custom domains and unlimited links!`, {
+            duration: 6000,
+            action: {
+              label: 'Upgrade Now',
+              onClick: () => navigate('/pricing')
+            }
+          });
+        }, 4000);
+      } else if (daysSinceStart >= 7) {
+        // Day 7+: Trial expired
+        setShowUpgradeModal(true);
+      }
+    }
+  };
 
   const loadStats = async () => {
     try {
@@ -79,14 +150,16 @@ export default function Dashboard() {
       value: stats?.totalLinks || 0,
       icon: Link2,
       color: 'blue',
-      trend: null
+      trend: stats?.totalLinks >= 5 && user?.plan === 'free' ? 'Limit reached' : null,
+      description: user?.plan === 'free' ? `Limit: 5 links/mo` : 'Unlimited links'
     },
     {
       title: 'Total Clicks',
       value: stats?.totalClicks || 0,
       icon: MousePointerClick,
       color: 'green',
-      trend: clicksTrend
+      trend: user?.plan === 'free' ? 'Last 24h only' : clicksTrend,
+      description: user?.plan === 'free' ? '24h history' : 'Full history'
     },
     {
       title: 'Active Links',
@@ -96,11 +169,12 @@ export default function Dashboard() {
       trend: null
     },
     {
-      title: 'Clicks Today',
-      value: stats?.clicksToday || 0,
-      icon: Calendar,
+      title: 'Mobile Traffic',
+      value: `${stats?.mobilePercentage || 0}%`,
+      icon: Smartphone,
       color: 'orange',
-      trend: null
+      trend: null,
+      description: `Avg: ${stats?.averageClicksPerLink?.toFixed(1) || 0} clks/link`
     }
   ];
 
@@ -116,6 +190,10 @@ export default function Dashboard() {
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        {/* Trial Banner - Only show for trial users */}
+        {user?.plan === 'trial' && <TrialBanner />}
+        <DowngradeNotice />
+
         {/* Header — human, not corporate */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -123,7 +201,7 @@ export default function Dashboard() {
               Good to see you
             </h1>
             <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Here’s how your links are doing.
+              Here's how your links are doing.
             </p>
           </div>
           <button
@@ -134,6 +212,13 @@ export default function Dashboard() {
             Upgrade Plan
           </button>
         </div>
+
+        {/* Activation Checklist - Only show for trial users */}
+        {user?.plan === 'trial' && (
+          <div className="mb-6 sm:mb-8">
+            <ActivationChecklist />
+          </div>
+        )}
 
         {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
@@ -150,10 +235,10 @@ export default function Dashboard() {
                   </div>
                   {stat.trend && (
                     <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${stat.trend === 'up'
-                        ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-                        : stat.trend === 'down'
-                          ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                          : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : stat.trend === 'down'
+                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
                       }`}>
                       {stat.trend === 'up' && <TrendingUp className="w-3 h-3" />}
                       {stat.trend === 'down' && <TrendingDown className="w-3 h-3" />}
@@ -168,13 +253,18 @@ export default function Dashboard() {
                 <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
                   {stat.value.toLocaleString()}
                 </p>
+                {stat.description && (
+                  <p className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 mt-1 font-medium">
+                    {stat.description}
+                  </p>
+                )}
               </div>
             );
           })}
         </div>
 
-        {/* Quick Stats - Stack on mobile, 3 columns on desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
+        {/* Quick Stats - Stack on mobile, 2 columns on desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-6 sm:mb-8">
           {/* Unique Visitors */}
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
@@ -198,22 +288,10 @@ export default function Dashboard() {
               {stats?.topCountries?.[0]?.count || 0} clicks
             </p>
           </div>
-
-          {/* Mobile Traffic */}
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 dark:from-orange-600 dark:to-orange-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
-            <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-xs sm:text-sm font-medium opacity-90">Mobile Traffic</span>
-            </div>
-            <p className="text-2xl sm:text-3xl font-bold">
-              {stats?.averageClicksPerLink?.toFixed(1) || 0}
-            </p>
-            <p className="text-xs opacity-75 mt-1">Avg clicks per link</p>
-          </div>
         </div>
 
         {/* Top Performing Links */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mt-8">
           <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
               <div>
@@ -354,6 +432,12 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-    </div>
+
+      {/* Upgrade Modal - Shows when trial expires */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+      />
+    </div >
   );
 }

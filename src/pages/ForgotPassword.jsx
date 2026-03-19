@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Link2, ArrowLeft, Mail } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+import { API_URL } from '../config';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -17,7 +16,8 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      await axios.post(`${API_URL}/api/auth/forgot-password`, { email });
+      const fullUrl = `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/forgot-password`;
+      await axios.post(fullUrl, { email });
       setSuccess(true);
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to send reset email');

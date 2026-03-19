@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import UpgradePlanCard from '../components/UpgradePlanCard';
 import {
   User, Lock, CreditCard, Trash2, LogOut, Monitor,
   Smartphone, Globe, Shield, CheckCircle, XCircle,
-  Save, Eye, EyeOff, AlertTriangle
+  Save, Eye, EyeOff, AlertTriangle, ArrowRight,
+  ExternalLink, FileText, Zap, Crown, X as XIcon
 } from 'lucide-react';
-import api from '../services/api';
+import api, { getSubscriptionPortalUrl, cancelSubscription, getInvoices } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { PLANS } from '../utils/plans';
+import { useToast } from '../context/ToastProvider';
 
 export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { success, error, info } = useToast();
 
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(false);
@@ -39,16 +43,24 @@ export default function Settings() {
   // Subscription state
   const [subscription, setSubscription] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('free');
+  const [invoices, setInvoices] = useState([]);
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   // Delete account state
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deletePassword, setDeletePassword] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
+  // Downgrade warning state
+  const [showDowngradeWarning, setShowDowngradeWarning] = useState(false);
+  const [downgradePlan, setDowngradePlan] = useState(null);
+
   useEffect(() => {
     loadProfile();
     loadSessions();
     loadSubscription();
+    loadInvoices();
   }, []);
 
   const loadProfile = async () => {
@@ -77,9 +89,28 @@ export default function Settings() {
     try {
       const { data } = await api.get('/api/settings/subscription');
       setSubscription(data);
-    } catch (error) {
-      console.error('Failed to load subscription:', error);
+    } catch (err) {
+      console.error('Failed to load subscription:', err);
     }
+  };
+
+  const loadInvoices = async () => {
+    try {
+      const { data } = await getInvoices();
+      setInvoices(data.invoices || []);
+    } catch (err) {
+      console.error('Failed to load invoices:', err);
+    }
+  };
+
+  const SUCCESS_URL = 'https://www.smart-link.website/success';
+
+  const buildCheckoutUrl = (baseUrl, userId) => {
+    if (!baseUrl) return null;
+    const url = new URL(baseUrl);
+    if (userId) url.searchParams.set('checkout[custom][user_id]', userId);
+    url.searchParams.set('checkout[success_url]', SUCCESS_URL);
+    return url.toString();
   };
 
   const handleUpdateProfile = async () => {
@@ -149,19 +180,93 @@ export default function Settings() {
     }
   };
 
-  const handleChangePlan = async (plan) => {
-    if (!confirm(`Are you sure you want to ${plan === 'free' ? 'downgrade' : 'upgrade'} to ${plan} plan?`)) return;
+  const handleChangePlan = (plan) => {
+    if (plan.id === 'free') {
+      info('You are on the Free plan. Start a 7-day trial to unlock premium features!');
+      return;
+    }
 
-    setLoading(true);
+    if (selectedPlan === plan.id) {
+      info(`You are already on the ${plan.name} plan.`);
+      return;
+    }
+
+    // Check if this is a downgrade (pro → free/trial or business → any lower plan)
+    const planHierarchy = { trial: 0, free: 1, pro: 2, business: 3 };
+    const currentLevel = planHierarchy[selectedPlan] || 0;
+    const targetLevel = planHierarchy[plan.id] || 0;
+
+    // If target plan is lower than current, show downgrade warning
+    if (targetLevel < currentLevel) {
+      setDowngradePlan(plan);
+      setShowDowngradeWarning(true);
+      return;
+    }
+
+    // Upgrade or same level - proceed to checkout
+    const rawUrl = plan.checkoutUrl.monthly;
+    const checkoutUrl = buildCheckoutUrl(rawUrl, user?._id || user?.id);
+
+    if (!checkoutUrl) {
+      error('Checkout link not available. Please try again later.');
+      return;
+    }
+
+    success(`🚀 Redirecting to ${plan.name} checkout...`, { duration: 2000 });
+    setTimeout(() => {
+      window.location.href = checkoutUrl;
+    }, 1000);
+  };
+
+  const confirmDowngrade = () => {
+    if (!downgradePlan) return;
+    
+    const rawUrl = downgradePlan.checkoutUrl.monthly;
+    const checkoutUrl = buildCheckoutUrl(rawUrl, user?._id || user?.id);
+
+    if (!checkoutUrl) {
+      error('Checkout link not available. Please try again later.');
+      setShowDowngradeWarning(false);
+      setDowngradePlan(null);
+      return;
+    }
+
+    success(`🚀 Redirecting to ${downgradePlan.name} checkout...`, { duration: 2000 });
+    setTimeout(() => {
+      window.location.href = checkoutUrl;
+    }, 1000);
+    
+    setShowDowngradeWarning(false);
+    setDowngradePlan(null);
+  };
+
+  const handleManageSubscription = async () => {
+    setPortalLoading(true);
     try {
-      await api.put('/api/settings/subscription', { plan });
-      alert('Plan updated successfully!');
-      setSelectedPlan(plan);
-      loadSubscription();
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to update plan');
+      const { data } = await getSubscriptionPortalUrl();
+      if (data.url) {
+        success('Opening subscription portal...');
+        window.open(data.url, '_blank');
+      }
+    } catch {
+      error('Failed to open subscription portal. Please try again.');
     } finally {
-      setLoading(false);
+      setPortalLoading(false);
+    }
+  };
+
+  const handleCancelSubscription = async () => {
+    if (!confirm('Are you sure you want to cancel your subscription? You will retain access until the end of your billing period.')) return;
+
+    setCancelLoading(true);
+    try {
+      await cancelSubscription();
+      success('✅ Subscription cancelled. You will retain access until the end of your billing period.');
+      loadSubscription();
+    } catch (err) {
+      error(err.response?.data?.error || 'Failed to cancel subscription. Please try again.');
+    } finally {
+      setCancelLoading(false);
     }
   };
 
@@ -182,7 +287,7 @@ export default function Settings() {
     setLoading(true);
 
     try {
-      const response = await api.delete('/api/settings/account', {
+      await api.delete('/api/settings/account', {
         data: {
           password: deletePassword,
           confirmDelete: true
@@ -476,72 +581,148 @@ export default function Settings() {
 
             {/* Subscription Tab - RESPONSIVE */}
             {activeTab === 'subscription' && (
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
-                <div className="flex items-center gap-3 mb-4 sm:mb-6">
+              <div className="space-y-6">
+                {/* Header */}
+                <div className="flex items-center gap-3">
                   <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                   <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Subscription & Billing</h2>
                 </div>
 
-                <div className="mb-6">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Current Plan: <span className="font-semibold text-gray-900 dark:text-white capitalize">{selectedPlan}</span>
-                  </p>
+                {/* Current Plan Status */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Current Plan</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white capitalize">{selectedPlan}</p>
+                    </div>
+                    {selectedPlan !== 'free' && (
+                      <div className="text-right">
+                        <div className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full text-xs font-bold">
+                          Active
+                        </div>
+                      </div>
+                    )}
+                  </div>
 
-                  {subscription?.subscription?.status && (
-                    <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-4 border border-blue-200 dark:border-blue-800">
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
-                        Status: <span className="font-semibold capitalize">{subscription.subscription.status}</span>
+                  {user?.plan === 'trial' && user?.trialEndsAt && (
+                    <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse"></div>
+                        <p className="text-sm font-semibold text-indigo-900 dark:text-indigo-100">Trial Active</p>
+                      </div>
+                      <p className="text-sm text-indigo-700 dark:text-indigo-300">
+                        {Math.max(0, Math.ceil((new Date(user.trialEndsAt) - new Date()) / (1000 * 60 * 60 * 24)))} days remaining
                       </p>
-                      {subscription.subscription.currentPeriodEnd && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          Renews on: {new Date(subscription.subscription.currentPeriodEnd).toLocaleDateString()}
-                        </p>
-                      )}
                     </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Available Plans — all 3 */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {plans.map((plan) => (
-                    <div
+                    <UpgradePlanCard
                       key={plan.id}
-                      className={`p-4 sm:p-5 md:p-6 rounded-lg border-2 ${selectedPlan === plan.id
-                        ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                        : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700/50'
-                        }`}
-                    >
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white">{plan.name}</h3>
-                        {selectedPlan === plan.id && (
-                          <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        )}
-                      </div>
-                      <p className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                        {plan.price.monthly}
-                        <span className="text-sm text-gray-500 dark:text-gray-400">/mo</span>
-                      </p>
-                      <ul className="space-y-2 mb-4">
-                        {plan.features.map((feature, index) => (
-                          <li key={index} className="flex items-start text-xs sm:text-sm text-gray-600 dark:text-gray-300">
-                            <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400 mr-2 mt-0.5 flex-shrink-0" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      {selectedPlan !== plan.id && (
-                        <button
-                          onClick={() => handleChangePlan(plan.id)}
-                          disabled={loading}
-                          className="w-full min-h-[44px] px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                        >
-                          {selectedPlan === 'free' && plan.id !== 'free' ? 'Upgrade' :
-                            selectedPlan !== 'free' && plan.id === 'free' ? 'Downgrade' :
-                              'Switch Plan'}
-                        </button>
-                      )}
-                    </div>
+                      plan={plan}
+                      isCurrentPlan={selectedPlan === plan.id || (plan.id === 'free' && selectedPlan === 'trial')}
+                      onUpgrade={handleChangePlan}
+                      compact={true}
+                    />
                   ))}
                 </div>
+
+                {/* Subscription Management — paid plans only */}
+                {(selectedPlan === 'pro' || selectedPlan === 'business') && (
+                  <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                      <Crown className="w-5 h-5 text-yellow-500" />
+                      Subscription Management
+                    </h3>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button
+                        onClick={handleManageSubscription}
+                        disabled={portalLoading}
+                        className="flex-1 min-h-[44px] px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        {portalLoading ? 'Opening...' : 'Manage Subscription'}
+                      </button>
+                      <button
+                        onClick={handleCancelSubscription}
+                        disabled={cancelLoading}
+                        className="flex-1 min-h-[44px] px-4 py-2.5 border-2 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+                      >
+                        <XIcon className="w-4 h-4" />
+                        {cancelLoading ? 'Cancelling...' : 'Cancel Subscription'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Billing Info */}
+                {selectedPlan !== 'free' && selectedPlan !== 'trial' && (
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Billing Information</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Plan</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white capitalize">{selectedPlan}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Status</span>
+                        <span className="text-sm font-medium text-green-600 dark:text-green-400">Active</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Next billing</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                          {subscription?.subscription?.currentPeriodEnd
+                            ? new Date(subscription.subscription.currentPeriodEnd).toLocaleDateString()
+                            : 'N/A'
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Invoices */}
+                {invoices.length > 0 && (
+                  <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-blue-500" />
+                      Invoices
+                    </h3>
+                    <div className="space-y-3">
+                      {invoices.map((invoice, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
+                              {invoice.date ? new Date(invoice.date).toLocaleDateString() : 'N/A'}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                              {invoice.status === 'paid' ? '✅ Paid' : invoice.status}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-bold text-gray-900 dark:text-white">
+                              ${((invoice.total || 0) / 100).toFixed(2)}
+                            </span>
+                            {invoice.url && (
+                              <a
+                                href={invoice.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 text-xs font-medium flex items-center gap-1"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                Download
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
@@ -653,6 +834,68 @@ export default function Settings() {
                             {loading ? 'Deleting...' : 'Delete Account'}
                           </button>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Downgrade Warning Modal */}
+                {showDowngradeWarning && downgradePlan && (
+                  <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-xl p-5 sm:p-6 max-w-md w-full shadow-2xl">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center">
+                          <AlertTriangle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                        </div>
+                        <h3 className="text-lg sm:text-xl font-bold text-amber-900 dark:text-amber-400">
+                          ⚠️ Confirm Plan Downgrade
+                        </h3>
+                      </div>
+                      <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4">
+                        You're about to downgrade from <strong className="text-gray-900 dark:text-white">{PLANS.find(p => p.id === selectedPlan)?.name}</strong> to <strong className="text-gray-900 dark:text-white">{downgradePlan.name}</strong>.
+                      </p>
+                      <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 mb-4">
+                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                          <strong>You'll lose access to:</strong>
+                        </p>
+                        <ul className="text-sm text-amber-700 dark:text-amber-300 mt-2 space-y-1">
+                          {selectedPlan === 'business' && (
+                            <>
+                              <li>• Bulk Link Import</li>
+                              <li>• Full API Access</li>
+                              <li>• Team Collaboration</li>
+                              <li>• White-label Support</li>
+                            </>
+                          )}
+                          {selectedPlan === 'pro' && (
+                            <>
+                              <li>• Custom Domains</li>
+                              <li>• A/B Testing</li>
+                              <li>• Advanced Analytics</li>
+                              <li>• Dynamic QR Codes</li>
+                            </>
+                          )}
+                        </ul>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+                        Are you sure you want to continue?
+                      </p>
+                      <div className="flex flex-col-reverse sm:flex-row gap-3">
+                        <button
+                          onClick={() => {
+                            setShowDowngradeWarning(false);
+                            setDowngradePlan(null);
+                          }}
+                          className="flex-1 min-h-[48px] px-4 py-2.5 border-2 border-gray-300 dark:border-gray-600 rounded-lg font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors text-sm"
+                        >
+                          Keep My Plan
+                        </button>
+                        <button
+                          onClick={confirmDowngrade}
+                          className="flex-1 min-h-[48px] px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium transition-colors text-sm"
+                        >
+                          Yes, Downgrade
+                        </button>
                       </div>
                     </div>
                   </div>

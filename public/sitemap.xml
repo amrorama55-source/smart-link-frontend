@@ -28,7 +28,43 @@
   <!-- First Article -->
   <url>
     <loc>https://www.smart-link.website/blog/smart-link-vs-linktree-2026</loc>
-    <lastmod>2026-02-10</lastmod>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- New Articles -->
+  <url>
+    <loc>https://www.smart-link.website/blog/10-best-link-in-bio-tools-tiktok-2026</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.smart-link.website/blog/track-instagram-conversions-free</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.smart-link.website/blog/smart-link-vs-beacons-2026</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.smart-link.website/blog/bio-link-seo-guide-2026</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://www.smart-link.website/blog/monetize-bio-link-2026</loc>
+    <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

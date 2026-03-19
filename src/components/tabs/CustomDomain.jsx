@@ -2,30 +2,47 @@ import { Globe, AlertCircle, CheckCircle, Copy, Shield, Eye, EyeOff, ChevronDown
 import { useState, useRef } from 'react';
 import { SHORT_URL_BASE } from '../../config';
 
+// ✅ Extract hostname only for CNAME (no https://)
+const API_HOSTNAME = (import.meta.env.VITE_API_URL || 'https://api.smart-link.website')
+  .replace(/^https?:\/\//i, '')
+  .replace(/\/.*$/, '');
+
+// ✅ Clean domain input - remove protocol, www, trailing slashes
+const cleanDomain = (value) => {
+  return value
+    .replace(/^https?:\/\//i, '')   // remove https:// or http://
+    .replace(/\/.*$/, '')            // remove any path after domain
+    .trim();
+};
+
 export default function CustomDomain({ linkData, setLinkData }) {
   const [showDNSInstructions, setShowDNSInstructions] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordWarning, setPasswordWarning] = useState(false);
+  const [copied, setCopied] = useState(null);
   const passwordInputRef = useRef(null);
+
+  const handleDomainChange = (e) => {
+    const cleaned = cleanDomain(e.target.value);
+    setLinkData({ ...linkData, customDomain: cleaned });
+  };
 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setLinkData({ ...linkData, password: newPassword });
-
-    if (newPassword && newPassword.length < 6) {
-      setPasswordWarning(true);
-    } else {
-      setPasswordWarning(false);
-    }
+    setPasswordWarning(newPassword && newPassword.length < 6);
   };
 
-  const handlePasswordFocus = () => {
-    setPasswordWarning(false);
-  };
-
-  const copyDNSRecord = (text) => {
+  const copyDNSRecord = (text, key) => {
     navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 2000);
   };
+
+  // ✅ Clean domain for display (no double https)
+  const displayDomain = linkData.customDomain
+    ? cleanDomain(linkData.customDomain)
+    : '';
 
   return (
     <div className="space-y-6 min-h-full">
@@ -53,18 +70,25 @@ export default function CustomDomain({ linkData, setLinkData }) {
         </label>
         <input
           type="text"
-          value={linkData.customDomain || ''}
-          onChange={(e) => setLinkData({ ...linkData, customDomain: e.target.value })}
+          value={displayDomain}
+          onChange={handleDomainChange}
           placeholder="link.yourdomain.com"
           className="w-full px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
         />
-        <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          💡 Use your own domain instead of {SHORT_URL_BASE}
+        {/* ✅ Clear hint */}
+        <div className="mt-2 flex items-start gap-2">
+          <AlertCircle className="w-3.5 h-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-600 dark:text-amber-400">
+            Enter domain only — e.g. <code className="bg-amber-100 dark:bg-amber-900/30 px-1 rounded">link.yourdomain.com</code> — without <code className="bg-amber-100 dark:bg-amber-900/30 px-1 rounded">https://</code>
+          </p>
+        </div>
+        <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          💡 Your links will use this domain instead of {SHORT_URL_BASE}
         </p>
       </div>
 
       {/* DNS Instructions Toggle */}
-      {linkData.customDomain && (
+      {displayDomain && (
         <button
           type="button"
           onClick={() => setShowDNSInstructions(!showDNSInstructions)}
@@ -76,16 +100,15 @@ export default function CustomDomain({ linkData, setLinkData }) {
               DNS Configuration Instructions
             </span>
           </div>
-          {showDNSInstructions ? (
-            <ChevronUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          ) : (
-            <ChevronDown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-          )}
+          {showDNSInstructions
+            ? <ChevronUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            : <ChevronDown className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          }
         </button>
       )}
 
       {/* DNS Instructions Content */}
-      {linkData.customDomain && showDNSInstructions && (
+      {displayDomain && showDNSInstructions && (
         <div className="bg-gray-50 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4">
           <div>
             <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
@@ -98,31 +121,38 @@ export default function CustomDomain({ linkData, setLinkData }) {
               <div className="grid grid-cols-3 gap-4 mb-2">
                 <div>
                   <span className="text-gray-500 dark:text-gray-400 block text-xs mb-1">Type</span>
-                  <span className="text-gray-900 dark:text-white">CNAME</span>
+                  <span className="text-gray-900 dark:text-white font-bold">CNAME</span>
                 </div>
                 <div>
                   <span className="text-gray-500 dark:text-gray-400 block text-xs mb-1">Name</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-900 dark:text-white break-all">{linkData.customDomain}</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-gray-900 dark:text-white break-all text-xs">{displayDomain}</span>
                     <button
                       type="button"
-                      onClick={() => copyDNSRecord(linkData.customDomain)}
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700"
+                      onClick={() => copyDNSRecord(displayDomain, 'name')}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 flex-shrink-0"
                     >
-                      <Copy className="w-4 h-4" />
+                      {copied === 'name'
+                        ? <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                        : <Copy className="w-3.5 h-3.5" />
+                      }
                     </button>
                   </div>
                 </div>
                 <div>
                   <span className="text-gray-500 dark:text-gray-400 block text-xs mb-1">Value</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-900 dark:text-white">{SHORT_URL_BASE}</span>
+                  <div className="flex items-center gap-1">
+                    {/* ✅ CNAME value = hostname only, NO https:// */}
+                    <span className="text-gray-900 dark:text-white text-xs break-all">{API_HOSTNAME}</span>
                     <button
                       type="button"
-                      onClick={() => copyDNSRecord(SHORT_URL_BASE)}
-                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700"
+                      onClick={() => copyDNSRecord(API_HOSTNAME, 'value')}
+                      className="text-blue-600 dark:text-blue-400 hover:text-blue-700 flex-shrink-0"
                     >
-                      <Copy className="w-4 h-4" />
+                      {copied === 'value'
+                        ? <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                        : <Copy className="w-3.5 h-3.5" />
+                      }
                     </button>
                   </div>
                 </div>
@@ -153,21 +183,22 @@ export default function CustomDomain({ linkData, setLinkData }) {
       )}
 
       {/* Custom Alias - Only shown when custom domain is set */}
-      {linkData.customDomain && (
+      {displayDomain && (
         <div>
           <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
             Custom Alias
           </label>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-500 dark:text-gray-400 text-sm">
-              https://{linkData.customDomain}/
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* ✅ Always clean prefix - no double https */}
+            <span className="text-gray-500 dark:text-gray-400 text-sm whitespace-nowrap">
+              https://{displayDomain}/
             </span>
             <input
               type="text"
               value={linkData.customAlias || ''}
               onChange={(e) => setLinkData({ ...linkData, customAlias: e.target.value })}
               placeholder="my-custom-link"
-              className="flex-1 px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
+              className="flex-1 min-w-[120px] px-4 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white"
             />
           </div>
           <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -193,15 +224,18 @@ export default function CustomDomain({ linkData, setLinkData }) {
             onChange={handlePasswordChange}
             onFocus={(e) => {
               e.target.removeAttribute('readonly');
-              handlePasswordFocus();
+              setPasswordWarning(false);
             }}
             placeholder="Create a password for this link..."
             autoComplete="new-password"
             data-form-type="other"
             data-lpignore="true"
             readOnly
-            className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white ${passwordWarning ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10' : 'border-gray-300 dark:border-gray-600'
-              }`}
+            className={`w-full px-4 py-3 pr-12 border-2 rounded-lg focus:ring-2 focus:ring-indigo-500 dark:bg-gray-700 dark:text-white ${
+              passwordWarning
+                ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10'
+                : 'border-gray-300 dark:border-gray-600'
+            }`}
           />
           <button
             type="button"

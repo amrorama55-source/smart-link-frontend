@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getCurrentUser, login as loginApi, register as registerApi } from '../services/api';
+import { getCurrentUser, login as loginApi, register as registerApi, api } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -8,36 +8,24 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Initialize auth state
   useEffect(() => {
     initializeAuth();
   }, []);
 
   const initializeAuth = async () => {
     const token = localStorage.getItem('token');
-    
     if (!token) {
-      console.log('ℹ️ No token found');
       setLoading(false);
       return;
     }
-
     try {
-      console.log('🔍 Initializing auth with token...');
       const data = await getCurrentUser();
-      
-      console.log('✅ User data received:', data.user);
       setUser(data.user);
       setError(null);
     } catch (err) {
-      console.error('❌ Failed to initialize auth:', err);
-      
-      // إذا كان الخطأ 404 (user not found), امسح التوكن
       if (err.response?.status === 404) {
-        console.log('🗑️ Clearing invalid token');
         localStorage.removeItem('token');
       }
-      
       setUser(null);
       setError(err.response?.data?.message || 'Authentication failed');
     } finally {
@@ -45,99 +33,92 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Login with email/password
   const login = async (credentials) => {
     try {
-      console.log('🔐 Logging in...');
       const data = await loginApi(credentials);
-      
-      console.log('✅ Login successful:', data.user);
       localStorage.setItem('token', data.token);
       setUser(data.user);
       setError(null);
-      
       return data;
     } catch (err) {
-      console.error('❌ Login failed:', err);
       const errorMessage = err.response?.data?.error || 'Login failed';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
   };
 
-  // Login with token (OAuth callback)
+  // ✅ FIX: بعد Google OAuth، تحقق من pendingTrial وفعّله
   const loginWithToken = async (token) => {
     try {
-      console.log('🔑 Logging in with token...');
-      
-      // Save token first
       localStorage.setItem('token', token);
-      
-      // Try to fetch user with new token
+
       try {
-        console.log('📡 Fetching user with new token...');
         const data = await getCurrentUser();
-        
-        console.log('✅ User fetched successfully:', data.user);
         setUser(data.user);
         setError(null);
-        
+
+        // ✅ تحقق إذا كان المستخدم جاي من Trial flow
+        const pendingTrial = localStorage.getItem('pendingTrial');
+        if (pendingTrial === 'true') {
+          localStorage.removeItem('pendingTrial');
+          try {
+            await api.post('/trial/start');
+            console.log('✅ Trial activated after Google OAuth');
+          } catch (trialErr) {
+            console.warn('⚠️ Trial activation failed after Google OAuth:', trialErr);
+          }
+        }
+
         return data;
       } catch (fetchError) {
-        console.error('❌ Failed to fetch user with new token:', fetchError);
-        
-        // If user not found, clear token and throw error
         if (fetchError.response?.status === 404) {
-          console.log('🗑️ User not found - clearing token');
           localStorage.removeItem('token');
           throw new Error('User not found. Please register first.');
         }
-        
         throw fetchError;
       }
     } catch (err) {
-      console.error('❌ Token login failed:', err.message);
       localStorage.removeItem('token');
       setUser(null);
-      
       const errorMessage = err.message || err.response?.data?.error || 'Authentication failed';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
   };
 
-  // Register
   const register = async (userData) => {
     try {
-      console.log('📝 Registering...');
       const data = await registerApi(userData);
-      
-      console.log('✅ Registration successful:', data.user);
       localStorage.setItem('token', data.token);
       setUser(data.user);
       setError(null);
-      
       return data;
     } catch (err) {
-      console.error('❌ Registration failed:', err);
       const errorMessage = err.response?.data?.error || 'Registration failed';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
   };
 
-  // Logout
   const logout = () => {
-    console.log('👋 Logging out');
     localStorage.removeItem('token');
+    localStorage.removeItem('pendingTrial'); // ✅ امسح trial flag عند logout
     setUser(null);
     setError(null);
   };
 
-  // Update user
   const updateUser = (updates) => {
-    console.log('🔄 Updating user:', updates);
     setUser(prev => ({ ...prev, ...updates }));
+  };
+
+  const refreshUser = async () => {
+    try {
+      const data = await getCurrentUser();
+      setUser(data.user);
+      return data.user;
+    } catch (err) {
+      console.error('❌ Failed to refresh user:', err);
+    }
   };
 
   const value = {
@@ -149,6 +130,7 @@ export function AuthProvider({ children }) {
     register,
     logout,
     updateUser,
+    refreshUser,
     isAuthenticated: !!user
   };
 
@@ -166,5 +148,4 @@ export function useAuth() {
   }
   return context;
 }
-
 

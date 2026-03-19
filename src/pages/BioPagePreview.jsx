@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Loader, ExternalLink, LinkIcon, Instagram, Twitter, Github, Linkedin, Globe, CheckCircle } from 'lucide-react';
+import { ExternalLink, Instagram, Twitter, Github, Linkedin, Globe } from 'lucide-react';
 
 import { themes as themeData } from '../utils/bioThemes';
 
@@ -13,7 +13,6 @@ const socialIcons = {
     tiktok: Globe
 };
 
-// Simplified Preview Component (Gravatar Style)
 export default function BioPagePreview({ previewData }) {
     if (!previewData) return null;
 
@@ -21,22 +20,21 @@ export default function BioPagePreview({ previewData }) {
 
     return (
         <div
-            className={`min-h-full w-full transition-colors duration-500 overflow-x-hidden rounded-[2rem] flex flex-col`}
+            className="min-h-full w-full transition-colors duration-500 overflow-x-hidden rounded-[2rem] flex flex-col"
             style={{
                 ...currentTheme.variables,
                 background: currentTheme.variables['--bio-bg'],
                 backdropFilter: currentTheme.variables['--bio-backdrop'] || 'none'
             }}
         >
-
-            {/* Banner Area */}
-            <div className="h-20 w-full opacity-20"></div>
+            {/* Top Spacing */}
+            <div className="h-20 w-full"></div>
 
             <div className="px-5 -mt-10 pb-10 flex-1">
                 <div className="text-center mb-10">
                     {/* Avatar */}
                     <div className="relative inline-block mb-4">
-                        <div className={`w-24 h-24 rounded-full p-0.5 bg-white/20 backdrop-blur-sm shadow-xl mx-auto overflow-hidden border-2 border-white/30`}>
+                        <div className="w-24 h-24 rounded-full p-0.5 bg-white/20 backdrop-blur-sm shadow-xl mx-auto overflow-hidden border-2 border-white/30">
                             {previewData.avatar ? (
                                 <img
                                     src={previewData.avatar}
@@ -52,17 +50,17 @@ export default function BioPagePreview({ previewData }) {
 
                     {/* Name & Handle */}
                     <div className="mb-6">
-                        <h1 className={`text-2xl font-extrabold tracking-tight mb-0.5`} style={{ color: 'var(--bio-text-primary)' }}>
+                        <h1 className="text-2xl font-extrabold tracking-tight mb-0.5" style={{ color: 'var(--bio-text-primary)' }}>
                             {previewData.displayName || "Your Name"}
                         </h1>
-                        <p className={`text-sm font-semibold opacity-70`} style={{ color: 'var(--bio-text-secondary)' }}>
+                        <p className="text-sm font-semibold opacity-70" style={{ color: 'var(--bio-text-secondary)' }}>
                             @{previewData.username || "username"}
                         </p>
                     </div>
 
                     {/* Bio */}
                     {previewData.bio && (
-                        <p className={`text-sm leading-relaxed mb-8 px-2 font-medium opacity-90`} style={{ color: 'var(--bio-text-primary)' }}>
+                        <p className="text-sm leading-relaxed mb-8 px-2 font-medium opacity-90" style={{ color: 'var(--bio-text-primary)' }}>
                             {previewData.bio}
                         </p>
                     )}
@@ -75,7 +73,7 @@ export default function BioPagePreview({ previewData }) {
                                 return (
                                     <div
                                         key={i}
-                                        className={`p-2.5 rounded-full shadow-sm transition-transform hover:scale-110`}
+                                        className="p-2.5 rounded-full shadow-sm"
                                         style={{ backgroundColor: 'var(--bio-link-bg)', color: 'var(--bio-text-primary)' }}
                                     >
                                         <Icon className="w-4 h-4" />
@@ -92,7 +90,7 @@ export default function BioPagePreview({ previewData }) {
                         previewData.customLinks.map((link, index) => (
                             <div
                                 key={index}
-                                className={`flex items-center px-4 py-3.5 rounded-2xl border-2 shadow-md transition-all`}
+                                className="flex items-center px-4 py-3.5 rounded-2xl border-2 shadow-md"
                                 style={{
                                     backgroundColor: 'var(--bio-link-bg)',
                                     borderColor: 'var(--bio-link-border)',
@@ -113,11 +111,33 @@ export default function BioPagePreview({ previewData }) {
                     )}
                 </div>
 
-                {/* Footer */}
-                <div className="mt-12 text-center">
-                    <p className={`text-[10px] font-bold opacity-40 uppercase tracking-widest`} style={{ color: 'var(--bio-text-primary)' }}>
-                        Smart Link
-                    </p>
+                {/* ✅ Powered by Smart Link — لوقو الموقع الحقيقي من public/logo.svg */}
+                <div className="mt-10 text-center">
+                    <a
+                        href="https://www.smart-link.website"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full no-underline"
+                        style={{
+                            backgroundColor: 'rgba(255,255,255,0.08)',
+                            border: '1px solid rgba(255,255,255,0.12)',
+                            textDecoration: 'none'
+                        }}
+                    >
+                        {/* ✅ الشعار الحقيقي من public/logo.svg */}
+                        <img
+                            src="/logo.svg"
+                            alt="Smart Link"
+                            className="w-4 h-4 rounded flex-shrink-0"
+                            style={{ display: 'block' }}
+                        />
+                        <span
+                            className="text-[10px] font-bold tracking-wide"
+                            style={{ color: 'var(--bio-text-secondary)', opacity: 0.6 }}
+                        >
+                            Powered by <span style={{ opacity: 1 }}>Smart Link</span>
+                        </span>
+                    </a>
                 </div>
             </div>
         </div>

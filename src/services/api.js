@@ -4,7 +4,8 @@ import axios from 'axios';
 import { API_URL } from '../config'; // Import from config
 
 const api = axios.create({
-  baseURL: `${API_URL}/api`, // أضف /api هنا
+  // ✅ FIX: Avoid redundant /api if API_URL already includes it
+  baseURL: API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -14,7 +15,9 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    // Both ways to ensure compatibility with all Axios versions
+    config.headers['Authorization'] = `Bearer ${token}`;
+    if (config.headers.set) config.headers.set('Authorization', `Bearer ${token}`);
   }
   return config;
 });
@@ -135,6 +138,22 @@ export const updateSubscription = async (plan) => {
   return response.data;
 };
 
+// Subscription management (LemonSqueezy)
+export const getSubscriptionPortalUrl = async () => {
+  const response = await api.get('/settings/subscription/portal');
+  return response.data;
+};
+
+export const cancelSubscription = async () => {
+  const response = await api.post('/settings/subscription/cancel');
+  return response.data;
+};
+
+export const getInvoices = async () => {
+  const response = await api.get('/settings/subscription/invoices');
+  return response.data;
+};
+
 export const deleteAccount = async (data) => {
   const response = await api.delete('/settings/account', { data });
   return response.data;
@@ -178,4 +197,5 @@ export const checkSSL = async (shortCode) => {
   return response.data;
 };
 
+export { api };
 export default api;

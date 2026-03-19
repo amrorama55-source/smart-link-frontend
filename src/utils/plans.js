@@ -1,77 +1,90 @@
 export const PLANS = [
     {
         id: 'free',
-        name: 'Free Forever',
-        price: {
-            monthly: '$0',
-            yearly: '$0'
-        },
-        checkoutUrl: {
-            monthly: null,
-            yearly: null
-        },
-        description: 'Perfect for getting started with your digital presence.',
+        name: 'Starter',
+        price: { monthly: '$0', yearly: '$0' },
+        checkoutUrl: { monthly: null, yearly: null },
+        description: 'Perfect for testing and personal side projects',
         features: [
-            '1,000 Smart Links / Mo',
-            '1 Bio Page with Basic Themes',
-            'Standard QR Codes',
-            'Real-time Analytics',
-            'Community Support'
+            '5 Smart Links / Mo',
+            '24-Hour Analytics History',
+            'Elite Bio Page Builder',
+            'Static Branding QR Codes',
+            'UTM Builder (Query Tags)',
+            'Standard SSL Protection',
         ],
         cta: 'Get Started Free',
         popular: false,
-        color: 'blue'
+        theme: {
+            accent: 'from-blue-500 to-indigo-500',
+            border: 'border-white/10',
+            bg: 'bg-white/5',
+            text: 'text-white',
+            glow: 'shadow-blue-500/10'
+        },
+        isTrial: false,
+        trialAvailable: false,
     },
     {
         id: 'pro',
         name: 'Pro Creator',
-        price: {
-            monthly: '$9',
-            yearly: '$7'
-        },
+        price: { monthly: '$9', yearly: '$7' },
         checkoutUrl: {
             monthly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/81853b68-7e82-4a8b-9887-be24dc2ba52e',
-            yearly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/03310405-7910-4374-b6cf-244ef28a0586'
+            yearly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/03310405-7910-4374-b6cf-244ef28a0586',
         },
-        description: 'The best value for growing creators and startups.',
+        description: 'Advanced tools for serious content creators',
         features: [
-            '10,000 Smart Links / Mo',
-            'Unlimited Bio Pages',
-            'Custom Domains',
-            'A/B Testing & Split Traffic',
-            'Password Protection',
+            'Everything in Starter',
+            'Unlimited Smart Links',
+            'Verified Custom Domains',
+            'A/B Testing (Variants)',
             'Advanced Device Targeting',
-            'Premium Bio Themes',
-            'Priority Support'
+            'Geotargeting (Country Level)',
+            'Full Analytics History',
+            'Dynamic QR Codes',
         ],
-        cta: 'Start 7-Day Free Trial',
+        cta: 'Unlock Pro Power',
         popular: true,
-        color: 'indigo'
+        theme: {
+            accent: 'from-indigo-500 via-blue-600 to-indigo-500',
+            border: 'border-blue-500/30',
+            bg: 'bg-blue-600/10',
+            text: 'text-white',
+            glow: 'shadow-blue-600/30'
+        },
+        isTrial: false,
+        trialAvailable: false,
     },
     {
         id: 'business',
         name: 'Business Elite',
-        price: {
-            monthly: '$19',
-            yearly: '$15'
-        },
+        price: { monthly: '$19', yearly: '$15' },
         checkoutUrl: {
             monthly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/205c1356-86cb-49f0-9e72-1926192c0fbe',
-            yearly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/6ff8458f-1d64-443f-8e36-bc35c70b2a5c'
+            yearly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/6ff8458f-1d64-443f-8e36-bc35c70b2a5c',
         },
-        description: 'Advanced tools for agencies and large organizations.',
+        description: 'The complete engine for agencies and teams',
         features: [
-            'Unlimited Smart Links',
-            'Unlimited API Requests',
-            'Advanced Custom Domains',
-            'Custom Branded QR Codes',
-            'Export Data (CSV)',
-            'Detailed API Webhooks (Coming Soon)',
-            'Team Collaboration (Coming Soon)',
-            'Priority Support'
+            'Everything in Pro Creator',
+            'Unlimited API Access',
+            'Advanced Tracking Pixels',
+            'Elite Targeting (City Level)',
+            'High-Conversion Tracking',
+            'White-label (No Branding)',
+            'Personal Account Manager',
         ],
-        cta: 'Upgrade to Business',
+        cta: 'Upgrade to Elite',
         popular: false,
-        color: 'purple'
-    }
+        theme: {
+            accent: 'from-purple-500 via-indigo-600 to-purple-500',
+            border: 'border-purple-500/20',
+            bg: 'bg-purple-500/5',
+            text: 'text-white',
+            glow: 'shadow-purple-500/10'
+        },
+        isTrial: false,
+        trialAvailable: true,
+        trialDays: 7,
+    },
 ];

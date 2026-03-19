@@ -3,7 +3,7 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import { ToastProvider } from './context/ToastContext';
+import { ToastProvider } from './context/ToastProvider';
 
 // Lazy-loaded pages — smaller initial bundle, faster on mobile
 const Login = lazy(() => import('./pages/Login'));
@@ -89,6 +89,7 @@ function AppRoutes() {
 
         {/* Public Bio & Legal Pages */}
         <Route path="/@:username" element={<BioPage />} />
+        <Route path="/u/:username" element={<BioPage />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/faq" element={<FAQ />} />
@@ -108,6 +109,7 @@ function AppRoutes() {
 // Main App Component
 // ==========================================
 export default function App() {
+  console.log('App Component Rendering');
   return (
     <AuthProvider>
       <ThemeProvider>
