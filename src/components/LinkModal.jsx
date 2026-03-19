@@ -64,7 +64,7 @@ export default function LinkModal({
 
       {/* Modal: full-screen on mobile, centered on desktop */}
       <div className="fixed inset-0 sm:inset-0 sm:p-4 flex items-end sm:items-center justify-center z-[10000] sm:bg-black/40">
-        <div className="bg-white dark:bg-gray-900 w-full sm:max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col border-0 sm:border border-gray-200 dark:border-gray-800 overflow-hidden max-h-[92vh] safe-bottom">
+        <div className="bg-white dark:bg-gray-900 w-full sm:max-w-3xl sm:rounded-2xl shadow-2xl flex flex-col border-0 sm:border border-gray-200 dark:border-gray-800 overflow-hidden max-h-[92vh]">
 
           {/* Header — Sticky & Always Visible */}
           <div className="sticky top-0 z-50 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800/50 shrink-0 safe-top">
@@ -125,7 +125,7 @@ export default function LinkModal({
             <div
               className="overflow-y-auto overflow-x-hidden overscroll-contain bg-white dark:bg-gray-900 custom-scrollbar"
               style={{
-                height: 'calc(92vh - 250px)',
+                height: 'calc(92vh - 280px)',
                 minHeight: '300px',
                 maxHeight: '600px'
               }}

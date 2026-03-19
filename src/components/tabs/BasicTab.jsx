@@ -48,6 +48,27 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
 
   return (
     <div className="space-y-6 min-h-full">
+      {/* 📘 Ultra-Compact Guide (Only for New Links) */}
+      {!editingLink && (
+        <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800/50 dark:to-slate-900/50 border border-slate-100 dark:border-slate-700 rounded-2xl px-4 py-3 mb-2 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 justify-center text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-sm">1</span>
+              <span>Paste URL</span>
+            </div>
+            <div className="hidden sm:block text-slate-300">→</div>
+            <div className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] shadow-sm">2</span>
+              <span>Create Link</span>
+            </div>
+            <div className="hidden sm:block text-slate-300">→</div>
+            <div className="flex items-center gap-2 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800/50">
+              <span className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-[10px] shadow-sm">3</span>
+              <span className="text-green-700 dark:text-green-400">Get Analytics</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Destination URL (formerly Original URL) */}
       <div>
