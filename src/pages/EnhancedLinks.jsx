@@ -619,7 +619,7 @@ const validateForm = () => {
       addToast('Link updated successfully! 🎉', 'success');
     } else {
       await createLink(payload);
-      addToast('Link created! 🚀 Now share this Smart Link to see analytics.', 'success', { duration: 6000 });
+      addToast('Link created! 🚀 Share it now.', 'success');
     }
 
     setShowModal(false);

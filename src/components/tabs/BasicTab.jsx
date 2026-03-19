@@ -64,7 +64,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
             <div className="hidden sm:block text-slate-300">→</div>
             <div className="flex items-center gap-2 px-2 py-1 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-100 dark:border-green-800/50">
               <span className="w-5 h-5 rounded-full bg-green-600 text-white flex items-center justify-center text-[10px] shadow-sm">3</span>
-              <span className="text-green-700 dark:text-green-400">Get Analytics</span>
+              <span className="text-green-700 dark:text-green-400">Share Link</span>
             </div>
           </div>
         </div>
