@@ -15,24 +15,19 @@ export default function LinkCard({
   copiedCode,
   onReload
 }) {
-  // ✅ FIXED: Generate correct short URL
+  // ✅ FIXED: Always build URL from SHORT_URL_BASE to avoid stale localhost values in DB
   const getShortUrl = () => {
-    // Priority 1: Use backend-provided shortUrl (most reliable)
-    if (link.shortUrl) {
-      return link.shortUrl;
-    }
-
-    // Priority 2: Custom domain (if verified)
+    // Priority 1: Custom domain (if verified) — takes precedence
     if (link.customDomain && link.domainVerification?.isVerified) {
       return `https://${link.customDomain}/${link.customAlias || link.shortCode}`;
     }
 
-    // Priority 3: Use custom alias if available
+    // Priority 2: Use custom alias if available
     if (link.customAlias) {
       return `${SHORT_URL_BASE}/${link.customAlias}`;
     }
 
-    // Priority 4: Default shortCode
+    // Priority 3: Default shortCode
     return `${SHORT_URL_BASE}/${link.shortCode}`;
   };
 

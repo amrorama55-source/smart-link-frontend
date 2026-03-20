@@ -132,7 +132,7 @@ export default function BasicTab({ linkData, setLinkData, editingLink, errors })
           </label>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             <span className="text-slate-500 dark:text-slate-400 text-sm font-medium bg-slate-100 dark:bg-slate-800 px-3 py-2.5 rounded-xl border-2 border-transparent truncate sm:max-w-[200px]">
-              {SHORT_URL_BASE}/
+              api.smart-link.website/
             </span>
             <input
               type="text"
