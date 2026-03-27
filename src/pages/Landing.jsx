@@ -533,9 +533,26 @@ export default function LandingPage() {
       {/* Navigation */}
       <motion.nav
         initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50' : 'bg-transparent'}`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex flex-col ${scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50' : 'bg-transparent'}`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* SOURCE CODE BANNER FOR X VISITORS */}
+        <div className="bg-gradient-to-r relative from-indigo-600 via-blue-600 to-indigo-600 text-white px-4 py-2 text-center text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-2 sm:gap-4 flex-wrap w-full shadow-md z-50">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <span className="text-sm sm:text-base animate-pulse">🚀</span>
+            <span dir="rtl">هل أنت مطور أو رائد أعمال؟ امتلك الكود المصدري الكامل لهذه المنصة (MERN Stack) بـ 99$ فقط!</span>
+          </div>
+          <a
+            href="https://smart-link-api.lemonsqueezy.com/checkout/buy/a88b4574-96d2-4686-9228-e170848c0f57"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white text-blue-600 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold hover:bg-gray-100 hover:scale-105 transition-transform shadow-sm flex items-center gap-1 ml-2"
+            dir="rtl"
+          >
+            اضغط هنا للشراء <ArrowRight className="w-3 h-3 rotate-180" />
+          </a>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="flex justify-between items-center h-16 sm:h-20">
             <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.7 }} className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
@@ -595,7 +612,7 @@ export default function LandingPage() {
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-20 lg:pt-40 lg:pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
         <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
           <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}></div>

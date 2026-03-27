@@ -21,6 +21,9 @@ const ActivationChecklist = () => {
 
     const loadChecklistState = async () => {
         try {
+
+
+            
             // ✅ Check real data from API
             const data = await getDashboardStats();
             const apiChecklist = data.activationChecklist || {};

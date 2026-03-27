@@ -30,8 +30,8 @@ export const PLANS = [
         name: 'Pro Creator',
         price: { monthly: '$9', yearly: '$7' },
         checkoutUrl: {
-            monthly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/81853b68-7e82-4a8b-9887-be24dc2ba52e',
-            yearly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/03310405-7910-4374-b6cf-244ef28a0586',
+            monthly: import.meta.env.VITE_PRO_MONTHLY_CHECKOUT_URL || '',
+            yearly: import.meta.env.VITE_PRO_YEARLY_CHECKOUT_URL || '',
         },
         description: 'Advanced tools for serious content creators',
         features: [
@@ -61,8 +61,8 @@ export const PLANS = [
         name: 'Business Elite',
         price: { monthly: '$19', yearly: '$15' },
         checkoutUrl: {
-            monthly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/205c1356-86cb-49f0-9e72-1926192c0fbe',
-            yearly: 'https://smart-link-api.lemonsqueezy.com/checkout/buy/6ff8458f-1d64-443f-8e36-bc35c70b2a5c',
+            monthly: import.meta.env.VITE_BUSINESS_MONTHLY_CHECKOUT_URL || '',
+            yearly: import.meta.env.VITE_BUSINESS_YEARLY_CHECKOUT_URL || '',
         },
         description: 'The complete engine for agencies and teams',
         features: [
@@ -84,7 +84,6 @@ export const PLANS = [
             glow: 'shadow-purple-500/10'
         },
         isTrial: false,
-        trialAvailable: true,
-        trialDays: 7,
+        trialAvailable: false,
     },
 ];
