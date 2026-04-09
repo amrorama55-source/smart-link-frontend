@@ -27,6 +27,7 @@ const Success = lazy(() => import('./pages/Success'));
 const Pricing = lazy(() => import('./pages/Pricing'));
 const Blog = lazy(() => import('./pages/Blog'));
 const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Strategy = lazy(() => import('./pages/Strategy'));
 
 // ==========================================
 // Loading Component
@@ -95,6 +96,7 @@ function AppRoutes() {
         <Route path="/faq" element={<FAQ />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:id" element={<BlogPost />} />
+        <Route path="/strategy" element={<Strategy />} />
         <Route path="/success" element={<Success />} />
         <Route path="/pricing" element={<PrivateRoute><Pricing /></PrivateRoute>} />
 

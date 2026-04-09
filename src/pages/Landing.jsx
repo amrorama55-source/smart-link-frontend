@@ -898,6 +898,7 @@ export default function LandingPage() {
               <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
                 <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Blog</Link></li>
+                <li><Link to="/strategy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Strategy</Link></li>
                 <li><a href="mailto:smartlinkpro10@gmail.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
               </ul>
             </div>
