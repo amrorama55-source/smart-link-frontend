@@ -3,12 +3,17 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Calendar, Clock, BookOpen } from 'lucide-react';
 import { BLOG_POSTS } from '../utils/blogData';
+import SEO from '../components/SEO';
 
 export default function Blog() {
     const [hoveredIndex, setHoveredIndex] = useState(null);
 
     return (
         <div className="min-h-screen bg-white dark:bg-gray-950 p-4 sm:p-6 lg:p-8 font-sans transition-colors">
+            <SEO 
+                title="Smart Link Blog | Marketing & Creator Insights" 
+                description="Learn how to grow your audience, optimize your links, and master digital marketing with our latest guides and updates from Smart Link." 
+            />
             <div className="max-w-7xl mx-auto">
                 {/* Navigation */}
                 <nav className="flex items-center justify-between mb-16">

@@ -419,7 +419,7 @@ export default function TermsOfService() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a
-                    href="mailto:smartlinkpro10@gmail.com"
+                    href="mailto:support@yourdomain.com"
                     className="inline-flex items-center gap-2 text-white hover:text-blue-100 font-semibold"
                   >
                     <Mail className="w-4 h-4" />

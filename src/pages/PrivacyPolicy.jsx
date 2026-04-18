@@ -182,7 +182,7 @@ export default function Privacy() {
                 </p>
                 <div className="space-y-2">
                   <a 
-                    href="mailto:privacy@smart-link.website" 
+                    href="mailto:privacy@yourdomain.com" 
                     className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
                   >
                     <Mail className="w-4 h-4" />

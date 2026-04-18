@@ -185,8 +185,8 @@ export default function Analytics() {
             <div className="w-14 h-14 bg-gray-100 dark:bg-gray-700/80 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <BarChart3 className="w-7 h-7 text-gray-500 dark:text-gray-400" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No links yet</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Create a link to see clicks and insights here.</p>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">You haven't created any links yet! 📊</h3>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 max-w-md mx-auto">Once you shorten a URL and share it, this page will fill up with rich analytics about who clicked it, and from where. Head over to the Links page to get started!</p>
           </div>
         </div>
       </div>

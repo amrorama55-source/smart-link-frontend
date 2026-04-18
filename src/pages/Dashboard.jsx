@@ -416,10 +416,10 @@ export default function Dashboard() {
                 <Link2 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
               </div>
               <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
-                No links yet
+                Welcome to Smart Link! 🚀
               </h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6">
-                Create your first smart link to start tracking performance
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-lg mx-auto">
+                Paste any long URL to shorten it, track clicks in real-time, and analyze your audience's location and devices. Your journey starts here!
               </p>
               <button
                 onClick={() => navigate('/links')}

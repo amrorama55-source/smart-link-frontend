@@ -78,8 +78,8 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-90 transition-opacity">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white shadow-md">
-                <Link2 className="w-5 h-5" />
+              <div className="w-8 h-8 flex items-center justify-center">
+                <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
                 Smart Link

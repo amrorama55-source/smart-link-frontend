@@ -164,6 +164,23 @@ export default function BioEditor() {
     setBioData({ ...bioData, customLinks: updated });
   };
 
+  const addSocialLink = () => {
+    setBioData(prev => ({
+      ...prev,
+      socialLinks: [...prev.socialLinks, { platform: 'instagram', url: '' }]
+    }));
+  };
+
+  const updateSocialLink = (i, field, value) => {
+    const updated = [...bioData.socialLinks];
+    updated[i] = { ...updated[i], [field]: value };
+    setBioData({ ...bioData, socialLinks: updated });
+  };
+
+  const removeSocialLink = (i) => {
+    setBioData(prev => ({ ...prev, socialLinks: prev.socialLinks.filter((_, idx) => idx !== i) }));
+  };
+
   if (loading) return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950"><Navbar />
       <div className="flex justify-center items-center py-20">
@@ -306,6 +323,36 @@ export default function BioEditor() {
                   <textarea value={bioData.bio} onChange={e => setBioData({ ...bioData, bio: e.target.value })}
                     className="w-full p-3 rounded-xl border border-gray-300 bg-white dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     rows={3} placeholder="Tell the world about yourself..." />
+                </div>
+
+                {/* SOCIAL LINKS (Top Icons) */}
+                <div className="pt-4 mt-2 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex justify-between items-center mb-3">
+                    <label className="block text-sm font-bold text-gray-900 dark:text-white">Social Icons (Top Banner)</label>
+                    <button onClick={addSocialLink} className="text-xs px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg font-bold transition-colors">+ Add Social</button>
+                  </div>
+                  <div className="space-y-3">
+                    {bioData.socialLinks.map((link, i) => (
+                      <div key={i} className="flex gap-2 items-center bg-gray-50 dark:bg-gray-800/50 p-2 border border-gray-200 dark:border-gray-700 rounded-xl">
+                        <select value={link.platform} onChange={e => updateSocialLink(i, 'platform', e.target.value)} className="w-1/3 p-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500">
+                          <option value="instagram">Instagram</option>
+                          <option value="twitter">X / Twitter</option>
+                          <option value="tiktok">TikTok</option>
+                          <option value="snapchat">Snapchat</option>
+                          <option value="youtube">YouTube</option>
+                          <option value="linkedin">LinkedIn</option>
+                          <option value="github">GitHub</option>
+                          <option value="email">Email</option>
+                          <option value="website">Website</option>
+                        </select>
+                        <input value={link.url} onChange={e => updateSocialLink(i, 'url', e.target.value)} className="w-full text-sm p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500" placeholder="https://..." />
+                        <button onClick={() => removeSocialLink(i)} className="p-2 text-gray-400 hover:text-red-500 bg-white dark:bg-gray-700/50 rounded-lg shadow-sm"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    ))}
+                    {bioData.socialLinks.length === 0 && (
+                      <p className="text-xs text-gray-500 dark:text-gray-400">No social icons added yet. Click "+ Add Social" to link your X/Twitter, Instagram, etc.</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

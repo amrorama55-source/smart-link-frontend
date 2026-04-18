@@ -1,10 +1,13 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Calendar, Clock, Share2, Twitter, Facebook, Link as LinkIcon } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, Share2, Twitter, Facebook, Link as LinkIcon, Check } from 'lucide-react';
 import { BLOG_POSTS } from '../utils/blogData';
+import SEO from '../components/SEO';
 
 export default function BlogPost() {
     const { id } = useParams();
+    const [copied, setCopied] = useState(false);
     const post = BLOG_POSTS.find(p => p.id === id);
 
     if (!post) {
@@ -15,8 +18,49 @@ export default function BlogPost() {
         );
     }
 
+    const handleShare = async () => {
+        const shareData = {
+            title: post.title,
+            text: post.description || post.title,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.log('Error sharing:', err);
+            }
+        } else {
+            handleCopy();
+        }
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(window.location.href);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const shareTwitter = () => {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent(post.title);
+        window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+    };
+
+    const shareFacebook = () => {
+        const url = encodeURIComponent(window.location.href);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    };
+
     return (
         <div className="min-h-screen bg-white dark:bg-gray-950 p-4 sm:p-6 lg:p-8 font-sans transition-colors">
+            <SEO 
+                title={post.title} 
+                description={post.excerpt || post.content.substring(0, 160).replace(/<[^>]*>?/gm, '') + '...'} 
+                image={post.image} 
+                url={`https://www.smart-link.website/blog/${post.id}`} 
+            />
             <div className="max-w-4xl mx-auto">
                 {/* Navigation */}
                 <nav className="flex items-center justify-between mb-12 sm:mb-20">
@@ -25,8 +69,8 @@ export default function BlogPost() {
                         Back to Blog
                     </Link>
                     <div className="flex items-center gap-4">
-                        <button className="p-2.5 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
-                            <Share2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        <button onClick={handleShare} className="p-2.5 bg-gray-50 dark:bg-gray-900 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />}
                         </button>
                     </div>
                 </nav>
@@ -102,14 +146,14 @@ export default function BlogPost() {
                     <div className="flex items-center gap-4">
                         <span className="text-sm font-black uppercase italic text-gray-400">Share Article</span>
                         <div className="flex gap-2">
-                            <button className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                            <button onClick={shareTwitter} className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                 <Twitter className="w-4 h-4" />
                             </button>
-                            <button className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                            <button onClick={shareFacebook} className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
                                 <Facebook className="w-4 h-4" />
                             </button>
-                            <button className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
-                                <LinkIcon className="w-4 h-4" />
+                            <button onClick={handleCopy} className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all shadow-sm">
+                                {copied ? <Check className="w-4 h-4" /> : <LinkIcon className="w-4 h-4" />}
                             </button>
                         </div>
                     </div>

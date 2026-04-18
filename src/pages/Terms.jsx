@@ -174,7 +174,7 @@ export default function Terms() {
               If you have any questions about our Terms of Service, please contact us:
             </p>
             <a 
-              href="mailto:support@smart-link.website" 
+              href="mailto:support@yourdomain.com" 
               className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
             >
              smartlinkpro10@gmail.com

@@ -10,6 +10,7 @@ import {
   QrCode, CheckCircle, ArrowRight, Sparkles,
   Users, Clock, Lock, Code, Star, Quote, Copy, Play, Layout, Settings
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 /* ========================================
    Live Product Demo Component (Hero Visual)
@@ -355,9 +356,11 @@ function HowItWorksSection() {
    ======================================== */
 function FAQSection() {
   const faqs = [
-    { question: "How to create a free link in bio?", answer: "Simply sign up for a free account, paste your long URLs, and customize your bio page. You can go live in less than 2 minutes." },
-    { question: "What is the best alternative to Linktree for free?", answer: "Smart Link offers advanced features like Device Targeting and detailed analytics for free, making it the most powerful free Linktree alternative for creators." },
-    { question: "Can I track my link clicks for free?", answer: "Yes! Smart Link provides real-time analytics for all your links and bio pages, including device, location, and click-through data—all 100% free." }
+    { question: "Why do I need Smart Link if I already have a link shortener?", answer: "Traditional shorteners just count clicks. Smart Link goes deeper by tracking OS data, geolocation, and referrer metrics so you can expose the true intent behind your traffic, not just the volume." },
+    { question: "How does device targeting (iOS/Android) increase conversions?", answer: "Instead of overwhelming users with two buttons, you create one Smart Link. We instantly detect their device and route iOS users to the App Store and Android users to Google Play, drastically reducing friction." },
+    { question: "Can I track my link clicks for free?", answer: "Yes! We believe deep analytics should be accessible to everyone. You get real-time analytics for all your links, including device, location, and click-through data—all completely free." },
+    { question: "Can I use my own custom domain?", answer: "Absolutely. You can connect your own domain (e.g., links.yourbrand.com) to maintain full brand consistency across all touchpoints." },
+    { question: "How do I create a free link in bio?", answer: "Simply sign up, claim your username, and paste your URLs. You can customize your bio page with themes and go live in less than 2 minutes." }
   ];
   return (
     <section id="faq" className="py-16 sm:py-24 bg-white dark:bg-gray-900 scroll-mt-20 border-t border-gray-100 dark:border-gray-800">
@@ -405,21 +408,14 @@ function AboutUsSection() {
             </p>
             <div className="flex items-center gap-4">
               <div className="flex -space-x-3">
-                {[
-                  'https://randomuser.me/api/portraits/men/32.jpg',
-                  'https://randomuser.me/api/portraits/men/44.jpg',
-                  'https://randomuser.me/api/portraits/men/67.jpg',
-                  'https://randomuser.me/api/portraits/men/85.jpg'
-                ].map((src, i) => (
-                  <div key={i} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-4 border-white dark:border-gray-900 bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
-                    <img
-                      src={src}
-                      alt="Team Member"
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-4 border-white dark:border-gray-900 bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden p-1 shadow-md">
+                  <img
+                    src="/logo-v1.svg"
+                    alt="Smart Link"
+                    className="w-full h-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
               </div>
               <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">Built with ❤️ by a global team of specialists.</p>
             </div>
@@ -524,6 +520,9 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 overflow-x-hidden font-sans">
+      <SEO
+        description="Create smart short links, track conversions, and build elegant bio pages. Everything you need to manage your digital presence in one platform."
+      />
 
       {/* DEMO MODAL */}
       <AnimatePresence>
@@ -535,28 +534,17 @@ export default function LandingPage() {
         initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex flex-col ${scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50' : 'bg-transparent'}`}
       >
-        {/* SOURCE CODE BANNER FOR X VISITORS */}
-        <div className="bg-gradient-to-r relative from-indigo-600 via-blue-600 to-indigo-600 text-white px-4 py-2 text-center text-[11px] sm:text-xs font-semibold flex items-center justify-center gap-2 sm:gap-4 flex-wrap w-full shadow-md z-50">
-          <div className="flex items-center gap-1 sm:gap-2">
-            <span className="text-sm sm:text-base animate-pulse">🚀</span>
-            <span dir="rtl">هل أنت مطور أو رائد أعمال؟ امتلك الكود المصدري الكامل لهذه المنصة (MERN Stack) بـ 99$ فقط!</span>
-          </div>
-          <a
-            href="https://smart-link-api.lemonsqueezy.com/checkout/buy/a88b4574-96d2-4686-9228-e170848c0f57"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-white text-blue-600 px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold hover:bg-gray-100 hover:scale-105 transition-transform shadow-sm flex items-center gap-1 ml-2"
-            dir="rtl"
-          >
-            اضغط هنا للشراء <ArrowRight className="w-3 h-3 rotate-180" />
-          </a>
-        </div>
+
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           <div className="flex justify-between items-center h-16 sm:h-20">
-            <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
-              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.7 }} className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                <Link2 className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <Link to="/" className="flex items-center gap-3 group">
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.7 }}
+                className="w-10 h-10 sm:w-12 sm:h-12 transform group-hover:scale-110 transition-transform"
+              >
+                <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
               </motion.div>
               <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smart Link</span>
             </Link>
@@ -625,12 +613,11 @@ export default function LandingPage() {
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /><span className="font-semibold">Growth Tool for Founders</span>
               </motion.div>
               <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight">
-                <span className="block">Free Smart Link</span>
-                <span className="block">&amp; Bio Page</span>
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Tool for Creators</span>
+                <span className="block">Don't Just Count Clicks.</span>
+                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Expose the Intent.</span>
               </motion.h1>
               <motion.p variants={itemVariants} className="text-sm sm:text-base lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
-                The best free Bio Page tool and URL shortener for Creators, SaaS Founders, and Marketers. Track analytics, smart targeting, and A/B testing—all in one place.
+                You can't fix bad traffic, but you can expose it. Smart Link helps you identify which messages create real intent, connecting the source to the conversion.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -692,18 +679,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Trust Section */}
-      <section className="py-8 sm:py-12 border-y border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p className="text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-6 sm:mb-8">Trusted by founders, marketers, and teams at</p>
-          <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-8 lg:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-            <div className="flex items-center gap-2 font-bold text-base sm:text-xl"><Globe className="w-5 h-5 sm:w-6 sm:h-6" /> GlobalInc</div>
-            <div className="flex items-center gap-2 font-bold text-base sm:text-xl"><Zap className="w-5 h-5 sm:w-6 sm:h-6" /> FlashTeam</div>
-            <div className="flex items-center gap-2 font-bold text-base sm:text-xl"><Shield className="w-5 h-5 sm:w-6 sm:h-6" /> SecureNet</div>
-            <div className="flex items-center gap-2 font-bold text-base sm:text-xl"><Target className="w-5 h-5 sm:w-6 sm:h-6" /> GoalGetters</div>
-          </div>
-        </div>
-      </section>
 
       {/* HOW IT WORKS */}
       <HowItWorksSection />
@@ -752,7 +727,7 @@ export default function LandingPage() {
                 <Quote className="w-8 h-8 sm:w-10 sm:h-10 text-blue-100 dark:text-blue-900/30 absolute top-4 sm:top-6 right-4 sm:right-6" />
                 <div className="flex gap-1 mb-3 sm:mb-4 text-yellow-500">{[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />)}</div>
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 italic">"{t.quote}"</p>
-                <div><p className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">{t.author}</p><p className="text-xs sm:text-sm text-blue-600 dark:text-blue-400">{t.role}</p></div>
+                <div><p className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">{t.author}</p><a href={`https://x.com/${t.role.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline">{t.role}</a></div>
               </motion.div>
             ))}
           </div>
@@ -880,9 +855,11 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-12 sm:mb-16">
             <div className="col-span-1 sm:col-span-2 md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4 sm:mb-6">
-                <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white"><Link2 className="w-5 h-5" /></div>
-                <span className="text-xl font-bold text-gray-900 dark:text-white">Smart Link</span>
+              <Link to="/" className="flex items-center gap-2 mb-4 sm:mb-6 group">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 transform group-hover:scale-110 transition-transform">
+                  <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smart Link</span>
               </Link>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">The advanced link management platform for modern creators.</p>
             </div>
@@ -898,7 +875,7 @@ export default function LandingPage() {
               <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
                 <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Blog</Link></li>
-                <li><a href="mailto:smartlinkpro10@gmail.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
+                <li><a href="mailto:support@yourdomain.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
               </ul>
             </div>
             <div>
@@ -911,9 +888,12 @@ export default function LandingPage() {
           </div>
           <div className="pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm text-center md:text-left">© 2026 Smart Link. All rights reserved.</p>
-            <div className="flex items-center">
-              <a href="https://www.saashub.com/smart-link-pro?utm_source=badge&utm_campaign=badge&utm_content=smart-link-pro&badge_variant=color&badge_kind=approved" target="_blank" rel="noreferrer">
-                <img src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1" alt="Smart Link Pro badge" style={{ maxWidth: '150px' }} />
+            <div className="flex items-center gap-4">
+              <a href="https://www.uneed.best/tool/smart-link" target="_blank" rel="noreferrer" className="transition-transform hover:scale-105">
+                <img src="https://www.uneed.best/EMBED3.png" alt="Uneed Embed Badge" style={{ height: '42px' }} />
+              </a>
+              <a href="https://www.saashub.com/smart-link-pro?utm_source=badge&utm_campaign=badge&utm_content=smart-link-pro&badge_variant=color&badge_kind=approved" target="_blank" rel="noreferrer" className="transition-transform hover:scale-105">
+                <img src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1" alt="Smart Link Pro badge" style={{ height: '42px' }} />
               </a>
             </div>
           </div>

@@ -47,28 +47,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // ✅ FIX: بعد Google OAuth، تحقق من pendingTrial وفعّله
+  // Google OAuth token handler
   const loginWithToken = async (token) => {
     try {
       localStorage.setItem('token', token);
-
       try {
         const data = await getCurrentUser();
         setUser(data.user);
         setError(null);
-
-        // ✅ تحقق إذا كان المستخدم جاي من Trial flow
-        const pendingTrial = localStorage.getItem('pendingTrial');
-        if (pendingTrial === 'true') {
-          localStorage.removeItem('pendingTrial');
-          try {
-            await api.post('/trial/start');
-            console.log('✅ Trial activated after Google OAuth');
-          } catch (trialErr) {
-            console.warn('⚠️ Trial activation failed after Google OAuth:', trialErr);
-          }
-        }
-
         return data;
       } catch (fetchError) {
         if (fetchError.response?.status === 404) {
@@ -102,7 +88,6 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('pendingTrial'); // ✅ امسح trial flag عند logout
     setUser(null);
     setError(null);
   };

@@ -924,10 +924,10 @@ const updatePixel = (index, field, value) => {
               <Link2 className="w-7 h-7 sm:w-8 sm:h-8 text-gray-500 dark:text-gray-400" />
             </div>
             <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              No links yet
+              Ready to shorten your first link? 🔗
             </h3>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-sm mx-auto">
-              Paste a URL and get a short link. You can add targeting and analytics later.
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
+              Drop a long URL here to create a shareable short link. Once created, you can track its performance, see where your audience is from, and customize exactly how it behaves!
             </p>
             <button
               type="button"
