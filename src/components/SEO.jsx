@@ -19,11 +19,11 @@ export default function SEO({ title, description, image, url, videoData }) {
         ],
         "uploadDate": videoData.uploadDate || "2026-04-21T00:00:00Z",
         "duration": videoData.duration || "PT1M33S",
-        "contentUrl": "https://www.by-smartlink.com/demo-2026.mp4",
+        "contentUrl": "https://www.by-smartlink.com/marketing-demo.mp4",
         "embedUrl": "https://www.by-smartlink.com/",
         "potentialAction": {
             "@type": "SeekToAction",
-            "target": "https://www.by-smartlink.com/demo-2026.mp4?t={seek_to_second_number}",
+            "target": "https://www.by-smartlink.com/marketing-demo.mp4?t={seek_to_second_number}",
             "startOffset-input": "required name=seek_to_second_number"
         }
     } : null;

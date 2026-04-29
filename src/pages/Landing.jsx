@@ -24,7 +24,7 @@ function VideoDemo() {
       {/* Video Container */}
       <div className="relative bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 aspect-video">
         <video 
-          src="/demo-2026.mp4" 
+          src="/marketing-demo.mp4" 
           poster="/og-image.png"
           autoPlay 
           muted 
@@ -555,10 +555,10 @@ export default function LandingPage() {
       <SEO
         description="Stop wasting your ad budget on empty clicks. Smart Link is the profit-focused intelligence platform that filters bots, auto-optimizes A/B tests, and recovers your marketing ROI."
         videoData={{
-          title: "How Smart Link Saves You 30% of Your Ad Budget - Profit Intelligence Demo",
-          description: "Watch how Smart Link identifies ad fraud, optimizes conversion paths, and increases your ROI using AI-driven analytics. The most profitable Linktree alternative in 2026.",
-          thumbnailUrl: ["https://www.smart-link.website/og-image.png"],
-          uploadDate: "2026-04-23T00:00:00Z",
+          title: "Best Free Link in Bio Tool 2026 - Linktree Alternative | Smart Link - 29 April 2026",
+          description: "Free link in bio tool for Instagram, TikTok & more. Unlimited links, analytics, and customization. Better than Linktree. Start free today ✨",
+          thumbnailUrl: ["https://www.by-smartlink.com/og-image.png"],
+          uploadDate: "2026-04-29T00:00:00Z",
           duration: "PT0M30S"
         }}
       />
