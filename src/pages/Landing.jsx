@@ -20,15 +20,15 @@ function VideoDemo() {
     <div className="relative group">
       {/* Background Glow */}
       <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
-      
+
       {/* Video Container */}
       <div className="relative bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 aspect-video">
-        <video 
-          src="/marketing-demo.mp4" 
+        <video
+          src="/marketing-demo.mp4"
           poster="/og-image.png"
-          autoPlay 
-          muted 
-          loop 
+          autoPlay
+          muted
+          loop
           playsInline
           className="w-full h-full object-cover"
           aria-label="Smart Link Platform Demo Video"
@@ -36,7 +36,7 @@ function VideoDemo() {
       </div>
 
       {/* Decorative Badges (matching your premium theme) */}
-      <motion.div 
+      <motion.div
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
         className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-900 z-10"
