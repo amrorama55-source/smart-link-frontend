@@ -103,7 +103,7 @@ export default function Settings() {
     }
   };
 
-  const SUCCESS_URL = 'https://www.smart-link.website/success';
+  const SUCCESS_URL = 'https://www.by-smartlink.com/success';
 
   const buildCheckoutUrl = (baseUrl, userId) => {
     if (!baseUrl) return null;

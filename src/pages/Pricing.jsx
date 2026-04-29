@@ -7,7 +7,7 @@ import { CheckCircle, ArrowRight, Zap, Sparkles, Rocket, ShieldCheck, Crown, Glo
 import { useToast } from '../context/ToastProvider';
 import { useAuth } from '../context/AuthContext';
 
-const SUCCESS_URL = 'https://www.smart-link.website/success';
+const SUCCESS_URL = 'https://www.by-smartlink.com/success';
 
 function buildCheckoutUrl(baseUrl, userId) {
     if (!baseUrl) return null;

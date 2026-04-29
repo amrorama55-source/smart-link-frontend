@@ -264,7 +264,7 @@ export default function BioPage({ previewData = null }) {
         {/* ✅ Powered by Smart Link Floating Footer */}
         <div className="fixed bottom-6 w-full mx-auto left-0 right-0 px-6 z-50 pointer-events-none flex justify-center pb-safe">
           <a
-            href="https://www.smart-link.website"
+            href="https://www.by-smartlink.com"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_10px_40px_rgba(0,0,0,0.2)] pointer-events-auto border"

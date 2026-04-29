@@ -3,7 +3,7 @@
   
   <!-- Homepage - Highest Priority -->
   <url>
-    <loc>https://www.smart-link.website/</loc>
+    <loc>https://www.by-smartlink.com/</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -11,7 +11,7 @@
 
   <!-- FAQ - High Priority for Rick Snippets -->
   <url>
-    <loc>https://www.smart-link.website/faq</loc>
+    <loc>https://www.by-smartlink.com/faq</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -19,7 +19,7 @@
 
   <!-- Blog List -->
   <url>
-    <loc>https://www.smart-link.website/blog</loc>
+    <loc>https://www.by-smartlink.com/blog</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -27,7 +27,7 @@
 
   <!-- First Article -->
   <url>
-    <loc>https://www.smart-link.website/blog/smart-link-vs-linktree-2026</loc>
+    <loc>https://www.by-smartlink.com/blog/smart-link-vs-linktree-2026</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -35,42 +35,42 @@
 
   <!-- New Articles -->
   <url>
-    <loc>https://www.smart-link.website/blog/10-best-link-in-bio-tools-tiktok-2026</loc>
+    <loc>https://www.by-smartlink.com/blog/10-best-link-in-bio-tools-tiktok-2026</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.smart-link.website/blog/track-instagram-conversions-free</loc>
+    <loc>https://www.by-smartlink.com/blog/track-instagram-conversions-free</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.smart-link.website/blog/smart-link-vs-beacons-2026</loc>
+    <loc>https://www.by-smartlink.com/blog/smart-link-vs-beacons-2026</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.smart-link.website/blog/bio-link-seo-guide-2026</loc>
+    <loc>https://www.by-smartlink.com/blog/bio-link-seo-guide-2026</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.smart-link.website/blog/monetize-bio-link-2026</loc>
+    <loc>https://www.by-smartlink.com/blog/monetize-bio-link-2026</loc>
     <lastmod>2026-03-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://www.smart-link.website/blog/best-bio-link-tools-arabic-2026</loc>
+    <loc>https://www.by-smartlink.com/blog/best-bio-link-tools-arabic-2026</loc>
     <lastmod>2026-03-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -78,7 +78,7 @@
 
   <!-- Pricing -->
   <url>
-    <loc>https://www.smart-link.website/pricing</loc>
+    <loc>https://www.by-smartlink.com/pricing</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -86,14 +86,14 @@
 
   <!-- Legal Pages - Low Priority -->
   <url>
-    <loc>https://www.smart-link.website/privacy</loc>
+    <loc>https://www.by-smartlink.com/privacy</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>https://www.smart-link.website/terms</loc>
+    <loc>https://www.by-smartlink.com/terms</loc>
     <lastmod>2026-02-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>

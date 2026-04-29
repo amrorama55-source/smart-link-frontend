@@ -101,7 +101,7 @@ export default function TermsOfService() {
           </p>
           <div className="grid sm:grid-cols-2 gap-3">
             {[
-              'Share malicious links',
+              'Share malicious or phishing links',
               'Promote illegal activities',
               'Infringe intellectual property',
               'Harass or harm others',
@@ -116,6 +116,12 @@ export default function TermsOfService() {
                 <span className="text-sm text-gray-300">{item}</span>
               </div>
             ))}
+          </div>
+          <div className="mt-4 p-3 bg-red-900/30 border border-red-500/50 rounded-lg">
+            <p className="text-sm text-red-200 font-bold">
+              🚫 ZERO TOLERANCE POLICY: Phishing, fraud, and malicious redirects are strictly prohibited. 
+              We use automated and manual systems to monitor for abuse.
+            </p>
           </div>
         </div>
       )
@@ -229,8 +235,13 @@ export default function TermsOfService() {
           </div>
           <div>
             <h3 className="font-bold text-white mb-2">By Us</h3>
-            <p className="text-gray-300">
+            <p className="text-gray-300 mb-2">
               We may suspend or terminate your account if you violate these Terms or for any reason with notice when possible.
+            </p>
+            <p className="text-sm text-red-400 font-black p-3 bg-red-900/20 rounded-lg border border-red-500/30">
+              ⚠️ IMMEDIATE TERMINATION: Any account found involved in phishing, fraud, or intentional platform abuse 
+              will be permanently banned immediately and all links disabled WITHOUT PRIOR NOTICE. 
+              We reserve the right to report such activities to law enforcement and hosting providers.
             </p>
           </div>
         </div>
@@ -419,20 +430,20 @@ export default function TermsOfService() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
                   <a
-                    href="mailto:support@yourdomain.com"
+                    href="mailto:support@by-smartlink.com"
                     className="inline-flex items-center gap-2 text-white hover:text-blue-100 font-semibold"
                   >
                     <Mail className="w-4 h-4" />
                     smartlinkpro10@gmail.com
                   </a>
                   <a
-                    href="https://www.smart-link.website"
+                    href="https://www.by-smartlink.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-white hover:text-blue-100 font-semibold"
                   >
                     <ExternalLink className="w-4 h-4" />
-                    www.smart-link.website
+                    www.by-smartlink.com
                   </a>
                 </div>
               </div>

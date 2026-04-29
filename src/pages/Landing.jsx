@@ -15,6 +15,38 @@ import SEO from '../components/SEO';
 /* ========================================
    Live Product Demo Component (Hero Visual)
    ======================================== */
+function VideoDemo() {
+  return (
+    <div className="relative group">
+      {/* Background Glow */}
+      <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+      
+      {/* Video Container */}
+      <div className="relative bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 aspect-video">
+        <video 
+          src="/demo-2026.mp4" 
+          poster="/og-image.png"
+          autoPlay 
+          muted 
+          loop 
+          playsInline
+          className="w-full h-full object-cover"
+          aria-label="Smart Link Platform Demo Video"
+        />
+      </div>
+
+      {/* Decorative Badges (matching your premium theme) */}
+      <motion.div 
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-900 z-10"
+      >
+        <QrCode className="w-10 h-10 text-white" />
+      </motion.div>
+    </div>
+  );
+}
+
 function ProductDemo() {
   return (
     <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 aspect-[16/10]">
@@ -463,7 +495,7 @@ export default function LandingPage() {
     window.location.href = '/register?trial=true';
   };
 
-  const SUCCESS_URL = 'https://www.smart-link.website/success';
+  const SUCCESS_URL = 'https://www.by-smartlink.com/success';
 
   const buildCheckoutUrl = (baseUrl, userId) => {
     if (!baseUrl) return null;
@@ -521,7 +553,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 overflow-x-hidden font-sans">
       <SEO
-        description="Create smart short links, track conversions, and build elegant bio pages. Everything you need to manage your digital presence in one platform."
+        description="Stop wasting your ad budget on empty clicks. Smart Link is the profit-focused intelligence platform that filters bots, auto-optimizes A/B tests, and recovers your marketing ROI."
+        videoData={{
+          title: "How Smart Link Saves You 30% of Your Ad Budget - Profit Intelligence Demo",
+          description: "Watch how Smart Link identifies ad fraud, optimizes conversion paths, and increases your ROI using AI-driven analytics. The most profitable Linktree alternative in 2026.",
+          thumbnailUrl: ["https://www.smart-link.website/og-image.png"],
+          uploadDate: "2026-04-23T00:00:00Z",
+          duration: "PT0M30S"
+        }}
       />
 
       {/* DEMO MODAL */}
@@ -613,11 +652,11 @@ export default function LandingPage() {
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /><span className="font-semibold">Growth Tool for Founders</span>
               </motion.div>
               <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight">
-                <span className="block">Don't Just Count Clicks.</span>
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Expose the Intent.</span>
+                <span className="block">Stop Wasting 30% of Your</span>
+                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Ad Budget on Bots.</span>
               </motion.h1>
               <motion.p variants={itemVariants} className="text-sm sm:text-base lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
-                You can't fix bad traffic, but you can expose it. Smart Link helps you identify which messages create real intent, connecting the source to the conversion.
+                Don't just shorten links—protect your profits. Smart Link identifies ad fraud in real-time and automatically routes traffic to your highest-converting paths.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -667,7 +706,7 @@ export default function LandingPage() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative hidden sm:block">
-              <ProductDemo />
+              <VideoDemo />
               <motion.div animate={floatAnimation} className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-900 z-10">
                 <QrCode className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
               </motion.div>
@@ -694,12 +733,12 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
-              { icon: Link2, title: 'High-Conversion Bio Pages', description: 'Create stunning bio pages that showcase your SaaS or personal brand. Professional themes designed for maximum marketing ROI.', color: 'blue' },
-              { icon: Shield, title: 'Enterprise Bot Filtering', description: 'Built-in advanced algorithms filter out API scrapers, VPNs, and Datacenters. ensuring your analytics are 100% real human traffic.', color: 'red' },
-              { icon: BarChart3, title: 'Advanced Analytics & Funnels', description: 'Track clicks, geographic data, and OS-level metrics. Visualize drop-offs with beautiful conversion funnels.', color: 'purple' },
-              { icon: Smartphone, title: 'Deep Link OS Targeting', description: 'Route iOS users to the App Store, Android users to Google Play, or fallback to the web—instantly and automatically.', color: 'green' },
-              { icon: Zap, title: 'Zero-Latency Geo-Routing', description: 'Redirect users based on their country or language with 0ms latency using our ultra-fast local edge database.', color: 'orange' },
-              { icon: Code, title: 'Developer API', description: 'Integrate Smart Link directly into your SaaS product workflow with our robust and easy-to-use API.', color: 'indigo' }
+              { icon: Shield, title: 'Ad Fraud Protection', description: 'Stop paying for 20-30% bot traffic. Our elite algorithms filter out API scrapers and VPNs to ensure every dollar you spend reaches a human.', color: 'red' },
+              { icon: Zap, title: 'Revenue Multiplier (AI)', description: 'Our Multi-Armed Bandit algorithm automatically routes your traffic to the winning A/B variant, increasing your ROI by up to 50% without extra work.', color: 'purple' },
+              { icon: BarChart3, title: 'Profit Intelligence', description: 'Real-time financial insights. See exactly how much money you saved by blocking bots and how much revenue was recovered via optimization.', color: 'blue' },
+              { icon: Smartphone, title: 'Zero-Leak Geotargeting', description: 'Route iOS users to the App Store and Android to Google Play instantly. Stop losing customers to the wrong destination page.', color: 'green' },
+              { icon: Globe, title: 'Global Profit Guard', description: 'Redirect users based on their country or language with 0ms latency. Keep your global campaigns profitable and friction-free.', color: 'orange' },
+              { icon: Code, title: 'Profit API for SaaS', description: 'Integrate our profit protection engine directly into your own SaaS workflow to provide extra value to your customers.', color: 'indigo' }
             ].map((feature, index) => (
               <motion.div key={index} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: index * 0.1 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300">
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-${feature.color}-100 dark:bg-${feature.color}-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>

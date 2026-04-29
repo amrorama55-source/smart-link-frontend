@@ -9,6 +9,7 @@ import DowngradeNotice from '../components/DowngradeNotice';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastProvider';
 import { SHORT_URL_BASE } from '../config';
+import ProfitInsights from '../components/analytics/ProfitInsights';
 import {
   Link2,
   MousePointerClick,
@@ -25,7 +26,7 @@ import {
   Zap,
   Target,
   Crown,
-  Shield
+  Users
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -213,6 +214,13 @@ export default function Dashboard() {
           </button>
         </div>
 
+        {/* ✅ NEW: Profit Intelligence Section */}
+        {stats?.profitInsights && (
+          <div className="my-8">
+            <ProfitInsights data={stats.profitInsights} />
+          </div>
+        )}
+
         {/* Activation Checklist - Only show for trial users */}
         {user?.plan === 'trial' && (
           <div className="mb-6 sm:mb-8">
@@ -221,7 +229,7 @@ export default function Dashboard() {
         )}
 
         {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 mt-8">
           {statCards.map((stat, i) => {
             const Icon = stat.icon;
             return (
@@ -263,30 +271,34 @@ export default function Dashboard() {
           })}
         </div>
 
-        {/* Quick Stats - Stack on mobile, 2 columns on desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-6 sm:mb-8">
+        {/* Quick Stats - 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
           {/* Unique Visitors */}
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
-            <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-xs sm:text-sm font-medium opacity-90">Unique Visitors</span>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
+                <Users className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unique Visitors</span>
             </div>
-            <p className="text-2xl sm:text-3xl font-bold">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</p>
-            <p className="text-xs opacity-75 mt-1">All time</p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</span>
+              <span className="text-xs text-blue-600 font-bold uppercase">All Time</span>
+            </div>
           </div>
 
           {/* Top Country */}
-          <div className="bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 rounded-xl p-5 sm:p-6 text-white shadow-lg">
-            <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="text-xs sm:text-sm font-medium opacity-90">Top Country</span>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg">
+                <Globe className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Top Country</span>
             </div>
-            <p className="text-xl sm:text-2xl font-bold">
-              {stats?.topCountries?.[0]?.country || 'N/A'}
-            </p>
-            <p className="text-xs opacity-75 mt-1">
-              {stats?.topCountries?.[0]?.count || 0} clicks
-            </p>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.topCountries?.[0]?.country || 'N/A'}</span>
+              <span className="text-xs text-purple-600 font-bold uppercase">{stats?.topCountries?.[0]?.count || 0} Clicks</span>
+            </div>
           </div>
         </div>
 

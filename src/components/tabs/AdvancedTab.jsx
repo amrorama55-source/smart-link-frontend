@@ -1,4 +1,4 @@
-import { Plus, Trash2, Target, Zap, AlertCircle, TrendingUp, Trophy, CheckCircle, Percent } from 'lucide-react';
+import { Plus, Trash2, Target, Zap, AlertCircle, TrendingUp, Trophy, CheckCircle, Percent, ShieldCheck, Globe } from 'lucide-react';
 
 export default function AdvancedTab({ 
   linkData, 
@@ -522,6 +522,141 @@ export default function AdvancedTab({
           </div>
         </div>
       )}
+
+      <hr className="border-gray-200 dark:border-gray-800" />
+
+      {/* ✅ NEW: Auto-Shield (Bot Protection) */}
+      <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 rounded-xl border-2 border-blue-200 dark:border-blue-800/30">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+              <ShieldCheck className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <span className="font-bold text-gray-900 dark:text-white text-lg">Auto-Shield (Bot Protection)</span>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Protect your pixels and ad budget</p>
+            </div>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={linkData.autoShield?.enabled || false}
+              onChange={(e) => setLinkData({
+                ...linkData,
+                autoShield: {
+                  ...(linkData.autoShield || {}),
+                  enabled: e.target.checked,
+                  protectPixels: true,
+                  blockScrapers: true
+                }
+              })}
+              className="sr-only peer"
+            />
+            <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+
+        {linkData.autoShield?.enabled && (
+          <div className="space-y-4 pt-2">
+            <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-blue-100 dark:border-blue-800">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Protect Tracking Pixels</span>
+              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
+            </div>
+            <div className="flex items-center justify-between p-3 bg-white/50 dark:bg-gray-800/50 rounded-lg border border-blue-100 dark:border-blue-800">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Block Search Engine Scrapers</span>
+              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-gray-500 mb-1 block uppercase">Redirect Bots To (Optional)</label>
+              <input 
+                type="url"
+                placeholder="https://google.com (or leave empty for 404)"
+                value={linkData.autoShield.redirectBotTo || ''}
+                onChange={(e) => setLinkData({
+                  ...linkData,
+                  autoShield: { ...linkData.autoShield, redirectBotTo: e.target.value }
+                })}
+                className="w-full px-3 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ✅ NEW: Revenue Recovery (Language Targeting) */}
+      <div className="p-5 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-xl border-2 border-amber-200 dark:border-amber-800/30">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-amber-600 flex items-center justify-center">
+              <Globe className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <span className="font-bold text-gray-900 dark:text-white text-lg">Revenue Recovery</span>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Language-based fallback routing</p>
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={() => {
+              const currentRules = linkData.languageRules || [];
+              setLinkData({
+                ...linkData,
+                languageRules: [...currentRules, { language: 'ar', targetUrl: '' }]
+              });
+            }}
+            className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg transition"
+          >
+            Add Rule
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {(linkData.languageRules || []).map((rule, idx) => (
+            <div key={idx} className="flex gap-2 items-center">
+              <select 
+                value={rule.language}
+                onChange={(e) => {
+                  const newRules = [...linkData.languageRules];
+                  newRules[idx].language = e.target.value;
+                  setLinkData({ ...linkData, languageRules: newRules });
+                }}
+                className="w-24 px-2 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+              >
+                <option value="ar">Arabic</option>
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="es">Spanish</option>
+              </select>
+              <input 
+                type="url"
+                placeholder="Target URL for this language"
+                value={rule.targetUrl}
+                onChange={(e) => {
+                  const newRules = [...linkData.languageRules];
+                  newRules[idx].targetUrl = e.target.value;
+                  setLinkData({ ...linkData, languageRules: newRules });
+                }}
+                className="flex-1 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+              />
+              <button 
+                type="button"
+                onClick={() => {
+                  const newRules = linkData.languageRules.filter((_, i) => i !== idx);
+                  setLinkData({ ...linkData, languageRules: newRules });
+                }}
+                className="text-red-500 hover:text-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            </div>
+          ))}
+          
+          {(linkData.languageRules || []).length === 0 && (
+            <p className="text-[10px] text-gray-500 text-center italic">No recovery rules set. Default URL will be used for all languages.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
