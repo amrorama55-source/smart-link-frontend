@@ -59,7 +59,7 @@ export default function BlogPost() {
                 title={post.title} 
                 description={post.excerpt || post.content.substring(0, 160).replace(/<[^>]*>?/gm, '') + '...'} 
                 image={post.image} 
-                url={`https://www.smart-link.website/blog/${post.id}`} 
+                url={`https://www.by-smartlink.com/blog/${post.id}`} 
             />
             <div className="max-w-4xl mx-auto">
                 {/* Navigation */}

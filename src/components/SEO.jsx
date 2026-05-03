@@ -6,8 +6,12 @@ export default function SEO({ title, description, image, url, videoData }) {
     const finalTitle = title ? `${title} | Smart Link` : siteTitle;
     const defaultDescription = 'Smart Link is an enterprise-grade platform for shrinking links, tracking conversions, running A/B tests, and building elegant bio pages.';
     const finalDescription = description || defaultDescription;
-    const finalImage = image || 'https://www.by-smartlink.com/twitter-poster.png'; // New high-quality Twitter poster
-    const finalUrl = url || 'https://www.by-smartlink.com';
+    const finalImage = image || 'https://www.by-smartlink.com/twitter-poster.png';
+    
+    // Improved Canonical Logic: Use provided URL or construct from current path
+    const baseUrl = 'https://www.by-smartlink.com';
+    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+    const finalUrl = url || `${baseUrl}${currentPath === '/' ? '' : currentPath}`;
 
     const videoSchema = videoData ? {
         "@context": "https://schema.org",

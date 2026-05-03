@@ -59,12 +59,12 @@ const ProfitInsights = ({ data }) => {
         <div className="lg:w-1/3 p-8 bg-gray-50/50 dark:bg-gray-800/30 grid grid-cols-1 gap-6 border-l border-gray-100 dark:border-gray-800">
           <div className="group">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Money Saved</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">Ad Waste Blocked</span>
               <ShieldCheck className="w-4 h-4 text-green-500" />
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold text-gray-900 dark:text-white">${savedBudget}</span>
-              <span className="text-xs text-green-600 font-bold">AD FRAUD STOPPED</span>
+              <span className="text-xs text-green-600 font-bold">BUDGET RECOVERED</span>
             </div>
             <p className="text-xs text-gray-400 mt-1">{botClicks} malicious bots blocked</p>
           </div>
@@ -78,7 +78,7 @@ const ProfitInsights = ({ data }) => {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold text-gray-900 dark:text-white">{efficiencyScore}%</span>
-              <span className="text-xs text-blue-600 font-bold">REAL TRAFFIC</span>
+              <span className="text-xs text-blue-600 font-bold">ENGAGEMENT RATE</span>
             </div>
             <p className="text-xs text-gray-400 mt-1">High-quality audience confirmed</p>
           </div>
@@ -92,7 +92,7 @@ const ProfitInsights = ({ data }) => {
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold text-gray-900 dark:text-white">+{potentialLift}%</span>
-              <span className="text-xs text-purple-600 font-bold">ROI INCREASE</span>
+              <span className="text-xs text-purple-600 font-bold">PERFORMANCE LIFT</span>
             </div>
             <p className="text-xs text-gray-400 mt-1">Via AI Auto-Optimization</p>
           </div>

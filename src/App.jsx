@@ -5,28 +5,51 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastProvider';
 
+// Helper to automatically reload the page if a chunk fails to load (e.g. after a new deployment)
+const lazyWithRetry = (componentImport) =>
+  lazy(async () => {
+    try {
+      return await componentImport();
+    } catch (error) {
+      console.error('Error loading chunk:', error);
+      // If we get a chunk load error (network error or 404 because of new deployment), reload the page to get the new index.html
+      if (
+        error.message.includes('Failed to fetch dynamically imported module') ||
+        error.message.includes('Importing a module script failed') ||
+        error.name === 'TypeError'
+      ) {
+        // Prevent infinite reload loops by checking sessionStorage
+        if (!sessionStorage.getItem('chunk-retry')) {
+          sessionStorage.setItem('chunk-retry', 'true');
+          window.location.reload();
+        }
+      }
+      throw error;
+    }
+  });
+
 // Lazy-loaded pages — smaller initial bundle, faster on mobile
-const Login = lazy(() => import('./pages/Login'));
-const Register = lazy(() => import('./pages/Register'));
-const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
-const ResetPassword = lazy(() => import('./pages/ResetPassword'));
-const VerifyEmail = lazy(() => import('./pages/VerifyEmail'));
-const Landing = lazy(() => import('./pages/Landing'));
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Links = lazy(() => import('./pages/EnhancedLinks'));
-const Analytics = lazy(() => import('./pages/Analytics'));
-const BioEditor = lazy(() => import('./pages/BioEditor'));
-const Settings = lazy(() => import('./pages/Settings'));
-const BioPage = lazy(() => import('./pages/BioPage'));
-const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
-const TermsOfService = lazy(() => import('./pages/TermsOfService'));
-const Profile = lazy(() => import('./pages/Profile'));
-const AuthCallback = lazy(() => import('./pages/AuthCallback'));
-const FAQ = lazy(() => import('./pages/FAQ'));
-const Success = lazy(() => import('./pages/Success'));
-const Pricing = lazy(() => import('./pages/Pricing'));
-const Blog = lazy(() => import('./pages/Blog'));
-const BlogPost = lazy(() => import('./pages/BlogPost'));
+const Login = lazyWithRetry(() => import('./pages/Login'));
+const Register = lazyWithRetry(() => import('./pages/Register'));
+const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazyWithRetry(() => import('./pages/ResetPassword'));
+const VerifyEmail = lazyWithRetry(() => import('./pages/VerifyEmail'));
+const Landing = lazyWithRetry(() => import('./pages/Landing'));
+const Dashboard = lazyWithRetry(() => import('./pages/Dashboard'));
+const Links = lazyWithRetry(() => import('./pages/EnhancedLinks'));
+const Analytics = lazyWithRetry(() => import('./pages/Analytics'));
+const BioEditor = lazyWithRetry(() => import('./pages/BioEditor'));
+const Settings = lazyWithRetry(() => import('./pages/Settings'));
+const BioPage = lazyWithRetry(() => import('./pages/BioPage'));
+const PrivacyPolicy = lazyWithRetry(() => import('./pages/PrivacyPolicy'));
+const TermsOfService = lazyWithRetry(() => import('./pages/TermsOfService'));
+const Profile = lazyWithRetry(() => import('./pages/Profile'));
+const AuthCallback = lazyWithRetry(() => import('./pages/AuthCallback'));
+const FAQ = lazyWithRetry(() => import('./pages/FAQ'));
+const Success = lazyWithRetry(() => import('./pages/Success'));
+const Pricing = lazyWithRetry(() => import('./pages/Pricing'));
+const Blog = lazyWithRetry(() => import('./pages/Blog'));
+const BlogPost = lazyWithRetry(() => import('./pages/BlogPost'));
 
 // ==========================================
 // Loading Component

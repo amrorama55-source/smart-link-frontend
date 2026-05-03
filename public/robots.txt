@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /analytics
+Disallow: /settings
+Disallow: /admin
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://www.by-smartlink.com/sitemap.xml

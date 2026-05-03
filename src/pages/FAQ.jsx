@@ -4,6 +4,7 @@ import {
   Link2, Target, QrCode, Shield, CreditCard, Users,
   Search, CheckCircle, MessageCircle
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function FAQ() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -171,6 +172,10 @@ export default function FAQ() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-black p-4 sm:p-6 lg:p-8">
+      <SEO 
+        title="Frequently Asked Questions | Smart Link Help Center" 
+        description="Find answers to common questions about link shortening, bot protection, A/B testing, and managing your Smart Link account."
+      />
       
       <div className="max-w-7xl mx-auto">
         

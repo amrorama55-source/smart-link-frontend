@@ -5,6 +5,7 @@ import {
   Scale, Shield, Users, Lock, CreditCard, Trash2,
   Mail, ExternalLink, Calendar, Eye
 } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function TermsOfService() {
   const [activeSection, setActiveSection] = useState(null);
@@ -269,6 +270,10 @@ export default function TermsOfService() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
+      <SEO 
+        title="Terms of Service | Smart Link" 
+        description="Comprehensive Terms of Service for using the Smart Link platform. Understand your rights, responsibilities, and our policies."
+      />
 
       {/* Header */}
       <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">

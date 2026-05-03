@@ -259,6 +259,7 @@ function DemoModal({ isOpen, onClose }) {
   );
 }
 
+
 /* ========================================
    How It Works Section
    ======================================== */
@@ -553,10 +554,10 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 overflow-x-hidden font-sans">
       <SEO
-        description="Stop wasting your ad budget on empty clicks. Smart Link is the profit-focused intelligence platform that filters bots, auto-optimizes A/B tests, and recovers your marketing ROI."
+        description="Optimize your marketing ROI with intelligent traffic filtering. Smart Link reduces ad waste by blocking bots and auto-optimizing your campaigns using advanced performance algorithms."
         videoData={{
-          title: "Best Free Link in Bio Tool 2026 - Linktree Alternative | Smart Link - 29 April 2026",
-          description: "Free link in bio tool for Instagram, TikTok & more. Unlimited links, analytics, and customization. Better than Linktree. Start free today ✨",
+          title: "Intelligent Link Optimization for Founders | Smart Link Demo",
+          description: "Protect your ad spend and increase conversions with Smart Link's automated traffic filtering and A/B testing.",
           thumbnailUrl: ["https://www.by-smartlink.com/og-image.png"],
           uploadDate: "2026-04-29T00:00:00Z",
           duration: "PT0M30S"
@@ -652,11 +653,11 @@ export default function LandingPage() {
                 <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /><span className="font-semibold">Growth Tool for Founders</span>
               </motion.div>
               <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight">
-                <span className="block">Stop Wasting 30% of Your</span>
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Ad Budget on Bots.</span>
+                <span className="block">Optimize Your Ad Spend with</span>
+                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Intelligent Traffic Filtering.</span>
               </motion.h1>
               <motion.p variants={itemVariants} className="text-sm sm:text-base lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
-                Don't just shorten links—protect your profits. Smart Link identifies ad fraud in real-time and automatically routes traffic to your highest-converting paths.
+                Don't just shorten links—protect your efficiency. Smart Link uses multi-signal analysis to reduce ad waste and automatically routes visitors to your highest-performing pages.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -733,12 +734,12 @@ export default function LandingPage() {
           </motion.div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
-              { icon: Shield, title: 'Ad Fraud Protection', description: 'Stop paying for 20-30% bot traffic. Our elite algorithms filter out API scrapers and VPNs to ensure every dollar you spend reaches a human.', color: 'red' },
-              { icon: Zap, title: 'Revenue Multiplier (AI)', description: 'Our Multi-Armed Bandit algorithm automatically routes your traffic to the winning A/B variant, increasing your ROI by up to 50% without extra work.', color: 'purple' },
-              { icon: BarChart3, title: 'Profit Intelligence', description: 'Real-time financial insights. See exactly how much money you saved by blocking bots and how much revenue was recovered via optimization.', color: 'blue' },
-              { icon: Smartphone, title: 'Zero-Leak Geotargeting', description: 'Route iOS users to the App Store and Android to Google Play instantly. Stop losing customers to the wrong destination page.', color: 'green' },
-              { icon: Globe, title: 'Global Profit Guard', description: 'Redirect users based on their country or language with 0ms latency. Keep your global campaigns profitable and friction-free.', color: 'orange' },
-              { icon: Code, title: 'Profit API for SaaS', description: 'Integrate our profit protection engine directly into your own SaaS workflow to provide extra value to your customers.', color: 'indigo' }
+              { icon: Shield, title: 'Advanced Traffic Shield', description: 'Reduce ad waste from automated traffic. Our multi-signal filtering (IP, behavior, fingerprinting) ensures your budget is focused on real human engagement.', color: 'red' },
+              { icon: Zap, title: 'Auto-Pilot Optimization', description: 'Our performance algorithm automatically routes your traffic to the winning A/B variant, maximizing conversion efficiency without extra manual effort.', color: 'purple' },
+              { icon: BarChart3, title: 'Efficiency Analytics', description: 'Real-time campaign insights. See exactly how much ad waste was reduced and how much performance was recovered via automated optimization.', color: 'blue' },
+              { icon: Smartphone, title: 'Precision Geotargeting', description: 'Route iOS users to the App Store and Android to Google Play instantly. Eliminate friction and ensure every user reaches the right destination.', color: 'green' },
+              { icon: Globe, title: 'Global Campaign Guard', description: 'Redirect users based on their country or language with 0ms latency. Keep your international marketing high-converting and locally relevant.', color: 'orange' },
+              { icon: Code, title: 'Enterprise Integration API', description: 'Integrate our performance protection engine directly into your own workflow or SaaS product to provide enhanced value to your clients.', color: 'indigo' }
             ].map((feature, index) => (
               <motion.div key={index} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: index * 0.1 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300">
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-${feature.color}-100 dark:bg-${feature.color}-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
