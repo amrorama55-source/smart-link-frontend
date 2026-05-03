@@ -157,7 +157,45 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <!-- Initial Loading Screen (Removed automatically when React mounts) -->
+    <style>
+      .app-loader-container {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+      .app-loader-logo {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 24px;
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      .app-loader-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(59, 130, 246, 0.1);
+        border-top-color: #3b82f6;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin { 100% { transform: rotate(360deg); } }
+      @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .7; transform: scale(0.95); } }
+      @media (prefers-color-scheme: dark) {
+        .app-loader-container { background-color: #111827; /* gray-900 */ }
+      }
+    </style>
+    <div class="app-loader-container">
+      <img src="/logo-v1.svg" alt="Smart Link" class="app-loader-logo" />
+      <div class="app-loader-spinner"></div>
+    </div>
+  </div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 
