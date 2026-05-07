@@ -8,7 +8,7 @@ import {
   Trash2, LogOut, Monitor, Smartphone, Eye, EyeOff,
   AlertTriangle, Save, Sun, Moon
 } from 'lucide-react';
-import {
+import api, {
   getProfile,
   getDashboardStats,
   updateProfile,
@@ -44,6 +44,10 @@ export default function Profile() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [sessions, setSessions] = useState([]);
 
+  // Stripe state
+  const [stripeStatus, setStripeStatus] = useState(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
+
   const getInitial = () => {
     if (profileData.name?.trim()) return profileData.name.trim().charAt(0).toUpperCase();
     if (profile?.name?.trim()) return profile.name.trim().charAt(0).toUpperCase();
@@ -54,8 +58,30 @@ export default function Profile() {
   useEffect(() => {
     const tab = searchParams.get('tab');
     if (tab === 'settings') setActiveTab('settings');
+    if (tab === 'payouts') setActiveTab('payouts');
     loadProfileData();
+    loadStripeStatus();
   }, [searchParams]);
+
+  const loadStripeStatus = async () => {
+    try {
+      const { data } = await api.get('/payments/onboarding/status');
+      setStripeStatus(data);
+    } catch (err) {
+      console.error('Failed to load Stripe status:', err);
+    }
+  };
+
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    try {
+      const { data } = await api.post('/payments/onboarding');
+      window.location.href = data.url;
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to start Stripe Connect onboarding.');
+      setStripeLoading(false);
+    }
+  };
 
   const loadProfileData = async () => {
     try {
@@ -231,17 +257,19 @@ export default function Profile() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Tab Navigation - Glassmorphism style */}
         <div className="mb-8 flex p-1.5 bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-xl rounded-2xl border border-white/20 dark:border-white/5 w-fit shadow-inner">
-          {['profile', 'settings'].map(tab => (
+          {['profile', 'settings', 'payouts'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-8 py-2.5 rounded-xl font-bold transition-all duration-300 whitespace-nowrap capitalize flex items-center gap-2 ${activeTab === tab
+              className={`px-8 py-2.5 rounded-xl font-bold transition-all duration-300 whitespace-nowrap flex items-center gap-2 ${activeTab === tab
                 ? 'bg-white dark:bg-blue-600 text-blue-600 dark:text-white shadow-xl scale-105'
                 : 'text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-white hover:bg-white/50 dark:hover:bg-gray-700/50'
                 }`}
             >
-              {tab === 'profile' ? <User className="w-4 h-4" /> : <Settings className="w-4 h-4" />}
-              {tab}
+              {tab === 'profile' && <User className="w-4 h-4" />}
+              {tab === 'settings' && <Settings className="w-4 h-4" />}
+              {tab === 'payouts' && <Zap className="w-4 h-4" />}
+              {tab === 'payouts' ? 'Creator Payouts' : <span className="capitalize">{tab}</span>}
             </button>
           ))}
         </div>
@@ -579,6 +607,60 @@ export default function Profile() {
                 >
                   <Trash2 className="w-5 h-5" />
                   <span>Request Account Deletion</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ====== PAYOUTS TAB ====== */}
+        {activeTab === 'payouts' && (
+          <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-white/70 dark:bg-gray-800/50 backdrop-blur-xl rounded-[2.5rem] p-8 sm:p-10 shadow-xl border border-white/20 dark:border-white/5">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-3 bg-yellow-500/10 rounded-2xl">
+                  <Zap className="w-8 h-8 text-yellow-500" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-black text-gray-900 dark:text-white leading-tight">Creator Payouts</h2>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mt-1">Monetize your content securely via Stripe</p>
+                </div>
+              </div>
+
+              <div className="p-8 bg-gray-50/50 dark:bg-gray-900/50 rounded-3xl border-2 border-gray-100 dark:border-white/5 space-y-6">
+                <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
+                  Connect your bank account to start earning money from your Smart Link Bio. We use Stripe to ensure secure and fast payouts directly to your bank account.
+                </p>
+
+                <div className="flex items-center gap-4 py-4">
+                  <div className="flex-1">
+                    <h3 className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-wider mb-2">Stripe Account Status</h3>
+                    {stripeStatus?.status === 'active' ? (
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-xl font-bold text-sm border border-emerald-500/20">
+                        <CheckCircle className="w-4 h-4" /> Active and ready to receive payments
+                      </div>
+                    ) : stripeStatus?.status === 'pending_verification' ? (
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 rounded-xl font-bold text-sm border border-yellow-500/20">
+                        <AlertTriangle className="w-4 h-4" /> Pending verification
+                      </div>
+                    ) : (
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-500/10 text-gray-600 dark:text-gray-400 rounded-xl font-bold text-sm border border-gray-500/20">
+                        <Lock className="w-4 h-4" /> Not connected
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleStripeConnect}
+                  disabled={stripeLoading}
+                  className={`w-full sm:w-auto px-10 py-4 rounded-2xl font-black transition-all flex items-center justify-center gap-3 shadow-xl ${
+                    stripeStatus?.status === 'active' 
+                      ? 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 shadow-gray-500/10'
+                      : 'bg-[#635BFF] hover:bg-[#4B45D6] text-white shadow-[#635BFF]/30 hover:scale-105'
+                  }`}
+                >
+                  {stripeLoading ? 'Connecting...' : stripeStatus?.status === 'active' ? 'Go to Stripe Dashboard' : 'Connect with Stripe'}
                 </button>
               </div>
             </div>

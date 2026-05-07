@@ -56,12 +56,37 @@ export default function Settings() {
   const [showDowngradeWarning, setShowDowngradeWarning] = useState(false);
   const [downgradePlan, setDowngradePlan] = useState(null);
 
+  // Stripe state
+  const [stripeStatus, setStripeStatus] = useState(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
+
   useEffect(() => {
     loadProfile();
     loadSessions();
     loadSubscription();
     loadInvoices();
+    loadStripeStatus();
   }, []);
+
+  const loadStripeStatus = async () => {
+    try {
+      const { data } = await api.get('/payments/onboarding/status');
+      setStripeStatus(data);
+    } catch (err) {
+      console.error('Failed to load Stripe status:', err);
+    }
+  };
+
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    try {
+      const { data } = await api.post('/payments/onboarding');
+      window.location.href = data.url;
+    } catch {
+      error('Failed to start Stripe Connect onboarding.');
+      setStripeLoading(false);
+    }
+  };
 
   const loadProfile = async () => {
     try {
@@ -314,6 +339,7 @@ export default function Settings() {
     { id: 'password', label: 'Security & Password', icon: Lock, shortLabel: 'Password' },
     { id: 'sessions', label: 'Active Sessions', icon: Monitor, shortLabel: 'Sessions' },
     { id: 'subscription', label: 'Subscription & Billing', icon: CreditCard, shortLabel: 'Billing' },
+    { id: 'payouts', label: 'Creator Payouts', icon: Zap, shortLabel: 'Payouts' },
     { id: 'security', label: 'Account Security', icon: Shield, shortLabel: 'Security' }
   ];
 
@@ -723,6 +749,53 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Payouts Tab - Stripe Connect */}
+            {activeTab === 'payouts' && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-500 flex-shrink-0" />
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Creator Payouts</h2>
+                </div>
+
+                <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700 space-y-4">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Connect your bank account to start earning money from your Smart Link Bio. We use Stripe to ensure secure and fast payouts directly to your bank account.
+                  </p>
+
+                  <div className="flex items-center gap-4 py-4">
+                    <div className="flex-1">
+                      <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Stripe Account Status</h3>
+                      {stripeStatus?.status === 'active' ? (
+                        <p className="text-sm text-green-600 dark:text-green-400 mt-1 flex items-center gap-1">
+                          <CheckCircle className="w-4 h-4" /> Active and ready to receive payments
+                        </p>
+                      ) : stripeStatus?.status === 'pending_verification' ? (
+                        <p className="text-sm text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
+                          <AlertTriangle className="w-4 h-4" /> Pending verification
+                        </p>
+                      ) : (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                          <XCircle className="w-4 h-4" /> Not connected
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleStripeConnect}
+                    disabled={stripeLoading}
+                    className={`w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm sm:text-base ${
+                      stripeStatus?.status === 'active' 
+                        ? 'bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-200 dark:hover:bg-gray-500'
+                        : 'bg-[#635BFF] hover:bg-[#4B45D6] text-white'
+                    }`}
+                  >
+                    {stripeLoading ? 'Connecting...' : stripeStatus?.status === 'active' ? 'Go to Stripe Dashboard' : 'Connect with Stripe'}
+                  </button>
+                </div>
               </div>
             )}
 

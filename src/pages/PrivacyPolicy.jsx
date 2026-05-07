@@ -1,4 +1,5 @@
 import { ArrowLeft, Shield, Lock, Eye, Database, Users, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 
 export default function Privacy() {
@@ -32,7 +33,7 @@ export default function Privacy() {
             Privacy Policy
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Last updated: December 27, 2024
+            Last updated: May 2026
           </p>
         </div>
 
@@ -186,11 +187,11 @@ export default function Privacy() {
                 </p>
                 <div className="space-y-2">
                   <a 
-                    href="mailto:privacy@yourdomain.com" 
+                    href="mailto:support@by-smartlink.com" 
                     className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
                   >
                     <Mail className="w-4 h-4" />
-                    smartlinkpro10@gmail.com
+                    support@by-smartlink.com
                   </a>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     We'll respond within 48 hours

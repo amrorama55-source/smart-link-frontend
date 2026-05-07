@@ -300,7 +300,7 @@ export default function TermsOfService() {
             Terms of Service
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
-            Last updated: December 27, 2024
+            Last updated: May 2026
           </p>
           <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Please read these terms carefully before using Smart Link
@@ -439,7 +439,7 @@ export default function TermsOfService() {
                     className="inline-flex items-center gap-2 text-white hover:text-blue-100 font-semibold"
                   >
                     <Mail className="w-4 h-4" />
-                    smartlinkpro10@gmail.com
+                    support@by-smartlink.com
                   </a>
                   <a
                     href="https://www.by-smartlink.com"

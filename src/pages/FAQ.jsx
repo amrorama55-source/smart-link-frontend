@@ -152,7 +152,7 @@ export default function FAQ() {
         },
         {
           question: 'How do I contact support?',
-          answer: 'Free users get community support. Pro users get priority email support with 24-48 hour response time. Business users get dedicated support. Email us at support@yourdomain.com'
+          answer: 'Free users get community support. Pro users get priority email support with 24-48 hour response time. Business users get dedicated support. Email us at support@by-smartlink.com'
         },
         {
           question: 'Do you offer team collaboration?',
@@ -310,7 +310,7 @@ export default function FAQ() {
             Our support team is here to help you.
           </p>
           <a
-            href="mailto:support@yourdomain.com"
+            href="mailto:support@by-smartlink.com"
             className="inline-flex items-center gap-2 px-8 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg"
           >
             <MessageCircle className="w-5 h-5" />

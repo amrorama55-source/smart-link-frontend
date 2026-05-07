@@ -4,8 +4,9 @@ import Navbar from '../components/Navbar';
 import { Reorder, AnimatePresence } from 'framer-motion';
 import { themes as themeData } from '../utils/bioThemes';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown } from 'lucide-react';
+import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink } from 'lucide-react';
 import BioPagePreview from './BioPagePreview';
+import { useToast } from '../context/ToastProvider';
 
 const themes = Object.values(themeData);
 
@@ -15,26 +16,54 @@ export default function BioEditor() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState('identity');
   const [showMobilePreview, setShowMobilePreview] = useState(false);
+  const [stripeStatus, setStripeStatus] = useState({ status: 'not_started' });
+  const [stripeLoading, setStripeLoading] = useState(false);
+  const [showOnboardingHints, setShowOnboardingHints] = useState(false);
+  const [testCheckoutLoading, setTestCheckoutLoading] = useState(false);
   const { user } = useAuth();
+  const { success, warning, error: showError, info } = useToast();
   const fileInputRef = useRef(null);
   const debounceRef = useRef(null);
 
   const [bioData, setBioData] = useState({
     username: '', displayName: '', bio: '', avatar: '',
-    theme: 'default', socialLinks: [], customLinks: [], isPublic: true
+    theme: 'default', socialLinks: [], customLinks: [], blocks: [], aiChatbot: { enabled: false }, isPublic: true
   });
 
   const userPlan = user?.plan || 'free';
   const isBusiness = userPlan === 'business' || (userPlan === 'trial' && new Date(user?.trialEndsAt) > new Date()) || user?.role === 'admin';
-  const isPro = userPlan === 'pro';
-  const bioLinkLimit = isBusiness ? -1 : (isPro ? 100 : 5);
   const premiumThemeList = ['glass', 'sunset', 'sea', 'forest', 'cyber', 'luxury', 'rose', 'nordic', 'aurora', 'lavender', 'neon'];
 
   const [usernameAvailable, setUsernameAvailable] = useState(null);
   const [originalUsername, setOriginalUsername] = useState('');
   const [checkingUsername, setCheckingUsername] = useState(false);
 
-  useEffect(() => { loadBioSettings(); }, []);
+  useEffect(() => {
+    loadBioSettings();
+    loadStripeStatus();
+
+    const hintsDismissed = localStorage.getItem('bio_editor_onboarding_dismissed') === 'true';
+    if (!hintsDismissed) {
+      setShowOnboardingHints(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('stripe_return') === 'true' || params.get('stripe_refresh') === 'true') {
+      (async () => {
+        const status = await loadStripeStatus();
+        if (status === 'active') {
+          success('Stripe connected successfully. You can sell now.');
+        } else if (status === 'pending_verification') {
+          warning('Stripe connected, but verification is still pending.');
+        } else {
+          info('Stripe onboarding started. Complete setup to receive payouts.');
+        }
+      })();
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [success, warning, info]);
 
   const loadBioSettings = async () => {
     try {
@@ -50,12 +79,85 @@ export default function BioEditor() {
         customLinks: (data.bioPage.customLinks || []).map(link => ({
           ...link, id: link._id || Math.random().toString(36).substr(2, 9)
         })),
+        blocks: (data.bioPage.blocks || []).map(block => ({
+          ...block, id: block._id || Math.random().toString(36).substr(2, 9)
+        })),
+        aiChatbot: data.bioPage.aiChatbot || { enabled: false },
         isPublic: data.bioPage.isPublic !== undefined ? data.bioPage.isPublic : true
       });
       setOriginalUsername(fetchedUsername);
       if (fetchedUsername) setUsernameAvailable(true);
     } catch (e) { console.error(e); }
     finally { setLoading(false); }
+  };
+
+  const loadStripeStatus = async () => {
+    try {
+      const { data } = await api.get('/payments/onboarding/status');
+      setStripeStatus(data);
+      return data?.status;
+    } catch (error) {
+      console.error('Stripe status load failed:', error);
+      return null;
+    }
+  };
+
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    try {
+      const { data } = await api.post('/payments/onboarding');
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      showError('Unable to open Stripe right now. Please try again.');
+    } catch (error) {
+      showError(error.response?.data?.error || 'Failed to start Stripe onboarding');
+      setStripeLoading(false);
+    }
+  };
+
+  const handleDismissHints = () => {
+    localStorage.setItem('bio_editor_onboarding_dismissed', 'true');
+    setShowOnboardingHints(false);
+  };
+
+  const handleTestCheckout = async () => {
+    const usernameToUse = (originalUsername || bioData.username || '').trim();
+    if (!usernameToUse) {
+      warning('Save your username first before testing checkout.');
+      return;
+    }
+
+    const testablePaywall = bioData.blocks.find((block) =>
+      block.type === 'paywall' && (block._id || block.id)
+    );
+    const blockId = testablePaywall?._id || testablePaywall?.id;
+
+    if (!blockId) {
+      info('Add and save at least one Paywall block to test checkout.');
+      return;
+    }
+
+    if (stripeStatus?.status !== 'active') {
+      warning('Connect and verify Stripe first to run a test checkout.');
+      return;
+    }
+
+    setTestCheckoutLoading(true);
+    try {
+      const returnUrl = `${window.location.origin}/u/${usernameToUse}`;
+      const { data } = await api.post(`/payments/checkout/${usernameToUse}/${blockId}`, { returnUrl });
+      if (data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+      showError('Failed to start test checkout.');
+    } catch (err) {
+      showError(err.response?.data?.error || 'Failed to start test checkout.');
+    } finally {
+      setTestCheckoutLoading(false);
+    }
   };
 
   const compressImage = (file) => new Promise((resolve) => {
@@ -115,6 +217,16 @@ export default function BioEditor() {
         customLinks: bioData.customLinks.map((link, i) => ({
           title: link.title || '', url: link.url || '', icon: link.icon || '🔗',
           order: i, isActive: link.isActive !== undefined ? link.isActive : true
+        })),
+        blocks: bioData.blocks.map((block, i) => ({
+          type: block.type || 'link',
+          title: block.title || '',
+          url: block.url || '',
+          content: block.content || '',
+          icon: block.icon || '',
+          order: i,
+          isActive: block.isActive !== undefined ? block.isActive : true,
+          settings: block.settings || {}
         }))
       });
       setOriginalUsername(bioData.username);
@@ -132,6 +244,38 @@ export default function BioEditor() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const [generating, setGenerating] = useState(false);
+
+  const handleAIGenerate = async () => {
+    const prompt = window.prompt("What is your professional role or goal? (e.g. 'Freelance Photographer', 'Crypto Influencer', 'Fitness Coach')");
+    if (!prompt) return;
+
+    setGenerating(true);
+    try {
+      const { data } = await api.post('/ai/generate-page', { prompt });
+      if (data.success) {
+        const gen = data.data;
+        setBioData(prev => ({
+          ...prev,
+          displayName: gen.displayName || prev.displayName,
+          bio: gen.bio || prev.bio,
+          theme: gen.theme || prev.theme,
+          blocks: gen.blocks.map((b, i) => ({
+            ...b,
+            id: Math.random().toString(36).substr(2, 9),
+            order: i,
+            isActive: true
+          }))
+        }));
+        alert('AI has magic-crafted your page! ✨ Review and save your changes.');
+      }
+    } catch (err) {
+      alert('AI Generation failed: ' + (err.response?.data?.message || err.response?.data?.error || err.message));
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   const handleShareLink = async () => {
     if (!bioData.username) return alert('Please set a username first!');
     const url = `${window.location.protocol}//${window.location.host}/u/${bioData.username}`;
@@ -141,27 +285,39 @@ export default function BioEditor() {
     } else { navigator.clipboard.writeText(url); alert('Copied! 📋'); }
   };
 
-  const addCustomLink = () => {
-    if (bioLinkLimit !== -1 && bioData.customLinks.length >= bioLinkLimit) {
-      alert(`Your plan is limited to ${bioLinkLimit} links. Upgrade to unlock more!`);
+  const addBlock = (type = 'link') => {
+    if (type === 'paywall' && stripeStatus?.status !== 'active') {
+      const shouldConnect = window.confirm('Connect Stripe first to enable paywall sales. Connect now?');
+      if (shouldConnect) handleStripeConnect();
       return;
     }
-    setBioData({
-      ...bioData,
-      customLinks: [...bioData.customLinks, {
-        title: '', url: '', icon: '🔗',
-        order: bioData.customLinks.length, isActive: true,
-        id: Math.random().toString(36).substr(2, 9)
-      }]
-    });
+
+    const newBlock = {
+      type,
+      title: type === 'newsletter' ? 'Join my Newsletter' : '',
+      url: '',
+      content: type === 'newsletter' ? 'Stay updated with my latest news.' : '',
+      icon: type === 'newsletter' ? '📧' : type === 'paywall' ? '🔐' : type === 'header' ? '' : '🔗',
+      order: bioData.blocks.length,
+      isActive: true,
+      settings: type === 'paywall' ? { price: '5.00', currency: 'USD' } : {},
+      id: Math.random().toString(36).substr(2, 9)
+    };
+    setBioData(prev => ({ ...prev, blocks: [...prev.blocks, newBlock] }));
   };
 
-  const removeCustomLink = (i) => setBioData({ ...bioData, customLinks: bioData.customLinks.filter((_, idx) => idx !== i) });
+  const removeBlock = (i) => setBioData(prev => ({ ...prev, blocks: prev.blocks.filter((_, idx) => idx !== i) }));
 
-  const updateCustomLink = (i, field, value) => {
-    const updated = [...bioData.customLinks];
+  const updateBlock = (i, field, value) => {
+    const updated = [...bioData.blocks];
     updated[i] = { ...updated[i], [field]: value };
-    setBioData({ ...bioData, customLinks: updated });
+    setBioData(prev => ({ ...prev, blocks: updated }));
+  };
+
+  const updateBlockSettings = (i, setting, value) => {
+    const updated = [...bioData.blocks];
+    updated[i] = { ...updated[i], settings: { ...(updated[i].settings || {}), [setting]: value } };
+    setBioData(prev => ({ ...prev, blocks: updated }));
   };
 
   const addSocialLink = () => {
@@ -208,6 +364,24 @@ export default function BioEditor() {
             Save Changes
           </button>
         </div>
+
+        {showOnboardingHints && (
+          <div className="mb-6 p-4 rounded-2xl border border-indigo-200 dark:border-indigo-900/30 bg-indigo-50 dark:bg-indigo-900/10">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-sm font-black text-indigo-900 dark:text-indigo-200 mb-2">Creator Monetization Quick Start</p>
+                <div className="grid sm:grid-cols-3 gap-2">
+                  <p className="text-xs text-indigo-800 dark:text-indigo-300"><span className="font-bold">Step 1:</span> Connect Stripe from the Links tab.</p>
+                  <p className="text-xs text-indigo-800 dark:text-indigo-300"><span className="font-bold">Step 2:</span> Add a Paywall block, set price and secret content.</p>
+                  <p className="text-xs text-indigo-800 dark:text-indigo-300"><span className="font-bold">Step 3:</span> Save and run test checkout to confirm flow.</p>
+                </div>
+              </div>
+              <button onClick={handleDismissHints} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300">
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
@@ -226,9 +400,18 @@ export default function BioEditor() {
 
             {/* IDENTITY */}
             <div className={`${activeTab === 'identity' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
-              <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Identity
-              </h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
+                  <User className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Identity
+                </h2>
+                <button
+                  onClick={handleAIGenerate}
+                  disabled={generating}
+                  className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg text-xs font-black shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+                >
+                  {generating ? <Loader className="w-3 h-3 animate-spin" /> : '✨ Magic AI Builder'}
+                </button>
+              </div>
 
               {/* YOUR SMART LINK */}
               <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 mb-6">
@@ -357,36 +540,177 @@ export default function BioEditor() {
               </div>
             </div>
 
-            {/* LINKS */}
+            {/* BLOCKS (Monetization & Links) */}
             <div className={`${activeTab === 'links' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                  <List className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Links
-                </h2>
-                <button onClick={addCustomLink} className="text-sm px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-bold transition-colors">+ Add New</button>
+              <div className={`mb-5 p-4 rounded-xl border ${
+                stripeStatus?.status === 'active'
+                  ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30'
+                  : 'bg-purple-50 dark:bg-purple-900/10 border-purple-200 dark:border-purple-900/30'
+              }`}>
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">Creator Payout Setup</p>
+                    {stripeStatus?.status === 'active' ? (
+                      <p className="text-xs mt-1 text-green-700 dark:text-green-400">
+                        Stripe connected. You can add and sell paywalled blocks now.
+                      </p>
+                    ) : stripeStatus?.status === 'pending_verification' ? (
+                      <p className="text-xs mt-1 text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        Stripe onboarding submitted. Finish verification to receive payouts.
+                      </p>
+                    ) : (
+                      <p className="text-xs mt-1 text-purple-700 dark:text-purple-400">
+                        Connect Stripe here first, then create Paywall blocks in the same page.
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={handleStripeConnect}
+                    disabled={stripeLoading}
+                    className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 ${
+                      stripeStatus?.status === 'active'
+                        ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'
+                        : 'bg-[#635BFF] hover:bg-[#4B45D6] text-white'
+                    }`}
+                  >
+                    {stripeLoading ? <Loader className="w-3 h-3 animate-spin" /> : <ExternalLink className="w-3 h-3" />}
+                    {stripeStatus?.status === 'active' ? 'Open Stripe' : 'Connect Stripe'}
+                  </button>
+                </div>
               </div>
-              <Reorder.Group axis="y" values={bioData.customLinks} onReorder={(newOrder) => setBioData({ ...bioData, customLinks: newOrder })} className="space-y-3">
-                {bioData.customLinks.map((link, i) => (
-                  <Reorder.Item key={link.id} value={link}>
-                    <div className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 hover:border-blue-500 transition-colors">
+
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+                <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
+                  <List className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Bio Blocks
+                </h2>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={() => addBlock('link')} className="text-[10px] px-2 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors">🔗 Link</button>
+                  <button onClick={() => addBlock('newsletter')} className="text-[10px] px-2 py-1.5 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors">📧 Newsletter</button>
+                  <button onClick={() => addBlock('paywall')} className="text-[10px] px-2 py-1.5 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition-colors">🔐 Paywall</button>
+                  <button onClick={() => addBlock('header')} className="text-[10px] px-2 py-1.5 bg-gray-600 text-white rounded-lg font-bold hover:bg-gray-700 transition-colors">T Header</button>
+                  <button
+                    onClick={handleTestCheckout}
+                    disabled={testCheckoutLoading}
+                    className="text-[10px] px-2 py-1.5 bg-amber-600 text-white rounded-lg font-bold hover:bg-amber-700 transition-colors flex items-center gap-1"
+                  >
+                    {testCheckoutLoading ? <Loader className="w-3 h-3 animate-spin" /> : null}
+                    🧪 Test Checkout
+                  </button>
+                </div>
+              </div>
+
+              <Reorder.Group axis="y" values={bioData.blocks} onReorder={(newOrder) => setBioData({ ...bioData, blocks: newOrder })} className="space-y-4">
+                {bioData.blocks.map((block, i) => (
+                  <Reorder.Item key={block.id} value={block}>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 hover:border-blue-500 transition-all group">
                       <div className="mt-2 text-gray-400 cursor-grab active:cursor-grabbing"><GripVertical className="w-5 h-5" /></div>
-                      <div className="flex-1 space-y-2">
+
+                      <div className="flex-1 space-y-3">
+                        {/* Header & Icon */}
                         <div className="flex gap-2">
-                          <input value={link.icon} onChange={e => updateCustomLink(i, 'icon', e.target.value)}
-                            className="w-12 text-center p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="🔗" />
-                          <input value={link.title} onChange={e => updateCustomLink(i, 'title', e.target.value)}
-                            className="flex-1 p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-medium focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Link Title" />
+                          {block.type !== 'header' && (
+                            <input value={block.icon} onChange={e => updateBlock(i, 'icon', e.target.value)}
+                              className="w-12 text-center p-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl focus:ring-2 focus:ring-blue-500" placeholder="🔗" />
+                          )}
+                          <input value={block.title} onChange={e => updateBlock(i, 'title', e.target.value)}
+                            className={`flex-1 p-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-bold focus:ring-2 focus:ring-blue-500 ${block.type === 'header' ? 'text-lg' : 'text-sm'}`}
+                            placeholder={block.type === 'header' ? 'Section Header' : 'Block Title'} />
+                          <div className="flex items-center gap-2 px-2 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <span className="text-[9px] font-black uppercase opacity-40">{block.type}</span>
+                          </div>
                         </div>
-                        <input value={link.url} onChange={e => updateCustomLink(i, 'url', e.target.value)}
-                          className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="https://" />
+
+                        {/* Block-Specific Fields */}
+                        {block.type === 'link' || block.type === 'paywall' ? (
+                          <input value={block.url} onChange={e => updateBlock(i, 'url', e.target.value)}
+                            className="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xs focus:ring-2 focus:ring-blue-500" placeholder="https://" />
+                        ) : null}
+
+                        {block.type === 'newsletter' ? (
+                          <textarea value={block.content} onChange={e => updateBlock(i, 'content', e.target.value)}
+                            className="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xs focus:ring-2 focus:ring-blue-500"
+                            rows={2} placeholder="Newsletter description..." />
+                        ) : null}
+
+                        {block.type === 'paywall' ? (
+                          <div className="flex flex-col gap-3 bg-purple-50 dark:bg-purple-900/10 p-3 rounded-xl border border-purple-100 dark:border-purple-900/30">
+                            <div className="flex items-center gap-2">
+                              <Lock className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                              <span className="text-xs font-bold text-purple-700 dark:text-purple-400">Stripe Digital Product</span>
+                            </div>
+                            <div className="flex gap-3">
+                              <div className="w-1/2 space-y-1">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase">Price</label>
+                                <input type="number" min="0" step="0.5" value={block.settings?.price || ''} onChange={e => updateBlockSettings(i, 'price', e.target.value)}
+                                  className="w-full p-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 dark:text-white text-xs font-mono focus:ring-2 focus:ring-purple-500"
+                                  placeholder="5.00" />
+                              </div>
+                              <div className="w-1/2 space-y-1">
+                                <label className="text-[10px] font-bold text-gray-500 uppercase">Currency</label>
+                                <select value={block.settings?.currency || 'USD'} onChange={e => updateBlockSettings(i, 'currency', e.target.value)}
+                                  className="w-full p-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 dark:text-white text-xs font-mono focus:ring-2 focus:ring-purple-500">
+                                  <option value="USD">USD ($)</option>
+                                  <option value="EUR">EUR (€)</option>
+                                  <option value="GBP">GBP (£)</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-[10px] font-bold text-gray-500 uppercase">Secret Content / Link</label>
+                              <input type="text" value={block.settings?.secretContent || ''} onChange={e => updateBlockSettings(i, 'secretContent', e.target.value)}
+                                className="w-full p-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 dark:text-white text-xs font-mono focus:ring-2 focus:ring-purple-500"
+                                placeholder="https://..." />
+                              <p className="text-[9px] text-gray-500 italic mt-1">
+                                💡 Tip: This will only be revealed AFTER successful payment.
+                              </p>
+                            </div>
+                          </div>
+                        ) : null}
                       </div>
-                      <button onClick={() => removeCustomLink(i)} className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Trash2 className="w-5 h-5" /></button>
+
+                      <div className="flex flex-col gap-2">
+                        <button onClick={() => updateBlock(i, 'isActive', !block.isActive)}
+                          className={`p-2 rounded-lg transition-colors ${block.isActive ? 'text-green-500 hover:bg-green-50' : 'text-gray-300 hover:bg-gray-50'}`}>
+                          <Check className="w-5 h-5" />
+                        </button>
+                        <button onClick={() => removeBlock(i)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
                     </div>
                   </Reorder.Item>
                 ))}
+
+                {bioData.blocks.length === 0 && bioData.customLinks.length === 0 && (
+                  <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
+                    <p className="text-sm text-gray-500">No blocks yet. Use the buttons above to add your first block! 🚀</p>
+                  </div>
+                )}
+
+                {/* Legacy Links Support (Hidden but existing) */}
+                {bioData.customLinks.length > 0 && (
+                  <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Legacy Links ({bioData.customLinks.length})</p>
+                    <div className="space-y-2 opacity-60 grayscale-[0.5]">
+                      {bioData.customLinks.map((link, i) => (
+                        <div key={i} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg text-xs">
+                          <span>{link.icon}</span>
+                          <span className="font-bold">{link.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <button onClick={() => {
+                      // Migrate legacy links to blocks
+                      const migrated = bioData.customLinks.map((l, idx) => ({
+                        type: 'link', title: l.title, url: l.url, icon: l.icon, order: bioData.blocks.length + idx, isActive: l.isActive, id: Math.random().toString(36).substr(2, 9)
+                      }));
+                      setBioData(prev => ({ ...prev, blocks: [...prev.blocks, ...migrated], customLinks: [] }));
+                    }} className="mt-3 text-[10px] text-blue-600 font-bold hover:underline">Migrate all to new system</button>
+                  </div>
+                )}
               </Reorder.Group>
             </div>
-
             {/* APPEARANCE */}
             <div className={`${activeTab === 'appearance' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
               <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">

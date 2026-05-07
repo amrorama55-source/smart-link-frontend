@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Loader, Instagram, Twitter, Github, Linkedin, Globe, Share2, Copy, Eye, MoreHorizontal, Youtube, Mail, Ghost, Music } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+import { Loader, Instagram, Twitter, Github, Linkedin, Globe, Share2, Copy, Eye, MoreHorizontal, Youtube, Mail, Ghost, Music, Send, Sparkles } from 'lucide-react';
 
 import { themes as themeData } from '../utils/bioThemes';
+import { API_URL } from '../config';
+import { api } from '../services/api';
 
 const socialIcons = {
   instagram: Instagram,
@@ -26,6 +26,7 @@ export default function BioPage({ previewData = null }) {
   const [bioData, setBioData] = useState(previewData);
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [successData, setSuccessData] = useState(null);
 
   useEffect(() => {
     if (previewData) {
@@ -37,6 +38,29 @@ export default function BioPage({ previewData = null }) {
       loadBioPage();
     }
   }, [username, previewData]);
+
+  useEffect(() => {
+    if (previewData) return;
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get('success');
+    const blockId = params.get('block_id');
+    const sessionId = params.get('session_id');
+
+    if (success === 'true' && blockId && sessionId && username) {
+      verifyPurchase(username, blockId, sessionId);
+    }
+  }, [username, previewData]);
+
+  const verifyPurchase = async (uname, bId, sId) => {
+    try {
+      const { data } = await axios.get(`${API_URL}/api/payments/verify/${uname}/${bId}/${sId}`);
+      if (data.success) {
+        setSuccessData(data.secretContent);
+      }
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to verify purchase');
+    }
+  };
 
   const loadBioPage = async () => {
     setLoading(true);
@@ -109,11 +133,9 @@ export default function BioPage({ previewData = null }) {
         backdropFilter: currentTheme.variables['--bio-backdrop'] || 'none'
       }}
     >
-      {/* ✅ Floating Buttons: Copy + Share فقط (بدون Preview لأنه مو منطقي هنا) */}
       {!previewData && (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
 
-          {/* Copy Button */}
           <button
             onClick={handleCopy}
             className="p-2.5 rounded-full shadow-lg transition-all active:scale-95 hover:scale-105"
@@ -129,7 +151,6 @@ export default function BioPage({ previewData = null }) {
             <Copy className="w-4 h-4" />
           </button>
 
-          {/* Share Button */}
           <button
             onClick={handleShare}
             className="p-2.5 rounded-full shadow-lg transition-all active:scale-95 hover:scale-105"
@@ -148,11 +169,9 @@ export default function BioPage({ previewData = null }) {
         </div>
       )}
 
-      {/* Top Spacing */}
       <div className="h-32 w-full"></div>
 
       <div className="max-w-xl mx-auto px-4 -mt-8 w-full flex-1 pb-32 text-center">
-        {/* Avatar */}
         <div className="relative inline-block mb-4 pt-6">
           <div className="w-28 h-28 rounded-full p-1 bg-white/10 backdrop-blur-md shadow-2xl mx-auto overflow-hidden ring-2 ring-white/30">
             {bioData.avatar ? (
@@ -168,7 +187,6 @@ export default function BioPage({ previewData = null }) {
           </div>
         </div>
 
-        {/* Name & Handle */}
         <div className="mb-4">
           <h1 className="text-2xl font-extrabold tracking-tight mb-1" style={{ color: 'var(--bio-text-primary)' }}>
             {bioData.displayName || (previewData ? "Your Name" : "")}
@@ -178,14 +196,12 @@ export default function BioPage({ previewData = null }) {
           </p>
         </div>
 
-        {/* Bio */}
         {bioData.bio && (
           <p className="text-[15px] font-medium leading-relaxed mb-6 max-w-sm mx-auto opacity-90" style={{ color: 'var(--bio-text-primary)' }}>
             {bioData.bio}
           </p>
         )}
 
-        {/* Social Row - Moved up under bio */}
         {bioData.socialLinks && bioData.socialLinks.length > 0 && (
           <div className="flex justify-center flex-wrap gap-4 mb-8">
             {bioData.socialLinks.map((s, i) => {
@@ -210,58 +226,111 @@ export default function BioPage({ previewData = null }) {
           </div>
         )}
 
-        {/* Links List - Pill Shaped */}
         <div className="flex flex-col items-center space-y-4 w-full">
-          {bioData.customLinks && bioData.customLinks.length > 0 ? (
-            bioData.customLinks.map((link, index) => (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackLinkClick(index)}
-                className="group relative flex items-center p-1.5 rounded-full transition-all hover:shadow-lg w-full max-w-md hover:scale-[1.02] active:scale-[0.98] border-2"
-                style={{
-                  backgroundColor: 'var(--bio-link-bg)',
-                  borderColor: 'var(--bio-link-border)',
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--bio-link-hover-bg)';
-                  if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-link-hover-text)';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--bio-link-bg)';
-                  if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-text-primary)';
-                }}
-              >
-                {/* Left Icon */}
-                <div className="absolute left-1.5 w-12 h-12 rounded-full flex items-center justify-center text-2xl">
-                  {link.icon || '🔗'}
-                </div>
+          {[...(bioData.customLinks || []).map(l => ({ ...l, type: 'link', id: l._id || Math.random().toString(36).substr(2, 9) })), ...(bioData.blocks || [])]
+              .sort((a, b) => (a.order || 0) - (b.order || 0))
+              .map((block, index) => {
+                  if (block.type === 'header') {
+                      return (
+                          <h3 key={block.id || index} className="w-full text-left font-bold text-lg px-2 mt-4" style={{ color: 'var(--bio-text-primary)' }}>
+                              {block.title}
+                          </h3>
+                      );
+                  }
 
-                {/* Centered Text */}
-                <div className="flex-1 py-4 px-16 text-center">
-                  <p className="font-bold text-[15px] truncate" style={{ color: 'var(--bio-text-primary)' }}>
-                    {link.title || link.url}
-                  </p>
-                </div>
+                  if (block.type === 'newsletter') {
+                      return (
+                          <div
+                              key={block.id || index}
+                              className="w-full p-6 rounded-3xl border-2 shadow-sm text-left space-y-4"
+                              style={{
+                                  backgroundColor: 'var(--bio-card-bg)',
+                                  borderColor: 'var(--bio-link-border)',
+                                  color: 'var(--bio-text-primary)'
+                              }}
+                          >
+                              <div className="space-y-1">
+                                  <h4 className="font-bold text-base">{block.title || "Join my Newsletter"}</h4>
+                                  <p className="text-xs opacity-70">{block.content || "Stay updated with my latest news and exclusive content."}</p>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                  <input 
+                                      type="email" 
+                                      placeholder="Enter your email" 
+                                      className="w-full p-3 rounded-2xl text-sm border bg-white/5 border-white/10 focus:ring-2 focus:ring-blue-500 outline-none"
+                                  />
+                                  <button className="w-full p-3 bg-white text-black rounded-2xl text-sm font-bold shadow-md active:scale-95 transition-all">
+                                      Subscribe
+                                  </button>
+                              </div>
+                          </div>
+                      );
+                  }
 
-                {/* Right Icon - MoreHorizontal (3 dots) */}
-                <div className="absolute right-4 flex items-center justify-center">
-                  <MoreHorizontal className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--bio-text-primary)' }} />
-                </div>
-              </a>
-            ))
-          ) : (
-            previewData && (
-              <div className="p-6 border-2 border-dashed border-gray-300/50 rounded-xl text-center w-full">
-                <p style={{ color: 'var(--bio-text-secondary)' }}>Add verified links</p>
-              </div>
-            )
+                  // Standard Link / Paywall rendering
+                  return (
+                    <div
+                      key={block.id || index}
+                      onClick={async () => {
+                        if (previewData) return;
+                        if (block.type === 'paywall') {
+                          try {
+                            const res = await axios.post(`${API_URL}/api/payments/checkout/${username}/${block.id || block._id}`, {
+                              returnUrl: window.location.href.split('?')[0]
+                            });
+                            window.location.href = res.data.url;
+                          } catch (err) {
+                            alert(err.response?.data?.error || 'Failed to start checkout');
+                          }
+                        } else if (block.url) {
+                          trackLinkClick(index);
+                          window.open(block.url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
+                      className="group relative flex items-center p-1.5 rounded-full transition-all hover:shadow-lg w-full max-w-md hover:scale-[1.02] active:scale-[0.98] border-2 cursor-pointer"
+                      style={{
+                        backgroundColor: 'var(--bio-link-bg)',
+                        borderColor: 'var(--bio-link-border)',
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--bio-link-hover-bg)';
+                        if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-link-hover-text)';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--bio-link-bg)';
+                        if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-text-primary)';
+                      }}
+                    >
+                      <div className="absolute left-1.5 w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+                        {block.icon || (block.type === 'paywall' ? '🔐' : block.type === 'file' ? '📁' : '🔗')}
+                      </div>
+
+                      <div className="flex-1 py-4 px-16 text-center">
+                        <p className="font-bold text-[15px] truncate" style={{ color: 'var(--bio-text-primary)' }}>
+                          {block.title || block.url}
+                        </p>
+                      </div>
+
+                      <div className="absolute right-4 flex items-center justify-center">
+                        {block.type === 'paywall' ? (
+                          <div className="text-[10px] font-bold bg-yellow-600/20 text-yellow-600 px-3 py-1.5 rounded-full uppercase tracking-wider">
+                            {block.settings?.price ? `${block.settings?.price} ${block.settings?.currency || 'USD'}` : 'Buy'}
+                          </div>
+                        ) : (
+                          <MoreHorizontal className="w-5 h-5 opacity-40 group-hover:opacity-100 transition-opacity" style={{ color: 'var(--bio-text-primary)' }} />
+                        )}
+                      </div>
+                    </div>
+                  );
+              })
+          }
+          {(!bioData.customLinks || bioData.customLinks.length === 0) && (!bioData.blocks || bioData.blocks.length === 0) && previewData && (
+            <div className="p-6 border-2 border-dashed border-gray-300/50 rounded-xl text-center w-full">
+              <p style={{ color: 'var(--bio-text-secondary)' }}>Add verified links</p>
+            </div>
           )}
         </div>
 
-        {/* ✅ Powered by Smart Link Floating Footer */}
         <div className="fixed bottom-6 w-full mx-auto left-0 right-0 px-6 z-50 pointer-events-none flex justify-center pb-safe">
           <a
             href="https://www.by-smartlink.com"
@@ -269,7 +338,7 @@ export default function BioPage({ previewData = null }) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_10px_40px_rgba(0,0,0,0.2)] pointer-events-auto border"
             style={{
-              backgroundColor: 'var(--bio-card-bg)', // Using card-bg so it adapts to the current theme naturally
+              backgroundColor: 'var(--bio-card-bg)', 
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               borderColor: 'var(--bio-card-border)',
@@ -289,6 +358,37 @@ export default function BioPage({ previewData = null }) {
           </a>
         </div>
       </div>
+
+      {/* Success Modal */}
+      {successData && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl max-w-sm w-full text-center relative shadow-2xl animate-fade-in-up">
+            <button onClick={() => setSuccessData(null)} className="absolute top-4 right-4 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+              <span className="text-xl">✕</span>
+            </button>
+            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-5 shadow-inner">
+              <Sparkles className="w-10 h-10 text-green-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Payment Successful!</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">Thank you for your purchase! Here is your exclusive content:</p>
+            
+            <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-600 mb-6 max-h-40 overflow-y-auto custom-scrollbar text-left">
+              {successData.startsWith('http') ? (
+                <a href={successData} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 font-bold break-all hover:underline flex items-center gap-2">
+                  <Globe className="w-4 h-4 flex-shrink-0" />
+                  {successData}
+                </a>
+              ) : (
+                <p className="text-gray-900 dark:text-white font-mono text-sm break-all">{successData}</p>
+              )}
+            </div>
+            
+            <button onClick={() => setSuccessData(null)} className="w-full py-3.5 bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 rounded-2xl font-bold transition-all active:scale-95 shadow-lg">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

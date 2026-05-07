@@ -688,15 +688,20 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <motion.div initial="hidden" animate="visible" variants={containerVariants} className="text-center lg:text-left">
-              <motion.div variants={itemVariants} className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6 hover:shadow-md transition-shadow cursor-default">
-                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /><span className="font-semibold">Growth Tool for Founders</span>
+              <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4 sm:mb-6">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs sm:text-sm font-semibold">
+                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />For Marketers
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs sm:text-sm font-semibold">
+                  <Lock className="w-3 h-3 sm:w-4 sm:h-4" />For Creators
+                </span>
               </motion.div>
               <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight">
-                <span className="block">Optimize Your Ad Spend with</span>
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Intelligent Traffic Filtering.</span>
+                <span className="block">One Link.</span>
+                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Endless Possibilities.</span>
               </motion.h1>
               <motion.p variants={itemVariants} className="text-sm sm:text-base lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
-                Don't just shorten links—protect your efficiency. Smart Link uses multi-signal analysis to reduce ad waste and automatically routes visitors to your highest-performing pages.
+                Shorten links, build your bio page, track every click — and sell your digital products. Smart Link is the all-in-one tool for creators and marketers.
               </motion.p>
               <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -788,6 +793,127 @@ export default function LandingPage() {
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
+            {/* Creator Paywall Feature Card - highlighted */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: 0.6 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/10 rounded-2xl sm:rounded-3xl border-2 border-purple-200 dark:border-purple-800 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden sm:col-span-2 lg:col-span-1">
+              <div className="absolute top-3 right-3 bg-purple-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-widest">New</div>
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-purple-100 dark:bg-purple-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
+                <Lock className="w-6 h-6 sm:w-7 sm:h-7 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">💰 Creator Paywall</h3>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">Sell digital products, exclusive links, or premium content directly from your Bio Page. Powered by Stripe — you get paid instantly.</p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Creator Monetization Journey Section */}
+      <section id="for-creators" className="py-16 sm:py-24 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 scroll-mt-20 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12 sm:mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-bold mb-6">
+              <Lock className="w-4 h-4" /><span>For Content Creators</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6">
+              Turn Your Bio Page Into
+              <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mt-2">A Revenue Stream 💸</span>
+            </h2>
+            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              No coding. No complicated setup. Just add a price to your content and start earning — your followers pay directly through your bio link.
+            </p>
+          </motion.div>
+
+          {/* 3-Step Visual Journey */}
+          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8 mb-16">
+            {[
+              {
+                step: '1',
+                icon: '🔗',
+                title: 'Connect Stripe',
+                desc: 'Open Bio Editor and connect Stripe in the Paywall setup card. No need to leave your editing flow.',
+                color: 'from-blue-500 to-indigo-500',
+                bg: 'bg-blue-50 dark:bg-blue-900/20',
+                border: 'border-blue-200 dark:border-blue-800'
+              },
+              {
+                step: '2',
+                icon: '🔒',
+                title: 'Add a Paywall Block',
+                desc: 'In your Bio Editor, add a "Paywall" block. Set your price and paste your secret content link.',
+                color: 'from-purple-500 to-pink-500',
+                bg: 'bg-purple-50 dark:bg-purple-900/20',
+                border: 'border-purple-200 dark:border-purple-800'
+              },
+              {
+                step: '3',
+                icon: '💰',
+                title: 'Get Paid Instantly',
+                desc: 'Your followers see a locked block. They pay → they get access. Money goes directly to your Stripe account.',
+                color: 'from-green-500 to-emerald-500',
+                bg: 'bg-green-50 dark:bg-green-900/20',
+                border: 'border-green-200 dark:border-green-800'
+              }
+            ].map((item, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className={`relative p-6 sm:p-8 rounded-2xl border-2 ${item.bg} ${item.border} shadow-lg`}>
+                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br ${item.color} text-white font-black text-lg mb-4 shadow-lg`}>{item.step}</div>
+                <div className="text-3xl mb-3">{item.icon}</div>
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
+                {i < 2 && (
+                  <div className="hidden sm:block absolute top-1/2 -right-4 w-8 h-8 bg-white dark:bg-gray-800 rounded-full border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center z-10 shadow-md">
+                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+
+          {/* What can you sell */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-100 dark:border-gray-700">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">What Can You Sell? 🤔</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { emoji: '📄', label: 'PDF Guides' },
+                { emoji: '🎥', label: 'Exclusive Videos' },
+                { emoji: '🔗', label: 'Secret Links' },
+                { emoji: '💻', label: 'Templates & Tools' },
+                { emoji: '🎵', label: 'Audio Files' },
+                { emoji: '📸', label: 'Photo Presets' },
+                { emoji: '📚', label: 'E-Books' },
+                { emoji: '🌟', label: 'Premium Access' },
+              ].map((item, i) => (
+                <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors cursor-default">
+                  <span className="text-2xl">{item.emoji}</span>
+                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 text-center">{item.label}</span>
+                </motion.div>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+              <Link to="/register">
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all inline-flex items-center gap-2">
+                  <Lock className="w-5 h-5" />
+                  Start Selling for Free <ArrowRight className="w-5 h-5" />
+                </motion.button>
+              </Link>
+              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">We only take 5% per sale. You keep 95%. 🎉</p>
+            </div>
+          </div>
+
+          <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3">How the 5% split works</h4>
+            <div className="grid sm:grid-cols-3 gap-3">
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/40 p-4 border border-gray-100 dark:border-gray-700">
+                <p className="text-xs uppercase font-black tracking-wider text-gray-500 mb-1">Step 1</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">Customer pays through Stripe Checkout on your bio page.</p>
+              </div>
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/40 p-4 border border-gray-100 dark:border-gray-700">
+                <p className="text-xs uppercase font-black tracking-wider text-gray-500 mb-1">Step 2</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">Smart Link collects a 5% application fee on that one sale.</p>
+              </div>
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/40 p-4 border border-gray-100 dark:border-gray-700">
+                <p className="text-xs uppercase font-black tracking-wider text-gray-500 mb-1">Step 3</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">The remaining amount is transferred to your connected Stripe account.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -959,7 +1085,7 @@ export default function LandingPage() {
               <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
                 <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Blog</Link></li>
-                <li><a href="mailto:support@yourdomain.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
+                <li><a href="mailto:support@by-smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
               </ul>
             </div>
             <div>

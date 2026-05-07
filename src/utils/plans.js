@@ -9,6 +9,8 @@ export const PLANS = [
             '5 Smart Links / Mo',
             'Basic Click Analytics',
             'Elite Bio Page Builder',
+            'Creator Paywall (Stripe Connect)',
+            'Monetization: 5% platform fee per sale',
             'Static Branding QR Codes',
             'Standard SSL Protection',
         ],
@@ -85,4 +87,4 @@ export const PLANS = [
         isTrial: false,
         trialAvailable: false,
     },
-];
+];

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { MoreHorizontal, Instagram, Twitter, Github, Linkedin, Globe, Youtube, Mail, Ghost, Music } from 'lucide-react';
+import { MoreHorizontal, Instagram, Twitter, Github, Linkedin, Globe, Youtube, Mail, Ghost, Music, X, Send } from 'lucide-react';
+import api from '../services/api';
 
 import { themes as themeData } from '../utils/bioThemes';
 
@@ -85,38 +86,95 @@ export default function BioPagePreview({ previewData }) {
                     </div>
                 )}
 
-                {/* Links - Pill Shaped */}
-                <div className="flex flex-col items-center space-y-3 w-full">
-                    {previewData.customLinks && previewData.customLinks.length > 0 ? (
-                        previewData.customLinks.map((link, index) => (
-                            <div
-                                key={index}
-                                className="relative flex items-center p-1 rounded-full border-2 shadow-sm w-full"
-                                style={{
-                                    backgroundColor: 'var(--bio-link-bg)',
-                                    borderColor: 'var(--bio-link-border)',
-                                    color: 'var(--bio-text-primary)'
-                                }}
-                            >
-                                {/* Left Icon */}
-                                <div className="absolute left-1 w-10 h-10 rounded-full flex items-center justify-center text-xl">
-                                    {link.icon || '🔗'}
+                {/* Blocks - Flexible System */}
+                <div className="flex flex-col items-center space-y-4 w-full">
+                    {/* Combine links and blocks for unified preview */}
+                    {[...(previewData.customLinks || []).map(l => ({ ...l, type: 'link' })), ...(previewData.blocks || [])]
+                        .sort((a, b) => (a.order || 0) - (b.order || 0))
+                        .map((block, index) => {
+                            if (block.type === 'header') {
+                                return (
+                                    <h3 key={index} className="w-full text-left font-bold text-lg px-2 mt-4" style={{ color: 'var(--bio-text-primary)' }}>
+                                        {block.title}
+                                    </h3>
+                                );
+                            }
+
+                            if (block.type === 'newsletter') {
+                                return (
+                                    <div
+                                        key={index}
+                                        className="w-full p-6 rounded-3xl border-2 shadow-sm text-left space-y-4"
+                                        style={{
+                                            backgroundColor: 'var(--bio-card-bg)',
+                                            borderColor: 'var(--bio-link-border)',
+                                            color: 'var(--bio-text-primary)'
+                                        }}
+                                    >
+                                        <div className="space-y-1">
+                                            <h4 className="font-bold text-base">{block.title || "Join my Newsletter"}</h4>
+                                            <p className="text-xs opacity-70">{block.content || "Stay updated with my latest news and exclusive content."}</p>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <input 
+                                                type="email" 
+                                                placeholder="Enter your email" 
+                                                className="w-full p-3 rounded-2xl text-sm border bg-white/5 border-white/10 focus:ring-2 focus:ring-blue-500 outline-none"
+                                            />
+                                            <button className="w-full p-3 bg-white text-black rounded-2xl text-sm font-bold shadow-md active:scale-95 transition-all">
+                                                Subscribe
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            }
+
+                            // Standard Link rendering
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => {
+                                        if (block.type === 'paywall' && block.settings?.checkoutUrl) {
+                                            window.open(block.settings.checkoutUrl, '_blank');
+                                        } else if (block.url) {
+                                            window.open(block.url, '_blank');
+                                        }
+                                    }}
+                                    className="relative flex items-center p-1 rounded-full border-2 shadow-sm w-full transition-transform active:scale-[0.98] cursor-pointer"
+                                    style={{
+                                        backgroundColor: 'var(--bio-link-bg)',
+                                        borderColor: 'var(--bio-link-border)',
+                                        color: 'var(--bio-text-primary)'
+                                    }}
+                                >
+                                    {/* Left Icon */}
+                                    <div className="absolute left-1 w-10 h-10 rounded-full flex items-center justify-center text-xl">
+                                        {block.icon || (block.type === 'paywall' ? '🔐' : block.type === 'file' ? '📁' : '🔗')}
+                                    </div>
+                                    
+                                    {/* Centered Text */}
+                                    <div className="flex-1 py-3 px-12 text-center">
+                                        <p className="font-bold text-[14px] truncate">{block.title || block.url}</p>
+                                    </div>
+                                    
+                                    {/* Right Icon */}
+                                    <div className="absolute right-3 flex items-center justify-center">
+                                        {block.type === 'paywall' ? (
+                                            <div className="text-[10px] font-bold bg-yellow-600/20 text-yellow-600 px-2 py-1 rounded-full">
+                                                BUY
+                                            </div>
+                                        ) : (
+                                            <MoreHorizontal className="w-4 h-4 opacity-40" />
+                                        )}
+                                    </div>
                                 </div>
-                                
-                                {/* Centered Text */}
-                                <div className="flex-1 py-3 px-12 text-center">
-                                    <p className="font-bold text-[14px] truncate">{link.title || link.url}</p>
-                                </div>
-                                
-                                {/* Right Icon */}
-                                <div className="absolute right-3 flex items-center justify-center">
-                                    <MoreHorizontal className="w-4 h-4 opacity-40" />
-                                </div>
-                            </div>
-                        ))
-                    ) : (
+                            );
+                        })
+                    }
+                    
+                    {(!previewData.customLinks || previewData.customLinks.length === 0) && (!previewData.blocks || previewData.blocks.length === 0) && (
                         <div className="p-6 border-2 border-dashed border-gray-400/30 rounded-2xl text-center text-xs text-gray-400 font-medium w-full">
-                            No links added yet
+                            No links or blocks added yet
                         </div>
                     )}
                 </div>
@@ -147,6 +205,8 @@ export default function BioPagePreview({ previewData }) {
                     </div>
                 </div>
             </div>
+
         </div>
     );
 }
+

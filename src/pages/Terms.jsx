@@ -1,4 +1,5 @@
 import { ArrowLeft, FileText, AlertCircle, CheckCircle, XCircle, Scale } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import SEO from '../components/SEO';
 
 export default function Terms() {
@@ -32,7 +33,7 @@ export default function Terms() {
             Terms of Service
           </h1>
           <p className="text-gray-600 dark:text-gray-400 text-lg">
-            Last updated: January 2025
+            Last updated: May 2026
           </p>
         </div>
 
@@ -178,10 +179,10 @@ export default function Terms() {
               If you have any questions about our Terms of Service, please contact us:
             </p>
             <a 
-              href="mailto:support@yourdomain.com" 
+              href="mailto:support@by-smartlink.com" 
               className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold"
             >
-             smartlinkpro10@gmail.com
+             support@by-smartlink.com
             </a>
           </div>
 
