@@ -32,7 +32,8 @@ export const validateUrl = (url) => {
     }
     
     // Block localhost and private IPs in production
-    if (process.env.NODE_ENV === 'production') {
+    const isProduction = typeof process !== 'undefined' && process.env?.NODE_ENV === 'production';
+    if (isProduction) {
       const hostname = parsed.hostname.toLowerCase();
       
       // Block localhost
@@ -221,8 +222,8 @@ export const sanitizeInput = (input, maxLength = 500) => {
   return input
     .trim()
     .slice(0, maxLength)
-    // Remove control characters
-    .replace(/[\x00-\x1F\x7F]/g, '')
+    // Remove control characters (safe regex)
+    .replace(/[\x00-\x1f\x7f]/g, '')
     // Remove potentially dangerous characters
     .replace(/[<>]/g, '');
 };

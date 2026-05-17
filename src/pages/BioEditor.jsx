@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import Navbar from '../components/Navbar';
 import { Reorder, AnimatePresence } from 'framer-motion';
 import { themes as themeData } from '../utils/bioThemes';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink } from 'lucide-react';
+import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink, Sparkles, Zap, Link2, Mail, Type, FlaskConical } from 'lucide-react';
 import BioPagePreview from './BioPagePreview';
 import { useToast } from '../context/ToastProvider';
 
@@ -21,6 +22,7 @@ export default function BioEditor() {
   const [showOnboardingHints, setShowOnboardingHints] = useState(false);
   const [testCheckoutLoading, setTestCheckoutLoading] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { success, warning, error: showError, info } = useToast();
   const fileInputRef = useRef(null);
   const debounceRef = useRef(null);
@@ -366,18 +368,47 @@ export default function BioEditor() {
         </div>
 
         {showOnboardingHints && (
-          <div className="mb-6 p-4 rounded-2xl border border-indigo-200 dark:border-indigo-900/30 bg-indigo-50 dark:bg-indigo-900/10">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-sm font-black text-indigo-900 dark:text-indigo-200 mb-2">Creator Monetization Quick Start</p>
-                <div className="grid sm:grid-cols-3 gap-2">
-                  <p className="text-xs text-indigo-800 dark:text-indigo-300"><span className="font-bold">Step 1:</span> Connect Stripe from the Links tab.</p>
-                  <p className="text-xs text-indigo-800 dark:text-indigo-300"><span className="font-bold">Step 2:</span> Add a Paywall block, set price and secret content.</p>
-                  <p className="text-xs text-indigo-800 dark:text-indigo-300"><span className="font-bold">Step 3:</span> Save and run test checkout to confirm flow.</p>
+          <div className="mb-6 p-6 rounded-[2rem] border border-blue-100 dark:border-blue-900/30 bg-white dark:bg-gray-800 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+              <Sparkles className="w-32 h-32 text-blue-600" />
+            </div>
+            <div className="flex flex-col md:flex-row items-start justify-between gap-6 relative z-10">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Monetization Quick Start</h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Follow these steps to start selling on your bio page</p>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-[10px] font-black">01</span>
+                      <p className="text-sm font-extrabold text-gray-800 dark:text-gray-200">Connect Stripe</p>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Go to the <span className="font-bold text-gray-700 dark:text-gray-300">Bio Blocks</span> section below and link your bank account securely.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[10px] font-black">02</span>
+                      <p className="text-sm font-extrabold text-gray-800 dark:text-gray-200">Add Paywall</p>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Add a "Paywall" block. Set your price and paste the secret link users will buy access to.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px] font-black">03</span>
+                      <p className="text-sm font-extrabold text-gray-800 dark:text-gray-200">Receive Payouts</p>
+                    </div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Save your changes. Money from sales is sent <span className="font-bold text-emerald-600">directly to your bank account</span>.</p>
+                  </div>
                 </div>
               </div>
-              <button onClick={handleDismissHints} className="text-xs font-bold px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300">
-                Dismiss
+              <button onClick={handleDismissHints} className="w-full md:w-auto px-6 py-3 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-bold transition-all text-sm shadow-sm border border-gray-200 dark:border-gray-600">
+                Dismiss Guide
               </button>
             </div>
           </div>
@@ -549,19 +580,19 @@ export default function BioEditor() {
               }`}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-bold text-gray-900 dark:text-white">Creator Payout Setup</p>
+                    <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">Creator Payout System</p>
                     {stripeStatus?.status === 'active' ? (
-                      <p className="text-xs mt-1 text-green-700 dark:text-green-400">
-                        Stripe connected. You can add and sell paywalled blocks now.
+                      <p className="text-xs mt-1 text-green-700 dark:text-green-400 font-medium leading-relaxed">
+                        ✅ Your Stripe account is active. Sales revenue will be deposited directly to your bank account.
                       </p>
                     ) : stripeStatus?.status === 'pending_verification' ? (
-                      <p className="text-xs mt-1 text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                      <p className="text-xs mt-1 text-amber-700 dark:text-amber-400 flex items-center gap-1 font-medium leading-relaxed">
                         <AlertTriangle className="w-3 h-3" />
-                        Stripe onboarding submitted. Finish verification to receive payouts.
+                        Verification in progress. You can still set up your shop while Stripe verifies your details.
                       </p>
                     ) : (
-                      <p className="text-xs mt-1 text-purple-700 dark:text-purple-400">
-                        Connect Stripe here first, then create Paywall blocks in the same page.
+                      <p className="text-xs mt-1 text-purple-700 dark:text-purple-400 font-medium leading-relaxed">
+                        We use <span className="font-bold">Stripe</span> for secure, direct payouts. Connect your account to start selling digital products.
                       </p>
                     )}
                   </div>
@@ -584,18 +615,26 @@ export default function BioEditor() {
                 <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
                   <List className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Bio Blocks
                 </h2>
-                <div className="flex flex-wrap gap-2">
-                  <button onClick={() => addBlock('link')} className="text-[10px] px-2 py-1.5 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors">🔗 Link</button>
-                  <button onClick={() => addBlock('newsletter')} className="text-[10px] px-2 py-1.5 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition-colors">📧 Newsletter</button>
-                  <button onClick={() => addBlock('paywall')} className="text-[10px] px-2 py-1.5 bg-purple-600 text-white rounded-lg font-bold hover:bg-purple-700 transition-colors">🔐 Paywall</button>
-                  <button onClick={() => addBlock('header')} className="text-[10px] px-2 py-1.5 bg-gray-600 text-white rounded-lg font-bold hover:bg-gray-700 transition-colors">T Header</button>
+                <div className="flex flex-wrap gap-3">
+                  <button onClick={() => addBlock('link')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-bold border border-blue-100 dark:border-blue-800/50 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all text-xs">
+                    <Link2 className="w-4 h-4" /> Link
+                  </button>
+                  <button onClick={() => addBlock('newsletter')} className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-xl font-bold border border-green-100 dark:border-green-800/50 hover:bg-green-100 dark:hover:bg-green-900/40 transition-all text-xs">
+                    <Mail className="w-4 h-4" /> Newsletter
+                  </button>
+                  <button onClick={() => addBlock('paywall')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl font-bold border border-purple-100 dark:border-purple-800/50 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all text-xs">
+                    <Lock className="w-4 h-4" /> Paywall
+                  </button>
+                  <button onClick={() => addBlock('header')} className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl font-bold border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-xs">
+                    <Type className="w-4 h-4" /> Header
+                  </button>
                   <button
                     onClick={handleTestCheckout}
                     disabled={testCheckoutLoading}
-                    className="text-[10px] px-2 py-1.5 bg-amber-600 text-white rounded-lg font-bold hover:bg-amber-700 transition-colors flex items-center gap-1"
+                    className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-xl font-bold border border-amber-100 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all text-xs"
                   >
-                    {testCheckoutLoading ? <Loader className="w-3 h-3 animate-spin" /> : null}
-                    🧪 Test Checkout
+                    {testCheckoutLoading ? <Loader className="w-4 h-4 animate-spin" /> : <FlaskConical className="w-4 h-4" />}
+                    Test Checkout
                   </button>
                 </div>
               </div>
@@ -723,7 +762,9 @@ export default function BioEditor() {
                     <button key={t.id}
                       onClick={() => {
                         if (isLocked) {
-                          alert('This theme is exclusive to Business Elite members.');
+                          if (window.confirm('This premium theme is exclusive to Business Elite members. Would you like to view our pricing plans and upgrade?')) {
+                            navigate('/pricing');
+                          }
                           return;
                         }
                         setBioData({ ...bioData, theme: t.id });

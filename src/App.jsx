@@ -50,6 +50,7 @@ const Success = lazyWithRetry(() => import('./pages/Success'));
 const Pricing = lazyWithRetry(() => import('./pages/Pricing'));
 const Blog = lazyWithRetry(() => import('./pages/Blog'));
 const BlogPost = lazyWithRetry(() => import('./pages/BlogPost'));
+const NicheLanding = lazyWithRetry(() => import('./pages/NicheLanding'));
 
 // ==========================================
 // Loading Component
@@ -95,6 +96,7 @@ function AppRoutes() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingRoute><Landing /></LandingRoute>} />
+        <Route path="/for-:niche" element={<LandingRoute><NicheLanding /></LandingRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />

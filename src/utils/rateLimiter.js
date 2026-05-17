@@ -25,7 +25,7 @@ class RateLimiter {
   }
 }
 
-// Usage:
+/* Example Usage:
 const loginLimiter = new RateLimiter(5, 15 * 60 * 1000); // 5 attempts per 15 min
 
 const handleLogin = async () => {
@@ -35,3 +35,4 @@ const handleLogin = async () => {
   }
   // proceed with login
 };
+*/

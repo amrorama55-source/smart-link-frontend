@@ -76,17 +76,15 @@ export const ToastProvider = ({ children }) => {
             {children}
             {/* ✅ top-28 = أسفل الـ Navbar (الذي يأخذ ~110px) */}
             {/* z-[99999] = فوق كل شيء حتى الـ modals */}
-            <div className="fixed inset-0 z-[2147483647] flex items-center justify-center pointer-events-none p-6">
-                <div className="flex flex-col gap-2 items-center w-full max-w-sm">
-                    {toasts.map((toast) => (
-                        <div key={toast.id} className="pointer-events-auto w-full">
-                            <Toast
-                                {...toast}
-                                onClose={() => removeToast(toast.id)}
-                            />
-                        </div>
-                    ))}
-                </div>
+            <div className="fixed bottom-10 right-6 z-[2147483647] pointer-events-none flex flex-col gap-3 items-end w-full max-w-sm px-6 sm:px-0">
+                {toasts.map((toast) => (
+                    <div key={toast.id} className="pointer-events-auto w-full">
+                        <Toast
+                            {...toast}
+                            onClose={() => removeToast(toast.id)}
+                        />
+                    </div>
+                ))}
             </div>
         </ToastContext.Provider>
     );

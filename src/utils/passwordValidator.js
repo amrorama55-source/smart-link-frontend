@@ -24,10 +24,11 @@ export const validatePassword = (password) => {
   };
 };
 
-// Usage in Register:
+/* Usage in Register:
 const handlePasswordChange = (value) => {
   setPassword(value);
   const validation = validatePassword(value);
   setPasswordErrors(validation.errors);
   setPasswordValid(validation.isValid);
 };
+*/

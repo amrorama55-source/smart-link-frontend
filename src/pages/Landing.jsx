@@ -265,10 +265,20 @@ function DemoModal({ isOpen, onClose }) {
    ======================================== */
 function HowItWorksSection() {
   const [step, setStep] = useState(0);
+  const [isAuto, setIsAuto] = useState(true);
+
   useEffect(() => {
-    const timer = setInterval(() => { setStep((s) => (s + 1) % 4); }, 6000);
+    if (!isAuto) return;
+    const timer = setInterval(() => {
+      setStep((s) => (s + 1) % 4);
+    }, 6000);
     return () => clearInterval(timer);
-  }, []);
+  }, [isAuto]);
+
+  const handleStepClick = (i) => {
+    setStep(i);
+    setIsAuto(false);
+  };
 
   const steps = [
     { title: "Create Smart Links", desc: "Paste URL, customize alias, and add tags.", icon: Link2, color: 'blue' },
@@ -295,7 +305,7 @@ function HowItWorksSection() {
               {steps.map((s, i) => (
                 <div key={i}
                   className={`flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-500 cursor-pointer ${step === i ? 'bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 scale-100 sm:scale-[1.02]' : 'opacity-40 hover:opacity-60'}`}
-                  onClick={() => setStep(i)}
+                  onClick={() => handleStepClick(i)}
                 >
                   <div className={`w-10 h-10 rounded-full bg-${s.color}-600 flex items-center justify-center text-white font-bold flex-shrink-0 mt-1 shadow-lg`}>
                     <s.icon className="w-5 h-5" />
@@ -793,14 +803,30 @@ export default function LandingPage() {
                 <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">{feature.description}</p>
               </motion.div>
             ))}
-            {/* Creator Paywall Feature Card - highlighted */}
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: 0.6 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/10 rounded-2xl sm:rounded-3xl border-2 border-purple-200 dark:border-purple-800 shadow-lg hover:shadow-2xl transition-all duration-300 relative overflow-hidden sm:col-span-2 lg:col-span-1">
-              <div className="absolute top-3 right-3 bg-purple-600 text-white text-[10px] font-black uppercase px-2 py-0.5 rounded-full tracking-widest">New</div>
-              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-purple-100 dark:bg-purple-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform">
-                <Lock className="w-6 h-6 sm:w-7 sm:h-7 text-purple-600 dark:text-purple-400" />
+            {/* Creator Paywall Feature Card - Redesigned for Premium Look */}
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: 0.6 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden sm:col-span-2 lg:col-span-1">
+              <div className="absolute top-4 right-4 bg-indigo-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-lg tracking-widest shadow-lg shadow-indigo-600/20">Featured</div>
+              <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ring-4 ring-indigo-50 dark:ring-indigo-900/10">
+                <Lock className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">💰 Creator Paywall</h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">Sell digital products, exclusive links, or premium content directly from your Bio Page. Powered by Stripe — you get paid instantly.</p>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
+                <span className="text-2xl">💰</span> Creator Paywall
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+                Sell digital products, exclusive guides, or premium links directly from your Bio Page. Start earning from your audience instantly.
+              </p>
+              
+              <div className="mt-auto p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">Securely Powered by Stripe</p>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-tight">We use Stripe to process payments. Your funds are protected and transferred directly to your bank account with zero hassle.</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -822,45 +848,45 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* 3-Step Visual Journey */}
-          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8 mb-16">
+          {/* 3-Step Visual Journey - Classic Redesign */}
+          <div className="grid sm:grid-cols-3 gap-8 mb-16">
             {[
               {
-                step: '1',
+                step: '01',
                 icon: '🔗',
-                title: 'Connect Stripe',
-                desc: 'Open Bio Editor and connect Stripe in the Paywall setup card. No need to leave your editing flow.',
-                color: 'from-blue-500 to-indigo-500',
-                bg: 'bg-blue-50 dark:bg-blue-900/20',
-                border: 'border-blue-200 dark:border-blue-800'
+                title: 'Connect Your Bank',
+                desc: 'Easily link your Stripe account through our secure dashboard. This ensures you get paid directly for every sale.',
+                color: 'from-blue-600 to-blue-700',
+                bg: 'bg-white dark:bg-gray-800',
+                border: 'border-gray-200 dark:border-gray-700'
               },
               {
-                step: '2',
+                step: '02',
                 icon: '🔒',
-                title: 'Add a Paywall Block',
-                desc: 'In your Bio Editor, add a "Paywall" block. Set your price and paste your secret content link.',
-                color: 'from-purple-500 to-pink-500',
-                bg: 'bg-purple-50 dark:bg-purple-900/20',
-                border: 'border-purple-200 dark:border-purple-800'
+                title: 'Create Your Product',
+                desc: 'Add a "Paywall" block, set your desired price, and link your secret content. We handle the security.',
+                color: 'from-indigo-600 to-indigo-700',
+                bg: 'bg-white dark:bg-gray-800',
+                border: 'border-gray-200 dark:border-gray-700'
               },
               {
-                step: '3',
+                step: '03',
                 icon: '💰',
-                title: 'Get Paid Instantly',
-                desc: 'Your followers see a locked block. They pay → they get access. Money goes directly to your Stripe account.',
-                color: 'from-green-500 to-emerald-500',
-                bg: 'bg-green-50 dark:bg-green-900/20',
-                border: 'border-green-200 dark:border-green-800'
+                title: 'Collect Revenue',
+                desc: 'Your audience pays securely via Stripe. Money is transferred to your account instantly with 256-bit encryption.',
+                color: 'from-emerald-600 to-emerald-700',
+                bg: 'bg-white dark:bg-gray-800',
+                border: 'border-gray-200 dark:border-gray-700'
               }
             ].map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className={`relative p-6 sm:p-8 rounded-2xl border-2 ${item.bg} ${item.border} shadow-lg`}>
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br ${item.color} text-white font-black text-lg mb-4 shadow-lg`}>{item.step}</div>
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
+              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className={`relative p-8 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl shadow-gray-200/50 dark:shadow-none`}>
+                <div className={`absolute -top-4 left-8 px-4 py-1.5 rounded-xl bg-gradient-to-br ${item.color} text-white font-black text-sm shadow-lg`}>{item.step}</div>
+                <div className="text-4xl mb-6 mt-2">{item.icon}</div>
+                <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-3">{item.title}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
                 {i < 2 && (
-                  <div className="hidden sm:block absolute top-1/2 -right-4 w-8 h-8 bg-white dark:bg-gray-800 rounded-full border-2 border-gray-200 dark:border-gray-700 flex items-center justify-center z-10 shadow-md">
-                    <ChevronRight className="w-4 h-4 text-gray-400" />
+                  <div className="hidden lg:flex absolute top-1/2 -right-6 w-12 h-12 bg-white dark:bg-gray-700 rounded-full border border-gray-200 dark:border-gray-600 items-center justify-center z-10 shadow-lg transform -translate-y-1/2">
+                    <ArrowRight className="w-6 h-6 text-indigo-500" />
                   </div>
                 )}
               </motion.div>
@@ -1078,6 +1104,15 @@ export default function LandingPage() {
               <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dashboard</Link></li>
                 <li><Link to="/pricing" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Solutions</h3>
+              <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                <li><Link to="/for-creators" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Creators</Link></li>
+                <li><Link to="/for-marketers" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Marketers</Link></li>
+                <li><Link to="/for-ecommerce" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For E-commerce</Link></li>
+                <li><Link to="/for-affiliates" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Affiliates</Link></li>
               </ul>
             </div>
             <div>

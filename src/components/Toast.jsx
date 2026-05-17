@@ -57,14 +57,14 @@ const Toast = ({
     const getStyles = () => {
         switch (type) {
             case 'success':
-                return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700 text-green-900 dark:text-green-100';
+                return 'bg-white dark:bg-gray-900 border-green-500/50 text-gray-900 dark:text-white shadow-green-500/10';
             case 'error':
-                return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700 text-red-900 dark:text-red-100';
+                return 'bg-white dark:bg-gray-900 border-red-500/50 text-gray-900 dark:text-white shadow-red-500/10';
             case 'warning':
-                return 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-700 text-yellow-900 dark:text-yellow-100';
+                return 'bg-white dark:bg-gray-900 border-amber-500/50 text-gray-900 dark:text-white shadow-amber-500/10';
             case 'info':
             default:
-                return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-100';
+                return 'bg-white dark:bg-gray-900 border-blue-500/50 text-gray-900 dark:text-white shadow-blue-500/10';
         }
     };
 
@@ -79,7 +79,7 @@ const Toast = ({
                 className="w-full max-w-sm"
             >
                 <div className={`
-                    relative rounded-lg border shadow-lg backdrop-blur-sm p-4
+                    relative rounded-2xl border-2 shadow-2xl backdrop-blur-md p-5
                     ${getStyles()}
                 `}>
                     {/* Progress bar */}
@@ -99,12 +99,12 @@ const Toast = ({
                     )}
 
                     <div className="flex items-start gap-3">
-                        <div className="flex-shrink-0 mt-0.5">
+                        <div className="flex-shrink-0">
                             {getIcon()}
                         </div>
                         
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium leading-snug">
+                            <p className="text-sm font-extrabold leading-relaxed text-left">
                                 {message}
                             </p>
                             
