@@ -1,4 +1,4 @@
-import { Plus, Trash2, Target, Zap, AlertCircle, TrendingUp, Trophy, CheckCircle, Percent, ShieldCheck, Globe } from 'lucide-react';
+import { Plus, Trash2, Target, Zap, AlertCircle, TrendingUp, Trophy, CheckCircle, Percent, ShieldCheck, Globe, Bell } from 'lucide-react';
 
 export default function AdvancedTab({ 
   linkData, 
@@ -655,6 +655,40 @@ export default function AdvancedTab({
           {(linkData.languageRules || []).length === 0 && (
             <p className="text-[10px] text-gray-500 text-center italic">No recovery rules set. Default URL will be used for all languages.</p>
           )}
+        </div>
+      </div>
+
+      {/* ✅ NEW: Webhook Integration */}
+      <div className="p-5 bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/10 dark:to-rose-900/10 rounded-xl border-2 border-pink-200 dark:border-pink-800/30">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-pink-600 flex items-center justify-center">
+              <Bell className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <span className="font-bold text-gray-900 dark:text-white text-lg">Webhook Integration</span>
+              <p className="text-xs text-gray-600 dark:text-gray-400">Send click data to external systems</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <label className="text-xs font-bold text-gray-500 mb-1 block uppercase">Webhook URL (Optional)</label>
+            <input 
+              type="url"
+              placeholder="https://your-system.com/api/webhook"
+              value={linkData.webhookUrl || ''}
+              onChange={(e) => setLinkData({
+                ...linkData,
+                webhookUrl: e.target.value
+              })}
+              className="w-full px-4 py-3 text-sm rounded-lg border-2 border-gray-300 dark:border-gray-600 dark:bg-gray-800 dark:text-white focus:border-pink-500 focus:ring-2 focus:ring-pink-200 transition-all"
+            />
+          </div>
+          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+            We'll send a POST request with JSON click data to this URL every time the link is clicked.
+          </p>
         </div>
       </div>
     </div>

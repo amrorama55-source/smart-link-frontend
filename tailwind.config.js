@@ -47,6 +47,9 @@ export default {
       screens: {
         xs: "475px",
       },
+      fontFamily: {
+        cairo: ['Cairo', 'sans-serif'],
+      },
 
       spacing: {
         "safe-top": "env(safe-area-inset-top)",

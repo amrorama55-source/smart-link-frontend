@@ -14,6 +14,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   </React.StrictMode>
 );
 
+// Signal to the prerenderer (during build) that React has fully mounted.
+// This fires the 'render-event' which @prerenderer/renderer-puppeteer waits for
+// before taking the HTML snapshot. Has zero effect in normal browser usage.
+document.dispatchEvent(new Event('render-event'));
+
+
 
 
 

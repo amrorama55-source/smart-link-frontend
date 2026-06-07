@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -9,18 +9,33 @@ import {
 import SEO from '../components/SEO';
 import { nichesData } from '../utils/nichesData';
 
-// We reuse the TrustBox from the main landing page
-import TrustBox from '../components/TrustBox'; 
+// TrustBox logic is handled inline in the component
 
-export default function NicheLanding() {
-  const { niche } = useParams();
+export default function NicheLanding({ nicheKey }) {
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Validate niche
-  const nicheKey = niche ? niche.replace('for-', '') : '';
+  // Get data for this niche
   const data = nichesData[nicheKey];
+  const trustBoxRef = useRef(null);
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [nicheKey]);
+
+  // Initialize Trustpilot widget
+  useEffect(() => {
+    const loadWidget = () => {
+      if (window.Trustpilot && trustBoxRef.current) {
+        window.Trustpilot.loadFromElement(trustBoxRef.current, true);
+      }
+    };
+    loadWidget();
+    const timeout = setTimeout(loadWidget, 1500);
+    return () => clearTimeout(timeout);
+  }, [nicheKey]);
 
   useEffect(() => {
     if (darkMode) { document.documentElement.classList.add('dark'); }
@@ -168,10 +183,20 @@ export default function NicheLanding() {
       <section className="py-12 bg-gray-50 dark:bg-gray-800/30">
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">Trusted by professionals worldwide</p>
-            {/* Trustpilot Widget is loaded via the external script in index.html and customized here if needed */}
-             <div className="flex justify-center">
-               <div className="trustpilot-widget" data-locale="en-US" data-template-id="5419b6a8b0d04a076446a9ad" data-businessunit-id="69f7390bebbd3c000d06bf18" data-style-height="24px" data-style-width="100%" data-theme="light">
-                 <a href="https://www.trustpilot.com/review/by-smartlink.com" target="_blank" rel="noopener">Trustpilot</a>
+            {/* Trustpilot Widget */}
+             <div className="flex justify-center w-full">
+               <div
+                  ref={trustBoxRef}
+                  className="trustpilot-widget bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-auto flex items-center justify-center min-h-[120px] transition-all hover:shadow-2xl"
+                  data-locale="en-US"
+                  data-template-id="53aa8807dec7e10d38f59f32"
+                  data-businessunit-id="69f7390bebbd3c000d06bf18"
+                  data-style-height="150px"
+                  data-style-width="100%"
+                  data-theme={darkMode ? "dark" : "light"}
+                  data-token="b67fd1c8-4724-4922-ae25-038862ea786a"
+                >
+                 <a href="https://www.trustpilot.com/review/by-smartlink.com" target="_blank" rel="noopener noreferrer">Trustpilot</a>
                </div>
             </div>
          </div>

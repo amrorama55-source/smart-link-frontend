@@ -13,19 +13,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   const initializeAuth = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      return;
-    }
     try {
       const data = await getCurrentUser();
       setUser(data.user);
       setError(null);
     } catch (err) {
-      if (err.response?.status === 404) {
-        localStorage.removeItem('token');
-      }
+      // If authentication fails, ensure any stale token cookie is cleared by server endpoint (optional)
       setUser(null);
       setError(err.response?.data?.message || 'Authentication failed');
     } finally {
@@ -36,7 +29,7 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     try {
       const data = await loginApi(credentials);
-      localStorage.setItem('token', data.token);
+      // Server sets HttpOnly cookie; no need to store token client-side
       setUser(data.user);
       setError(null);
       return data;
@@ -47,26 +40,18 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Google OAuth token handler
-  const loginWithToken = async (token) => {
+  // Google OAuth token handler - cookie is already set by server before redirect
+  const loginWithToken = async () => {
     try {
-      localStorage.setItem('token', token);
-      try {
-        const data = await getCurrentUser();
-        setUser(data.user);
-        setError(null);
-        return data;
-      } catch (fetchError) {
-        if (fetchError.response?.status === 404) {
-          localStorage.removeItem('token');
-          throw new Error('User not found. Please register first.');
-        }
-        throw fetchError;
-      }
+      // The server already set the HttpOnly cookie before redirecting here.
+      // We just need to call /auth/me to hydrate the user state.
+      const data = await getCurrentUser();
+      setUser(data.user);
+      setError(null);
+      return data;
     } catch (err) {
-      localStorage.removeItem('token');
       setUser(null);
-      const errorMessage = err.message || err.response?.data?.error || 'Authentication failed';
+      const errorMessage = err.response?.data?.error || err.message || 'Authentication failed';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -75,7 +60,7 @@ export function AuthProvider({ children }) {
   const register = async (userData) => {
     try {
       const data = await registerApi(userData);
-      localStorage.setItem('token', data.token);
+      // Server sets HttpOnly cookie; no need to store token client-side
       setUser(data.user);
       setError(null);
       return data;
@@ -86,10 +71,16 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    setError(null);
+  const logout = async () => {
+    try {
+      // Call server to clear the HttpOnly cookie
+      await api.post('/auth/logout');
+    } catch (err) {
+      console.warn('Logout endpoint error (ignoring):', err.message);
+    } finally {
+      setUser(null);
+      setError(null);
+    }
   };
 
   const updateUser = (updates) => {

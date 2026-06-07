@@ -211,7 +211,7 @@ export default function BioEditor() {
   const handleSave = async () => {
     if (!bioData.username || bioData.username.length < 3) return alert('Username too short');
     if (usernameAvailable === false) return alert('Username taken');
-    if (!localStorage.getItem('token')) return alert('Session expired. Please log in again.');
+    // Session is validated server-side via HttpOnly cookie
     setSaving(true);
     try {
       await api.put('/bio/settings', {

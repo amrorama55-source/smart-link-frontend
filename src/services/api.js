@@ -11,24 +11,20 @@ const api = axios.create({
   },
 });
 
-// Add token to requests
+// Add token to requests (removed; using HttpOnly cookie)
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    // Both ways to ensure compatibility with all Axios versions
-    config.headers['Authorization'] = `Bearer ${token}`;
-    if (config.headers.set) config.headers.set('Authorization', `Bearer ${token}`);
-  }
+  // Cookies are sent automatically by the browser
   return config;
 });
+// Ensure cookies are included in cross-origin requests
+api.defaults.withCredentials = true;
 
-// Handle 401 responses
+// Handle 401 responses - redirect to login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      // Cookie is cleared by server; just redirect to login
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
       }

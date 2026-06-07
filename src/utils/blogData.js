@@ -1,6 +1,126 @@
 
 export const BLOG_POSTS = [
     {
+        id: 'arabic-link-optimization-2026',
+        title: 'الدليل الشامل لتحسين الروابط: كيف تزيد من مبيعاتك بنسبة 200٪',
+        seoTitle: 'الدليل الشامل لاختصار وتتبع الروابط لزيادة المبيعات | Smart Link',
+        description: 'اكتشف كيف يمكن لأداة بسيطة مثل تتبع الروابط أن تغير من استراتيجية التسويق الخاصة بك وتساعدك في مضاعفة أرباحك من خلال استهداف دقيق للجمهور.',
+        canonical: 'https://www.by-smartlink.com/blog/arabic-link-optimization-2026',
+        date: '2026-05-21',
+        image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1000',
+        category: 'التسويق الرقمي',
+        readTime: '8 min',
+        author: {
+            name: 'فريق Smart Link',
+            avatar: '/logo-v1.svg'
+        },
+        schema: [],
+        content: `
+      <div class="space-y-8" dir="rtl">
+        <p class="lead text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            في عالم التسويق الرقمي المزدحم، غالباً ما نتجاهل أصغر التفاصيل التي قد تكون الأهم على الإطلاق: <strong>الرابط (Link)</strong>. الروابط هي بوابات العبور التي تنقل العميل المحتمل من منصة التواصل الاجتماعي إلى متجرك أو موقعك الإلكتروني. ولكن، ماذا لو كانت هذه الروابط تعمل ضدك بدلاً من أن تعمل لصالحك؟
+        </p>
+
+        <h2 class="text-3xl font-black mb-6 text-gray-900 dark:text-white font-arabic">الفرق بين الرابط العادي والرابط الذكي</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            الروابط العادية طويلة، مشتتة للانتباه، وغالباً ما تبدو مشبوهة. عندما يرى المستخدم رابطاً طويلاً مليئاً بالأرقام والرموز العشوائية، فإن نسبة النقر عليه تنخفض بشكل ملحوظ. في المقابل، الرابط الذكي هو رابط قصير، مخصص، ويحمل اسم علامتك التجارية.
+        </p>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mt-4 font-arabic">
+            الأهم من الشكل الخارجي هو <strong>ما يحدث في الخلفية</strong>. الروابط الذكية تسمح لك بتتبع كل نقرة. من أين جاء هذا الزائر؟ هل يستخدم هاتف آيفون أم أندرويد؟ في أي مدينة يعيش؟ هذه البيانات ليست مجرد أرقام، بل هي الأساس الذي تُبنى عليه قرارات التسويق الناجحة.
+        </p>
+
+        <div class="bg-blue-50 dark:bg-blue-900/20 p-8 rounded-2xl border-r-4 border-blue-500 my-8">
+            <h4 class="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2 font-arabic">💡 قاعدة ذهبية في التسويق</h4>
+            <p class="text-blue-800 dark:text-blue-200 indent-0 font-arabic">
+                لا يمكنك تحسين ما لا يمكنك قياسه. إذا كنت تنشر روابطك دون تتبع مصدر النقرات، فأنت ترمي ميزانيتك التسويقية في الظلام.
+            </p>
+        </div>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">كيف تستخدم البيانات لمضاعفة المبيعات؟</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            تخيل أنك أطلقت حملتين إعلانيتين: واحدة على إنستغرام والأخرى على تويتر (X). كلاهما جلب 1000 نقرة. بدون أدوات التتبع المتقدمة، ستعتقد أن الحملتين متساويتان في النجاح.
+        </p>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mt-4 font-arabic">
+            ولكن مع استخدام <strong>Smart Link</strong>، قد تكتشف أن 80% من النقرات التي جاءت من تويتر تحولت إلى مبيعات، بينما نقرات إنستغرام لم تحقق أي مبيعات. بفضل هذه المعلومة البسيطة، يمكنك إيقاف إعلان إنستغرام وتحويل كامل الميزانية إلى تويتر، مما يضاعف أرباحك بنفس التكلفة.
+        </p>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">الاستهداف الجغرافي واستهداف الأجهزة (Geo & Device Targeting)</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            من أهم الميزات التي يجب أن تستخدمها في 2026 هي توجيه المستخدمين بناءً على أجهزتهم أو مواقعهم الجغرافية. 
+            إذا كنت تسوق لتطبيق موبايل، فلماذا ترسل مستخدمي "آيفون" ومستخدمي "أندرويد" إلى نفس الصفحة؟ 
+        </p>
+        <ul class="list-disc pr-6 space-y-3 text-gray-600 dark:text-gray-300 font-arabic my-4">
+            <li><strong>توجيه ذكي:</strong> يمكنك إعداد الرابط ليأخذ مستخدمي آيفون مباشرة إلى App Store، ومستخدمي أندرويد إلى Google Play.</li>
+            <li><strong>توجيه جغرافي:</strong> إذا كان لديك عروض خاصة بدول معينة، يمكنك توجيه الزوار من السعودية إلى صفحة بالريال، والزوار من الإمارات لصفحة بالدرهم، وكل ذلك باستخدام <strong>رابط واحد فقط</strong>.</li>
+        </ul>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">الخلاصة</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mt-6 font-arabic">
+            الروابط ليست مجرد نصوص زرقاء نضغط عليها؛ إنها أدوات قوية لجمع البيانات وتحسين تجربة المستخدم. ابدأ اليوم باستخدام <strong>Smart Link</strong> واستفد من التحليلات الدقيقة لرفع نسبة التحويل (Conversion Rate) وتحقيق أقصى استفادة من ميزانيتك التسويقية.
+        </p>
+      </div>
+    `
+    },
+    {
+        id: 'why-stop-using-long-links-2026',
+        title: 'لماذا يجب عليك التوقف عن استخدام الروابط الطويلة فوراً في 2026',
+        seoTitle: 'مخاطر الروابط الطويلة وكيفية احتراف اختصار الروابط 2026',
+        description: 'الروابط الطويلة تدمر مصداقيتك وتقلل من تفاعل جمهورك. تعرف على الأسباب التي تجعل الروابط المختصرة ضرورة لا غنى عنها لأي صانع محتوى أو شركة.',
+        canonical: 'https://www.by-smartlink.com/blog/why-stop-using-long-links-2026',
+        date: '2026-05-20',
+        image: 'https://images.unsplash.com/photo-1432821596592-e2c18b78144f?auto=format&fit=crop&q=80&w=1000',
+        category: 'نصائح وحيل',
+        readTime: '6 min',
+        author: {
+            name: 'فريق Smart Link',
+            avatar: '/logo-v1.svg'
+        },
+        schema: [],
+        content: `
+      <div class="space-y-8" dir="rtl">
+        <p class="lead text-xl text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            هل سبق لك أن تلقيت رسالة أو شاهدت منشوراً يحتوي على رابط يمتد لثلاثة أسطر مليء بالرموز والأرقام العشوائية؟ ما هو شعورك الأول؟ الغالبية العظمى من المستخدمين يشعرون بالتردد والخوف من أن يكون الرابط خبيثاً (Spam). في عام 2026، استخدام الروابط الطويلة لم يعد مجرد خطأ تقني، بل هو خطأ في العلاقات العامة.
+        </p>
+
+        <h2 class="text-3xl font-black mb-6 text-gray-900 dark:text-white font-arabic">1. الثقة والمصداقية (Trust & Credibility)</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            المظهر يهم جداً في العالم الرقمي. الرابط القصير والنظيف يعطي انطباعاً بالاحترافية. عندما تقوم بتخصيص الرابط ليحتوي على اسم علامتك التجارية أو كلمة واضحة تعبر عن محتوى الرابط (مثل: <code>smart.link/offer2026</code>)، فإنك تخبر المستخدم بوضوح عن الوجهة التي سيذهب إليها، مما يزيد من نسبة النقر (CTR) بنسبة تصل إلى 39٪.
+        </p>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">2. المساحة المحدودة في منصات التواصل</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            المنصات مثل تويتر، وتيك توك، وإنستغرام تمتلك قيوداً صارمة على عدد الحروف والمساحة المتاحة. وضع رابط طويل في الـ Bio الخاص بك لا يبدو سيئاً فحسب، بل يستهلك مساحة ثمينة يمكنك استخدامها لكتابة عبارة تحث المستخدم على اتخاذ إجراء (Call to Action) قوي وفعال.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-8 my-8">
+            <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+                <h4 class="font-bold text-xl mb-2 text-red-600 dark:text-red-400 font-arabic">❌ الطريقة الخاطئة</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400 break-all" dir="ltr">https://yourstore.com/products/category/summer-collection/item?id=837492&utm_source=tiktok&utm_medium=bio</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700">
+                 <h4 class="font-bold text-xl mb-2 text-green-600 dark:text-green-400 font-arabic">✅ الطريقة الصحيحة</h4>
+                <p class="text-sm text-gray-500 dark:text-gray-400" dir="ltr">sp.link/summer-sale</p>
+            </div>
+        </div>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">3. التتبع وإعادة الاستهداف (Retargeting)</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            أكبر ميزة للروابط المختصرة عبر منصات مثل <strong>Smart Link</strong> هي إمكانية دمج "بيكسلات التتبع" (Tracking Pixels) مثل Facebook Pixel و TikTok Pixel. هذا يعني أن أي شخص ينقر على الرابط الخاص بك، حتى وإن لم يشتري، يمكنك إعادة استهدافه بإعلانات مخصصة لاحقاً. الرابط الطويل المباشر يفقدك هذه الميزة تماماً.
+        </p>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">4. سهولة المشاركة الشفوية</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed font-arabic">
+            تخيل أنك في مؤتمر أو تقوم بتسجيل بودكاست، وتريد من المستمعين زيارة صفحة معينة. لا يمكنك أن تقرأ عليهم رابطاً طويلاً. لكن يمكنك بسهولة أن تقول: "تفضلوا بزيارة <strong>smart.link/podcast</strong>". الروابط القصيرة تعلق في الذاكرة ويسهل نطقها ومشاركتها في الحياة الواقعية والبودكاست وحتى في الفيديوهات.
+        </p>
+
+        <h2 class="text-3xl font-black mt-10 mb-6 text-gray-900 dark:text-white font-arabic">ما هو الحل؟</h2>
+        <p class="text-gray-600 dark:text-gray-300 leading-relaxed mt-6 font-arabic">
+            انتقل فوراً إلى استخدام منصة إدارة الروابط. الأمر لا يستغرق أكثر من ثوانٍ معدودة لتحويل رابط قبيح إلى أداة تسويقية احترافية تتتبع النقرات وتحافظ على هوية علامتك التجارية. يمكنك البدء مجاناً مع <strong>Smart Link</strong> وتجربة الفرق بنفسك!
+        </p>
+      </div>
+    `
+    },
+    {
         id: 'curiosity-vs-intent-2026',
         title: 'Curiosity vs. Intent: Why 1,000 Clicks Can Mean $0',
         seoTitle: 'Curiosity vs Intent in Marketing: Stop Counting Empty Clicks',

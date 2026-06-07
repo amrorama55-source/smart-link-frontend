@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
+import { api } from '../services/api';
 import { Mail, X } from 'lucide-react';
-import { API_URL } from '../config';
 
 export default function EmailVerificationBanner() {
   const { user } = useAuth();
@@ -17,13 +16,8 @@ export default function EmailVerificationBanner() {
   const resendEmail = async () => {
     setSending(true);
     try {
-      const token = localStorage.getItem('token');
-      const fullUrl = `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/resend-verification`;
-      await axios.post(
-        fullUrl,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      // Cookie is sent automatically via withCredentials in api instance
+      await api.post('/auth/resend-verification');
       setSent(true);
       setTimeout(() => setSent(false), 5000);
     } catch (error) {

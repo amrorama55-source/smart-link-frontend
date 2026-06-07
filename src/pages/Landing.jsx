@@ -7,22 +7,25 @@ import {
   Link2, Menu, X, Moon, Sun, ChevronRight,
   BarChart3, Globe, Smartphone, Target, TrendingUp,
   Eye, MousePointerClick, Calendar, Zap, Shield,
-  QrCode, CheckCircle, ArrowRight, Sparkles,
+  QrCode, CheckCircle, ArrowRight, ArrowLeft, Sparkles,
   Users, Clock, Lock, Code, Star, Quote, Copy, Play, Layout, Settings
 } from 'lucide-react';
 import SEO from '../components/SEO';
 
-/* ========================================
-   Live Product Demo Component (Hero Visual)
-   ======================================== */
 function VideoDemo() {
   return (
-    <div className="relative group">
-      {/* Background Glow */}
-      <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
-
-      {/* Video Container */}
-      <div className="relative bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 aspect-video">
+    <div className="relative group rounded-2xl overflow-hidden shadow-2xl border border-gray-200/20 dark:border-white/10 bg-gray-950">
+      <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 border-b border-gray-800">
+        <div className="flex gap-2">
+          <div className="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-gray-600"></div>
+        </div>
+        <div className="ml-4 flex-1 bg-gray-800 rounded h-6 flex items-center px-3 text-xs text-gray-400 font-medium">
+          sp.link/dashboard
+        </div>
+      </div>
+      <div className="relative aspect-video">
         <video
           src="/marketing-demo.mp4"
           poster="/og-image.png"
@@ -34,518 +37,176 @@ function VideoDemo() {
           aria-label="Smart Link Platform Demo Video"
         />
       </div>
-
-      {/* Decorative Badges (matching your premium theme) */}
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-900 z-10"
-      >
-        <QrCode className="w-10 h-10 text-white" />
-      </motion.div>
     </div>
   );
 }
 
-function ProductDemo() {
-  return (
-    <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 aspect-[16/10]">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
-        <div className="flex gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-400"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-          <div className="w-3 h-3 rounded-full bg-green-400"></div>
-        </div>
-        <div className="ml-4 flex-1 bg-white dark:bg-gray-800 rounded-md h-6 flex items-center px-3 text-xs text-blue-500 font-medium shadow-sm">
-          sp.link/dashboard
-        </div>
-      </div>
-      <div className="p-6 h-full relative font-sans">
-        <div className="flex justify-between items-center mb-8">
-          <div className="w-32 h-8 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700"></div>
-            <div className="w-8 h-8 rounded-full bg-purple-500"></div>
-          </div>
-        </div>
-        <div className="space-y-4 max-w-lg mx-auto">
-          <motion.div
-            initial={{ borderColor: 'transparent' }}
-            animate={{
-              borderColor: ['#e5e7eb', '#3b82f6', '#e5e7eb'],
-              boxShadow: ['none', '0 0 0 2px rgba(59, 130, 246, 0.2)', 'none']
-            }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-            className="bg-gray-50 dark:bg-gray-900 border-2 rounded-xl p-4 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3 w-full">
-              <Link2 className="w-5 h-5 text-gray-400" />
-              <motion.div className="h-6 flex items-center overflow-hidden">
-                <motion.span
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3.5, ease: "linear" }}
-                  className="whitespace-nowrap overflow-hidden border-r-2 border-blue-500 text-gray-600 dark:text-gray-300 text-sm"
-                >
-                  https://very-long-url.com/campaign/summer-sale-2026
-                </motion.span>
-              </motion.div>
-            </div>
-          </motion.div>
-          <motion.div
-            animate={{ scale: [1, 0.98, 1] }}
-            transition={{ duration: 0.5, delay: 1.5, repeat: Infinity, repeatDelay: 6 }}
-            className="w-full h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg"
-          >
-            Shorten Link
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 10, height: 0 }}
-            animate={{ opacity: 1, y: 0, height: 'auto' }}
-            transition={{ duration: 0.5, delay: 2, repeat: Infinity, repeatDelay: 4.5 }}
-            className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-3">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              <div>
-                <p className="text-xs text-green-700 dark:text-green-300 font-medium">Link Created!</p>
-                <p className="text-sm font-bold text-gray-900 dark:text-white">sp.link/summer26</p>
-              </div>
-            </div>
-            <div className="p-2 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-              <Copy className="w-4 h-4 text-gray-500" />
-            </div>
-          </motion.div>
-        </div>
-        <motion.div
-          initial={{ x: 300, y: 300 }}
-          animate={{ x: [300, 150, 150, 400], y: [300, 100, 160, 400], opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 4, repeat: Infinity, repeatDelay: 4 }}
-          className="absolute z-50 pointer-events-none"
-        >
-          <MousePointerClick className="w-6 h-6 text-black fill-white dark:text-white dark:fill-black drop-shadow-xl" />
-        </motion.div>
-      </div>
-    </div>
-  );
-}
-
-/* ========================================
-   FULL DEMO MODAL
-   ======================================== */
-function DemoModal({ isOpen, onClose }) {
+function HowItWorksSection() {
   const [step, setStep] = useState(0);
-  useEffect(() => {
-    if (isOpen) {
-      const timer = setInterval(() => { setStep((s) => (s + 1) % 4); }, 6000);
-      return () => clearInterval(timer);
-    } else { setStep(0); }
-  }, [isOpen]);
-
-  if (!isOpen) return null;
+  const steps = [
+    { title: "Create Smart Links", desc: "Paste URL, customize alias, and add tags.", icon: Link2 },
+    { title: "Smart Targeting", desc: "Route users by Device (iOS/Android) or Location.", icon: Target },
+    { title: "Build Bio Page", desc: "Drag & drop links, choose themes, and publish.", icon: Layout },
+    { title: "Track Analytics", desc: "Real-time insights on clicks, location, and OS.", icon: BarChart3 }
+  ];
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 lg:p-8"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
-        className="w-full max-w-6xl bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 flex flex-col md:flex-row h-[90vh] md:h-auto md:aspect-[16/9]"
-        onClick={e => e.stopPropagation()}
-      >
-        <div className="w-full md:w-1/3 bg-gray-800 p-8 border-r border-gray-700 flex flex-col justify-center overflow-y-auto">
-          <h3 className="text-2xl font-bold text-white mb-8">Product Tour</h3>
+    <section id="how-it-works" className="py-24 bg-gray-50 dark:bg-gray-900/50 scroll-mt-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">
+            Everything You Need, In One Platform
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            Take a tour of how Smart Link helps you manage and optimize your digital presence.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-4">
-            {[
-              { title: "Create Smart Links", desc: "Paste URL, customize alias, and add tags.", icon: Link2, color: 'blue' },
-              { title: "Smart Targeting", desc: "Route users by Device (iOS/Android) or Location.", icon: Target, color: 'red' },
-              { title: "Build Bio Page", desc: "Drag & drop links, choose themes, and publish.", icon: Layout, color: 'purple' },
-              { title: "Track Analytics", desc: "Real-time insights on clicks, location, and OS.", icon: BarChart3, color: 'green' }
-            ].map((s, i) => (
+            {steps.map((s, i) => (
               <div key={i}
-                className={`flex items-start gap-4 p-4 rounded-xl transition-all duration-500 cursor-pointer ${step === i ? `bg-${s.color}-600/20 border border-${s.color}-500/50` : 'opacity-40 hover:opacity-60'}`}
+                className={`flex items-start gap-4 p-4 rounded-2xl transition-all cursor-pointer border ${step === i ? 'bg-white dark:bg-gray-800 shadow-md border-gray-200 dark:border-gray-700' : 'border-transparent opacity-60 hover:opacity-100'}`}
                 onClick={() => setStep(i)}
               >
-                <div className={`w-10 h-10 rounded-full bg-${s.color}-600 flex items-center justify-center text-white font-bold flex-shrink-0 mt-1`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white dark:text-gray-900 font-bold flex-shrink-0 bg-gray-900 dark:bg-white`}>
                   <s.icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="font-bold text-white text-lg">{s.title}</p>
-                  <p className="text-sm text-gray-400 leading-snug">{s.desc}</p>
+                  <p className="font-bold text-gray-900 dark:text-white text-lg">{s.title}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mt-1">{s.desc}</p>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-        <div className="w-full md:w-2/3 bg-gray-950 p-8 relative overflow-hidden flex items-center justify-center">
-          <div className="absolute top-4 right-4 z-10">
-            <button onClick={onClose} className="p-2 bg-gray-800 rounded-full hover:bg-gray-700 text-white transition-colors" aria-label="Close modal">
-              <X className="w-6 h-6" />
-            </button>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 p-8 h-96 flex flex-col justify-center items-center text-center overflow-hidden relative">
+             <AnimatePresence mode="wait">
+               <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-sm">
+                 {step === 0 && (
+                   <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
+                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 text-left">1. Paste & Create</p>
+                     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 text-left mb-4 text-sm overflow-hidden whitespace-nowrap font-mono text-gray-500">https://myshop.com/super-sale</div>
+                     <div className="flex gap-2 items-center mb-4 text-left justify-start">
+                       <span className="text-sm text-gray-600 dark:text-gray-300">Custom Alias:</span>
+                       <span className="bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 px-2 py-1 rounded text-xs font-bold">summer-sale</span>
+                     </div>
+                     <button className="w-full py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded font-bold text-sm">Create Smart Link</button>
+                   </div>
+                 )}
+                 {step === 1 && (
+                   <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
+                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 text-left">2. Add Targeting Rules</p>
+                     <div className="space-y-3">
+                       <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+                         <Smartphone className="w-4 h-4 text-gray-400" />
+                         <div className="flex-1 text-left">
+                           <p className="text-sm font-bold text-gray-900 dark:text-white">iOS</p>
+                           <p className="text-xs text-gray-500">App Store</p>
+                         </div>
+                       </div>
+                       <div className="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+                         <Globe className="w-4 h-4 text-gray-400" />
+                         <div className="flex-1 text-left">
+                           <p className="text-sm font-bold text-gray-900 dark:text-white">France</p>
+                           <p className="text-xs text-gray-500">/fr-fr</p>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 )}
+                 {step === 2 && (
+                   <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700 text-center">
+                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 text-left">3. Design Bio Page</p>
+                     <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-3"></div>
+                     <p className="font-bold text-gray-900 dark:text-white text-sm">Sarah Creator</p>
+                     <p className="text-xs text-gray-500 mb-4">@sarah_designs</p>
+                     <div className="space-y-2">
+                       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                       <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+                     </div>
+                   </div>
+                 )}
+                 {step === 3 && (
+                   <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-xl border border-gray-100 dark:border-gray-700">
+                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 text-left">4. Analyze Results</p>
+                     <div className="flex items-end h-24 gap-2 mb-4 justify-between">
+                       {[30, 50, 40, 70, 90, 60].map((h, i) => (
+                         <div key={i} className="w-8 bg-blue-500 rounded-t" style={{ height: `${h}%` }}></div>
+                       ))}
+                     </div>
+                     <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
+                       <div className="text-left">
+                         <p className="text-2xl font-bold text-gray-900 dark:text-white">12.5k</p>
+                         <p className="text-xs text-gray-500 uppercase tracking-wider">Clicks</p>
+                       </div>
+                       <div className="text-right">
+                         <p className="text-2xl font-bold text-gray-900 dark:text-white">iOS</p>
+                         <p className="text-xs text-gray-500 uppercase tracking-wider">Top Device</p>
+                       </div>
+                     </div>
+                   </div>
+                 )}
+               </motion.div>
+             </AnimatePresence>
           </div>
-          <div className="w-full max-w-md h-full flex items-center justify-center relative">
-            <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full"></div>
-            <AnimatePresence mode="wait">
-              {step === 0 && (
-                <motion.div key="step1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-xl p-6 shadow-xl w-full relative z-10">
-                  <p className="text-gray-500 mb-4 text-xs font-bold tracking-widest uppercase">1. Paste & Create</p>
-                  <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-200 mb-4">
-                    <div className="flex items-center gap-2 mb-2"><Link2 className="w-4 h-4 text-gray-400" /><span className="text-sm font-medium text-gray-600">Destination URL</span></div>
-                    <div className="bg-white border rounded px-2 py-1 text-gray-800 text-sm overflow-hidden">https://myshop.com/products/super-sale-2026/ref=twitter</div>
-                  </div>
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} transition={{ delay: 0.5 }} className="flex gap-2 items-center mb-4">
-                    <Settings className="w-4 h-4 text-gray-400" /><span className="text-sm text-gray-600">Custom Alias:</span>
-                    <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-sm font-bold">summer-sale</span>
-                  </motion.div>
-                  <motion.button animate={{ scale: [1, 0.95, 1] }} transition={{ delay: 1.5 }} className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold">Create Smart Link</motion.button>
-                </motion.div>
-              )}
-              {step === 1 && (
-                <motion.div key="step2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-xl p-6 shadow-xl w-full relative z-10">
-                  <p className="text-red-500 mb-4 text-xs font-bold tracking-widest uppercase">2. Add Targeting Rules</p>
-                  <div className="space-y-3">
-                    {[
-                      { icon: Smartphone, bg: 'bg-black', title: 'Device: iOS', desc: 'Redirect to App Store' },
-                      { icon: Smartphone, bg: 'bg-green-600', title: 'Device: Android', desc: 'Redirect to Play Store' },
-                      { icon: Globe, bg: 'bg-blue-600', title: 'Location: France', desc: 'Redirect to /fr-fr' }
-                    ].map((rule, idx) => (
-                      <motion.div key={idx} initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: idx * 0.3 + 0.3 }} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                        <div className={`${rule.bg} text-white p-2 rounded-lg`}><rule.icon className="w-4 h-4" /></div>
-                        <div className="flex-1"><p className="text-sm font-bold text-gray-800">{rule.title}</p><p className="text-xs text-gray-500">{rule.desc}</p></div>
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-              {step === 2 && (
-                <motion.div key="step3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-gray-900 rounded-xl p-6 shadow-xl border border-gray-800 text-center w-full relative z-10">
-                  <p className="text-purple-400 mb-4 text-xs font-bold tracking-widest uppercase">3. Design Bio Page</p>
-                  <div className="w-16 h-16 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mx-auto mb-4 border-4 border-white/20 shadow-lg"></div>
-                  <h4 className="text-white font-bold text-xl mb-1">Sarah Creator</h4>
-                  <p className="text-gray-400 text-sm mb-6">@sarah_designs</p>
-                  <div className="space-y-2">
-                    {[1, 2, 3].map(i => (
-                      <motion.div key={i} initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: i * 0.2 }} className="p-3 bg-white/10 rounded-lg text-white font-medium flex items-center justify-between border border-white/5">
-                        <div className="flex items-center gap-3"><div className="w-6 h-6 rounded bg-white/20"></div><span>My Link #{i}</span></div>
-                        <ArrowRight className="w-4 h-4 opacity-50" />
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-              {step === 3 && (
-                <motion.div key="step4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="bg-white rounded-xl p-6 shadow-xl w-full relative z-10">
-                  <p className="text-green-600 mb-4 text-xs font-bold tracking-widest uppercase">4. Analyze Results</p>
-                  <div className="flex justify-between items-end h-32 gap-2 px-2 pb-4 border-b border-gray-200">
-                    {[30, 50, 40, 70, 90, 60, 80, 95, 85].map((h, i) => (
-                      <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: i * 0.05 }} className="flex-1 bg-gradient-to-t from-green-500 to-emerald-400 rounded-t-sm"></motion.div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-gray-50 p-3 rounded-lg text-center"><p className="text-2xl font-bold text-gray-900">12.5k</p><p className="text-xs text-gray-500 uppercase font-bold">Total Clicks</p></div>
-                    <div className="bg-gray-50 p-3 rounded-lg text-center"><p className="text-2xl font-bold text-blue-600">iOS</p><p className="text-xs text-gray-500 uppercase font-bold">Top Device</p></div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-100 ease-linear" style={{ width: `${((step + 1) / 4) * 100}%` }}></div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </section>
   );
 }
 
-
-/* ========================================
-   How It Works Section
-   ======================================== */
-function HowItWorksSection() {
-  const [step, setStep] = useState(0);
-  const [isAuto, setIsAuto] = useState(true);
-
-  useEffect(() => {
-    if (!isAuto) return;
-    const timer = setInterval(() => {
-      setStep((s) => (s + 1) % 4);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [isAuto]);
-
-  const handleStepClick = (i) => {
-    setStep(i);
-    setIsAuto(false);
-  };
-
-  const steps = [
-    { title: "Create Smart Links", desc: "Paste URL, customize alias, and add tags.", icon: Link2, color: 'blue' },
-    { title: "Smart Targeting", desc: "Route users by Device (iOS/Android) or Location.", icon: Target, color: 'red' },
-    { title: "Build Bio Page", desc: "Drag & drop links, choose themes, and publish.", icon: Layout, color: 'purple' },
-    { title: "Track Analytics", desc: "Real-time insights on clicks, location, and OS.", icon: BarChart3, color: 'green' }
+function FAQSection() {
+  const [openFAQ, setOpenFAQ] = useState(null);
+  const faqs = [
+    { q: "Why do I need Smart Link if I already have a link shortener?", a: "Traditional shorteners just count clicks. Smart Link goes deeper by tracking OS data, geolocation, and referrer metrics so you can expose the true intent behind your traffic, not just the volume." },
+    { q: "How does device targeting (iOS/Android) increase conversions?", a: "Instead of overwhelming users with two buttons, you create one Smart Link. We instantly detect their device and route iOS users to the App Store and Android users to Google Play, drastically reducing friction." },
+    { q: "Can I track my link clicks for free?", a: "Yes! We believe deep analytics should be accessible to everyone. You get real-time analytics for all your links, including device, location, and click-through data—all completely free." },
+    { q: "Can I use my own custom domain?", a: "Absolutely. You can connect your own domain (e.g., links.yourbrand.com) to maintain full brand consistency across all touchpoints." },
+    { q: "How do I create a free link in bio?", a: "Simply sign up, claim your username, and paste your URLs. You can customize your bio page with themes and go live in less than 2 minutes." }
   ];
 
   return (
-    <section id="how-it-works" className="py-16 sm:py-24 bg-gray-50 dark:bg-gray-800/30 scroll-mt-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6">
-            Everything You Need,
-            <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">In One Platform</span>
-          </h2>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-4">
-            Take a tour of how Smart Link helps you manage and optimize your digital presence.
-          </p>
+    <section id="faq" className="py-24 bg-white dark:bg-gray-950 scroll-mt-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">Frequently Asked Questions</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-400">Everything you need to know about Smart Link.</p>
         </div>
-        <div className="bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col md:flex-row min-h-[600px]">
-          <div className="w-full md:w-1/3 bg-gray-50 dark:bg-gray-900/50 p-6 sm:p-8 border-r border-gray-100 dark:border-gray-800 flex flex-col justify-center">
-            <div className="space-y-3 sm:space-y-4">
-              {steps.map((s, i) => (
-                <div key={i}
-                  className={`flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-all duration-500 cursor-pointer ${step === i ? 'bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-700 scale-100 sm:scale-[1.02]' : 'opacity-40 hover:opacity-60'}`}
-                  onClick={() => handleStepClick(i)}
-                >
-                  <div className={`w-10 h-10 rounded-full bg-${s.color}-600 flex items-center justify-center text-white font-bold flex-shrink-0 mt-1 shadow-lg`}>
-                    <s.icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-gray-900 dark:text-white text-base sm:text-lg">{s.title}</p>
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-snug">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="w-full md:w-2/3 bg-gray-950 p-6 sm:p-8 relative overflow-hidden flex items-center justify-center min-h-[400px]">
-            <div className="w-full max-w-md relative z-10">
-              <div className="absolute inset-0 bg-blue-500/10 blur-3xl rounded-full -z-10"></div>
-              <AnimatePresence mode="wait">
-                {step === 0 && (
-                  <motion.div key="step1" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="bg-white rounded-xl p-6 shadow-2xl w-full">
-                    <p className="text-gray-500 mb-4 text-xs font-bold tracking-widest uppercase">1. Paste & Create</p>
-                    <div className="bg-gray-50 p-4 rounded-xl border-2 border-dashed border-gray-200 mb-4">
-                      <div className="flex items-center gap-2 mb-2"><Link2 className="w-4 h-4 text-gray-400" /><span className="text-sm font-medium text-gray-600">Destination URL</span></div>
-                      <div className="bg-white border rounded px-2 py-1 text-gray-800 text-sm overflow-hidden">https://myshop.com/products/super-sale-2026/ref=twitter</div>
-                    </div>
-                    <div className="flex gap-2 items-center mb-4">
-                      <Settings className="w-4 h-4 text-gray-400" /><span className="text-sm text-gray-600">Custom Alias:</span>
-                      <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-sm font-bold">summer-sale</span>
-                    </div>
-                    <button className="w-full py-3 bg-blue-600 text-white rounded-lg font-bold shadow-lg">Create Smart Link</button>
-                  </motion.div>
-                )}
-                {step === 1 && (
-                  <motion.div key="step2" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="bg-white rounded-xl p-6 shadow-2xl w-full">
-                    <p className="text-red-500 mb-4 text-xs font-bold tracking-widest uppercase">2. Add Targeting Rules</p>
-                    <div className="space-y-3">
-                      {[
-                        { icon: Smartphone, bg: 'bg-black', title: 'Device: iOS', desc: 'Redirect to App Store' },
-                        { icon: Smartphone, bg: 'bg-green-600', title: 'Device: Android', desc: 'Redirect to Play Store' },
-                        { icon: Globe, bg: 'bg-blue-600', title: 'Location: France', desc: 'Redirect to /fr-fr' }
-                      ].map((rule, idx) => (
-                        <div key={idx} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-gray-50">
-                          <div className={`${rule.bg} text-white p-2 rounded-lg`}><rule.icon className="w-4 h-4" /></div>
-                          <div className="flex-1"><p className="text-sm font-bold text-gray-800">{rule.title}</p><p className="text-xs text-gray-500">{rule.desc}</p></div>
-                          <CheckCircle className="w-5 h-5 text-green-500" />
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-                {step === 2 && (
-                  <motion.div key="step3" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="bg-gray-900 rounded-xl p-6 shadow-2xl border border-gray-800 text-center w-full">
-                    <p className="text-purple-400 mb-4 text-xs font-bold tracking-widest uppercase">3. Design Bio Page</p>
-                    <div className="w-16 h-16 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mx-auto mb-4 border-4 border-white/20 shadow-lg"></div>
-                    <h4 className="text-white font-bold text-xl mb-1">Sarah Creator</h4>
-                    <p className="text-gray-400 text-sm mb-6">@sarah_designs</p>
-                    <div className="space-y-2">
-                      {[1, 2, 3].map(i => (
-                        <div key={i} className="p-3 bg-white/10 rounded-lg text-white font-medium flex items-center justify-between border border-white/5">
-                          <div className="flex items-center gap-3"><div className="w-6 h-6 rounded bg-white/20"></div><span>My Product #{i}</span></div>
-                          <ArrowRight className="w-4 h-4 opacity-50" />
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-                {step === 3 && (
-                  <motion.div key="step4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="bg-white rounded-xl p-6 shadow-2xl w-full">
-                    <p className="text-green-600 mb-4 text-xs font-bold tracking-widest uppercase">4. Analyze Results</p>
-                    <div className="flex justify-between items-end h-32 gap-2 px-2 pb-4 border-b border-gray-200">
-                      {[30, 50, 40, 70, 90, 60, 80, 95, 85].map((h, i) => (
-                        <motion.div key={i} initial={{ height: 0 }} animate={{ height: `${h}%` }} className="flex-1 bg-gradient-to-t from-green-500 to-emerald-400 rounded-t-sm"></motion.div>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-2 gap-4 mt-4">
-                      <div className="bg-gray-50 p-3 rounded-lg text-center"><p className="text-2xl font-bold text-gray-900">12.5k</p><p className="text-xs text-gray-500 uppercase font-bold">Total Clicks</p></div>
-                      <div className="bg-gray-50 p-3 rounded-lg text-center"><p className="text-2xl font-bold text-blue-600">iOS</p><p className="text-xs text-gray-500 uppercase font-bold">Top Device</p></div>
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <div key={i} className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-900/50">
+              <button onClick={() => setOpenFAQ(openFAQ === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left focus:outline-none">
+                <h3 className="font-semibold text-gray-900 dark:text-white text-lg flex-1 pr-4">{faq.q}</h3>
+                <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFAQ === i ? 'rotate-90' : ''}`} />
+              </button>
+              <AnimatePresence>
+                {openFAQ === i && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="p-6 pt-0 text-gray-600 dark:text-gray-400 text-base leading-relaxed border-t border-gray-100 dark:border-gray-800 mx-6">
+                      {faq.a}
                     </div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-            <div className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-100 ease-linear" style={{ width: `${((step + 1) / 4) * 100}%` }}></div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ========================================
-   FAQ Section
-   ======================================== */
-function FAQSection() {
-  const faqs = [
-    { question: "Why do I need Smart Link if I already have a link shortener?", answer: "Traditional shorteners just count clicks. Smart Link goes deeper by tracking OS data, geolocation, and referrer metrics so you can expose the true intent behind your traffic, not just the volume." },
-    { question: "How does device targeting (iOS/Android) increase conversions?", answer: "Instead of overwhelming users with two buttons, you create one Smart Link. We instantly detect their device and route iOS users to the App Store and Android users to Google Play, drastically reducing friction." },
-    { question: "Can I track my link clicks for free?", answer: "Yes! We believe deep analytics should be accessible to everyone. You get real-time analytics for all your links, including device, location, and click-through data—all completely free." },
-    { question: "Can I use my own custom domain?", answer: "Absolutely. You can connect your own domain (e.g., links.yourbrand.com) to maintain full brand consistency across all touchpoints." },
-    { question: "How do I create a free link in bio?", answer: "Simply sign up, claim your username, and paste your URLs. You can customize your bio page with themes and go live in less than 2 minutes." }
-  ];
-  return (
-    <section id="faq" className="py-16 sm:py-24 bg-white dark:bg-gray-900 scroll-mt-20 border-t border-gray-100 dark:border-gray-800">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white mb-4">Frequently Asked Questions</h2>
-          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400">Everything you need to know about Smart Link.</p>
-        </div>
-        <div className="space-y-4 sm:space-y-6">
-          {faqs.map((faq, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="p-5 sm:p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700">
-              <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-2">{faq.question}</h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">{faq.answer}</p>
-            </motion.div>
           ))}
         </div>
-        <div className="text-center mt-10">
-          <Link to="/faq" className="text-blue-600 dark:text-blue-400 font-bold hover:underline inline-flex items-center gap-2">
-            View all frequently asked questions <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
       </div>
     </section>
   );
 }
 
-/* ========================================
-   About Us Section
-   ======================================== */
-function AboutUsSection() {
-  return (
-    <section id="about-us" className="py-16 sm:py-24 bg-gray-50 dark:bg-gray-800/30 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
-            <div className="absolute -top-10 -left-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white mb-6">
-              Our Mission: Empowering<span className="block text-blue-600 mt-2">Founders & Creators</span>
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 leading-relaxed">
-              Smart Link was born from a simple idea: professional-grade marketing tools shouldn't be locked behind expensive subscriptions for those just starting out.
-            </p>
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-6 sm:mb-8 leading-relaxed">
-              Whether you are a SaaS founder launching your first product, a marketer optimizing campaigns, or a creator building your brand, we provide the analytics and targeting tools you need to succeed—100% free.
-            </p>
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-3">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-4 border-white dark:border-gray-900 bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden p-1 shadow-md">
-                  <img
-                    src="/logo-v1.svg"
-                    alt="Smart Link"
-                    className="w-full h-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-              <p className="text-xs sm:text-sm font-bold text-gray-900 dark:text-white">Built with ❤️ by a global team of specialists.</p>
-            </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-white dark:bg-gray-900 p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 relative">
-            <div className="absolute -top-6 -right-6 p-4 bg-green-500 text-white rounded-2xl shadow-lg rotate-12"><Sparkles className="w-6 h-6" /></div>
-            <div className="space-y-4 sm:space-y-6">
-              {[
-                { icon: Shield, color: 'blue', title: 'Privacy First', desc: "We don't track your users personally. Only clean, actionable data." },
-                { icon: Zap, color: 'purple', title: 'Performance DNA', desc: 'Lightweight links that load in milliseconds across the globe.' },
-                { icon: Lock, color: 'green', title: 'Secure & Reliable', desc: '99.9% uptime with enterprise-grade security for every link.' }
-              ].map((item, i) => (
-                <div key={i} className="flex gap-3 sm:gap-4">
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-${item.color}-100 dark:bg-${item.color}-900/30 flex items-center justify-center text-${item.color}-600 flex-shrink-0`}>
-                    <item.icon className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white mb-1 text-sm sm:text-base">{item.title}</h3>
-                    <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ========================================
-   TrustBox Component
-   ======================================== */
-function TrustBox() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    // If window.Trustpilot is available it means that we need to load the TrustBox from our ref.
-    // If it's not, it means the script you pasted into <head /> isn't loaded just yet.
-    // When it is, it will automatically load the TrustBox.
-    const loadWidget = () => {
-      if (window.Trustpilot) {
-        window.Trustpilot.loadFromElement(ref.current, true);
-      }
-    };
-    
-    // Attempt to load immediately, and also set a small timeout in case it's still parsing
-    loadWidget();
-    const timeout = setTimeout(loadWidget, 1500);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="trustpilot-widget bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-auto flex items-center justify-center min-h-[120px] transition-all hover:shadow-2xl"
-      data-locale="en-US"
-      data-template-id="53aa8807dec7e10d38f59f32"
-      data-businessunit-id="69f7390bebbd3c000d06bf18"
-      data-style-height="150px"
-      data-style-width="100%"
-      data-theme="light"
-      data-token="b67fd1c8-4724-4922-ae25-038862ea786a"
-    >
-      <a href="https://www.trustpilot.com/review/by-smartlink.com" target="_blank" rel="noopener noreferrer">Trustpilot</a>
-    </div>
-  );
-}
-
-/* ========================================
-   MAIN LANDING PAGE
-   ======================================== */
 export default function LandingPage() {
   const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [demoOpen, setDemoOpen] = useState(false);
   const [isYearly, setIsYearly] = useState(false);
-
   const { user } = useAuth();
 
-  // ✅ handleStartTrial — يفتح صفحة التسجيل مع تفعيل Trial تلقائي
+  const SUCCESS_URL = 'https://www.by-smartlink.com/success';
+
   const handleStartTrial = () => {
     window.location.href = '/register?trial=true';
   };
-
-  const SUCCESS_URL = 'https://www.by-smartlink.com/success';
 
   const buildCheckoutUrl = (baseUrl, userId) => {
     if (!baseUrl) return null;
@@ -556,27 +217,12 @@ export default function LandingPage() {
   };
 
   const handleCheckout = (plan, yearly) => {
-    if (plan.id === 'free') {
-      window.location.href = '/register';
-      return;
-    }
-    if (plan.id === 'trial') {
-      window.location.href = '/register?trial=true';
-      return;
-    }
-
-    // ✅ MUST BE LOGGED IN TO BUY A PAID PLAN
-    if (!user) {
-      window.location.href = '/register?redirect=pricing';
-      return;
-    }
-
+    if (plan.id === 'free') { window.location.href = '/register'; return; }
+    if (plan.id === 'trial') { window.location.href = '/register?trial=true'; return; }
+    if (!user) { window.location.href = '/register?redirect=pricing'; return; }
     const rawUrl = yearly ? plan.checkoutUrl.yearly : plan.checkoutUrl.monthly;
     const checkoutUrl = buildCheckoutUrl(rawUrl, user?._id || user?.id);
-    if (!checkoutUrl) {
-      alert('Checkout link not available');
-      return;
-    }
+    if (!checkoutUrl) { alert('Checkout link not available'); return; }
     window.location.href = checkoutUrl;
   };
 
@@ -587,242 +233,154 @@ export default function LandingPage() {
   }, [darkMode]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      window.requestAnimationFrame
-        ? window.requestAnimationFrame(() => setScrolled(window.scrollY > 20))
-        : setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => { setScrolled(window.scrollY > 20); };
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } } };
-  const floatAnimation = { y: [0, -10, 0], transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } };
-
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
       <SEO
-        description="Optimize your marketing ROI with intelligent traffic filtering. Smart Link reduces ad waste by blocking bots and auto-optimizing your campaigns using advanced performance algorithms."
-        videoData={{
-          title: "Intelligent Link Optimization for Founders | Smart Link Demo",
-          description: "Protect your ad spend and increase conversions with Smart Link's automated traffic filtering and A/B testing.",
-          thumbnailUrl: ["https://www.by-smartlink.com/og-image.png"],
-          uploadDate: "2026-04-29T00:00:00Z",
-          duration: "PT0M30S"
-        }}
+        title="Smart Link — Marketing Infrastructure for Affiliates, Creators & Media Buyers"
+        description="Replace ClickMagick, Voluum & Linktree with one platform. Geo Targeting, Bot Protection, Deep Analytics & A/B Testing."
       />
 
-      {/* DEMO MODAL */}
-      <AnimatePresence>
-        {demoOpen && <DemoModal isOpen={demoOpen} onClose={() => setDemoOpen(false)} />}
-      </AnimatePresence>
-
-      {/* Navigation */}
-      <motion.nav
-        initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex flex-col ${scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50' : 'bg-transparent'}`}
-      >
-
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="flex justify-between items-center h-16 sm:h-20">
-            <Link to="/" className="flex items-center gap-3 group">
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.7 }}
-                className="w-10 h-10 sm:w-12 sm:h-12 transform group-hover:scale-110 transition-transform"
-              >
-                <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
-              </motion.div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smart Link</span>
+      {/* Navbar */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 dark:bg-gray-950/80 backdrop-blur-xl border-b border-gray-100 dark:border-white/[0.06]' : 'bg-transparent'}`}>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <Link to="/" className="flex items-center gap-2">
+              <img src="/logo-v1.svg" alt="Smart Link" className="w-8 h-8" />
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smart Link</span>
             </Link>
-
-            <div className="hidden lg:flex items-center gap-8">
-              {['Features', 'How It Works', 'Pricing'].map((item) => (
-                <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors relative group">
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all group-hover:w-full"></span>
-                </a>
-              ))}
-              <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-2"></div>
-              <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center" aria-label="Toggle dark mode">
-                <AnimatePresence mode="wait">
-                  {darkMode
-                    ? <motion.div key="sun" initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 90 }} transition={{ duration: 0.2 }}><Sun className="w-5 h-5" /></motion.div>
-                    : <motion.div key="moon" initial={{ scale: 0, rotate: 90 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -90 }} transition={{ duration: 0.2 }}><Moon className="w-5 h-5" /></motion.div>
-                  }
-                </AnimatePresence>
-              </button>
-              <Link to="/login" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition-colors">Login</Link>
-              <Link to="/register">
-                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all">
-                  Get Started Free
-                </motion.button>
-              </Link>
+            <div className="hidden md:flex items-center gap-8 pt-1">
+              <a href="#features" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Features</a>
+              <a href="#how-it-works" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">How It Works</a>
+              <a href="#pricing" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</a>
             </div>
-
-            <div className="flex items-center gap-2 lg:hidden">
-              <button onClick={() => setDarkMode(!darkMode)} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle dark mode">
+            <div className="hidden md:flex items-center gap-4">
+              <Link to="/ar" className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-cairo pt-1">العربية</Link>
+              <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+              <Link to="/login" className="text-sm font-semibold text-gray-700 dark:text-gray-200 pt-1">Login</Link>
+              <Link to="/register" className="text-sm font-semibold px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"> Get Started </Link>
+            </div>
+            <div className="md:hidden flex items-center gap-2">
+              <button onClick={() => setDarkMode(!darkMode)} className="p-2 text-gray-500">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle mobile menu">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-gray-500">
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
-
           <AnimatePresence>
             {mobileMenuOpen && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
-                <div className="flex flex-col gap-2 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-                  {['Features', 'How It Works', 'Pricing'].map((item) => (
-                    <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} onClick={() => setMobileMenuOpen(false)} className="min-h-[48px] flex items-center px-4 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 font-medium text-gray-700 dark:text-gray-200 touch-manipulation">{item}</a>
-                  ))}
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="min-h-[48px] flex items-center justify-center px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 font-semibold text-gray-900 dark:text-white touch-manipulation">Login</Link>
-                  <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="min-h-[48px] flex items-center justify-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 touch-manipulation">Get Started Free</Link>
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+                <div className="flex flex-col gap-4 p-4">
+                  <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-medium">Features</a>
+                  <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-medium">How It Works</a>
+                  <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-medium">Pricing</a>
+                  <Link to="/ar" onClick={() => setMobileMenuOpen(false)} className="text-gray-500 font-cairo">العربية</Link>
+                  <div className="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
+                  <Link to="/login" className="text-gray-900 dark:text-white font-semibold">Login</Link>
+                  <Link to="/register" className="text-center py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-semibold"> Get Started </Link>
                 </div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
-        <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
-          <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" style={{ clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)' }}></div>
-        </div>
+      <section className="pt-32 pb-20 lg:pt-40 lg:pb-28 bg-gradient-to-b from-blue-50/50 via-white to-white dark:from-gray-950 dark:via-gray-950 dark:to-gray-900 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
+                <Zap className="w-4 h-4" /> Marketing Infrastructure
+              </div>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.1] mb-6">
+                <span className="block">Stop Guessing What Happens
+After The Click.</span>
+                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">One platform that tracks, targets,
+and optimizes every link you share.</span>
+              </h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-lg leading-relaxed">
+                Built by an affiliate marketer
+who was tired of flying blind.
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <motion.div initial="hidden" animate="visible" variants={containerVariants} className="text-center lg:text-left">
-              <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4 sm:mb-6">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs sm:text-sm font-semibold">
-                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />For Marketers
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-xs sm:text-sm font-semibold">
-                  <Lock className="w-3 h-3 sm:w-4 sm:h-4" />For Creators
-                </span>
-              </motion.div>
-              <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight">
-                <span className="block">One Link.</span>
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">Endless Possibilities.</span>
-              </motion.h1>
-              <motion.p variants={itemVariants} className="text-sm sm:text-base lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
-                Shorten links, build your bio page, track every click — and sell your digital products. Smart Link is the all-in-one tool for creators and marketers.
-              </motion.p>
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-10 text-left bg-white/50 dark:bg-gray-800/50 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-gray-100 dark:border-gray-700 inline-block backdrop-blur-sm w-full sm:w-auto">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0">1</div>
-                  <span className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300">Paste Link</span>
-                </div>
-                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hidden sm:block" />
-                <div className="w-px h-3 sm:h-4 bg-gray-300 dark:bg-gray-600 sm:hidden ml-3.5"></div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0">2</div>
-                  <span className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300">Customize</span>
-                </div>
-                <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hidden sm:block" />
-                <div className="w-px h-3 sm:h-4 bg-gray-300 dark:bg-gray-600 sm:hidden ml-3.5"></div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0">3</div>
-                  <span className="text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-300">Analyze</span>
-                </div>
-              </motion.div>
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start mb-6 sm:mb-10 px-4 sm:px-0">
-                <Link to="/register" className="w-full sm:w-auto">
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto min-h-[48px] px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-2 touch-manipulation">
-                    Start for Free <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </motion.button>
+Geo Targeting. Bot Protection.
+Deep Analytics. A/B Testing.
+
+Everything that happens after the click
+— finally visible.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 mb-10">
+                <Link to="/register">
+                  <button className="w-full sm:w-auto px-7 py-3.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity flex justify-center items-center gap-2">
+                    Get Started Free <ArrowRight className="w-4 h-4" />
+                  </button>
                 </Link>
-                <motion.button
-                  onClick={() => { const el = document.getElementById('how-it-works'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }}
-                  whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                  className="w-full sm:w-auto min-h-[48px] px-6 sm:px-8 py-3 sm:py-4 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl font-bold text-base sm:text-lg border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 shadow-sm hover:shadow-lg transition-all flex items-center justify-center gap-2 group touch-manipulation"
-                >
-                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <Play className="w-3 h-3 sm:w-4 sm:h-4 fill-current ml-0.5" />
-                  </div>
-                  How It Works
-                </motion.button>
-              </motion.div>
-              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-4 text-xs sm:text-sm text-gray-800 dark:text-gray-200 font-medium px-2">
-                {['No credit card', 'Free forever', 'Setup in 2 min'].map((text, i) => (
-                  <div key={i} className="flex items-center gap-1.5 sm:gap-2 bg-white/50 dark:bg-gray-800/50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" /><span className="whitespace-nowrap">{text}</span>
-                  </div>
-                ))}
-              </motion.div>
-              <motion.div variants={itemVariants} className="mt-6 sm:mt-8 flex items-center justify-center lg:justify-start gap-2 sm:gap-3 text-xs sm:text-sm text-blue-600 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-900/20 px-3 sm:px-4 py-2 rounded-xl border border-blue-100 dark:border-blue-800/50 inline-flex">
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" /><span>Join 10+ founders using Smart Link</span>
-              </motion.div>
+                <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto px-7 py-3.5 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors font-semibold text-sm flex justify-center items-center gap-2">
+                  See how it works <Play className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 font-medium">
+                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4" /><span>No credit card</span></div>
+                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4" /><span>Free forever</span></div>
+                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4" /><span>Setup in 2 min</span></div>
+              </div>
             </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative hidden sm:block">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="relative hidden sm:block">
               <VideoDemo />
-              <motion.div animate={floatAnimation} className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-900 z-10">
-                <QrCode className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
-              </motion.div>
-              <motion.div animate={{ ...floatAnimation, transition: { ...floatAnimation.transition, delay: 1.5 } }} className="absolute -bottom-4 -left-4 sm:-bottom-6 sm:-left-6 w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl shadow-xl flex items-center justify-center -rotate-6 ring-4 ring-white dark:ring-gray-900 z-10">
-                <BarChart3 className="w-7 h-7 sm:w-8 sm:h-8 lg:w-10 lg:h-10 text-white" />
-              </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-
-      {/* HOW IT WORKS */}
-      <HowItWorksSection />
-
       {/* Features Section */}
-      <section id="features" className="py-16 sm:py-24 bg-white dark:bg-gray-900 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="text-center mb-12 sm:mb-20">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6">
-              Powerful Tools for<span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">Founders & Marketers</span>
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto px-4">Everything you need to manage your links, track your audience, and grow your brand online.</p>
-          </motion.div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <section id="features" className="py-24 bg-white dark:bg-gray-950">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-300 text-sm font-medium mb-4">Core Features</div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4"> Stop Paying For 3 Tools.
+Get All of It Free.</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Everything you need to manage your links, track your audience, and grow your brand online.</p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: Shield, title: 'Advanced Traffic Shield', description: 'Reduce ad waste from automated traffic. Our multi-signal filtering (IP, behavior, fingerprinting) ensures your budget is focused on real human engagement.', color: 'red' },
-              { icon: Zap, title: 'Auto-Pilot Optimization', description: 'Our performance algorithm automatically routes your traffic to the winning A/B variant, maximizing conversion efficiency without extra manual effort.', color: 'purple' },
-              { icon: BarChart3, title: 'Efficiency Analytics', description: 'Real-time campaign insights. See exactly how much ad waste was reduced and how much performance was recovered via automated optimization.', color: 'blue' },
-              { icon: Smartphone, title: 'Precision Geotargeting', description: 'Route iOS users to the App Store and Android to Google Play instantly. Eliminate friction and ensure every user reaches the right destination.', color: 'green' },
-              { icon: Globe, title: 'Global Campaign Guard', description: 'Redirect users based on their country or language with 0ms latency. Keep your international marketing high-converting and locally relevant.', color: 'orange' },
-              { icon: Code, title: 'Enterprise Integration API', description: 'Integrate our performance protection engine directly into your own workflow or SaaS product to provide enhanced value to your clients.', color: 'indigo' }
-            ].map((feature, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: index * 0.1 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-${feature.color}-100 dark:bg-${feature.color}-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className={`w-6 h-6 sm:w-7 sm:h-7 text-${feature.color}-600 dark:text-${feature.color}-400`} />
+              { icon: Shield, title: 'Advanced Traffic Shield', desc: 'Reduce ad waste from automated traffic. Our multi-signal filtering ensures your budget is focused on real human engagement.' },
+              { icon: Zap, title: 'Auto-Pilot Optimization', desc: 'Our performance algorithm automatically routes your traffic to the winning A/B variant, maximizing conversion efficiency.' },
+              { icon: BarChart3, title: 'Efficiency Analytics', desc: 'Real-time campaign insights. See exactly how much ad waste was reduced and how much performance was recovered.' },
+              { icon: Smartphone, title: 'Precision Geotargeting', desc: 'Route iOS users to the App Store and Android to Google Play instantly. Eliminate friction and ensure accuracy.' },
+              { icon: Globe, title: 'Global Campaign Guard', desc: 'Redirect users based on their country or language with 0ms latency. Keep your international marketing high-converting.' },
+              { icon: Code, title: 'Enterprise Integration API', desc: 'Integrate our performance protection engine directly into your own workflow or SaaS product to provide enhanced value.' }
+            ].map((feature, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="group p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 transition-all duration-300">
+                <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white flex items-center justify-center mb-4">
+                  <feature.icon className="w-5 h-5 text-white dark:text-gray-900" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2 sm:mb-3">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">{feature.description}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}
-            {/* Creator Paywall Feature Card - Redesigned for Premium Look */}
-            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: 0.6 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-white dark:bg-gray-800 rounded-3xl border border-gray-200 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden sm:col-span-2 lg:col-span-1">
-              <div className="absolute top-4 right-4 bg-indigo-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-lg tracking-widest shadow-lg shadow-indigo-600/20">Featured</div>
-              <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform ring-4 ring-indigo-50 dark:ring-indigo-900/10">
-                <Lock className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
+            
+            {/* Creator Paywall Feature - Spans 2 cols on lg, 1 on md */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="group p-8 bg-blue-50/50 dark:bg-blue-500/5 rounded-2xl border border-blue-200 dark:border-blue-500/20 transition-all duration-300 lg:col-span-1 md:col-span-2 relative overflow-hidden flex flex-col">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
+                <Lock className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
-                <span className="text-2xl">💰</span> Creator Paywall
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
+              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">Creator Paywall</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-8 flex-1">
                 Sell digital products, exclusive guides, or premium links directly from your Bio Page. Start earning from your audience instantly.
               </p>
-              
-              <div className="mt-auto p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50 border border-gray-100 dark:border-gray-700">
+              <div className="mt-auto p-4 bg-white dark:bg-gray-900 rounded-xl border border-blue-100 dark:border-blue-500/10">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-white dark:bg-gray-800 rounded-xl shadow-sm flex items-center justify-center flex-shrink-0">
-                    <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                  </div>
+                  <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
                   <div>
-                    <p className="text-xs font-black text-gray-900 dark:text-white uppercase tracking-wider mb-0.5">Securely Powered by Stripe</p>
+                    <p className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-1">Securely Powered by Stripe</p>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-tight">We use Stripe to process payments. Your funds are protected and transferred directly to your bank account with zero hassle.</p>
                   </div>
                 </div>
@@ -832,314 +390,254 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Creator Monetization Journey Section */}
-      <section id="for-creators" className="py-16 sm:py-24 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 dark:from-gray-900 dark:via-purple-900/10 dark:to-gray-900 scroll-mt-20 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-12 sm:mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full text-sm font-bold mb-6">
-              <Lock className="w-4 h-4" /><span>For Content Creators</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6">
-              Turn Your Bio Page Into
-              <span className="block bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mt-2">A Revenue Stream 💸</span>
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              No coding. No complicated setup. Just add a price to your content and start earning — your followers pay directly through your bio link.
-            </p>
-          </motion.div>
+      {/* How It Works */}
+      <HowItWorksSection />
 
-          {/* 3-Step Visual Journey - Classic Redesign */}
-          <div className="grid sm:grid-cols-3 gap-8 mb-16">
+      {/* Creator Monetization Section */}
+      <section className="py-24 bg-white dark:bg-gray-950">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center px-3 py-1.5 rounded-full bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 text-sm font-medium mb-4">For Content Creators</div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">Turn Your Bio Page Into A Revenue Stream</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">No coding. No complicated setup. Just add a price to your content and start earning — your followers pay directly through your bio link.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
             {[
-              {
-                step: '01',
-                icon: '🔗',
-                title: 'Connect Your Bank',
-                desc: 'Easily link your Stripe account through our secure dashboard. This ensures you get paid directly for every sale.',
-                color: 'from-blue-600 to-blue-700',
-                bg: 'bg-white dark:bg-gray-800',
-                border: 'border-gray-200 dark:border-gray-700'
-              },
-              {
-                step: '02',
-                icon: '🔒',
-                title: 'Create Your Product',
-                desc: 'Add a "Paywall" block, set your desired price, and link your secret content. We handle the security.',
-                color: 'from-indigo-600 to-indigo-700',
-                bg: 'bg-white dark:bg-gray-800',
-                border: 'border-gray-200 dark:border-gray-700'
-              },
-              {
-                step: '03',
-                icon: '💰',
-                title: 'Collect Revenue',
-                desc: 'Your audience pays securely via Stripe. Money is transferred to your account instantly with 256-bit encryption.',
-                color: 'from-emerald-600 to-emerald-700',
-                bg: 'bg-white dark:bg-gray-800',
-                border: 'border-gray-200 dark:border-gray-700'
-              }
-            ].map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className={`relative p-8 rounded-3xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl shadow-gray-200/50 dark:shadow-none`}>
-                <div className={`absolute -top-4 left-8 px-4 py-1.5 rounded-xl bg-gradient-to-br ${item.color} text-white font-black text-sm shadow-lg`}>{item.step}</div>
-                <div className="text-4xl mb-6 mt-2">{item.icon}</div>
-                <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-3">{item.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{item.desc}</p>
-                {i < 2 && (
-                  <div className="hidden lg:flex absolute top-1/2 -right-6 w-12 h-12 bg-white dark:bg-gray-700 rounded-full border border-gray-200 dark:border-gray-600 items-center justify-center z-10 shadow-lg transform -translate-y-1/2">
-                    <ArrowRight className="w-6 h-6 text-indigo-500" />
-                  </div>
-                )}
+              { title: 'Connect Your Bank', desc: 'Easily link your Stripe account through our secure dashboard.' },
+              { title: 'Create Your Product', desc: 'Add a "Paywall" block, set your desired price, and link your secret content.' },
+              { title: 'Collect Revenue', desc: 'Your audience pays securely via Stripe. Money is transferred to your account instantly.' }
+            ].map((step, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 text-left">
+                <div className="w-8 h-8 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-sm font-bold flex items-center justify-center mb-6">{i + 1}</div>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">{step.title}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{step.desc}</p>
               </motion.div>
             ))}
           </div>
-
-          {/* What can you sell */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-100 dark:border-gray-700">
-            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">What Can You Sell? 🤔</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { emoji: '📄', label: 'PDF Guides' },
-                { emoji: '🎥', label: 'Exclusive Videos' },
-                { emoji: '🔗', label: 'Secret Links' },
-                { emoji: '💻', label: 'Templates & Tools' },
-                { emoji: '🎵', label: 'Audio Files' },
-                { emoji: '📸', label: 'Photo Presets' },
-                { emoji: '📚', label: 'E-Books' },
-                { emoji: '🌟', label: 'Premium Access' },
-              ].map((item, i) => (
-                <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-gray-50 dark:bg-gray-700/50 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors cursor-default">
-                  <span className="text-2xl">{item.emoji}</span>
-                  <span className="text-xs font-bold text-gray-700 dark:text-gray-300 text-center">{item.label}</span>
-                </motion.div>
+          <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-8 text-center max-w-3xl mx-auto">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">What Can You Sell?</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+              {[ { e: '📄', l: 'PDF Guides' }, { e: '🎥', l: 'Exclusive Videos' }, { e: '🔗', l: 'Secret Links' }, { e: '💻', l: 'Templates & Tools' }, { e: '🎵', l: 'Audio Files' }, { e: '📸', l: 'Photo Presets' }, { e: '📚', l: 'E-Books' }, { e: '🌟', l: 'Premium Access' } ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center gap-2 p-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                  <span className="text-xl">{item.e}</span><span className="text-xs font-bold text-gray-700 dark:text-gray-300">{item.l}</span>
+                </div>
               ))}
             </div>
-            <div className="mt-8 text-center">
-              <Link to="/register">
-                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg shadow-xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all inline-flex items-center gap-2">
-                  <Lock className="w-5 h-5" />
-                  Start Selling for Free <ArrowRight className="w-5 h-5" />
-                </motion.button>
-              </Link>
-              <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">We only take 5% per sale. You keep 95%. 🎉</p>
-            </div>
-          </div>
-
-          <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-3">How the 5% split works</h4>
-            <div className="grid sm:grid-cols-3 gap-3">
-              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/40 p-4 border border-gray-100 dark:border-gray-700">
-                <p className="text-xs uppercase font-black tracking-wider text-gray-500 mb-1">Step 1</p>
-                <p className="text-sm text-gray-700 dark:text-gray-300">Customer pays through Stripe Checkout on your bio page.</p>
-              </div>
-              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/40 p-4 border border-gray-100 dark:border-gray-700">
-                <p className="text-xs uppercase font-black tracking-wider text-gray-500 mb-1">Step 2</p>
-                <p className="text-sm text-gray-700 dark:text-gray-300">Smart Link collects a 5% application fee on that one sale.</p>
-              </div>
-              <div className="rounded-xl bg-gray-50 dark:bg-gray-700/40 p-4 border border-gray-100 dark:border-gray-700">
-                <p className="text-xs uppercase font-black tracking-wider text-gray-500 mb-1">Step 3</p>
-                <p className="text-sm text-gray-700 dark:text-gray-300">The remaining amount is transferred to your connected Stripe account.</p>
-              </div>
-            </div>
+            <Link to="/register">
+              <button className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-semibold hover:opacity-90 transition-opacity">Start Selling for Free</button>
+            </Link>
+            <p className="mt-4 text-xs text-gray-500">We only take 5% per sale. You keep 95%.</p>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 sm:py-24 bg-gray-50 dark:bg-gray-800/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-center mb-12 sm:mb-16 text-gray-900 dark:text-white">Loved by Thousands</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            {[
-              { quote: "Tested SmartLink today, quick honest review. Setup was simple, the dashboard is clean, and everythin...", author: "Karl Beismann", role: "@karlbeis" },
-              { quote: "Makes sharing one link for multiple destinations feel easy and tidy, that’s useful for campaigns or social bios.", author: "Vineer", role: "@vineerpasam" },
-              { quote: "It's a solid tool for creators and businesses who want real data instead of guesses. Clean dashboard and real-time link tracking. Good for link-in-bio pages and short links.", author: "Chandan H", role: "@_Chandan_17" }
+      <section className="py-20 bg-gray-50 dark:bg-gray-900/50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-center mb-16 text-gray-900 dark:text-white">What People Say</h2>
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+             {[
+              { quote: "Tested SmartLink today, quick honest review. Setup was simple, the dashboard is clean, and everythin...", author: "Karl Beismann", role: "@karlbeis", link: "https://x.com/karlbeis" },
+              { quote: "Makes sharing one link for multiple destinations feel easy and tidy, that’s useful for campaigns or social bios.", author: "Vineer", role: "@vineerpasam", link: "https://x.com/vineerpasam" },
+              { quote: "It's a solid tool for creators and businesses who want real data instead of guesses. Clean dashboard and real-time link tracking. Good for link-in-bio pages and short links.", author: "Chandan H", role: "@_Chandan_17", link: "https://x.com/_Chandan_17" }
             ].map((t, i) => (
-              <motion.div key={i} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: i * 0.1 }} className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-xl relative">
-                <Quote className="w-8 h-8 sm:w-10 sm:h-10 text-blue-100 dark:text-blue-900/30 absolute top-4 sm:top-6 right-4 sm:right-6" />
-                <div className="flex gap-1 mb-3 sm:mb-4 text-yellow-500">{[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />)}</div>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 mb-4 sm:mb-6 italic">"{t.quote}"</p>
-                <div><p className="font-bold text-gray-900 dark:text-white text-sm sm:text-base">{t.author}</p><a href={`https://x.com/${t.role.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline">{t.role}</a></div>
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-white dark:bg-gray-900 p-8 rounded-2xl border border-gray-100 dark:border-gray-800 text-left hover:shadow-lg transition-shadow">
+                <div className="flex gap-1 mb-4 text-yellow-500">{[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-4 h-4 fill-current" />)}</div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">"{t.quote}"</p>
+                <div>
+                  <p className="font-bold text-gray-900 dark:text-white text-sm">{t.author}</p>
+                  <a href={t.link} target="_blank" rel="noreferrer" className="text-xs text-blue-600 dark:text-blue-400 hover:underline">{t.role}</a>
+                </div>
               </motion.div>
             ))}
-          </div>
-
-          <div className="mt-16 flex justify-center">
-            {/* TrustBox widget - Mini */}
-            <TrustBox />
           </div>
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 sm:py-32 bg-white dark:bg-gray-900 scroll-mt-20 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-blue-500/5 blur-[120px] rounded-full -z-10"></div>
-        <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-500/5 blur-[120px] rounded-full -z-10"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center mb-16 sm:mb-24">
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-bold mb-6">
-              <Zap className="w-4 h-4" /><span>Investment for Growth</span>
-            </motion.div>
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white mb-6 tracking-tight">
-              Flexible Plans for <span className="text-blue-600">Every Stage</span>
-            </h2>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-10">Start for free, upgrade as you grow. No hidden fees, cancel anytime.</p>
-            <div className="flex items-center justify-center gap-4 mb-8">
-              <span className={`text-sm font-bold ${!isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>Monthly</span>
-              <button onClick={() => setIsYearly(!isYearly)} className="relative w-14 h-8 bg-gray-200 dark:bg-gray-800 rounded-full p-1 transition-colors hover:bg-gray-300 dark:hover:bg-gray-700 active:scale-95">
-                <motion.div animate={{ x: isYearly ? 24 : 0 }} className="w-6 h-6 bg-blue-600 rounded-full shadow-md" />
-              </button>
+      {/* Pricing */}
+      <section id="pricing" className="py-20 bg-white dark:bg-gray-950 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">Flexible Plans for Every Stage</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">Start for free, upgrade as you grow. No hidden fees, cancel anytime.</p>
+            <div className="flex items-center justify-center gap-4">
+              <span className={`text-sm font-semibold ${!isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>Monthly</span>
+<button
+  onClick={() => setIsYearly(!isYearly)}
+ style={{
+  width: 56,
+  height: 30,
+  borderRadius: 20,
+  backgroundColor: isYearly ? '#3b82f6' : '#6b7280',
+  position: 'relative',
+  border: 'none',
+  cursor: 'pointer',
+  transition: 'background-color 0.2s',
+  padding: 0,
+  display: 'inline-flex',
+  alignItems: 'center',  // ← هاد هو المهم
+  boxSizing: 'border-box',
+}}
+>
+  <motion.div
+    animate={{ x: isYearly ? 22 : 0 }}
+    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+ style={{  // الثامب
+  width: 22,
+  height: 22,
+  borderRadius: '50%',
+  backgroundColor: 'white',
+  position: 'absolute',
+  top: 3,              // ← رقم ثابت (height 28 - thumb 22 = 6 ÷ 2 = 3)
+  left: 3,
+}}
+  />
+</button>
               <div className="flex items-center gap-2">
-                <span className={`text-sm font-bold ${isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>Yearly</span>
-                <span className="bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 text-[10px] font-black uppercase px-2 py-0.5 rounded-full ring-1 ring-green-600/20">Save 25%</span>
+                <span className={`text-sm font-semibold ${isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>Yearly</span>
+                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-0.5 rounded-full">Save 25%</span>
               </div>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {PLANS.map((plan, index) => (
-              <motion.div key={plan.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} whileHover={{ y: -10 }}
-                className={`relative p-8 sm:p-10 rounded-[2.5rem] flex flex-col transition-all duration-300 ${plan.popular ? 'bg-gray-900 dark:bg-gray-800 text-white shadow-[0_30px_60px_-15px_rgba(37,99,235,0.3)] scale-100 lg:scale-105 z-10 border-4 border-blue-500' : 'bg-white dark:bg-gray-800/50 text-gray-900 dark:text-white shadow-xl border border-gray-100 dark:border-gray-700/50 backdrop-blur-sm'}`}
-              >
-                {plan.popular && (
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-2 rounded-full text-xs sm:text-sm font-black uppercase tracking-widest shadow-xl ring-4 ring-white dark:ring-gray-900">Most Popular</div>
-                )}
-                <div className="mb-8">
-                  <h3 className={`text-2xl font-black mb-2 uppercase tracking-tight ${plan.popular ? 'text-blue-400' : 'text-blue-600'}`}>{plan.name}</h3>
-                  <p className={`text-sm font-medium ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>{plan.description}</p>
+          <div className="grid md:grid-cols-3 gap-8">
+            {PLANS.map((plan, i) => (
+              <motion.div key={plan.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className={`relative p-8 rounded-2xl flex flex-col ${plan.popular ? 'bg-gray-900 dark:bg-gray-800 text-white border-2 border-blue-500 shadow-xl scale-100 md:scale-[1.02] z-10' : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white'}`}>
+                {plan.popular && <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-semibold rounded-full w-max">Most Popular</div>}
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold mb-2 uppercase">{plan.name}</h3>
+                  <p className={`text-sm ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>{plan.description}</p>
                 </div>
-                <div className="mb-10 flex items-baseline gap-1">
-                  <span className="text-5xl sm:text-6xl font-black tracking-tighter">{isYearly ? plan.price.yearly : plan.price.monthly}</span>
-                  <span className={`text-lg font-bold ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>/mo</span>
+                <div className="mb-8 flex items-baseline gap-1">
+                  <span className="text-4xl font-bold">{isYearly ? plan.price.yearly : plan.price.monthly}</span>
+                  <span className={`text-sm font-medium ${plan.popular ? 'text-gray-400' : 'text-gray-500'}`}>/mo</span>
                 </div>
-                <div className={`h-px w-full mb-10 ${plan.popular ? 'bg-gray-700' : 'bg-gray-100 dark:bg-gray-700'}`}></div>
-                <ul className="space-y-5 mb-12 flex-1">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 ${plan.popular ? 'bg-blue-500/20 text-blue-400' : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600'}`}>
-                        <CheckCircle className="w-4 h-4" />
-                      </div>
-                      <span className={`text-sm sm:text-base font-semibold leading-snug ${plan.popular ? 'text-gray-300' : 'text-gray-600 dark:text-gray-300'}`}>{feature}</span>
+                <ul className="space-y-4 mb-8 flex-1">
+                  {plan.features.map((f, j) => (
+                    <li key={j} className="flex items-start gap-3">
+                      <CheckCircle className={`w-4 h-4 mt-0.5 ${plan.popular ? 'text-blue-400' : 'text-blue-600'}`} />
+                      <span className={`text-sm ${plan.popular ? 'text-gray-300' : 'text-gray-600 dark:text-gray-300'}`}>{f}</span>
                     </li>
                   ))}
                 </ul>
-                <motion.button onClick={() => handleCheckout(plan, isYearly)} whileTap={{ scale: 0.95 }}
-                  className={`w-full py-5 rounded-2xl font-black text-lg transition-all shadow-xl flex items-center justify-center gap-2 mt-auto ${plan.popular ? 'bg-blue-600 text-white hover:bg-blue-500 hover:shadow-blue-500/40' : 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-90'}`}
-                >
-                  <span>{plan.cta}</span>
-                  <ArrowRight className="w-5 h-5" />
-                </motion.button>
-
-                {/* ✅ Trial button — Business plan فقط */}
+                <button onClick={() => handleCheckout(plan, isYearly)} className={`w-full py-3 rounded-xl font-semibold text-sm transition-colors mb-3 ${plan.popular ? 'bg-blue-600 text-white hover:bg-blue-700' : 'border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                  {plan.cta}
+                </button>
                 {plan.trialAvailable && (
-                  <motion.button
-                    onClick={handleStartTrial}
-                    whileTap={{ scale: 0.97 }}
-                    className="mt-4 w-full py-3.5 rounded-2xl font-bold text-sm transition-all border-2 border-purple-400 dark:border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 flex items-center justify-center gap-2"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    🎯 Try free for {plan.trialDays} days — no credit card
-                  </motion.button>
+                  <button onClick={handleStartTrial} className="w-full py-2.5 text-xs font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors">
+                    Try free for {plan.trialDays} days
+                  </button>
                 )}
-
-                {plan.id !== 'free' && (
-                  <p className={`text-center mt-4 text-[10px] font-bold uppercase tracking-widest ${plan.popular ? 'text-gray-500' : 'text-gray-400'}`}>✨ Cancel anytime, no questions asked</p>
-                )}
+                {plan.id !== 'free' && <p className={`text-center mt-3 text-xs ${plan.popular ? 'text-gray-500' : 'text-gray-400'}`}>Cancel anytime, no questions asked</p>}
               </motion.div>
             ))}
-          </div>
-
-          <div className="mt-20 text-center">
-            <p className="text-gray-500 dark:text-gray-400 font-medium">
-              Have questions about our plans?
-              <Link to="/faq" className="text-blue-600 dark:text-blue-400 font-bold ml-1 hover:underline underline-offset-4">Check our FAQ</Link>
-            </p>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 sm:py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-blue-600 dark:bg-blue-900">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 opacity-90"></div>
-          <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
-            <div className="absolute top-0 left-1/4 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white opacity-10 rounded-full blur-3xl"></div>
-          </div>
-        </div>
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10 text-white">
-          <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold mb-6 sm:mb-8">Ready to link smarter?</motion.h2>
-          <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: 0.1 }} className="text-base sm:text-xl text-blue-100 mb-8 sm:mb-10 max-w-2xl mx-auto px-4">
-            Join over 10,000+ creators and businesses who use Smart Link to optimize their online presence.
-          </motion.p>
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: 0.2 }}>
-            <Link to="/register">
-              <button className="px-8 sm:px-10 py-4 sm:py-5 bg-white text-blue-600 rounded-xl sm:rounded-2xl font-bold text-base sm:text-xl shadow-2xl hover:shadow-white/20 hover:scale-105 transition-all min-h-[48px]">Get Started Now - It's Free</button>
-            </Link>
-          </motion.div>
-          <p className="mt-4 sm:mt-6 text-blue-200 text-xs sm:text-sm font-medium">No credit card required • Cancel anytime</p>
+      <section className="py-20 bg-gray-900 dark:bg-gray-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-gray-900 to-indigo-900/40 dark:from-blue-900/20 dark:via-gray-950 dark:to-indigo-900/20 opacity-80"></div>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-64 bg-blue-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h2 className="text-3xl sm:text-5xl font-bold text-white mb-6 tracking-tight">Ready to link smarter?</h2>
+          <p className="text-lg text-gray-300 mb-10 max-w-xl mx-auto leading-relaxed"> Early access — join the founders
+who get it before everyone else. </p>
+          <Link to="/register">
+            <button className="px-8 py-4 bg-white text-gray-900 rounded-xl font-bold text-lg hover:bg-gray-50 hover:scale-105 transition-all shadow-[0_0_40px_rgba(255,255,255,0.3)]">See What Happens After Your Clicks </button>
+          </Link>
+          <p className="mt-6 text-sm text-gray-400 flex items-center justify-center gap-2">
+            <CheckCircle className="w-4 h-4" /> Cancel anytime
+          </p>
         </div>
       </section>
 
       {/* FAQ */}
-      <FAQSection />
+      <div className="py-20 bg-gray-50 dark:bg-gray-900/50">
+        <FAQSection />
+      </div>
 
       {/* About Us */}
-      <AboutUsSection />
+      <section className="py-24 bg-gray-50 dark:bg-gray-900/50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6">Our Mission: Empowering Founders & Creators</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                Smart Link was born from a simple idea: professional-grade marketing tools shouldn't be locked behind expensive subscriptions for those just starting out.
+              </p>
+              <p className="text-gray-600 dark:text-gray-400 leading-relaxed mb-8">
+                Whether you are a SaaS founder launching your first product, a marketer optimizing campaigns, or a creator building your brand, we provide the analytics and targeting tools you need to succeed.
+              </p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-white flex items-center gap-2"><Sparkles className="w-4 h-4 text-blue-500"/> Built with love by a global team of specialists.</p>
+            </div>
+            <div className="space-y-6">
+               {[
+                { title: 'Privacy First', desc: "We don't track your users personally. Only clean, actionable data.", icon: Shield },
+                { title: 'Performance DNA', desc: 'Lightweight links that load in milliseconds across the globe.', icon: Zap },
+                { title: 'Secure & Reliable', desc: '99.9% uptime with enterprise-grade security for every link.', icon: Lock }
+              ].map((v, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 flex items-center justify-center flex-shrink-0 text-gray-900 dark:text-white"><v.icon className="w-5 h-5" /></div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 dark:text-white mb-1">{v.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{v.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 dark:bg-gray-900 pt-12 sm:pt-20 pb-8 sm:pb-10 border-t border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-12 sm:mb-16">
-            <div className="col-span-1 sm:col-span-2 md:col-span-1">
-              <Link to="/" className="flex items-center gap-2 mb-4 sm:mb-6 group">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 transform group-hover:scale-110 transition-transform">
-                  <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
-                </div>
+      <footer className="bg-white dark:bg-gray-950 pt-16 pb-8 border-t border-gray-100 dark:border-white/[0.06]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+            <div className="col-span-2 lg:col-span-2">
+              <Link to="/" className="flex items-center gap-2 mb-4">
+                <img src="/logo-v1.svg" alt="Smart Link" className="w-8 h-8" />
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smart Link</span>
               </Link>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-4 sm:mb-6">The advanced link management platform for modern creators.</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-sm">The advanced link management platform for modern creators.</p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Product</h3>
-              <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dashboard</Link></li>
-                <li><Link to="/pricing" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</Link></li>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Product</h3>
+              <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link to="/dashboard" className="hover:text-gray-900 dark:hover:text-white">Dashboard</Link></li>
+                <li><Link to="/pricing" className="hover:text-gray-900 dark:hover:text-white">Pricing</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Solutions</h3>
-              <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                <li><Link to="/for-creators" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Creators</Link></li>
-                <li><Link to="/for-marketers" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Marketers</Link></li>
-                <li><Link to="/for-ecommerce" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For E-commerce</Link></li>
-                <li><Link to="/for-affiliates" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Affiliates</Link></li>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Solutions</h3>
+              <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link to="/for-creators" className="hover:text-gray-900 dark:hover:text-white">For Creators</Link></li>
+                <li><Link to="/for-marketers" className="hover:text-gray-900 dark:hover:text-white">For Marketers</Link></li>
+                <li><Link to="/for-ecommerce" className="hover:text-gray-900 dark:hover:text-white">For E-commerce</Link></li>
+                <li><Link to="/for-affiliates" className="hover:text-gray-900 dark:hover:text-white">For Affiliates</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Resources</h3>
-              <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                <li><Link to="/faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</Link></li>
-                <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Blog</Link></li>
-                <li><a href="mailto:support@by-smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 text-sm sm:text-base">Legal</h3>
-              <ul className="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                <li><Link to="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</Link></li>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Resources</h3>
+              <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link to="/faq" className="hover:text-gray-900 dark:hover:text-white">FAQ</Link></li>
+                <li><Link to="/blog" className="hover:text-gray-900 dark:hover:text-white">Blog</Link></li>
+                <li><a href="mailto:support@by-smartlink.com" className="hover:text-gray-900 dark:hover:text-white">Contact Support</a></li>
               </ul>
             </div>
           </div>
-          <div className="pt-6 sm:pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm text-center md:text-left">© 2026 Smart Link. All rights reserved.</p>
+          <div className="pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-500">© 2026 Smart Link. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <a href="https://www.uneed.best/tool/smart-link" target="_blank" rel="noreferrer" className="transition-transform hover:scale-105">
-                <img src="https://www.uneed.best/EMBED3.png" alt="Uneed Embed Badge" style={{ height: '42px' }} />
+              <a href="https://www.uneed.best/tool/smart-link" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
+                <img src="https://www.uneed.best/EMBED3.png" alt="Uneed Embed Badge" className="h-10" />
               </a>
-              <a href="https://www.saashub.com/smart-link-pro?utm_source=badge&utm_campaign=badge&utm_content=smart-link-pro&badge_variant=color&badge_kind=approved" target="_blank" rel="noreferrer" className="transition-transform hover:scale-105">
-                <img src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1" alt="Smart Link Pro badge" style={{ height: '42px' }} />
+              <a href="https://www.saashub.com/smart-link-pro?utm_source=badge&utm_campaign=badge&utm_content=smart-link-pro&badge_variant=color&badge_kind=approved" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
+                <img src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1" alt="Smart Link Pro badge" className="h-10" />
               </a>
+              <div className="flex gap-4 ml-4">
+                <Link to="/privacy" className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white">Privacy Policy</Link>
+                <Link to="/terms" className="text-sm text-gray-500 hover:text-gray-900 dark:hover:text-white">Terms of Service</Link>
+              </div>
             </div>
           </div>
         </div>

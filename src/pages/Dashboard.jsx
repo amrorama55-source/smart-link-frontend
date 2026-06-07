@@ -26,7 +26,9 @@ import {
   Zap,
   Target,
   Crown,
-  Users
+  Users,
+  Share2,
+  Info
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -271,6 +273,42 @@ export default function Dashboard() {
           })}
         </div>
 
+        {/* ✅ NEW: Onboarding State for users with links but no clicks */}
+        {stats?.totalLinks > 0 && stats?.totalClicks === 0 && (
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 sm:p-8 mb-8 text-center relative overflow-hidden">
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-indigo-400/10 rounded-full blur-2xl"></div>
+            
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100 dark:border-blue-700">
+                <Share2 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Your short link is ready! What's next? 🚀
+              </h2>
+              <div className="flex flex-col items-center gap-3 max-w-2xl mx-auto mb-6">
+                <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                  You've successfully created your link, but we haven't recorded any clicks yet. 
+                </p>
+                <div className="flex items-start gap-3 bg-blue-100/50 dark:bg-blue-900/30 p-4 rounded-xl text-left border border-blue-200 dark:border-blue-800">
+                  <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-blue-900 dark:text-blue-200">
+                    <strong>How it works:</strong> We track the traffic that goes through your <strong>new short link</strong>. We do not scan or analyze the original long URL you provided. Share your short link with your audience, and once they start clicking it, your dashboard will fill up with real-time insights, locations, and device stats!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate('/links')}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 transition-all text-sm flex items-center justify-center gap-2 mx-auto group"
+              >
+                <Copy className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                Go to Links to Copy & Share
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Quick Stats - 2 columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
           {/* Unique Visitors */}
@@ -431,7 +469,7 @@ export default function Dashboard() {
                 Welcome to Smart Link! 🚀
               </h3>
               <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-lg mx-auto">
-                Paste any long URL to shorten it, track clicks in real-time, and analyze your audience's location and devices. Your journey starts here!
+                Smart Link is a powerful URL shortener. Paste your long URL to create a short, shareable link. <strong>When people click your new short link</strong>, we'll track their clicks, location, and devices right here on your dashboard!
               </p>
               <button
                 onClick={() => navigate('/links')}

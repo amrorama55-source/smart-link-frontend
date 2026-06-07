@@ -35,6 +35,7 @@ const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazyWithRetry(() => import('./pages/ResetPassword'));
 const VerifyEmail = lazyWithRetry(() => import('./pages/VerifyEmail'));
 const Landing = lazyWithRetry(() => import('./pages/Landing'));
+const LandingAR = lazyWithRetry(() => import('./pages/LandingAR'));
 const Dashboard = lazyWithRetry(() => import('./pages/Dashboard'));
 const Links = lazyWithRetry(() => import('./pages/EnhancedLinks'));
 const Analytics = lazyWithRetry(() => import('./pages/Analytics'));
@@ -96,7 +97,11 @@ function AppRoutes() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingRoute><Landing /></LandingRoute>} />
-        <Route path="/for-:niche" element={<LandingRoute><NicheLanding /></LandingRoute>} />
+        <Route path="/ar" element={<LandingRoute><LandingAR /></LandingRoute>} />
+        <Route path="/for-creators" element={<LandingRoute><NicheLanding nicheKey="creators" /></LandingRoute>} />
+        <Route path="/for-marketers" element={<LandingRoute><NicheLanding nicheKey="marketers" /></LandingRoute>} />
+        <Route path="/for-ecommerce" element={<LandingRoute><NicheLanding nicheKey="ecommerce" /></LandingRoute>} />
+        <Route path="/for-affiliates" element={<LandingRoute><NicheLanding nicheKey="affiliates" /></LandingRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />

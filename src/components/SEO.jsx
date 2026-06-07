@@ -2,9 +2,9 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 export default function SEO({ title, description, image, url, videoData }) {
-    const siteTitle = 'Smart Link - Elite Link Management Platform';
+    const siteTitle = 'Smart Link — Marketing Infrastructure for Affiliates, Creators & Media Buyers';
     const finalTitle = title ? `${title} | Smart Link` : siteTitle;
-    const defaultDescription = 'Smart Link is an enterprise-grade platform for shrinking links, tracking conversions, running A/B tests, and building elegant bio pages.';
+    const defaultDescription = 'Replace ClickMagick, Voluum & Linktree with one platform. Geo Targeting, Bot Protection, Deep Analytics & A/B Testing.';
     const finalDescription = description || defaultDescription;
     const finalImage = image || 'https://www.by-smartlink.com/twitter-poster.png';
     

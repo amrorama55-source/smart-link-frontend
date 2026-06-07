@@ -12,13 +12,9 @@ export default function AuthCallback() {
   useEffect(() => {
     const processCallback = async () => {
       try {
-        const token = searchParams.get('token');
         const error = searchParams.get('error');
 
-        console.log('🔍 Auth Callback:', { 
-          token: token ? 'present' : 'missing', 
-          error 
-        });
+        console.log('🔍 Auth Callback:', { error });
 
         if (error) {
           console.error('❌ OAuth Error:', error);
@@ -42,53 +38,43 @@ export default function AuthCallback() {
           return;
         }
 
-        if (token) {
-          console.log('✅ Token received, logging in...');
-          
-          try {
-            await loginWithToken(token);
-            console.log('✅ Login successful');
-            setStatus('success');
-            
-            setTimeout(() => {
-              console.log('🔀 Redirecting to dashboard...');
-              navigate('/dashboard', { replace: true });
-            }, 1000);
-            
-          } catch (loginError) {
-            console.error('❌ Login with token failed:', loginError);
-            
-            // ✅ تحليل الخطأ بشكل دقيق
-            let errorMsg = 'Login failed. Please try again.';
-            
-            if (loginError.response) {
-              const { status, data } = loginError.response;
-              
-              if (status === 404) {
-                errorMsg = 'Account not found. Your Google account may not be registered yet.';
-              } else if (status === 429) {
-                errorMsg = 'Too many attempts. Please wait a few minutes and try again.';
-              } else if (data?.error) {
-                errorMsg = data.error;
-              }
-            }
-            
-            setStatus('error');
-            setErrorMessage(errorMsg);
-            
-            setTimeout(() => {
-              navigate('/login?error=' + encodeURIComponent(errorMsg), { replace: true });
-            }, 3000);
-          }
-          
-        } else {
-          console.error('⚠️ No token and no error');
-          setStatus('error');
-          setErrorMessage('No authentication token received');
+        // No token in URL - server sets HttpOnly cookie before redirect.
+        // Just call /auth/me to hydrate user state.
+        console.log('✅ Fetching user from cookie session...');
+        
+        try {
+          await loginWithToken();
+          console.log('✅ Login successful');
+          setStatus('success');
           
           setTimeout(() => {
-            navigate('/login?error=no_token', { replace: true });
-          }, 2000);
+            console.log('🔀 Redirecting to dashboard...');
+            navigate('/dashboard', { replace: true });
+          }, 1000);
+          
+        } catch (loginError) {
+          console.error('❌ Login failed:', loginError);
+          
+          let errorMsg = 'Login failed. Please try again.';
+          
+          if (loginError.response) {
+            const { status: httpStatus, data } = loginError.response;
+            
+            if (httpStatus === 404) {
+              errorMsg = 'Account not found. Your Google account may not be registered yet.';
+            } else if (httpStatus === 429) {
+              errorMsg = 'Too many attempts. Please wait a few minutes and try again.';
+            } else if (data?.error) {
+              errorMsg = data.error;
+            }
+          }
+          
+          setStatus('error');
+          setErrorMessage(errorMsg);
+          
+          setTimeout(() => {
+            navigate('/login?error=' + encodeURIComponent(errorMsg), { replace: true });
+          }, 3000);
         }
 
       } catch (err) {

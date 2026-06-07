@@ -1,4 +1,11 @@
 {
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -33,12 +40,6 @@
           "value": "application/xml; charset=utf-8"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/((?!assets/).*)",
-      "destination": "/index.html"
     }
   ]
 }
