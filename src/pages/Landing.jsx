@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PLANS } from '../utils/plans';
@@ -11,6 +11,7 @@ import {
   Users, Clock, Lock, Code, Star, Quote, Copy, Play, Layout, Settings
 } from 'lucide-react';
 import SEO from '../components/SEO';
+import TrustBox from '../components/TrustBox';
 
 /* ========================================
    Live Product Demo Component (Hero Visual)
@@ -486,45 +487,6 @@ function AboutUsSection() {
         </div>
       </div>
     </section>
-  );
-}
-
-/* ========================================
-   TrustBox Component
-   ======================================== */
-function TrustBox() {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    // If window.Trustpilot is available it means that we need to load the TrustBox from our ref.
-    // If it's not, it means the script you pasted into <head /> isn't loaded just yet.
-    // When it is, it will automatically load the TrustBox.
-    const loadWidget = () => {
-      if (window.Trustpilot) {
-        window.Trustpilot.loadFromElement(ref.current, true);
-      }
-    };
-    
-    // Attempt to load immediately, and also set a small timeout in case it's still parsing
-    loadWidget();
-    const timeout = setTimeout(loadWidget, 1500);
-    return () => clearTimeout(timeout);
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="trustpilot-widget bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-auto flex items-center justify-center min-h-[120px] transition-all hover:shadow-2xl"
-      data-locale="en-US"
-      data-template-id="53aa8807dec7e10d38f59f32"
-      data-businessunit-id="69f7390bebbd3c000d06bf18"
-      data-style-height="150px"
-      data-style-width="100%"
-      data-theme="light"
-      data-token="b67fd1c8-4724-4922-ae25-038862ea786a"
-    >
-      <a href="https://www.trustpilot.com/review/by-smartlink.com" target="_blank" rel="noopener noreferrer">Trustpilot</a>
-    </div>
   );
 }
 

@@ -12,22 +12,15 @@ export function AuthProvider({ children }) {
     initializeAuth();
   }, []);
 
+  // On mount, try to restore the session from the HttpOnly cookie.
+  // No localStorage check — the cookie is sent automatically.
   const initializeAuth = async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setLoading(false);
-      return;
-    }
     try {
       const data = await getCurrentUser();
       setUser(data.user);
       setError(null);
-    } catch (err) {
-      if (err.response?.status === 404) {
-        localStorage.removeItem('token');
-      }
+    } catch {
       setUser(null);
-      setError(err.response?.data?.message || 'Authentication failed');
     } finally {
       setLoading(false);
     }
@@ -36,7 +29,6 @@ export function AuthProvider({ children }) {
   const login = async (credentials) => {
     try {
       const data = await loginApi(credentials);
-      localStorage.setItem('token', data.token);
       setUser(data.user);
       setError(null);
       return data;
@@ -47,24 +39,16 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Google OAuth token handler
-  const loginWithToken = async (token) => {
+  // Called after Google OAuth redirect (cookie already set by the backend).
+  // The `token` parameter is kept for backward compatibility but ignored —
+  // authentication is handled by the HttpOnly cookie.
+  const loginWithToken = async () => {
     try {
-      localStorage.setItem('token', token);
-      try {
-        const data = await getCurrentUser();
-        setUser(data.user);
-        setError(null);
-        return data;
-      } catch (fetchError) {
-        if (fetchError.response?.status === 404) {
-          localStorage.removeItem('token');
-          throw new Error('User not found. Please register first.');
-        }
-        throw fetchError;
-      }
+      const data = await getCurrentUser();
+      setUser(data.user);
+      setError(null);
+      return data;
     } catch (err) {
-      localStorage.removeItem('token');
       setUser(null);
       const errorMessage = err.message || err.response?.data?.error || 'Authentication failed';
       setError(errorMessage);
@@ -75,7 +59,6 @@ export function AuthProvider({ children }) {
   const register = async (userData) => {
     try {
       const data = await registerApi(userData);
-      localStorage.setItem('token', data.token);
       setUser(data.user);
       setError(null);
       return data;
@@ -86,8 +69,12 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('token');
+  const logout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch {
+      // Server-side clear failed; proceed with client-side clear anyway
+    }
     setUser(null);
     setError(null);
   };
@@ -102,7 +89,7 @@ export function AuthProvider({ children }) {
       setUser(data.user);
       return data.user;
     } catch (err) {
-      console.error('❌ Failed to refresh user:', err);
+      console.error('Failed to refresh user:', err);
     }
   };
 
@@ -133,4 +120,3 @@ export function useAuth() {
   }
   return context;
 }
-

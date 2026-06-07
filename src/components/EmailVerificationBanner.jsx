@@ -17,13 +17,8 @@ export default function EmailVerificationBanner() {
   const resendEmail = async () => {
     setSending(true);
     try {
-      const token = localStorage.getItem('token');
       const fullUrl = `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/resend-verification`;
-      await axios.post(
-        fullUrl,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.post(fullUrl, {}, { withCredentials: true, headers: { 'X-Requested-With': 'XMLHttpRequest' } });
       setSent(true);
       setTimeout(() => setSent(false), 5000);
     } catch (error) {
