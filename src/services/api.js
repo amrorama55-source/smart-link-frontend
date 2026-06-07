@@ -4,32 +4,21 @@ import axios from 'axios';
 import { API_URL } from '../config'; // Import from config
 
 const api = axios.create({
-  // ✅ FIX: Avoid redundant /api if API_URL already includes it
   baseURL: API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`,
+  withCredentials: true, // send HttpOnly auth cookie cross-origin
   headers: {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest', // CSRF protection
   },
 });
 
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    // Both ways to ensure compatibility with all Axios versions
-    config.headers['Authorization'] = `Bearer ${token}`;
-    if (config.headers.set) config.headers.set('Authorization', `Bearer ${token}`);
-  }
-  return config;
-});
-
-// Handle 401 responses
+// Handle 401 responses — redirect to login (auth cookie is managed by the server)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      if (window.location.pathname !== '/login') {
+      if (window.location.pathname !== '/login' &&
+          window.location.pathname !== '/auth/callback') {
         window.location.href = '/login';
       }
     }

@@ -13,7 +13,6 @@ import api, {
   getDashboardStats,
   updateProfile,
   changePassword,
-  updateSubscription,
   deleteAccount,
   getSessions
 } from '../services/api';
@@ -37,7 +36,6 @@ export default function Profile() {
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false });
   const [subscription, setSubscription] = useState(null);
-  const [selectedPlan, setSelectedPlan] = useState('free');
   const [isYearly, setIsYearly] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState('');
   const [deletePassword, setDeletePassword] = useState('');
@@ -178,18 +176,8 @@ export default function Profile() {
     } finally { setLoading(false); }
   };
 
-  const handleChangePlan = async (plan) => {
-    if (!confirm(`Are you sure you want to ${plan === 'free' ? 'downgrade' : 'upgrade'} to ${plan} plan?`)) return;
-    setLoading(true);
-    try {
-      await updateSubscription(plan);
-      alert('Plan updated successfully!');
-      setSelectedPlan(plan);
-      loadProfileData();
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to update plan');
-    } finally { setLoading(false); }
-  };
+  // Plan upgrades are handled through the billing/payment page (Stripe/LemonSqueezy).
+  // Self-service downgrade to free is available via Settings → Manage Subscription.
 
   const handleDeleteAccount = async () => {
     if (deleteConfirm !== 'DELETE') { alert('Please type DELETE to confirm'); return; }
