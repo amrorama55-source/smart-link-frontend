@@ -72,14 +72,24 @@ export default function LinkModal({
               <Link2 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 flex-shrink-0" />
               <span className="truncate">{editingLink ? 'Edit Link' : 'Create Link'}</span>
             </h2>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-shrink-0 p-2.5 rounded-xl text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
-              aria-label="Close"
-            >
-              <X className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <button
+                type="button"
+                onClick={() => setShowAdvancedFeatures(!showAdvancedFeatures)}
+                className="text-xs sm:text-sm font-bold px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors flex-shrink-0 flex items-center gap-1"
+              >
+                <Zap className="w-3 h-3 sm:w-4 sm:h-4" />
+                {showAdvancedFeatures ? 'Simple Mode' : 'Advanced Mode'}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-shrink-0 p-2.5 rounded-xl text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+                aria-label="Close"
+              >
+                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
+            </div>
           </div>
 
           {/* Tabs - موحدة بنفس الحجم لجميع الأجهزة */}
@@ -87,7 +97,7 @@ export default function LinkModal({
             {/* Mobile & Desktop: horizontal scroll with equal width tabs */}
             <div className="overflow-x-auto scrollbar-hide">
               <div className="flex gap-0 p-0 min-w-full">
-                {tabs.map((tab) => {
+                {tabs.filter(tab => showAdvancedFeatures || tab.id === 'basic').map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
                   const isLocked = tab.premium && (tab.required === 'Business' ? !hasBusinessAccess : !hasProAccess);
@@ -106,7 +116,7 @@ export default function LinkModal({
                           : 'bg-transparent text-gray-400 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/40 hover:text-gray-600 dark:hover:text-gray-200 border-transparent'
                         }
                       `}
-                      style={{ minWidth: '20%' }} // Each tab takes 20% on larger screens
+                      style={{ minWidth: showAdvancedFeatures ? '20%' : '100%' }}
                     >
                       <Icon className="w-4 h-4 sm:w-4 sm:h-4 flex-shrink-0" />
                       <span className="truncate text-center sm:text-left">{tab.label}</span>

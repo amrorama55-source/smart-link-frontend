@@ -67,7 +67,7 @@ export default function Register() {
     if (!formData.email.trim()) errs.email = 'Email is required';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) errs.email = 'Invalid email address';
     if (!formData.password) errs.password = 'Password is required';
-    else if (formData.password.length < 6) errs.password = 'Minimum 6 characters';
+    else if (formData.password.length < 8) errs.password = 'Minimum 8 characters';
     if (formData.password !== formData.confirmPassword) errs.confirm = 'Passwords do not match';
     return errs;
   };
@@ -277,7 +277,7 @@ export default function Register() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Min. 6 characters"
+                    placeholder="Min. 8 characters"
                     autoComplete="new-password"
                     className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
                       ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'

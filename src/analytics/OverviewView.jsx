@@ -32,10 +32,10 @@ export default function OverviewView({ data, analytics }) {
           color="purple"
         />
         <StatCard
-          icon={Smartphone}
-          title="Mobile Traffic"
-          value={`${data.stats.mobilePercentage}%`}
-          color="orange"
+          icon={ShieldCheck}
+          title="Bots Blocked"
+          value={data.stats.botClicks.toLocaleString()}
+          color="red"
         />
       </div>
 

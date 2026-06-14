@@ -167,7 +167,7 @@ export default function Profile() {
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) { alert('New passwords do not match'); return; }
-    if (passwordData.newPassword.length < 6) { alert('Password must be at least 6 characters'); return; }
+    if (passwordData.newPassword.length < 8) { alert('Password must be at least 8 characters'); return; }
     setLoading(true);
     try {
       await changePassword({ currentPassword: passwordData.currentPassword, newPassword: passwordData.newPassword });

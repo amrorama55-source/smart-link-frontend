@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PLANS } from '../utils/plans';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   Link2, Menu, X, Moon, Sun, ChevronRight, ChevronLeft,
   BarChart3, Globe, Smartphone, Target, TrendingUp,
@@ -11,6 +12,7 @@ import {
   Users, Clock, Lock, Code, Star, Quote, Copy, Play, Layout, Settings
 } from 'lucide-react';
 import SEO from '../components/SEO';
+
 function VideoDemo() {
   return (
     <div className="relative group rounded-2xl overflow-hidden shadow-2xl border border-gray-200/20 dark:border-white/10 bg-gray-950">
@@ -195,7 +197,7 @@ function FAQSection() {
 }
 
 export default function LandingPageAR() {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+  const { darkMode, toggleDarkMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isYearly, setIsYearly] = useState(false);
@@ -203,8 +205,9 @@ export default function LandingPageAR() {
 
   const SUCCESS_URL = 'https://www.by-smartlink.com/success';
 
+  const navigate = useNavigate();
   const handleStartTrial = () => {
-    window.location.href = '/register?trial=true';
+    navigate('/register?trial=true');
   };
 
   const buildCheckoutUrl = (baseUrl, userId) => {
@@ -216,20 +219,14 @@ export default function LandingPageAR() {
   };
 
   const handleCheckout = (plan, yearly) => {
-    if (plan.id === 'free') { window.location.href = '/register'; return; }
-    if (plan.id === 'trial') { window.location.href = '/register?trial=true'; return; }
-    if (!user) { window.location.href = '/register?redirect=pricing'; return; }
+    if (plan.id === 'free') { navigate('/register'); return; }
+    if (plan.id === 'trial') { navigate('/register?trial=true'); return; }
+    if (!user) { navigate('/register?redirect=pricing'); return; }
     const rawUrl = yearly ? plan.checkoutUrl.yearly : plan.checkoutUrl.monthly;
     const checkoutUrl = buildCheckoutUrl(rawUrl, user?._id || user?.id);
     if (!checkoutUrl) { alert('Checkout link not available'); return; }
     window.location.href = checkoutUrl;
   };
-
-  useEffect(() => {
-    if (darkMode) { document.documentElement.classList.add('dark'); }
-    else { document.documentElement.classList.remove('dark'); }
-    localStorage.setItem('darkMode', darkMode.toString());
-  }, [darkMode]);
 
   useEffect(() => {
     const handleScroll = () => { setScrolled(window.scrollY > 20); };
@@ -257,16 +254,19 @@ export default function LandingPageAR() {
               <a href="#how-it-works" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">كيف يعمل</a>
               <a href="#pricing" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">الأسعار</a>
             </div>
-            <div className="hidden md:flex items-center gap-4">
-              <Link to="/" className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-sans pt-1">English</Link>
-              <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
+            
+            {/* Actions */}
+            <div className="hidden md:flex items-center gap-4 pt-1">
+              <Link to="/" className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-sans">English</Link>
+              <button onClick={toggleDarkMode} className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                 {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
-              <Link to="/login" className="text-sm font-semibold text-gray-700 dark:text-gray-200 pt-1">تسجيل الدخول</Link>
-              <Link to="/register" className="text-sm font-semibold px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">ابدأ مجاناً</Link>
+              <Link to="/login" className="text-sm font-semibold text-gray-700 dark:text-gray-200">تسجيل الدخول</Link>
+              <Link to="/register" className="text-sm font-semibold px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:opacity-90 transition-opacity">ابدأ مجاناً</Link>
             </div>
+            
             <div className="md:hidden flex items-center gap-2">
-               <button onClick={() => setDarkMode(!darkMode)} className="p-2 text-gray-500">
+               <button onClick={toggleDarkMode} className="p-2 text-gray-500">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-gray-500">

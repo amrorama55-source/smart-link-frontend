@@ -11,9 +11,13 @@ const api = axios.create({
   },
 });
 
-// Add token to requests (removed; using HttpOnly cookie)
+// Add CSRF token to requests
 api.interceptors.request.use((config) => {
-  // Cookies are sent automatically by the browser
+  // Read XSRF-TOKEN from cookies
+  const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
+  if (match) {
+    config.headers['X-CSRF-Token'] = match[2];
+  }
   return config;
 });
 // Ensure cookies are included in cross-origin requests

@@ -31,6 +31,25 @@ const prerenderRoutes = [
   '/for-affiliates',
   '/terms',
   '/privacy',
+  '/blog/arabic-link-optimization-2026',
+  '/blog/why-stop-using-long-links-2026',
+  '/blog/curiosity-vs-intent-2026',
+  '/blog/smart-link-vs-linktree-2026',
+  '/blog/10-best-link-in-bio-tools-tiktok-2026',
+  '/blog/track-instagram-conversions-free',
+  '/blog/smart-link-vs-beacons-2026',
+  '/blog/bio-link-seo-guide-2026',
+  '/blog/monetize-bio-link-2026',
+  '/blog/best-bio-link-tools-arabic-2026',
+  '/blog/increase-instagram-sales-2026-en',
+  '/blog/increase-instagram-sales-2026-ar',
+  '/blog/whatsapp-marketing-smart-link-ar',
+  '/blog/how-to-monetize-bio-link-ar',
+  '/blog/smart-link-vs-bitly-arabic',
+  '/blog/increase-tiktok-followers-smart-links',
+  '/blog/what-is-smart-link-ar',
+  '/blog/what-is-smart-link-en',
+  '/blog/free-saas-marketing-platforms-2026'
 ];
 
 const prerenderPlugin = (!IS_VERCEL && PrerenderPlugin)
@@ -41,6 +60,8 @@ const prerenderPlugin = (!IS_VERCEL && PrerenderPlugin)
         renderAfterDocumentEvent: 'render-event',
         headless: true,
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        maxConcurrentRoutes: 4,
+        timeout: 120000,
       },
     })
   : null;

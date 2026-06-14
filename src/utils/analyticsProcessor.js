@@ -104,7 +104,9 @@ export function processAnalyticsData(analytics) {
       uniqueVisitors: analytics.uniqueVisitors || 0,
       returningVisitors: analytics.returningVisitors || 0,
       countries: analytics.clicksByCountry?.length || 0,
-      mobilePercentage: analytics.mobilePercentage || 0
+      mobilePercentage: analytics.mobilePercentage || 0,
+      botClicks: analytics.botClicks || 0,
+      botPercentage: analytics.totalClicks ? (((analytics.botClicks || 0) / analytics.totalClicks) * 100).toFixed(1) : 0
     }
   };
 }

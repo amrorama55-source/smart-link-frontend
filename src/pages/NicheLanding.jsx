@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   Link2, Menu, X, Moon, Sun, ChevronRight,
   ArrowRight, CheckCircle, Play, Sparkles, QrCode, BarChart3
@@ -12,7 +13,7 @@ import { nichesData } from '../utils/nichesData';
 // TrustBox logic is handled inline in the component
 
 export default function NicheLanding({ nicheKey }) {
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem('darkMode') === 'true');
+  const { darkMode, toggleDarkMode } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -36,12 +37,6 @@ export default function NicheLanding({ nicheKey }) {
     const timeout = setTimeout(loadWidget, 1500);
     return () => clearTimeout(timeout);
   }, [nicheKey]);
-
-  useEffect(() => {
-    if (darkMode) { document.documentElement.classList.add('dark'); }
-    else { document.documentElement.classList.remove('dark'); }
-    localStorage.setItem('darkMode', darkMode.toString());
-  }, [darkMode]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,7 +83,7 @@ export default function NicheLanding({ nicheKey }) {
 
             <div className="hidden lg:flex items-center gap-8">
               <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-2"></div>
-              <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center" aria-label="Toggle dark mode">
+              <button onClick={toggleDarkMode} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center" aria-label="Toggle dark mode">
                 <AnimatePresence mode="wait">
                   {darkMode
                     ? <motion.div key="sun" initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 90 }} transition={{ duration: 0.2 }}><Sun className="w-5 h-5" /></motion.div>
@@ -105,7 +100,7 @@ export default function NicheLanding({ nicheKey }) {
             </div>
 
             <div className="flex items-center gap-2 lg:hidden">
-              <button onClick={() => setDarkMode(!darkMode)} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle dark mode">
+              <button onClick={toggleDarkMode} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle dark mode">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle mobile menu">

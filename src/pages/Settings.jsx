@@ -6,7 +6,7 @@ import {
   User, Lock, CreditCard, Trash2, LogOut, Monitor,
   Smartphone, Globe, Shield, CheckCircle, XCircle,
   Save, Eye, EyeOff, AlertTriangle, ArrowRight,
-  ExternalLink, FileText, Zap, Crown, X as XIcon
+  ExternalLink, FileText, Zap, Crown, X as XIcon, Code
 } from 'lucide-react';
 import api, { getSubscriptionPortalUrl, cancelSubscription, getInvoices } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -43,6 +43,13 @@ export default function Settings() {
   // Subscription state
   const [subscription, setSubscription] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState('free');
+
+  // Developer state
+  const [developerData, setDeveloperData] = useState({
+    apiKey: null,
+    globalWebhookUrl: '',
+    newlyGeneratedKey: null
+  });
   const [invoices, setInvoices] = useState([]);
   const [portalLoading, setPortalLoading] = useState(false);
   const [cancelLoading, setCancelLoading] = useState(false);
@@ -96,6 +103,11 @@ export default function Settings() {
         email: data.user.email
       });
       setSelectedPlan(data.user.plan);
+      setDeveloperData({
+        apiKey: data.user.apiKey,
+        globalWebhookUrl: data.user.globalWebhookUrl || '',
+        newlyGeneratedKey: null
+      });
     } catch (error) {
       console.error('Failed to load profile:', error);
     }
@@ -157,8 +169,8 @@ export default function Settings() {
       return;
     }
 
-    if (passwordData.newPassword.length < 6) {
-      alert('Password must be at least 6 characters');
+    if (passwordData.newPassword.length < 8) {
+      alert('Password must be at least 8 characters');
       return;
     }
 
@@ -334,12 +346,45 @@ export default function Settings() {
     }
   };
 
+  const handleGenerateApiKey = async () => {
+    if (!window.confirm('Generating a new API key will invalidate the old one. Continue?')) return;
+    try {
+      setLoading(true);
+      const { data } = await api.post('/api/settings/api-key/generate');
+      setDeveloperData(prev => ({
+        ...prev,
+        apiKey: data.apiKey.substring(0, 8) + '...',
+        newlyGeneratedKey: data.apiKey
+      }));
+      success('API Key generated successfully');
+    } catch (err) {
+      error(err.response?.data?.error || 'Failed to generate API Key');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateWebhook = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const { data } = await api.post('/api/settings/webhook', { url: developerData.globalWebhookUrl });
+      setDeveloperData(prev => ({ ...prev, globalWebhookUrl: data.webhookUrl || '' }));
+      success('Webhook updated successfully');
+    } catch (err) {
+      error(err.response?.data?.error || 'Failed to update Webhook');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const tabs = [
     { id: 'profile', label: 'Profile Information', icon: User, shortLabel: 'Profile' },
     { id: 'password', label: 'Security & Password', icon: Lock, shortLabel: 'Password' },
     { id: 'sessions', label: 'Active Sessions', icon: Monitor, shortLabel: 'Sessions' },
     { id: 'subscription', label: 'Subscription & Billing', icon: CreditCard, shortLabel: 'Billing' },
     { id: 'payouts', label: 'Creator Payouts', icon: Zap, shortLabel: 'Payouts' },
+    { id: 'developer', label: 'Developer & API', icon: Code, shortLabel: 'API' },
     { id: 'security', label: 'Account Security', icon: Shield, shortLabel: 'Security' }
   ];
 
@@ -911,6 +956,82 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
+
+            {/* Developer Tab */}
+            {activeTab === 'developer' && (
+              <div className="space-y-4 sm:space-y-6">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                    <Code className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">API Key</h2>
+                  </div>
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Use your API key to interact with Smart Link programmatically.
+                    </p>
+                    
+                    {developerData.newlyGeneratedKey ? (
+                      <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p className="text-sm font-semibold text-green-800 dark:text-green-300 mb-2">
+                          Please copy your new API Key. It will only be shown once!
+                        </p>
+                        <code className="block p-3 bg-white dark:bg-gray-900 border border-green-100 dark:border-green-800 rounded text-green-900 dark:text-green-400 font-mono text-sm break-all">
+                          {developerData.newlyGeneratedKey}
+                        </code>
+                      </div>
+                    ) : developerData.apiKey ? (
+                      <div>
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Key</p>
+                        <code className="inline-block px-3 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded text-gray-800 dark:text-gray-200 font-mono text-sm">
+                          {developerData.apiKey}
+                        </code>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-gray-500 italic">No API key generated yet.</p>
+                    )}
+
+                    <button
+                      onClick={handleGenerateApiKey}
+                      disabled={loading}
+                      className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                    >
+                      {developerData.apiKey ? 'Generate New Key' : 'Generate API Key'}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                    <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Global Webhook</h2>
+                  </div>
+                  <form onSubmit={handleUpdateWebhook} className="space-y-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Receive real-time notifications when your links are clicked.
+                    </p>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Webhook URL
+                      </label>
+                      <input
+                        type="url"
+                        value={developerData.globalWebhookUrl}
+                        onChange={(e) => setDeveloperData({ ...developerData, globalWebhookUrl: e.target.value })}
+                        placeholder="https://your-server.com/webhook"
+                        className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                    >
+                      {loading ? 'Saving...' : 'Save Webhook'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
 
                 {/* Downgrade Warning Modal */}
                 {showDowngradeWarning && downgradePlan && (

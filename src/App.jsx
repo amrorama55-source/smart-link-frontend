@@ -4,6 +4,16 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastProvider';
+import { useEffect } from 'react';
+
+function RenderTrigger() {
+  useEffect(() => {
+    // Fire event after a tiny delay to ensure DOM is fully painted
+    const timer = setTimeout(() => document.dispatchEvent(new Event('render-event')), 100);
+    return () => clearTimeout(timer);
+  }, []);
+  return null;
+}
 
 // Helper to automatically reload the page if a chunk fails to load (e.g. after a new deployment)
 const lazyWithRetry = (componentImport) =>
@@ -73,19 +83,19 @@ function LoadingScreen() {
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
-  return user ? children : <Navigate to="/login" />;
+  return user ? <>{children}<RenderTrigger /></> : <Navigate to="/login" />;
 }
 
 function PublicRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
-  return user ? <Navigate to="/dashboard" /> : children;
+  return user ? <Navigate to="/dashboard" /> : <>{children}<RenderTrigger /></>;
 }
 
 function LandingRoute({ children }) {
   const { user, loading } = useAuth();
   if (loading) return <LoadingScreen />;
-  return children;
+  return <>{children}<RenderTrigger /></>;
 }
 
 // ==========================================
@@ -117,15 +127,15 @@ function AppRoutes() {
         <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
-        {/* Public Bio & Legal Pages */}
-        <Route path="/@:username" element={<BioPage />} />
-        <Route path="/u/:username" element={<BioPage />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:id" element={<BlogPost />} />
-        <Route path="/success" element={<Success />} />
+        {/* Public Bio & Legal Pages (No auth guard, but need RenderTrigger) */}
+        <Route path="/@:username" element={<><BioPage /><RenderTrigger /></>} />
+        <Route path="/u/:username" element={<><BioPage /><RenderTrigger /></>} />
+        <Route path="/privacy" element={<><PrivacyPolicy /><RenderTrigger /></>} />
+        <Route path="/terms" element={<><TermsOfService /><RenderTrigger /></>} />
+        <Route path="/faq" element={<><FAQ /><RenderTrigger /></>} />
+        <Route path="/blog" element={<><Blog /><RenderTrigger /></>} />
+        <Route path="/blog/:id" element={<><BlogPost /><RenderTrigger /></>} />
+        <Route path="/success" element={<><Success /><RenderTrigger /></>} />
         <Route path="/pricing" element={<PrivateRoute><Pricing /></PrivateRoute>} />
 
         {/* 404 - Redirect to home */}
