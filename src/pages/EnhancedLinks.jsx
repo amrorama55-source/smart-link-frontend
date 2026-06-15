@@ -13,6 +13,9 @@ import {
 import LinkModal from '../components/LinkModal';
 import QRCodeModal from '../components/QRCodeModal';
 import LinkCard from '../components/LinkCard';
+import ChannelPickerModal from '../components/ChannelPickerModal';
+import PlaybookDrawer from '../components/PlaybookDrawer';
+import { getChannelForLink } from '../utils/playbookData';
 
 export default function EnhancedLinks() {
   const [links, setLinks] = useState([]);
@@ -70,6 +73,13 @@ export default function EnhancedLinks() {
   const [copiedCode, setCopiedCode] = useState(null);
   const [selectedQR, setSelectedQR] = useState(null);
   const [showAdvancedFeatures, setShowAdvancedFeatures] = useState(false);
+
+  // ─── Channel Onboarding State ───────────────────────────────────
+  const [showChannelPicker, setShowChannelPicker] = useState(false);
+  const [newlyCreatedLink, setNewlyCreatedLink] = useState(null);
+  const [showPlaybook, setShowPlaybook] = useState(false);
+  const [activePlaybookLink, setActivePlaybookLink] = useState(null);
+  const [activeChannel, setActiveChannel] = useState(null);
 
   useEffect(() => {
     loadLinks();
@@ -617,14 +627,27 @@ const validateForm = () => {
     if (editingLink) {
       await updateLink(editingLink.shortCode, payload);
       addToast('Link updated successfully! 🎉', 'success');
+      setShowModal(false);
+      setEditingLink(null);
+      loadLinks();
     } else {
-      await createLink(payload);
-      addToast('Link created! 🚀 Share it now.', 'success');
+      const result = await createLink(payload);
+      // ─── Trigger Channel Picker after successful creation ───
+      setShowModal(false);
+      setEditingLink(null);
+      await loadLinks();
+      // Use the returned link data to show the picker
+      const createdLink = result?.link || result;
+      if (createdLink?.shortCode) {
+        setNewlyCreatedLink({
+          ...createdLink,
+          shortUrl: `${SHORT_URL_BASE}/${createdLink.customAlias || createdLink.shortCode}`,
+        });
+        setShowChannelPicker(true);
+      } else {
+        addToast('Link created! 🚀 Share it now.', 'success');
+      }
     }
-
-    setShowModal(false);
-    setEditingLink(null);
-    loadLinks();
     
   } catch (error) {
     console.error('❌ Submit Error:', error);
@@ -914,6 +937,14 @@ const updatePixel = (index, field, value) => {
                 onCopy={copyToClipboard}
                 copiedCode={copiedCode}
                 onReload={loadLinks}
+                onOpenPlaybook={(l) => {
+                  const ch = getChannelForLink(l.shortCode);
+                  if (ch) {
+                    setActivePlaybookLink(l);
+                    setActiveChannel(ch);
+                    setShowPlaybook(true);
+                  }
+                }}
               />
             ))}
           </div>
@@ -977,6 +1008,30 @@ const updatePixel = (index, field, value) => {
           onCopy={copyToClipboard}
         />
       )}
+
+      {/* ─── Channel Picker — appears after link creation ─── */}
+      <ChannelPickerModal
+        show={showChannelPicker}
+        link={newlyCreatedLink}
+        onClose={() => {
+          setShowChannelPicker(false);
+          addToast('Link created! 🚀 Share it now.', 'success');
+        }}
+        onSelectChannel={(channelId) => {
+          setShowChannelPicker(false);
+          setActivePlaybookLink(newlyCreatedLink);
+          setActiveChannel(channelId);
+          setShowPlaybook(true);
+        }}
+      />
+
+      {/* ─── Playbook Drawer ─── */}
+      <PlaybookDrawer
+        show={showPlaybook}
+        onClose={() => setShowPlaybook(false)}
+        channelId={activeChannel}
+        link={activePlaybookLink}
+      />
     </div>
   );
 }

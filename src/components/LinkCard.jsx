@@ -1,9 +1,10 @@
 import { SHORT_URL_BASE } from '../config';
 import ConversionTracking from '../components/ConversionTracking';
 import CustomDomain from './tabs/CustomDomain';
+import { getChannelForLink, CHANNELS } from '../utils/playbookData';
 import {
   Link2, Copy, ExternalLink, QrCode, CheckCircle,
-  Edit3, Trash2, Target, Globe2, Calendar, Shield, Zap, TrendingUp
+  Edit3, Trash2, Target, Globe2, Calendar, Shield, Zap, TrendingUp, MapPin
 } from 'lucide-react';
 
 export default function LinkCard({
@@ -13,8 +14,11 @@ export default function LinkCard({
   onShowQR,
   onCopy,
   copiedCode,
-  onReload
+  onReload,
+  onOpenPlaybook,
 }) {
+  const savedChannel = getChannelForLink(link.shortCode);
+  const channelData = savedChannel ? CHANNELS[savedChannel] : null;
   // ✅ FIXED: Always build URL from SHORT_URL_BASE to avoid stale localhost values in DB
   const getShortUrl = () => {
     // Priority 1: Custom domain (if verified) — takes precedence
@@ -187,7 +191,18 @@ export default function LinkCard({
           </div >
 
           {/* Actions */}
-          < div className="flex sm:flex-col gap-2" >
+          <div className="flex sm:flex-col gap-2">
+            {/* Playbook button — only show if channel is saved */}
+            {channelData && onOpenPlaybook && (
+              <button
+                onClick={() => onOpenPlaybook(link)}
+                className={`p-2 rounded-lg transition-all touch-target flex items-center justify-center ${channelData.bgLight} hover:opacity-80`}
+                title={`${channelData.name} Playbook`}
+                aria-label="Open channel playbook"
+              >
+                <span className="text-base leading-none">{channelData.emoji}</span>
+              </button>
+            )}
             <button
               onClick={() => onEdit(link)}
               className="p-2 hover:bg-green-50 dark:hover:bg-green-900/20 text-green-600 dark:text-green-400 rounded transition touch-target"

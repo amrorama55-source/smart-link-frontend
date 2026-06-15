@@ -10,6 +10,12 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastProvider';
 import { SHORT_URL_BASE } from '../config';
 import ProfitInsights from '../components/analytics/ProfitInsights';
+import MilestoneToast from '../components/MilestoneToast';
+import {
+  MILESTONE_THRESHOLDS,
+  wasMilestoneNotified,
+  saveMilestoneNotified,
+} from '../utils/playbookData';
 import {
   Link2,
   MousePointerClick,
@@ -36,6 +42,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [pendingMilestones, setPendingMilestones] = useState([]);
   const navigate = useNavigate();
   const { user } = useAuth();
   const { success, info, warning } = useToast();
@@ -108,6 +115,24 @@ export default function Dashboard() {
     try {
       const data = await getDashboardStats();
       setStats(data.stats);
+      // ─── Milestone Detection ─────────────────────────────────
+      if (data.stats?.topLinks?.length) {
+        const found = [];
+        data.stats.topLinks.forEach((link) => {
+          const clicks = link.totalClicks || 0;
+          MILESTONE_THRESHOLDS.forEach((threshold) => {
+            if (clicks >= threshold && !wasMilestoneNotified(link.shortCode, threshold)) {
+              found.push({
+                shortCode: link.shortCode,
+                linkTitle: link.title,
+                milestone: threshold,
+              });
+              saveMilestoneNotified(link.shortCode, threshold);
+            }
+          });
+        });
+        if (found.length) setPendingMilestones(found);
+      }
     } catch (error) {
       console.error('Failed to load stats:', error);
     } finally {
@@ -488,6 +513,14 @@ export default function Dashboard() {
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
       />
+
+      {/* ─── Milestone Toast ─── */}
+      {pendingMilestones.length > 0 && (
+        <MilestoneToast
+          milestones={pendingMilestones}
+          onDismiss={() => setPendingMilestones([])}
+        />
+      )}
     </div >
   );
 }
