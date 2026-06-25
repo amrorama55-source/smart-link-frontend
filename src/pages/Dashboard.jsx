@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastProvider';
 import { SHORT_URL_BASE } from '../config';
 import ProfitInsights from '../components/analytics/ProfitInsights';
+import SmartInsights from '../components/analytics/SmartInsights';
 import MilestoneToast from '../components/MilestoneToast';
 import {
   MILESTONE_THRESHOLDS,
@@ -240,6 +241,13 @@ export default function Dashboard() {
             Upgrade Plan
           </button>
         </div>
+
+        {/* ✅ NEW: Smart AI Insights Layer */}
+        {stats?.smartInsights && stats.smartInsights.length > 0 && (
+          <div className="mt-8">
+            <SmartInsights insights={stats.smartInsights} />
+          </div>
+        )}
 
         {/* ✅ NEW: Profit Intelligence Section */}
         {stats?.profitInsights && (

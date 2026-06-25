@@ -1,10 +1,30 @@
+# SmartLink — robots.txt
+# Canonical domain: https://www.by-smartlink.com
+
+# ── Block all bots from private app pages ──
 User-agent: *
 Allow: /
 Disallow: /dashboard
+Disallow: /dashboard/
 Disallow: /analytics
+Disallow: /analytics/
 Disallow: /settings
+Disallow: /settings/
+Disallow: /links
+Disallow: /links/
+Disallow: /bio
+Disallow: /bio/
+Disallow: /profile
+Disallow: /profile/
 Disallow: /admin
+Disallow: /admin/
 Disallow: /auth/
 Disallow: /api/
 
+# ── Block API subdomain entirely ──
+User-agent: *
+Disallow: /
+Host: api.by-smartlink.com
+
+# ── Sitemap ──
 Sitemap: https://www.by-smartlink.com/sitemap.xml

@@ -18,6 +18,7 @@ import DeviceView from '../analytics/DeviceView';
 
 // Import utilities
 import { processAnalyticsData } from '../utils/analyticsProcessor';
+import SmartInsights from '../components/analytics/SmartInsights';
 
 export default function Analytics() {
   const { user } = useAuth();
@@ -245,6 +246,13 @@ export default function Analytics() {
             ))}
           </select>
         </div>
+
+        {/* ✅ NEW: Smart AI Insights Layer */}
+        {analytics?.smartInsights && analytics.smartInsights.length > 0 && (
+          <div className="mb-6">
+            <SmartInsights insights={analytics.smartInsights} />
+          </div>
+        )}
 
         {/* View Tabs */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md mb-6 p-2">

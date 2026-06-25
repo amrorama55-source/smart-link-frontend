@@ -168,6 +168,7 @@ export default function LandingPage() {
               <a href="#roi" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">ROI</a>
               <a href="#compare" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Compare</a>
               <a href="#pricing" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Pricing</a>
+              <Link to="/blog" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Blog</Link>
             </div>
 
             <div className="hidden md:flex items-center gap-4">
@@ -552,10 +553,16 @@ export default function LandingPage() {
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Legal & Support</h3>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Resources</h3>
               <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
+                <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">📝 Blog</Link></li>
                 <li><a href="#faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</a></li>
                 <li><a href="mailto:support@by-smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Legal</h3>
+              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
                 <li><Link to="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
                 <li><Link to="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</Link></li>
               </ul>
@@ -566,6 +573,12 @@ export default function LandingPage() {
             <div className="flex items-center gap-4">
               <a href="https://www.uneed.best/tool/smart-link" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
                 <img src="https://www.uneed.best/EMBED3.png" alt="Uneed Embed Badge" className="h-8" />
+              </a>
+              <a href="https://pitchwall.co/product/by-smartlink?utm_source=badge" style={{display: "inline-flex"}} target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
+                <img src="https://pitchwall.co/images/listed/pitchwall-light.png" width="180" height="60" alt="Listed on PitchWall" className="h-8 w-auto" />
+              </a>
+              <a href="https://fazier.com/launches/www.by-smartlink.com" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
+                <img src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light" width="120" alt="Fazier badge" className="h-8 w-auto" />
               </a>
             </div>
           </div>
