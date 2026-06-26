@@ -580,6 +580,9 @@ export default function LandingPage() {
               <a href="https://fazier.com/launches/www.by-smartlink.com" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
                 <img src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=light" width="120" alt="Fazier badge" className="h-8 w-auto" />
               </a>
+              <a href="https://peerpush.com/p/smart-link-clbl" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
+                <img src="https://peerpush.com/p/smart-link-clbl/badge.png" alt="Smart Link on PeerPush" className="h-8 w-auto" />
+              </a>
             </div>
           </div>
         </div>
