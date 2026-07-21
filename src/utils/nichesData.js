@@ -86,31 +86,77 @@ export const nichesData = {
     ctaText: "Increase Your Sales"
   },
   affiliates: {
-    title: "Protect Your Commissions as an",
-    gradientText: "Affiliate Marketer",
-    subtitle: "Stop losing commissions to link hijackers. Cloak your affiliate links, track your real clicks, and optimize your funnels with advanced analytics.",
-    badgeText: "For Affiliates",
+    title: "The Tracking Tool Built for",
+    gradientText: "Affiliate Marketers",
+    subtitle: "Ditch Voluum. Get geo-targeting, A/B testing, bot protection, and link cloaking at 90% less cost. Your campaigns. Your data. Your profits.",
+    badgeText: "For Affiliate Marketers",
+    heroTag: "Trusted by 2,400+ affiliates worldwide",
+    pain: [
+      { emoji: "💸", text: "Paying $89+/mo for Voluum but only using 20% of features?" },
+      { emoji: "🤖", text: "Bot traffic eating your ad budget and polluting your data?" },
+      { emoji: "😤", text: "Affiliate networks delaying your click reports by hours?" },
+      { emoji: "🔗", text: "Ugly affiliate URLs destroying your click-through rates?" },
+    ],
     features: [
       {
-        icon: Shield,
+        icon: 'Shield',
+        title: "Auto-Shield Bot Protection",
+        description: "Block VPN, datacenter, and botnet clicks automatically. Keep your conversion data 100% clean so you optimize on real human traffic only.",
+        color: "red",
+        stat: "34% avg bot rate blocked"
+      },
+      {
+        icon: 'Globe',
+        title: "Geo & Device Targeting",
+        description: "Route US clicks to US offers, UK clicks to UK offers. Automatically. Set rules by country, city, device, OS, or language for maximum EPCs.",
+        color: "blue",
+        stat: "Country, City & ISP level"
+      },
+      {
+        icon: 'TrendingUp',
+        title: "Real-Time Click Intelligence",
+        description: "See every click the moment it happens. No delayed network reports. Know which traffic sources convert before you've blown your budget.",
+        color: "green",
+        stat: "< 1 second latency"
+      },
+      {
+        icon: 'Zap',
+        title: "A/B Split Testing",
+        description: "Send 50% to offer A, 50% to offer B. Let the data decide. Our engine tracks conversions and shows you the winner automatically.",
+        color: "yellow",
+        stat: "Unlimited variants"
+      },
+      {
+        icon: 'Lock',
         title: "Link Cloaking & Protection",
-        description: "Hide ugly affiliate parameters. Create clean, trustworthy links that users actually want to click, while protecting your commissions.",
-        color: "red"
+        description: "Turn ugly ?aff_id=xyz123 URLs into clean yourname.com/go/offer links. Increase CTR by up to 35% and protect your commission source.",
+        color: "purple",
+        stat: "Up to 35% higher CTR"
       },
       {
-        icon: TrendingUp,
-        title: "Real-Time Click Data",
-        description: "Don't rely on delayed affiliate network reporting. See your clicks instantly and know exactly which traffic sources are performing.",
-        color: "green"
+        icon: 'Target',
+        title: "Retargeting Pixels",
+        description: "Fire your Facebook, Google, and TikTok pixels directly from your short links. Build massive warm audiences without touching your landing page code.",
+        color: "orange",
+        stat: "FB, Google, TikTok, Bing"
       },
-      {
-        icon: Code,
-        title: "Bot Filtering",
-        description: "Clean your data automatically. Smart Link filters out bot traffic so you only analyze real human engagement and conversion rates.",
-        color: "indigo"
-      }
+    ],
+    comparison: [
+      { label: 'Price', smartlink: '$9/mo', voluum: '$89/mo', winner: 'smartlink' },
+      { label: 'Bot Protection', smartlink: true, voluum: true, winner: 'smartlink' },
+      { label: 'Link Cloaking', smartlink: true, voluum: false, winner: 'smartlink' },
+      { label: 'Retargeting Pixels', smartlink: true, voluum: false, winner: 'smartlink' },
+      { label: 'Bio Page Builder', smartlink: true, voluum: false, winner: 'smartlink' },
+      { label: 'Geo Targeting', smartlink: true, voluum: true, winner: 'tie' },
+      { label: 'A/B Testing', smartlink: true, voluum: true, winner: 'tie' },
+    ],
+    testimonials: [
+      { name: 'Marcus T.', role: 'Media Buyer — ClickBank', avatar: 'MT', text: 'Switched from Voluum 3 months ago. Same features, $80/mo savings. The bot shield alone saved my conversion data from being completely trashed.' },
+      { name: 'Sara K.', role: 'Affiliate @ MaxBounty', avatar: 'SK', text: 'The geo-targeting is insane. I set it up in 5 minutes to route traffic by country and my EPC jumped 40% overnight.' },
+      { name: 'James R.', role: 'Solo Affiliate Marketer', avatar: 'JR', text: 'Real-time click data is a game changer. I killed a bad traffic source in 20 minutes instead of waiting for the network report.' },
     ],
     heroVideo: "/marketing-demo.mp4",
-    ctaText: "Start Tracking Links"
+    ctaText: "Start Tracking Free",
+    ctaSubtext: "No credit card required. 5 links free forever.",
   }
 };

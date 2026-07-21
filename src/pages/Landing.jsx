@@ -7,10 +7,11 @@ import { useTheme } from '../context/ThemeContext';
 import {
   Shield, Zap, Target, Globe, BarChart3, ChevronRight, CheckCircle, 
   Menu, X, Moon, Sun, ArrowRight, MousePointerClick, TrendingUp, AlertTriangle,
-  Link2, Layout, Star, Clock, Lock
+  Link2, Layout, Star, Clock, Lock, Copy, CheckCircle2, Loader2
 } from 'lucide-react';
 import SEO from '../components/SEO';
 import VideoDemo from '../components/VideoDemo';
+import InteractiveDemo from '../components/InteractiveDemo';
 
 // Creative Organic Shape Component
 const OrganicShape = ({ className, color }) => (
@@ -18,6 +19,107 @@ const OrganicShape = ({ className, color }) => (
     <path fill={color} d="M42.7,-62.9C54.4,-53.8,62.4,-39.9,68.1,-25.1C73.8,-10.3,77.2,5.5,74.1,20.4C71,35.3,61.4,49.2,48.5,58.3C35.6,67.4,19.3,71.7,2.8,67.8C-13.7,63.9,-30.4,51.8,-43.3,40.1C-56.2,28.4,-65.4,17.1,-69.1,3.4C-72.8,-10.3,-71.1,-26.4,-62.4,-39.2C-53.7,-52,-38,-61.5,-23.4,-65.8C-8.8,-70.1,4.7,-69.2,18.5,-66.1C32.3,-63.1,46.3,-58.1,42.7,-62.9Z" transform="translate(100 100)" />
   </svg>
 );
+
+// 2. Hero Shortener Hook Component
+function HeroShortener() {
+  const [url, setUrl] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, loading, success
+  const [shortUrl, setShortUrl] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleShorten = (e) => {
+    e.preventDefault();
+    if (!url) return;
+    setStatus('loading');
+    
+    // Simulate API delay
+    setTimeout(() => {
+      const randomStr = Math.random().toString(36).substring(2, 7);
+      setShortUrl(`by-smartlink.com/${randomStr}`);
+      setStatus('success');
+    }, 1500);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shortUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (status === 'success') {
+    return (
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-3xl shadow-2xl max-w-2xl mx-auto w-full relative overflow-hidden text-left">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-16 h-16 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
+        </div>
+        <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 text-center">Your link is protected and live!</h3>
+        <p className="text-gray-500 mb-6 font-medium text-center">Copy your new smart link. To see who clicks it and block bots, create your free account.</p>
+        
+        <div className="flex flex-col sm:flex-row items-center gap-3 bg-gray-50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6">
+          <div className="flex-1 font-mono text-lg font-bold text-blue-600 dark:text-blue-400 truncate px-4">
+            {shortUrl}
+          </div>
+          <button onClick={copyToClipboard} className="w-full sm:w-auto px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
+            {copied ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+        </div>
+
+        <Link to={`/register?redirect=dashboard&url=${encodeURIComponent(url)}`}>
+          <button className="w-full py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-black text-lg shadow-[0_0_30px_rgba(37,99,235,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+            Claim My Link & View Analytics <ArrowRight className="w-5 h-5" />
+          </button>
+        </Link>
+        <p className="text-xs text-center text-gray-400 font-bold uppercase tracking-wider mt-4">No credit card required</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleShorten} className="relative max-w-2xl mx-auto w-full">
+      <div className="relative group">
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+        <div className="relative flex flex-col sm:flex-row items-center bg-white dark:bg-gray-900 rounded-[2rem] p-2 border border-gray-200 dark:border-gray-800 shadow-2xl">
+          <div className="flex items-center pl-6 pr-4 py-4 w-full sm:w-auto flex-1">
+            <Link2 className="w-6 h-6 text-gray-400 mr-3 shrink-0" />
+            <input 
+              type="url" 
+              required
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="Paste your long link here..." 
+              className="w-full bg-transparent border-none outline-none text-gray-900 dark:text-white text-lg font-medium placeholder-gray-400"
+              disabled={status === 'loading'}
+            />
+          </div>
+          <button 
+            type="submit" 
+            disabled={status === 'loading'}
+            className="w-full sm:w-auto px-8 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[1.5rem] font-black text-lg hover:scale-105 transition-all shadow-lg shadow-black/10 disabled:opacity-70 disabled:hover:scale-100 flex items-center justify-center gap-2 m-1"
+          >
+            {status === 'loading' ? (
+              <>
+                <Loader2 className="w-6 h-6 animate-spin" /> Shortening...
+              </>
+            ) : (
+              <>
+                Shorten & Protect <ArrowRight className="w-5 h-5" />
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-gray-500">
+        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> 14-Day Free Trial</span>
+        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> Blocks bots instantly</span>
+        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> Deep analytics</span>
+      </div>
+    </form>
+  );
+}
 
 // 3. ROI Calculator Component
 function ROICalculator() {
@@ -219,16 +321,11 @@ export default function LandingPage() {
               The average affiliate loses 34% of their budget to bot traffic, wrong GEOs, and blind clicks. Smart Link shows you exactly what's happening — and fixes it in one click.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/register">
-                <button className="w-full sm:w-auto px-10 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full font-black text-xl hover:scale-105 transition-transform shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_40px_-15px_rgba(255,255,255,0.3)] flex items-center justify-center gap-3">
-                  Protect My Traffic Free <ArrowRight className="w-6 h-6" />
-                </button>
-              </Link>
+            <div className="mb-16">
+              <HeroShortener />
             </div>
-            <p className="mt-6 text-sm font-bold text-gray-500 mb-16">Replacing ClickMagick + Voluum + Linktree for serious marketers</p>
             
-            <div className="relative hidden sm:block">
+            <div className="relative hidden sm:block mt-12">
               <VideoDemo />
             </div>
           </motion.div>
@@ -550,6 +647,7 @@ export default function LandingPage() {
               <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
                 <li><Link to="/for-marketers" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Marketers</Link></li>
                 <li><Link to="/for-affiliates" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Affiliates</Link></li>
+                <li><a href="https://smart-link-api.lemonsqueezy.com/affiliates" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 dark:hover:text-green-400 transition-colors text-green-600 dark:text-green-400 font-bold">Earn Money (Affiliates)</a></li>
               </ul>
             </div>
             <div>

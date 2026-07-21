@@ -35,7 +35,8 @@ import {
   Crown,
   Users,
   Share2,
-  Info
+  Info,
+  DollarSign
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -222,6 +223,28 @@ export default function Dashboard() {
         {/* Trial Banner - Only show for trial users */}
         {user?.plan === 'trial' && <TrialBanner />}
         <DowngradeNotice />
+
+        {/* Affiliate Banner */}
+        <div className="mb-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-emerald-500/20 relative overflow-hidden mt-6">
+          <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-1">Love Smart Link? Earn 30% recurring commission!</h3>
+              <p className="text-emerald-50 text-sm">Join our affiliate program and get paid every month for every customer you refer.</p>
+            </div>
+          </div>
+          <a
+            href="https://smart-link-api.lemonsqueezy.com/affiliates"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 bg-white text-teal-600 hover:bg-emerald-50 rounded-xl font-bold transition-colors whitespace-nowrap w-full sm:w-auto text-center shadow-sm relative z-10"
+          >
+            Become an Affiliate
+          </a>
+        </div>
 
         {/* Header — human, not corporate */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

@@ -9,9 +9,111 @@ import {
   BarChart3, Globe, Smartphone, Target, TrendingUp,
   Eye, MousePointerClick, Calendar, Zap, Shield,
   QrCode, CheckCircle, ArrowRight, ArrowLeft, Sparkles,
-  Users, Clock, Lock, Code, Star, Quote, Copy, Play, Layout, Settings
+  Users, Clock, Lock, Code, Star, Quote, Copy, Play, Layout, Settings,
+  CheckCircle2, Loader2
 } from 'lucide-react';
 import SEO from '../components/SEO';
+
+// 2. Hero Shortener Hook Component
+function HeroShortener() {
+  const [url, setUrl] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, loading, success
+  const [shortUrl, setShortUrl] = useState('');
+  const [copied, setCopied] = useState(false);
+
+  const handleShorten = (e) => {
+    e.preventDefault();
+    if (!url) return;
+    setStatus('loading');
+    
+    // Simulate API delay
+    setTimeout(() => {
+      const randomStr = Math.random().toString(36).substring(2, 7);
+      setShortUrl(`by-smartlink.com/${randomStr}`);
+      setStatus('success');
+    }, 1500);
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(shortUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (status === 'success') {
+    return (
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-8 rounded-3xl shadow-2xl max-w-2xl mx-auto w-full relative overflow-hidden text-right">
+        <div className="absolute top-0 left-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl -ml-16 -mt-16"></div>
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-16 h-16 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 text-center">تمت حماية رابطك وهو يعمل الآن!</h3>
+        <p className="text-gray-500 mb-6 font-medium text-center">انسخ رابطك الذكي الجديد. لرؤية من يضغط عليه وحجب البوتات، أنشئ حسابك المجاني.</p>
+        
+        <div className="flex flex-col sm:flex-row-reverse items-center gap-3 bg-gray-50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-100 dark:border-gray-800 mb-6">
+          <div className="flex-1 font-mono text-lg font-bold text-blue-600 dark:text-blue-400 truncate px-4 text-left" dir="ltr">
+            {shortUrl}
+          </div>
+          <button onClick={copyToClipboard} className="w-full sm:w-auto px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
+            {copied ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+            {copied ? 'تم النسخ!' : 'نسخ'}
+          </button>
+        </div>
+
+        <Link to={`/register?redirect=dashboard&url=${encodeURIComponent(url)}`}>
+          <button className="w-full py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-lg shadow-[0_0_30px_rgba(37,99,235,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
+            احصل على رابطي وشاهد التحليلات <ArrowLeft className="w-5 h-5" />
+          </button>
+        </Link>
+        <p className="text-xs text-center text-gray-400 font-bold tracking-wider mt-4">لا يتطلب بطاقة ائتمانية</p>
+      </motion.div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleShorten} className="relative max-w-2xl mx-auto w-full">
+      <div className="relative group">
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+        <div className="relative flex flex-col sm:flex-row items-center bg-white dark:bg-gray-900 rounded-[2rem] p-2 border border-gray-100 dark:border-gray-800 shadow-2xl">
+          <button 
+            type="submit" 
+            disabled={status === 'loading'}
+            className="w-full sm:w-auto px-8 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[1.5rem] font-bold text-lg hover:scale-105 transition-all shadow-lg shadow-black/10 disabled:opacity-70 disabled:hover:scale-100 flex items-center justify-center gap-2 m-1"
+          >
+            {status === 'loading' ? (
+              <>
+                <Loader2 className="w-6 h-6 animate-spin" /> جاري الاختصار...
+              </>
+            ) : (
+              <>
+                اختصار وحماية <ArrowLeft className="w-5 h-5" />
+              </>
+            )}
+          </button>
+          <div className="flex items-center pr-6 pl-4 py-4 w-full sm:w-auto flex-1 flex-row-reverse">
+            <Link2 className="w-6 h-6 text-gray-400 ml-3 shrink-0" />
+            <input 
+              type="url" 
+              required
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="الصق رابطك الطويل هنا..." 
+              className="w-full bg-transparent border-none outline-none text-gray-900 dark:text-white text-lg font-medium placeholder-gray-400 text-right"
+              disabled={status === 'loading'}
+            />
+          </div>
+        </div>
+      </div>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm font-semibold text-gray-500">
+        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> تجربة مجانية 14 يوم</span>
+        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> يحجب البوتات فوراً</span>
+        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> تحليلات دقيقة</span>
+      </div>
+    </form>
+  );
+}
 
 function VideoDemo() {
   return (
@@ -307,15 +409,8 @@ export default function LandingPageAR() {
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-lg leading-relaxed">
                 اختصر الروابط، أنشئ صفحة البايو، تتبّع كل نقرة — وبِع منتجاتك الرقمية. المنصة المتكاملة للمبدعين والمسوقين.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <Link to="/register">
-                  <button className="w-full sm:w-auto px-7 py-3.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity flex justify-center items-center gap-2">
-                    ابدأ مجاناً <ArrowLeft className="w-4 h-4" />
-                  </button>
-                </Link>
-                <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })} className="w-full sm:w-auto px-7 py-3.5 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 rounded-xl hover:border-gray-300 dark:hover:border-gray-700 transition-colors font-semibold text-sm flex justify-center items-center gap-2">
-                  شاهد كيف يعمل <Play className="w-4 h-4" />
-                </button>
+              <div className="mb-12">
+                <HeroShortener />
               </div>
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-500 font-medium">
                 <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4" /><span>بدون بطاقة ائتمان</span></div>

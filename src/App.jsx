@@ -62,6 +62,7 @@ const Pricing = lazyWithRetry(() => import('./pages/Pricing'));
 const Blog = lazyWithRetry(() => import('./pages/Blog'));
 const BlogPost = lazyWithRetry(() => import('./pages/BlogPost'));
 const NicheLanding = lazyWithRetry(() => import('./pages/NicheLanding'));
+const AffiliatesLanding = lazyWithRetry(() => import('./pages/AffiliatesLanding'));
 
 // ==========================================
 // Loading Component
@@ -111,7 +112,7 @@ function AppRoutes() {
         <Route path="/for-creators" element={<LandingRoute><NicheLanding nicheKey="creators" /></LandingRoute>} />
         <Route path="/for-marketers" element={<LandingRoute><NicheLanding nicheKey="marketers" /></LandingRoute>} />
         <Route path="/for-ecommerce" element={<LandingRoute><NicheLanding nicheKey="ecommerce" /></LandingRoute>} />
-        <Route path="/for-affiliates" element={<LandingRoute><NicheLanding nicheKey="affiliates" /></LandingRoute>} />
+        <Route path="/for-affiliates" element={<LandingRoute><AffiliatesLanding /></LandingRoute>} />
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
         <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
@@ -136,7 +137,7 @@ function AppRoutes() {
         <Route path="/blog" element={<><Blog /><RenderTrigger /></>} />
         <Route path="/blog/:id" element={<><BlogPost /><RenderTrigger /></>} />
         <Route path="/success" element={<><Success /><RenderTrigger /></>} />
-        <Route path="/pricing" element={<PrivateRoute><Pricing /></PrivateRoute>} />
+        <Route path="/pricing" element={<LandingRoute><Pricing /></LandingRoute>} />
 
         {/* 404 - Redirect to home */}
         <Route path="*" element={<Navigate to="/" />} />
