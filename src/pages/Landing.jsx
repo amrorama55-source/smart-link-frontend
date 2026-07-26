@@ -252,8 +252,8 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-blue-500/30 overflow-x-hidden">
       <SEO
-        title="Smart Link — Built for Affiliate Marketers & Media Buyers"
-        description="Stop wasting money on bots. Route traffic accurately, A/B test landing pages, and shield your ROI with the ultimate tracking infrastructure."
+        title="Smart Link — The Best Affiliate Tracking Software (ClickMagick Alternative)"
+        description="Looking for the best affiliate tracking software? Smart Link is the #1 ClickMagick alternative for media buyers. Block bots and track affiliate links accurately."
       />
 
       {/* Navbar */}
@@ -307,7 +307,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-bold mb-8 uppercase tracking-widest">
-              <Target className="w-4 h-4" /> Built for Affiliate Marketers & Media Buyers
+              <Target className="w-4 h-4" /> #1 Affiliate Marketing Tracking Platform
             </div>
             
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 dark:text-white leading-[1.05] tracking-tight mb-8">
@@ -317,9 +317,9 @@ export default function LandingPage() {
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed font-medium max-w-2xl mx-auto">
-              The average affiliate loses 34% of their budget to bot traffic, wrong GEOs, and blind clicks. Smart Link shows you exactly what's happening — and fixes it in one click.
-            </p>
+            <h2 className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed font-medium max-w-2xl mx-auto">
+              Looking for a modern <strong className="text-gray-900 dark:text-white">ClickMagick alternative</strong>? Smart Link is the ultimate <strong className="text-gray-900 dark:text-white">affiliate tracking software</strong>. Stop losing budget to bot traffic and route clicks accurately.
+            </h2>
             
             <div className="mb-16">
               <HeroShortener />

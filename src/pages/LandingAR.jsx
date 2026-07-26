@@ -339,8 +339,8 @@ export default function LandingPageAR() {
   return (
     <div dir="rtl" className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-cairo transition-colors duration-300">
       <SEO
-        title="سمارت لينك — البنية التحتية للتسويق للمبدعين والمسوقين"
-        description="اختصر الروابط، أنشئ صفحة البايو، تتبّع كل نقرة، وبِع منتجاتك الرقمية. المنصة المتكاملة بديل ClickMagick و Linktree."
+        title="سمارت لينك — أفضل برنامج تتبع للتسويق بالعمولة (البديل الأقوى لـ ClickMagick)"
+        description="هل تبحث عن أفضل برنامج تتبع للتسويق بالعمولة؟ سمارت لينك هو البديل الأول لـ ClickMagick. احجب البوتات، تتبع الروابط، وضاعف أرباحك."
       />
 
       {/* Navbar */}
@@ -400,15 +400,15 @@ export default function LandingPageAR() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-right">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
-                <Zap className="w-4 h-4" /> بنية تحتية للتسويق
+                <Zap className="w-4 h-4" /> المنصة الأقوى لتتبع التسويق بالعمولة
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.1] mb-6">
-                <span className="block">رابط واحد.</span>
-                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">إمكانيات بلا حدود.</span>
+                <span className="block">أفضل برنامج تتبع</span>
+                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">للتسويق بالعمولة</span>
               </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-lg leading-relaxed">
-                اختصر الروابط، أنشئ صفحة البايو، تتبّع كل نقرة — وبِع منتجاتك الرقمية. المنصة المتكاملة للمبدعين والمسوقين.
-              </p>
+              <h2 className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-lg leading-relaxed font-semibold">
+                هل تبحث عن <strong className="text-gray-900 dark:text-white">بديل ClickMagick</strong>؟ سمارت لينك هو أداة التتبع الأذكى. احمِ ميزانيتك من البوتات ووجه زياراتك بدقة متناهية.
+              </h2>
               <div className="mb-12">
                 <HeroShortener />
               </div>
