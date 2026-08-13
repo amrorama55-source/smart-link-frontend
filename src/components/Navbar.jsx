@@ -163,7 +163,7 @@ export default function Navbar() {
                           <UserCircle className="w-4 h-4" />
                           <span className="text-sm">Profile</span>
                         </Link>
-                        <Link to="/profile?tab=settings" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
+                        <Link to="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
                           <Settings className="w-4 h-4" />
                           <span className="text-sm">Settings</span>
                         </Link>

@@ -34,18 +34,16 @@ export default function Analytics() {
   // Determine if user can view advanced analytics
   const hasAdvancedAnalytics = () => {
     if (!user) return false;
-    if (user.plan === 'admin' || user.plan === 'pro' || user.plan === 'business') return true;
+    if (user.role === 'admin' || user.plan === 'admin') return true;
+    if (user.plan === 'pro' || user.plan === 'business') return true;
 
-    // Check if valid trial
+    // Check if valid trial - use trialEndsAt from user object
     if (user.plan === 'trial') {
-      const trialStart = user.trialStartedAt ? new Date(user.trialStartedAt) : null;
-      if (trialStart) {
-        // 7 days trial
-        const trialEnd = new Date(trialStart.getTime() + 7 * 24 * 60 * 60 * 1000);
-        if (new Date() < trialEnd) return true;
+      if (user.trialEndsAt && new Date() < new Date(user.trialEndsAt)) {
+        return true;
       }
     }
-    return false; // Free or expired trial
+    return false; // Free, starter, or expired trial
   };
 
   const canViewAdvanced = hasAdvancedAnalytics();

@@ -264,7 +264,12 @@ function FAQSection() {
     { q: "كيف يزيد استهداف الأجهزة (iOS/Android) من التحويلات؟", a: "بدلاً من إرباك المستخدمين بزرين، تنشئ رابط ذكي واحد. نكتشف جهازهم فوراً ونوجّه مستخدمي iOS لمتجر آبل وأندرويد لغوغل بلاي." },
     { q: "هل يمكنني تتبّع نقرات الروابط مجاناً؟", a: "نعم! نؤمن أن التحليلات العميقة يجب أن تكون متاحة للجميع. تحصل على تحليلات فورية لجميع روابطك مجاناً تماماً." },
     { q: "هل يمكنني استخدام نطاقي المخصص؟", a: "بالتأكيد. يمكنك ربط نطاقك الخاص للحفاظ على هوية علامتك التجارية." },
-    { q: "كيف أنشئ رابط بايو مجاني؟", a: "سجّل حسابك، اختر اسم المستخدم، والصق روابطك. يمكنك تخصيص صفحة البايو بالقوالب والنشر خلال أقل من دقيقتين." }
+    { q: "كيف أنشئ رابط بايو مجاني؟", a: "سجّل حسابك، اختر اسم المستخدم، والصق روابطك. يمكنك تخصيص صفحة البايو بالقوالب والنشر خلال أقل من دقيقتين." },
+    { q: "ما هو أفضل بديل لبرنامج ClickMagick في عام 2026؟", a: "سمارت لينك هو البديل الأفضل، يقدم حماية من البوتات وتتبع دقيق للروابط مع باقة أساسية مجانية، ليوفر عليك 99 دولار شهرياً." },
+    { q: "كيف أحجب زيارات البوتات الوهمية من إعلانات فيسبوك وجوجل؟", a: "يمكنك حجبها باستخدام منصة تتبع روابط تحتوي على درع حماية. سمارت لينك يكتشف ويحظر البوتات والـ VPN تلقائياً لتضمن أن بكسل التتبع الخاص بك يعمل للبشر الحقيقيين فقط." },
+    { q: "كيف أتتبع روابط التسويق بالعمولة بدون امتلاك موقع إلكتروني؟", a: "لا تحتاج لموقع! يمكنك استخدام سمارت لينك لإنشاء صفحة بايو مجانية ووضع جميع روابطك بداخلها ونشر رابط واحد فقط على حساباتك في السوشيال ميديا." },
+    { q: "هل موقع Linktree جيد للتسويق بالعمولة؟", a: "منصة Linktree أساسية جداً وتفتقر للتحليلات العميقة. المسوق المحترف يحتاج أداة مثل سمارت لينك لتوفر له تتبع الأجهزة والدول، وحماية من البوتات مباشرة من صفحة البايو." },
+    { q: "كيف أوجه الزيارات بناءً على دولة ونوع جهاز الزائر؟", a: "باستخدام محرك التوجيه الذكي في سمارت لينك، يمكنك تعيين قواعد لتوجيه زوار أمريكا لعرض معين، وزوار أوروبا لعرض آخر من خلال رابط واحد فقط. كما يمكنك التوجيه حسب نوع الجهاز iOS أو أندرويد." }
   ];
 
   return (
@@ -337,7 +342,7 @@ export default function LandingPageAR() {
   }, []);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-cairo transition-colors duration-300">
+    <div dir="rtl" className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-cairo transition-colors duration-300 overflow-x-hidden">
       <SEO
         title="سمارت لينك — أفضل برنامج تتبع للتسويق بالعمولة (البديل الأقوى لـ ClickMagick)"
         description="هل تبحث عن أفضل برنامج تتبع للتسويق بالعمولة؟ سمارت لينك هو البديل الأول لـ ClickMagick. احجب البوتات، تتبع الروابط، وضاعف أرباحك."
@@ -349,7 +354,7 @@ export default function LandingPageAR() {
           <div className="flex justify-between items-center h-16">
             <Link to="/ar" className="flex items-center gap-2">
               <img src="/logo-v1.svg" alt="Smart Link" className="w-8 h-8" />
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">سمارت لينك</span>
+              <span className="text-2xl font-black tracking-tight text-gray-900 dark:text-white font-sans">Smart Link.</span>
             </Link>
             <div className="hidden md:flex items-center gap-8 pt-1">
               <a href="#features" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">المميزات</a>
@@ -358,17 +363,24 @@ export default function LandingPageAR() {
             </div>
             
             {/* Actions */}
-            <div className="hidden md:flex items-center gap-4 pt-1">
-              <Link to="/" className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-sans">English</Link>
-              <button onClick={toggleDarkMode} className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            <div className="hidden md:flex items-center gap-4">
+              <Link to="/" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1 font-sans" title="English">
+                <Globe className="w-4 h-4" /> English
+              </Link>
+              <button onClick={toggleDarkMode} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
+                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <Link to="/login" className="text-sm font-semibold text-gray-700 dark:text-gray-200">تسجيل الدخول</Link>
-              <Link to="/register" className="text-sm font-semibold px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:opacity-90 transition-opacity">ابدأ مجاناً</Link>
+              <Link to="/login" className="text-sm font-bold text-gray-900 dark:text-white px-4 py-2 hover:opacity-70 transition-opacity">تسجيل الدخول</Link>
+              <Link to="/register" className="text-sm font-bold px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 transition-all hover:scale-105 active:scale-95"> 
+                ابدأ مجاناً 
+              </Link>
             </div>
             
-            <div className="md:hidden flex items-center gap-2">
-               <button onClick={toggleDarkMode} className="p-2 text-gray-500">
+            <div className="md:hidden flex items-center gap-4 pt-1">
+              <Link to="/" className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white font-sans flex items-center gap-1">
+                <Globe className="w-4 h-4" /> En
+              </Link>
+              <button onClick={toggleDarkMode} className="p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="p-2 text-gray-500">
@@ -385,8 +397,8 @@ export default function LandingPageAR() {
                   <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-medium">الأسعار</a>
                   <Link to="/" onClick={() => setMobileMenuOpen(false)} className="text-gray-500 font-sans">English</Link>
                   <div className="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
-                  <Link to="/login" className="text-gray-900 dark:text-white font-semibold">تسجيل الدخول</Link>
-                  <Link to="/register" className="text-center py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-semibold">ابدأ مجاناً</Link>
+                  <Link to="/login" className="text-gray-900 dark:text-white font-bold text-center py-2">تسجيل الدخول</Link>
+                  <Link to="/register" className="text-center py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-600/30 transition-colors">ابدأ مجاناً</Link>
                 </div>
               </motion.div>
             )}
@@ -402,9 +414,9 @@ export default function LandingPageAR() {
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
                 <Zap className="w-4 h-4" /> المنصة الأقوى لتتبع التسويق بالعمولة
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.1] mb-6">
-                <span className="block">أفضل برنامج تتبع</span>
-                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2">للتسويق بالعمولة</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 dark:text-white leading-[1.2] mb-6">
+                <span className="block pb-1">أفضل برنامج تتبع</span>
+                <span className="block bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mt-2 pb-3">للتسويق بالعمولة</span>
               </h1>
               <h2 className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-lg leading-relaxed font-semibold">
                 هل تبحث عن <strong className="text-gray-900 dark:text-white">بديل ClickMagick</strong>؟ سمارت لينك هو أداة التتبع الأذكى. احمِ ميزانيتك من البوتات ووجه زياراتك بدقة متناهية.
@@ -544,42 +556,27 @@ export default function LandingPageAR() {
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white tracking-tight mb-4">خطط مرنة لكل مرحلة</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">ابدأ مجاناً، ترقّى مع نموك. بدون رسوم خفية، إلغاء في أي وقت.</p>
-            <div className="flex items-center justify-center gap-4">
-<button
-  onClick={() => setIsYearly(!isYearly)}
-style={{
-  width: 56,
-  height: 30,
-  borderRadius: 20,
-  backgroundColor: isYearly ? '#3b82f6' : '#6b7280',
-  position: 'relative',
-  border: 'none',
-  cursor: 'pointer',
-  transition: 'background-color 0.2s',
-  padding: 0,
-  display: 'inline-flex',
-  alignItems: 'center',  // ← هاد هو المهم
-  boxSizing: 'border-box',
-}}
->
-  <motion.div
-    animate={{ x: isYearly ? 22 : 0 }}
-    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-    style={{  // الثامب
-   width: 22,
-  height: 22,
-  borderRadius: '50%',
-  backgroundColor: 'white',
-  position: 'absolute',
-  top: 3,              // ← رقم ثابت (height 28 - thumb 22 = 6 ÷ 2 = 3)
-  left: 3,
-}}
-  />
-</button>
-              <div className="flex items-center gap-2">
-                <span className={`text-sm font-semibold ${isYearly ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>سنوي</span>
-                <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-xs font-bold px-2 py-0.5 rounded-full">وفّر 25%</span>
-              </div>
+            <div className="flex items-center justify-center p-1.5 bg-gray-200/50 dark:bg-gray-800/50 rounded-full mx-auto w-fit mt-8 border border-gray-200 dark:border-gray-700">
+              <button
+                onClick={() => setIsYearly(false)}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
+                  !isYearly 
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                شهري
+              </button>
+              <button
+                onClick={() => setIsYearly(true)}
+                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${
+                  isYearly 
+                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+                }`}
+              >
+                سنوي <span className={isYearly ? 'text-blue-600 dark:text-blue-400' : 'text-blue-500 dark:text-blue-500'}>· وفّر 25%</span>
+              </button>
             </div>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -686,11 +683,11 @@ style={{
       {/* Footer */}
       <footer className="bg-white dark:bg-gray-950 pt-16 pb-8 border-t border-gray-100 dark:border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">
               <Link to="/ar" className="flex items-center gap-2 mb-4">
-                <img src="/logo-v1.svg" alt="Smart Link" className="w-8 h-8" />
-                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">سمارت لينك</span>
+                <img src="/logo-v1.svg" alt="Smart Link" className="w-10 h-10" />
+                <span className="text-2xl font-black text-gray-900 dark:text-white font-sans">Smart Link</span>
               </Link>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-sm">منصة إدارة الروابط المتقدمة للمبدعين العصريين.</p>
             </div>
@@ -708,6 +705,15 @@ style={{
                 <li><Link to="/for-marketers" className="hover:text-gray-900 dark:hover:text-white">للمسوقين</Link></li>
                 <li><Link to="/for-ecommerce" className="hover:text-gray-900 dark:hover:text-white">للتجارة الإلكترونية</Link></li>
                 <li><Link to="/for-affiliates" className="hover:text-gray-900 dark:hover:text-white">للمسوقين بالعمولة</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">أدوات مجانية</h3>
+              <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link to="/tools" className="hover:text-gray-900 dark:hover:text-white font-bold text-blue-600 dark:text-blue-400">جميع الأدوات</Link></li>
+                <li><Link to="/tools/qr-code-generator" className="hover:text-gray-900 dark:hover:text-white">صانع QR Code</Link></li>
+                <li><Link to="/tools/utm-builder" className="hover:text-gray-900 dark:hover:text-white">منشئ روابط UTM</Link></li>
+                <li><Link to="/tools/meta-tag-generator" className="hover:text-gray-900 dark:hover:text-white">مولد Meta Tags</Link></li>
               </ul>
             </div>
             <div>

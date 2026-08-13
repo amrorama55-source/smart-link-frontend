@@ -29,7 +29,7 @@ export default function BioEditor() {
 
   const [bioData, setBioData] = useState({
     username: '', displayName: '', bio: '', avatar: '',
-    theme: 'default', socialLinks: [], customLinks: [], blocks: [], aiChatbot: { enabled: false }, isPublic: true
+    theme: 'default', socialLinks: [], customLinks: [], blocks: [], isPublic: true
   });
 
   const userPlan = user?.plan || 'free';
@@ -84,7 +84,6 @@ export default function BioEditor() {
         blocks: (data.bioPage.blocks || []).map(block => ({
           ...block, id: block._id || Math.random().toString(36).substr(2, 9)
         })),
-        aiChatbot: data.bioPage.aiChatbot || { enabled: false },
         isPublic: data.bioPage.isPublic !== undefined ? data.bioPage.isPublic : true
       });
       setOriginalUsername(fetchedUsername);
@@ -748,12 +747,15 @@ export default function BioEditor() {
                     }} className="mt-3 text-[10px] text-blue-600 font-bold hover:underline">Migrate all to new system</button>
                   </div>
                 )}
-              </Reorder.Group>
+            </Reorder.Group>
             </div>
+
+
             {/* APPEARANCE */}
             <div className={`${activeTab === 'appearance' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
               <h2 className="font-bold mb-4 text-gray-900 dark:text-white text-lg flex items-center gap-2">
                 <Palette className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Appearance
+
               </h2>
               <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
                 {themes.map(t => {

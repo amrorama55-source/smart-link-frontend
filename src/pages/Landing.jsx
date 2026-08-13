@@ -177,7 +177,12 @@ function FAQSection() {
     { q: "How does the Ad-Fraud Datacenter Shield work?", a: "We automatically detect and block clicks originating from VPNs, AWS, DigitalOcean, and known botnets. This stops you from paying for fake clicks and keeps your retargeting pixel data 100% pure." },
     { q: "How does A/B Testing work?", a: "Set your destination variants (e.g. 50% to Page A, 50% to Page B), and our engine automatically routes the traffic. You can then view the analytics to see which page converts better." },
     { q: "Can I use my own custom domain?", a: "Absolutely. You can connect your own domain (e.g., links.yourbrand.com) on the Pro and Business plans to maintain full brand consistency." },
-    { q: "How do I start tracking?", a: "Simply sign up, paste your URLs, and generate your links. The dashboard will instantly start populating with deep analytics." }
+    { q: "How do I start tracking?", a: "Simply sign up, paste your URLs, and generate your links. The dashboard will instantly start populating with deep analytics." },
+    { q: "What is the best alternative to ClickMagick in 2026?", a: "Smart Link is the best ClickMagick alternative in 2026, offering enterprise-grade bot protection, sub-ID tracking, and A/B testing with a free core tier, saving you $99/mo." },
+    { q: "How to block bot traffic from Facebook and Google ads?", a: "You can block bot traffic by using an affiliate tracking platform with a Datacenter Shield. Smart Link automatically detects and blocks scrapers and VPN traffic, ensuring your pixels only fire for real humans." },
+    { q: "How to track affiliate links without a website?", a: "You don't need a website to track affiliate links. You can use Smart Link to create a free Link-in-Bio page, add your tracked affiliate links to it, and share that single bio link on your social media profiles." },
+    { q: "Is Linktree good for affiliate marketing?", a: "Linktree is basic and lacks deep analytics. For serious affiliate marketing, you need a platform like Smart Link that provides granular tracking (OS, device, geo), bot protection, and direct A/B testing within your bio page." },
+    { q: "How to route traffic based on country and device?", a: "Using the Smart Link routing engine, you can set rules to redirect users from the US to Offer A, and users from the UK to Offer B, all under a single tracking link. You can also route based on iOS vs Android." }
   ];
 
   return (
@@ -274,6 +279,9 @@ export default function LandingPage() {
             </div>
 
             <div className="hidden md:flex items-center gap-4">
+              <Link to="/ar" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1" title="العربية">
+                <Globe className="w-4 h-4" /> العربية
+              </Link>
               <button onClick={toggleDarkMode} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -285,6 +293,9 @@ export default function LandingPage() {
             
             {/* Mobile Menu Toggle */}
             <div className="md:hidden flex items-center gap-4">
+              <Link to="/ar" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1">
+                <Globe className="w-4 h-4" /> ع
+              </Link>
               <button onClick={toggleDarkMode} className="p-2 text-gray-500">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
@@ -293,6 +304,24 @@ export default function LandingPage() {
               </button>
             </div>
           </div>
+          <AnimatePresence>
+            {mobileMenuOpen && (
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+                <div className="flex flex-col gap-4 p-4">
+                  <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">Features</a>
+                  <a href="#roi" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">ROI</a>
+                  <a href="#compare" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">Compare</a>
+                  <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">Pricing</a>
+                  <Link to="/ar" onClick={() => setMobileMenuOpen(false)} className="text-gray-500 font-sans font-bold flex items-center gap-1">
+                    <Globe className="w-4 h-4" /> العربية
+                  </Link>
+                  <div className="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
+                  <Link to="/login" className="text-gray-900 dark:text-white font-bold text-center py-2">Login</Link>
+                  <Link to="/register" className="text-center py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-600/30 transition-colors">Start Tracking Free</Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </nav>
 
@@ -504,7 +533,7 @@ export default function LandingPage() {
                     <td className="p-6 font-black text-gray-900 dark:text-white">Starting Price</td>
                     <td className="p-6 text-center font-bold text-gray-500 border-l border-gray-200 dark:border-gray-800">$99/mo</td>
                     <td className="p-6 text-center font-bold text-gray-500 border-l border-gray-200 dark:border-gray-800">$149/mo</td>
-                    <td className="p-6 text-center font-black text-2xl text-green-500 border-l-2 border-blue-500 bg-blue-50 dark:bg-blue-900/10">FREE</td>
+                    <td className="p-6 text-center font-black text-2xl text-blue-600 dark:text-blue-400 border-l-2 border-blue-500 bg-blue-50 dark:bg-blue-900/10">$29/mo</td>
                   </tr>
                 </tbody>
               </table>
@@ -626,7 +655,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="bg-slate-50 dark:bg-gray-950 pt-16 pb-8 border-t border-gray-200 dark:border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">
               <Link to="/" className="flex items-center gap-2 mb-4">
                 <img src="/logo-v1.svg" alt="Smart Link" className="w-10 h-10" />
@@ -648,6 +677,15 @@ export default function LandingPage() {
                 <li><Link to="/for-marketers" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Marketers</Link></li>
                 <li><Link to="/for-affiliates" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Affiliates</Link></li>
                 <li><a href="https://smart-link-api.lemonsqueezy.com/affiliates" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 dark:hover:text-green-400 transition-colors text-green-600 dark:text-green-400 font-bold">Earn Money (Affiliates)</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Free Tools</h3>
+              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
+                <li><Link to="/tools" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">All Free Tools</Link></li>
+                <li><Link to="/tools/qr-code-generator" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">QR Code Generator</Link></li>
+                <li><Link to="/tools/utm-builder" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">UTM Builder</Link></li>
+                <li><Link to="/tools/meta-tag-generator" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Meta Tag Generator</Link></li>
               </ul>
             </div>
             <div>

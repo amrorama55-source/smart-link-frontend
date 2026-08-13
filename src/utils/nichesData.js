@@ -88,7 +88,7 @@ export const nichesData = {
   affiliates: {
     title: "The Tracking Tool Built for",
     gradientText: "Affiliate Marketers",
-    subtitle: "Ditch Voluum. Get geo-targeting, A/B testing, bot protection, and link cloaking at 90% less cost. Your campaigns. Your data. Your profits.",
+    subtitle: "Ditch Voluum. Get geo-targeting, A/B testing, bot protection, and link cloaking — starting at $29/mo vs $89/mo. Your campaigns. Your data. Your profits.",
     badgeText: "For Affiliate Marketers",
     heroTag: "Trusted by 2,400+ affiliates worldwide",
     pain: [
@@ -142,7 +142,7 @@ export const nichesData = {
       },
     ],
     comparison: [
-      { label: 'Price', smartlink: '$9/mo', voluum: '$89/mo', winner: 'smartlink' },
+      { label: 'Price', smartlink: '$29/mo', voluum: '$89/mo', winner: 'smartlink' },
       { label: 'Bot Protection', smartlink: true, voluum: true, winner: 'smartlink' },
       { label: 'Link Cloaking', smartlink: true, voluum: false, winner: 'smartlink' },
       { label: 'Retargeting Pixels', smartlink: true, voluum: false, winner: 'smartlink' },

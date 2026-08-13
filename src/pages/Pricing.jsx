@@ -49,7 +49,7 @@ function ComparisonTable() {
         <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
           Why Affiliates Are Switching to Smart Link
         </h2>
-        <p className="text-gray-400 text-lg">Same power. 90% less cost.</p>
+        <p className="text-gray-400 text-lg">Same power. Fraction of the cost.</p>
       </div>
 
       <div className="overflow-x-auto rounded-2xl border border-white/10">
@@ -158,7 +158,7 @@ function SwitchROICalculator() {
             </div>
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 text-center">
               <p className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">Smart Link</p>
-              <p className="text-2xl font-black text-blue-400">$9</p>
+              <p className="text-2xl font-black text-blue-400">$29</p>
               <p className="text-xs text-gray-500">per month</p>
             </div>
             <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-center">
@@ -284,7 +284,7 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
 const affiliateFAQs = [
   {
     q: 'How is Smart Link different from Voluum or RedTrack?',
-    a: "Smart Link offers the same core tracking features (geo-targeting, A/B testing, bot protection, custom domains) at 90% of the cost. At $9/mo vs $89/mo, you get identical power without the enterprise price tag. We also include link cloaking and a bio page builder — features Voluum doesn't offer."
+    a: "Smart Link offers the same core tracking features (geo-targeting, A/B testing, bot protection, custom domains) at a fraction of the cost. Starting at $29/mo vs $89/mo for Voluum, you get identical power without the enterprise price tag. We also include link cloaking and a bio page builder — features Voluum doesn't offer."
   },
   {
     q: 'Does it work with affiliate networks like ClickBank, MaxBounty, CJ?',
@@ -300,7 +300,7 @@ const affiliateFAQs = [
   },
   {
     q: 'Is there a free trial?',
-    a: "Yes! The Starter plan is completely free forever with 5 links/month so you can test the platform. Upgrade anytime when you're ready to scale."
+    a: "Yes! The Starter plan comes with a 14-day free trial — no credit card required. You get full access to all Starter features. Upgrade to Pro Affiliate or Agency Elite anytime when you're ready to scale."
   },
 ];
 
@@ -407,10 +407,10 @@ export default function Pricing() {
                   <h1 className="text-4xl sm:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
                     Stop Paying <span className="text-red-400 line-through">$89</span> for Voluum.
                     <br />
-                    <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Get More for $9.</span>
+                    <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Get More for $29.</span>
                   </h1>
                   <p className="text-xl text-gray-400 leading-relaxed">
-                    Geo-targeting, A/B testing, bot protection, link cloaking, retargeting pixels — everything you need to run profitable campaigns, at 90% less cost.
+                    Geo-targeting, A/B testing, bot protection, link cloaking, retargeting pixels — everything you need to run profitable campaigns, at a fraction of the cost.
                   </p>
 
                   {/* Toggle */}
@@ -549,7 +549,7 @@ export default function Pricing() {
 
                                     <div className="flex items-center justify-center gap-2 pt-2">
                                         <Lock className="w-3 h-3 text-gray-600" />
-                                        <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Secured By Stripe</span>
+                                        <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">🔒 Secured By LemonSqueezy</span>
                                     </div>
                                 </div>
                             </motion.div>

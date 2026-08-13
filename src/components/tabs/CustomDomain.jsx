@@ -1,5 +1,8 @@
-import { Globe, AlertCircle, CheckCircle, Copy, Shield, Eye, EyeOff, ChevronDown, ChevronUp, Key } from 'lucide-react';
+import { Globe, AlertCircle, CheckCircle, Copy, Shield, Eye, EyeOff, ChevronDown, ChevronUp, Key, Loader2, XCircle } from 'lucide-react';
 import { useState, useRef } from 'react';
+import api from '../../services/api';
+
+// ✅ Extract hostname only for CNAME (no https://)
 import { SHORT_URL_BASE } from '../../config';
 
 // ✅ Extract hostname only for CNAME (no https://)
@@ -20,6 +23,8 @@ export default function CustomDomain({ linkData, setLinkData }) {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordWarning, setPasswordWarning] = useState(false);
   const [copied, setCopied] = useState(null);
+  const [verifyStatus, setVerifyStatus] = useState(null); // null | 'checking' | 'success' | 'error'
+  const [verifyMessage, setVerifyMessage] = useState('');
   const passwordInputRef = useRef(null);
 
   const handleDomainChange = (e) => {
@@ -37,6 +42,25 @@ export default function CustomDomain({ linkData, setLinkData }) {
     navigator.clipboard.writeText(text);
     setCopied(key);
     setTimeout(() => setCopied(null), 2000);
+  };
+
+  const handleVerifyDomain = async () => {
+    if (!displayDomain) return;
+    setVerifyStatus('checking');
+    setVerifyMessage('');
+    try {
+      const { data } = await api.get(`/domains/verify?domain=${encodeURIComponent(displayDomain)}`);
+      if (data.verified) {
+        setVerifyStatus('success');
+        setVerifyMessage('Domain verified successfully! DNS is pointing correctly.');
+      } else {
+        setVerifyStatus('error');
+        setVerifyMessage(data.message || 'DNS not yet propagated. Please wait and try again.');
+      }
+    } catch (err) {
+      setVerifyStatus('error');
+      setVerifyMessage(err.response?.data?.error || 'Could not verify domain. Please check DNS settings.');
+    }
   };
 
   // ✅ Clean domain for display (no double https)
@@ -179,6 +203,38 @@ export default function CustomDomain({ linkData, setLinkData }) {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Verify Domain Button */}
+      {displayDomain && (
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={handleVerifyDomain}
+            disabled={verifyStatus === 'checking'}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg font-semibold transition-colors"
+          >
+            {verifyStatus === 'checking' ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Verifying...</>
+            ) : (
+              <><CheckCircle className="w-4 h-4" /> Verify Domain DNS</>  
+            )}
+          </button>
+
+          {verifyStatus === 'success' && (
+            <div className="flex items-start gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-green-800 dark:text-green-200">{verifyMessage}</p>
+            </div>
+          )}
+
+          {verifyStatus === 'error' && (
+            <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <XCircle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-800 dark:text-red-200">{verifyMessage}</p>
+            </div>
+          )}
         </div>
       )}
 

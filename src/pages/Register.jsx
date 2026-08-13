@@ -100,7 +100,7 @@ export default function Register() {
       if (isTrial) {
         try {
           await api.post('/trial/start');
-          success('🎉 Your 7-day Business Elite trial is now active! No credit card needed.', {
+          success('🎉 Your 14-day Starter trial is now active! No credit card needed.', {
             duration: 7000,
           });
         } catch (trialErr) {
@@ -168,7 +168,7 @@ export default function Register() {
             <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white text-center">
               <div className="flex items-center justify-center gap-2 mb-1">
                 <Sparkles className="w-5 h-5 text-yellow-300" />
-                <span className="font-black text-lg">7-Day Business Elite Trial</span>
+                <span className="font-black text-lg">14-Day Starter Free Trial</span>
                 <Sparkles className="w-5 h-5 text-yellow-300" />
               </div>
               <p className="text-purple-100 text-sm">Create your account to activate — no credit card needed</p>

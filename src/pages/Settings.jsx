@@ -6,8 +6,9 @@ import {
   User, Lock, CreditCard, Trash2, LogOut, Monitor,
   Smartphone, Globe, Shield, CheckCircle, XCircle,
   Save, Eye, EyeOff, AlertTriangle, ArrowRight,
-  ExternalLink, FileText, Zap, Crown, X as XIcon, Code
+  ExternalLink, FileText, Zap, Crown, X as XIcon, Code, Copy
 } from 'lucide-react';
+
 import api, { getSubscriptionPortalUrl, cancelSubscription, getInvoices } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { PLANS } from '../utils/plans';
@@ -97,7 +98,7 @@ export default function Settings() {
 
   const loadProfile = async () => {
     try {
-      const { data } = await api.get('/api/settings/profile');
+      const { data } = await api.get('/settings/profile');
       setProfileData({
         name: data.user.name,
         email: data.user.email
@@ -115,7 +116,7 @@ export default function Settings() {
 
   const loadSessions = async () => {
     try {
-      const { data } = await api.get('/api/settings/sessions');
+      const { data } = await api.get('/settings/sessions');
       setSessions(data.sessions);
     } catch (error) {
       console.error('Failed to load sessions:', error);
@@ -124,7 +125,7 @@ export default function Settings() {
 
   const loadSubscription = async () => {
     try {
-      const { data } = await api.get('/api/settings/subscription');
+      const { data } = await api.get('/settings/subscription');
       setSubscription(data);
     } catch (err) {
       console.error('Failed to load subscription:', err);
@@ -140,7 +141,7 @@ export default function Settings() {
     }
   };
 
-  const SUCCESS_URL = 'https://www.by-smartlink.com/success';
+  const SUCCESS_URL = import.meta.env.VITE_APP_URL ? `${import.meta.env.VITE_APP_URL}/success` : 'https://www.by-smartlink.com/success';
 
   const buildCheckoutUrl = (baseUrl, userId) => {
     if (!baseUrl) return null;
@@ -153,11 +154,11 @@ export default function Settings() {
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
-      await api.put('/api/settings/profile', profileData);
-      alert('Profile updated successfully!');
+      await api.put('/settings/profile', profileData);
+      success('Profile updated successfully!');
       loadProfile();
     } catch (error) {
-      alert(error.response?.data?.error || 'Failed to update profile');
+      error(error.response?.data?.error || 'Failed to update profile');
     } finally {
       setLoading(false);
     }
@@ -165,61 +166,61 @@ export default function Settings() {
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match');
+      error('New passwords do not match');
       return;
     }
 
     if (passwordData.newPassword.length < 8) {
-      alert('Password must be at least 8 characters');
+      error('Password must be at least 8 characters');
       return;
     }
 
     setLoading(true);
     try {
-      await api.post('/api/settings/change-password', {
+      await api.post('/settings/change-password', {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
       });
-      alert('Password changed successfully!');
+      success('Password changed successfully!');
       setPasswordData({
         currentPassword: '',
         newPassword: '',
         confirmPassword: ''
       });
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to change password');
+    } catch (err) {
+      error(err.response?.data?.error || 'Failed to change password');
     } finally {
       setLoading(false);
     }
   };
 
   const handleRevokeSession = async (token) => {
-    if (!confirm('Are you sure you want to revoke this session?')) return;
+    if (!window.confirm('Are you sure you want to revoke this session?')) return;
 
     try {
-      await api.delete(`/api/settings/sessions/${token}`);
+      await api.delete(`/settings/sessions/${token}`);
       loadSessions();
-      alert('Session revoked successfully');
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to revoke session');
+      success('Session revoked successfully');
+    } catch (err) {
+      error(err.response?.data?.error || 'Failed to revoke session');
     }
   };
 
   const handleRevokeAllSessions = async () => {
-    if (!confirm('Are you sure you want to revoke all other sessions? You will be logged out from all other devices.')) return;
+    if (!window.confirm('Are you sure you want to revoke all other sessions? You will be logged out from all other devices.')) return;
 
     try {
-      await api.post('/api/settings/sessions/revoke-all');
+      await api.post('/settings/sessions/revoke-all');
       loadSessions();
-      alert('All other sessions revoked successfully');
-    } catch (error) {
-      alert(error.response?.data?.error || 'Failed to revoke sessions');
+      success('All other sessions revoked successfully');
+    } catch (err) {
+      error(err.response?.data?.error || 'Failed to revoke sessions');
     }
   };
 
   const handleChangePlan = (plan) => {
     if (plan.id === 'free') {
-      info('You are on the Free plan. Start a 7-day trial to unlock premium features!');
+      info('You are on the Free plan. Start a 14-day trial to unlock premium features!');
       return;
     }
 
@@ -293,7 +294,7 @@ export default function Settings() {
   };
 
   const handleCancelSubscription = async () => {
-    if (!confirm('Are you sure you want to cancel your subscription? You will retain access until the end of your billing period.')) return;
+    if (!window.confirm('Are you sure you want to cancel your subscription? You will retain access until the end of your billing period.')) return;
 
     setCancelLoading(true);
     try {
@@ -309,35 +310,34 @@ export default function Settings() {
 
   const handleDeleteAccount = async () => {
     if (deleteConfirm !== 'DELETE') {
-      alert('Please type DELETE to confirm');
+      error('Please type DELETE to confirm');
       return;
     }
 
     if (!deletePassword) {
-      alert('Please enter your password');
+      error('Please enter your password to confirm deletion');
       return;
     }
-
-    const confirmed = confirm('⚠️ FINAL WARNING: This will permanently delete your account and all data. Are you absolutely sure?');
-    if (!confirmed) return;
 
     setLoading(true);
 
     try {
-      await api.delete('/api/settings/account', {
+      await api.delete('/settings/account', {
         data: {
           password: deletePassword,
           confirmDelete: true
         }
       });
 
-      alert('Account deleted successfully. You will be logged out now.');
-      logout();
-      navigate('/login');
+      success('Account deleted successfully. You will be logged out now.');
+      setTimeout(() => {
+        logout();
+        navigate('/login');
+      }, 1500);
 
-    } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to delete account. Please try again.';
-      alert(errorMessage);
+    } catch (err) {
+      const errorMessage = err.response?.data?.error || 'Failed to delete account. Please try again.';
+      error(errorMessage);
     } finally {
       setLoading(false);
       setShowDeleteModal(false);
@@ -350,7 +350,7 @@ export default function Settings() {
     if (!window.confirm('Generating a new API key will invalidate the old one. Continue?')) return;
     try {
       setLoading(true);
-      const { data } = await api.post('/api/settings/api-key/generate');
+      const { data } = await api.post('/settings/api-key/generate');
       setDeveloperData(prev => ({
         ...prev,
         apiKey: data.apiKey.substring(0, 8) + '...',
@@ -368,7 +368,7 @@ export default function Settings() {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await api.post('/api/settings/webhook', { url: developerData.globalWebhookUrl });
+      const { data } = await api.post('/settings/webhook', { url: developerData.globalWebhookUrl });
       setDeveloperData(prev => ({ ...prev, globalWebhookUrl: data.webhookUrl || '' }));
       success('Webhook updated successfully');
     } catch (err) {
@@ -384,7 +384,7 @@ export default function Settings() {
     { id: 'sessions', label: 'Active Sessions', icon: Monitor, shortLabel: 'Sessions' },
     { id: 'subscription', label: 'Subscription & Billing', icon: CreditCard, shortLabel: 'Billing' },
     { id: 'payouts', label: 'Creator Payouts', icon: Zap, shortLabel: 'Payouts' },
-    { id: 'developer', label: 'Developer & API', icon: Code, shortLabel: 'API' },
+    { id: 'developer', label: 'Developer & API', icon: Globe, shortLabel: 'API' },
     { id: 'security', label: 'Account Security', icon: Shield, shortLabel: 'Security' }
   ];
 
@@ -447,6 +447,7 @@ export default function Settings() {
 
           {/* Content */}
           <div className="lg:col-span-3">
+
 
             {/* Profile Tab - RESPONSIVE */}
             {activeTab === 'profile' && (
@@ -688,21 +689,21 @@ export default function Settings() {
                   )}
                 </div>
 
-                {/* Available Plans — all 3 */}
+                {/* Available Plans — all 3 with full features */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {plans.map((plan) => (
                     <UpgradePlanCard
                       key={plan.id}
                       plan={plan}
-                      isCurrentPlan={selectedPlan === plan.id || (plan.id === 'free' && selectedPlan === 'trial')}
+                      isCurrentPlan={selectedPlan === plan.id || (plan.id === 'business' && selectedPlan === 'trial')}
                       onUpgrade={handleChangePlan}
-                      compact={true}
+                      compact={false}
                     />
                   ))}
                 </div>
 
                 {/* Subscription Management — paid plans only */}
-                {(selectedPlan === 'pro' || selectedPlan === 'business') && (
+                {(selectedPlan === 'starter' || selectedPlan === 'pro' || selectedPlan === 'business') && (
                   <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                       <Crown className="w-5 h-5 text-yellow-500" />
@@ -956,35 +957,64 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
 
             {/* Developer Tab */}
             {activeTab === 'developer' && (
               <div className="space-y-4 sm:space-y-6">
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
                   <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <Code className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400 flex-shrink-0" />
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">API Key</h2>
                   </div>
                   <div className="space-y-4">
                     <p className="text-sm text-gray-600 dark:text-gray-400">
                       Use your API key to interact with Smart Link programmatically.
                     </p>
-                    
+
                     {developerData.newlyGeneratedKey ? (
-                      <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                        <p className="text-sm font-semibold text-green-800 dark:text-green-300 mb-2">
-                          Please copy your new API Key. It will only be shown once!
+                      <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+                        <p className="text-sm font-semibold text-green-800 dark:text-green-300 mb-3 flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          New key generated! Copy it now — it will only be shown once.
                         </p>
-                        <code className="block p-3 bg-white dark:bg-gray-900 border border-green-100 dark:border-green-800 rounded text-green-900 dark:text-green-400 font-mono text-sm break-all">
-                          {developerData.newlyGeneratedKey}
-                        </code>
+                        <div className="flex items-center gap-2">
+                          <code className="flex-1 px-4 py-3 bg-white dark:bg-gray-900 border border-green-200 dark:border-green-800 rounded-lg text-green-900 dark:text-green-400 font-mono text-sm break-all">
+                            {developerData.newlyGeneratedKey}
+                          </code>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(developerData.newlyGeneratedKey);
+                              success('API Key copied to clipboard!');
+                            }}
+                            className="flex-shrink-0 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
+                          >
+                            <Copy className="w-4 h-4" />
+                            Copy
+                          </button>
+                        </div>
                       </div>
                     ) : developerData.apiKey ? (
                       <div>
                         <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Current Key</p>
-                        <code className="inline-block px-3 py-1.5 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded text-gray-800 dark:text-gray-200 font-mono text-sm">
-                          {developerData.apiKey}
-                        </code>
+                        <div className="flex items-center gap-2">
+                          <code className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-800 dark:text-gray-200 font-mono text-sm">
+                            {developerData.apiKey}
+                          </code>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(developerData.apiKey);
+                              success('API Key copied to clipboard!');
+                            }}
+                            className="flex-shrink-0 px-4 py-3 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg text-sm font-bold transition-colors flex items-center gap-2"
+                          >
+                            <Copy className="w-4 h-4" />
+                            Copy
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <p className="text-sm text-gray-500 italic">No API key generated yet.</p>
@@ -993,16 +1023,19 @@ export default function Settings() {
                     <button
                       onClick={handleGenerateApiKey}
                       disabled={loading}
-                      className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                      className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-sm font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
                     >
-                      {developerData.apiKey ? 'Generate New Key' : 'Generate API Key'}
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                      {developerData.apiKey ? 'Regenerate Key' : 'Generate API Key'}
                     </button>
                   </div>
                 </div>
 
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700">
                   <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                    <Globe className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Global Webhook</h2>
                   </div>
                   <form onSubmit={handleUpdateWebhook} className="space-y-4">
@@ -1094,8 +1127,7 @@ export default function Settings() {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
+
 
           </div>
         </div>

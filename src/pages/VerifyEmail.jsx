@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import axios from 'axios';
 import { CheckCircle, XCircle, Loader } from 'lucide-react';
-import { API_URL } from '../config';
+import api from '../services/api';
 
 export default function VerifyEmail() {
   const [searchParams] = useSearchParams();
@@ -19,20 +18,11 @@ export default function VerifyEmail() {
     }
 
     try {
-      console.log('🔍 Verifying with token:', token);
-      const fullUrl = `${API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`}/auth/verify-email/${token}`;
-      console.log('🔗 API URL:', fullUrl);
+      const { data } = await api.get(`/auth/verify-email?token=${token}`);
 
-      const { data } = await axios.get(fullUrl);
-
-      console.log('✅ Success response:', data);
       setStatus('success');
       setMessage(data.message || 'Email verified successfully!');
     } catch (error) {
-      console.error('❌ Error response:', error.response?.data);
-      console.error('❌ Error status:', error.response?.status);
-      console.error('❌ Full error:', error);
-
       setStatus('error');
       setMessage(error.response?.data?.error || 'Verification failed. Please try again.');
     }
