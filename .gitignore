@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# ============================================================
+# ⚠️ SECURITY: NEVER commit ANY .env files to git
+# All secrets must be stored in fly secrets or Railway vars
+# ============================================================
+.env
+.env.*
+*.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.fly
+.env.fly.*
+backend/.env
+backend/.env.*
+fly_secrets.env
+fly_secrets.*
+
+# Git repo داخل مجلدات فرعية
+.git/
+
+# ملفات البناء (frontend)
+build/
+dist/
+.cache/
+.vercel
+
+# Scratch, zip, coverage and temp files
+scratch/
+*.zip
+tmp_*/
+tmp_*
+backend/coverage/
+coverage/
+*.log

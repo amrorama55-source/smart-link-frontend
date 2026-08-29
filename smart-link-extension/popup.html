@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Link Pro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <div class="header">
+    <div class="logo-group">
+      <img src="icon.png" class="logo-img" alt="Logo">
+      <h1>Smart Link</h1>
+    </div>
+    <button class="settings-btn" id="openSettingsBtn" title="Settings">⚙️</button>
+  </div>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tabShorten">⚡ Shorten</button>
+    <button class="tab-btn" id="tabBio">👤 Bio Link</button>
+    <button class="tab-btn" id="tabStats">📊 Stats</button>
+  </div>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <!-- TAB 1: Shorten & QR -->
+  <div id="viewShorten" class="tab-content active">
+    <div class="url-preview" id="currentUrlPreview">Detecting active page...</div>
+
+    <!-- Password Accordion / Toggle -->
+    <div class="option-row">
+      <label class="toggle-label">
+        <input type="checkbox" id="enablePasswordToggle"> Protect with Password
+      </label>
+    </div>
+    <div id="passwordInputContainer" style="display: none; margin-bottom: 12px;">
+      <input type="password" class="text-input" id="linkPasswordInput" placeholder="Enter link password" style="margin-bottom: 0;">
+    </div>
+
+    <button class="btn-primary" id="shortenBtn">
+      <span>⚡ Shorten & Create QR</span>
+    </button>
+
+    <div class="result-container" id="resultContainer">
+      <div class="short-url-box">
+        <input type="text" class="short-url-input" id="shortUrlInput" readonly>
+        <button class="btn-copy" id="copyBtn">Copy</button>
+      </div>
+
+      <div class="qr-section">
+        <img class="qr-image" id="qrImg" alt="QR Code">
+        <button class="btn-copy" id="downloadQrBtn" style="width: 100%;">Download QR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: Add to Bio Page -->
+  <div id="viewBio" class="tab-content">
+    <div class="card">
+      <p class="card-title">Add Current Page to Bio Link</p>
+      <label class="input-label">Button Title</label>
+      <input type="text" class="text-input" id="bioTitleInput" placeholder="My Awesome Link">
+
+      <button class="btn-primary" id="addToBioBtn" style="background: linear-gradient(135deg, #10b981, #059669);">
+        <span>➕ Add to My Bio Page</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB 3: Stats & Recent Links -->
+  <div id="viewStats" class="tab-content">
+    <div class="stats-header">
+      <span class="stats-title">Recent Links & Clicks</span>
+      <button class="btn-copy" id="refreshStatsBtn" style="padding: 4px 8px;">🔄</button>
+    </div>
+
+    <div class="recent-links-list" id="recentLinksList">
+      <div class="empty-state">No recent links found. Shorten a URL to start tracking!</div>
+    </div>
+  </div>
+
+  <!-- View: Settings -->
+  <div id="settingsView" class="settings-view">
+    <div class="header">
+      <h1>Settings</h1>
+      <button class="settings-btn" id="closeSettingsBtn">✖</button>
+    </div>
+
+    <label class="input-label">Server Domain</label>
+    <input type="text" class="text-input" id="serverUrlInput" value="https://api.by-smartlink.com">
+
+    <label class="input-label">API Key / User Token</label>
+    <input type="password" class="text-input" id="apiKeyInput" placeholder="Enter Smart Link API Key">
+
+    <button class="btn-primary" id="saveSettingsBtn">Save Settings</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

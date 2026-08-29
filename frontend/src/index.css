@@ -1,0 +1,238 @@
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================
+   Base Reset & Global Styles
+========================== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  @apply bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300;
+}
+
+/* Responsive images */
+img,
+picture,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ==========================
+   Touch-Friendly Elements
+========================== */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+}
+
+button,
+.btn,
+[type="button"],
+[type="submit"] {
+  @apply min-h-[44px] min-w-[44px] px-4 py-2;
+  cursor: pointer;
+}
+
+a {
+  @apply inline-block;
+}
+
+input,
+select,
+textarea {
+  @apply text-base;
+  font-size: 16px !important;
+}
+
+* {
+  touch-action: manipulation;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================
+   Custom Scrollbar
+========================== */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.6) rgba(31, 41, 55, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.3);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.6);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+/* ==========================
+   Hide Scrollbar
+========================== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================
+   Safe Area Support
+========================== */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+
+  .safe-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* ==========================
+   Mobile Optimizations
+========================== */
+@media (max-width: 640px) {
+  /* Smaller font sizes for very small screens */
+  html {
+    font-size: 14px;
+  }
+
+  body {
+    padding-bottom: 68px;
+  }
+
+  /* Better button sizing */
+  button,
+  .btn {
+    @apply text-sm px-3 py-2;
+  }
+
+  /* Compact cards */
+  .card {
+    @apply p-3 rounded-lg;
+  }
+
+  /* Headings */
+  h1 {
+    @apply text-xl;
+  }
+
+  h2 {
+    @apply text-lg;
+  }
+
+  h3 {
+    @apply text-base;
+  }
+}
+
+/* ==========================
+   Landscape Mode
+========================== */
+@media (max-height: 600px) and (orientation: landscape) {
+  h1 {
+    @apply text-lg;
+  }
+
+  h2 {
+    @apply text-base;
+  }
+}
+
+/* ==========================
+   Accessibility
+========================== */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-600;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ==========================
+   Reduced Motion
+========================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================
+   Utility Classes
+========================== */
+.transition-smooth {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}

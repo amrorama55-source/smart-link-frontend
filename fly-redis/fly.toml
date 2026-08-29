@@ -1,0 +1,11 @@
+# fly.toml for private Redis server
+app = "smart-link-redis-db-amrorama55"
+primary_region = "iad"
+
+[build]
+  image = "redis:7-alpine"
+
+[[vm]]
+  memory = "256mb"
+  cpu_kind = "shared"
+  cpus = 1

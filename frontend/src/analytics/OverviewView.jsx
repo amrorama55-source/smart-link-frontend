@@ -1,0 +1,66 @@
+import StatCard from '../components/analytics/StatCard';
+import TimeSeries from '../components/analytics/TimeSeries';
+import EngagementRadar from '../components/analytics/EngagementRadar';
+import TopCountries from '../components/analytics/TopCountries';
+import DevicePie from '../components/analytics/DevicePie';
+import ABTestingSection from '../components/analytics/ABTestingSection';
+import ProfitInsights from '../components/analytics/ProfitInsights';
+import { MousePointerClick, Users, Globe, Smartphone, ShieldCheck } from 'lucide-react';
+
+export default function OverviewView({ data, analytics }) {
+  return (
+    <div className="space-y-6">
+
+      {/* Stats Cards - 2 cols on mobile so key metrics visible without scroll */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <StatCard
+          icon={MousePointerClick}
+          title="Total Clicks"
+          value={data.stats.totalClicks.toLocaleString()}
+          color="blue"
+        />
+        <StatCard
+          icon={Users}
+          title="Unique Visitors"
+          value={data.stats.uniqueVisitors.toLocaleString()}
+          color="green"
+        />
+        <StatCard
+          icon={Globe}
+          title="Countries"
+          value={data.stats.countries}
+          color="purple"
+        />
+        <StatCard
+          icon={ShieldCheck}
+          title="Bots Blocked"
+          value={data.stats.botClicks.toLocaleString()}
+          color="red"
+        />
+      </div>
+
+      {/* A/B Testing Section */}
+      {analytics?.abTest?.enabled && (
+        <ABTestingSection abTest={analytics.abTest} />
+      )}
+
+      {/* Charts Row 1 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TimeSeries data={data.timeSeries} />
+        <EngagementRadar data={data.engagement} />
+      </div>
+
+      {/* ✅ NEW: Profit Intelligence Section */}
+      {analytics?.profitInsights && (
+        <ProfitInsights data={analytics.profitInsights} />
+      )}
+
+      {/* Charts Row 2 */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <TopCountries countries={data.countries} />
+        <DevicePie devices={data.devices} />
+      </div>
+
+    </div>
+  );
+}

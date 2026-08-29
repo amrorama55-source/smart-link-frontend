@@ -1,0 +1,557 @@
+import { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { getDashboardStats } from '../services/api';
+import Navbar from '../components/Navbar';
+import TrialBanner from '../components/TrialBanner';
+import ActivationChecklist from '../components/ActivationChecklist';
+import UpgradeModal from '../components/UpgradeModal';
+import DowngradeNotice from '../components/DowngradeNotice';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastProvider';
+import { SHORT_URL_BASE } from '../config';
+import ProfitInsights from '../components/analytics/ProfitInsights';
+import SmartInsights from '../components/analytics/SmartInsights';
+import MilestoneToast from '../components/MilestoneToast';
+import {
+  MILESTONE_THRESHOLDS,
+  wasMilestoneNotified,
+  saveMilestoneNotified,
+} from '../utils/playbookData';
+import {
+  Link2,
+  MousePointerClick,
+  Eye,
+  Calendar,
+  Copy,
+  CheckCircle,
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  Globe,
+  Smartphone,
+  ExternalLink,
+  Zap,
+  Target,
+  Crown,
+  Users,
+  Share2,
+  Info,
+  DollarSign
+} from 'lucide-react';
+
+export default function Dashboard() {
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [copiedCode, setCopiedCode] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [pendingMilestones, setPendingMilestones] = useState([]);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { success, info, warning } = useToast();
+
+  useEffect(() => {
+    loadStats();
+    checkTrialStatus();
+  }, []);
+
+  const checkTrialStatus = () => {
+    if (!user) return;
+
+    // Day 0: Welcome message for new trial users
+    if (user.plan === 'trial' && user.trialStartedAt) {
+      const trialStart = new Date(user.trialStartedAt);
+      const now = new Date();
+      const daysSinceStart = Math.floor((now - trialStart) / (1000 * 60 * 60 * 24));
+
+      if (daysSinceStart === 0) {
+        // Day 0: Welcome message
+        setTimeout(() => {
+          success('🎉 You\'ve unlocked Business Elite for 7 days. You have full access to all premium features!', {
+            duration: 6000,
+            action: {
+              label: 'Explore Features',
+              onClick: () => navigate('/analytics')
+            }
+          });
+        }, 2000);
+      } else if (daysSinceStart >= 1 && daysSinceStart <= 3) {
+        // Day 1-3: Feature discovery nudges
+        const features = [
+          { day: 1, message: '🚀 Try creating a custom domain for professional branding!', action: () => navigate('/links') },
+          { day: 2, message: '📊 Check your advanced analytics to see detailed insights!', action: () => navigate('/analytics') },
+          { day: 3, message: '🧪 Test different link variations with A/B testing!', action: () => navigate('/links') }
+        ];
+
+        const feature = features.find(f => f.day === daysSinceStart);
+        if (feature) {
+          setTimeout(() => {
+            info(feature.message, {
+              duration: 5000,
+              action: {
+                label: 'Try Now',
+                onClick: feature.action
+              }
+            });
+          }, 3000);
+        }
+      } else if (daysSinceStart >= 5 && daysSinceStart <= 6) {
+        // Day 5-6: Loss aversion reminders
+        const daysLeft = 7 - daysSinceStart;
+        setTimeout(() => {
+          warning(`⏰ Only ${daysLeft} days left to keep your Business features. Don't lose access to custom domains and unlimited links!`, {
+            duration: 6000,
+            action: {
+              label: 'Upgrade Now',
+              onClick: () => navigate('/pricing')
+            }
+          });
+        }, 4000);
+      } else if (daysSinceStart >= 7) {
+        // Day 7+: Trial expired
+        setShowUpgradeModal(true);
+      }
+    }
+  };
+
+  const loadStats = async () => {
+    try {
+      const data = await getDashboardStats();
+      setStats(data.stats);
+      // ─── Milestone Detection ─────────────────────────────────
+      if (data.stats?.topLinks?.length) {
+        const found = [];
+        data.stats.topLinks.forEach((link) => {
+          const clicks = link.totalClicks || 0;
+          MILESTONE_THRESHOLDS.forEach((threshold) => {
+            if (clicks >= threshold && !wasMilestoneNotified(link.shortCode, threshold)) {
+              found.push({
+                shortCode: link.shortCode,
+                linkTitle: link.title,
+                milestone: threshold,
+              });
+              saveMilestoneNotified(link.shortCode, threshold);
+            }
+          });
+        });
+        if (found.length) setPendingMilestones(found);
+      }
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyToClipboard = (text, code) => {
+    navigator.clipboard.writeText(text);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <Navbar />
+        <div className="flex justify-center items-center py-20">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-500 border-t-transparent mx-auto"></div>
+            <p className="mt-4 text-sm text-gray-500 dark:text-gray-400">Just a sec...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate trends
+  const getTrend = (current, previous) => {
+    if (!previous || previous === 0) return null;
+    const change = ((current - previous) / previous) * 100;
+    return {
+      value: Math.abs(change).toFixed(1),
+      isPositive: change > 0
+    };
+  };
+
+  const clicksTrend = stats?.clickTrend || 'stable';
+
+  const statCards = [
+    {
+      title: 'Total Links',
+      value: stats?.totalLinks || 0,
+      icon: Link2,
+      color: 'blue',
+      trend: stats?.totalLinks >= 5 && user?.plan === 'free' ? 'Limit reached' : null,
+      description: user?.plan === 'free' ? `Limit: 5 links/mo` : 'Unlimited links'
+    },
+    {
+      title: 'Total Clicks',
+      value: stats?.totalClicks || 0,
+      icon: MousePointerClick,
+      color: 'green',
+      trend: user?.plan === 'free' ? 'Last 24h only' : clicksTrend,
+      description: user?.plan === 'free' ? '24h history' : 'Full history'
+    },
+    {
+      title: 'Active Links',
+      value: stats?.activeLinks || 0,
+      icon: Eye,
+      color: 'purple',
+      trend: null
+    },
+    {
+      title: 'Mobile Traffic',
+      value: `${stats?.mobilePercentage || 0}%`,
+      icon: Smartphone,
+      color: 'orange',
+      trend: null,
+      description: `Avg: ${stats?.averageClicksPerLink?.toFixed(1) || 0} clks/link`
+    }
+  ];
+
+  const colorClasses = {
+    blue: 'bg-blue-500 dark:bg-blue-600',
+    green: 'bg-green-500 dark:bg-green-600',
+    purple: 'bg-purple-500 dark:bg-purple-600',
+    orange: 'bg-orange-500 dark:bg-orange-600'
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <Navbar />
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+        {/* Trial Banner - Only show for trial users */}
+        {user?.plan === 'trial' && <TrialBanner />}
+        <DowngradeNotice />
+
+        {/* Affiliate Banner */}
+        <div className="mb-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-emerald-500/20 relative overflow-hidden mt-6">
+          <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <DollarSign className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold mb-1">Love Smart Link? Earn 30% recurring commission!</h3>
+              <p className="text-emerald-50 text-sm">Join our affiliate program and get paid every month for every customer you refer.</p>
+            </div>
+          </div>
+          <a
+            href="https://smart-link-api.lemonsqueezy.com/affiliates"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 py-3 bg-white text-teal-600 hover:bg-emerald-50 rounded-xl font-bold transition-colors whitespace-nowrap w-full sm:w-auto text-center shadow-sm relative z-10"
+          >
+            Become an Affiliate
+          </a>
+        </div>
+
+        {/* Header — human, not corporate */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
+              Good to see you
+            </h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              Here's how your links are doing.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/pricing')}
+            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all text-sm group"
+          >
+            <Zap className="w-4 h-4 group-hover:animate-pulse" />
+            Upgrade Plan
+          </button>
+        </div>
+
+        {/* ✅ NEW: Smart AI Insights Layer */}
+        {stats?.smartInsights && stats.smartInsights.length > 0 && (
+          <div className="mt-8">
+            <SmartInsights insights={stats.smartInsights} />
+          </div>
+        )}
+
+        {/* ✅ NEW: Profit Intelligence Section */}
+        {stats?.profitInsights && (
+          <div className="my-8">
+            <ProfitInsights data={stats.profitInsights} />
+          </div>
+        )}
+
+        {/* Activation Checklist - Only show for trial users */}
+        {user?.plan === 'trial' && (
+          <div className="mb-6 sm:mb-8">
+            <ActivationChecklist />
+          </div>
+        )}
+
+        {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 mt-8">
+          {statCards.map((stat, i) => {
+            const Icon = stat.icon;
+            return (
+              <div
+                key={i}
+                className="bg-white dark:bg-gray-800/80 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 dark:border-gray-800"
+              >
+                <div className="flex justify-between items-start mb-3 sm:mb-4">
+                  <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[stat.color]}`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  {stat.trend && (
+                    <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${stat.trend === 'up'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      : stat.trend === 'down'
+                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
+                      }`}>
+                      {stat.trend === 'up' && <TrendingUp className="w-3 h-3" />}
+                      {stat.trend === 'down' && <TrendingDown className="w-3 h-3" />}
+                      <span className="hidden sm:inline">
+                        {stat.trend === 'up' ? '+' : stat.trend === 'down' ? '-' : ''}
+                        {stat.trend !== 'stable' && '10%'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{stat.title}</p>
+                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                  {stat.value.toLocaleString()}
+                </p>
+                {stat.description && (
+                  <p className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 mt-1 font-medium">
+                    {stat.description}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ✅ NEW: Onboarding State for users with links but no clicks */}
+        {stats?.totalLinks > 0 && stats?.totalClicks === 0 && (
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 sm:p-8 mb-8 text-center relative overflow-hidden">
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-indigo-400/10 rounded-full blur-2xl"></div>
+            
+            <div className="relative z-10">
+              <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100 dark:border-blue-700">
+                <Share2 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Your short link is ready! What's next? 🚀
+              </h2>
+              <div className="flex flex-col items-center gap-3 max-w-2xl mx-auto mb-6">
+                <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                  You've successfully created your link, but we haven't recorded any clicks yet. 
+                </p>
+                <div className="flex items-start gap-3 bg-blue-100/50 dark:bg-blue-900/30 p-4 rounded-xl text-left border border-blue-200 dark:border-blue-800">
+                  <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-blue-900 dark:text-blue-200">
+                    <strong>How it works:</strong> We track the traffic that goes through your <strong>new short link</strong>. We do not scan or analyze the original long URL you provided. Share your short link with your audience, and once they start clicking it, your dashboard will fill up with real-time insights, locations, and device stats!
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate('/links')}
+                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 transition-all text-sm flex items-center justify-center gap-2 mx-auto group"
+              >
+                <Copy className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                Go to Links to Copy & Share
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Stats - 2 columns */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
+          {/* Unique Visitors */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
+                <Users className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unique Visitors</span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</span>
+              <span className="text-xs text-blue-600 font-bold uppercase">All Time</span>
+            </div>
+          </div>
+
+          {/* Top Country */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg">
+                <Globe className="w-5 h-5" />
+              </div>
+              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Top Country</span>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.topCountries?.[0]?.country || 'N/A'}</span>
+              <span className="text-xs text-purple-600 font-bold uppercase">{stats?.topCountries?.[0]?.count || 0} Clicks</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Top Performing Links */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 mt-8">
+          <div className="p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+              <div>
+                <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
+                  Top Performing Links
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Your most clicked links
+                </p>
+              </div>
+              <button
+                onClick={() => navigate('/links')}
+                className="w-full sm:w-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 text-sm"
+              >
+                View All
+                <ExternalLink className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {stats?.topLinks?.length ? (
+            <div className="p-3 sm:p-6">
+              <div className="space-y-3 sm:space-y-4">
+                {stats.topLinks.map((link, index) => (
+                  <div
+                    key={link.shortCode}
+                    className="group relative p-4 sm:p-5 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 hover:border-blue-500 dark:hover:border-blue-400 hover:shadow-md transition-all duration-300"
+                  >
+                    {/* Rank Badge */}
+                    <div className="absolute -top-2 -left-2 w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xs sm:text-sm shadow-lg">
+                      #{index + 1}
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:justify-between gap-3 sm:gap-4">
+                      <div className="flex-1 min-w-0">
+                        {/* Title */}
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white mb-2 flex flex-wrap items-center gap-2">
+                          <span className="truncate">{link.title || 'Untitled Link'}</span>
+                          {link.abTest?.enabled && (
+                            <span className="px-2 py-0.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs rounded-full flex items-center gap-1 flex-shrink-0">
+                              <Target className="w-3 h-3" />
+                              A/B Test
+                            </span>
+                          )}
+                        </h3>
+
+                        {/* Short URL */}
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <a
+                            href={`${SHORT_URL_BASE}/${link.shortCode}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-medium hover:underline flex items-center gap-1"
+                          >
+                            <span className="truncate">{SHORT_URL_BASE}/{link.shortCode}</span>
+                            <ExternalLink className="w-3 h-3 flex-shrink-0" />
+                          </a>
+
+                          <button
+                            onClick={() => copyToClipboard(`${SHORT_URL_BASE}/${link.shortCode}`, link.shortCode)}
+                            className="p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded transition flex-shrink-0"
+                          >
+                            {copiedCode === link.shortCode ? (
+                              <CheckCircle className="w-4 h-4 text-green-600" />
+                            ) : (
+                              <Copy className="w-4 h-4 text-gray-500" />
+                            )}
+                          </button>
+                        </div>
+
+                        {/* Original URL */}
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate mb-3">
+                          {link.originalUrl}
+                        </p>
+
+                        {/* Actions */}
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                          <button
+                            onClick={() => navigate(`/analytics?link=${link.shortCode}`)}
+                            className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:underline font-medium flex items-center justify-center sm:justify-start gap-1 py-1.5 sm:py-0"
+                          >
+                            <BarChart3 className="w-4 h-4" />
+                            View Analytics
+                          </button>
+                          <button
+                            onClick={() => navigate('/links')}
+                            className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:underline flex items-center justify-center sm:justify-start gap-1 py-1.5 sm:py-0"
+                          >
+                            <Zap className="w-4 h-4" />
+                            Manage
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Stats */}
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 sm:gap-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-200 dark:border-gray-600">
+                        <div className="flex items-center gap-2 sm:mb-1">
+                          <MousePointerClick className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-400" />
+                          <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                            {link.totalClicks.toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-xs text-gray-500 dark:text-gray-400">total clicks</p>
+                          {link.clickRate && (
+                            <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-semibold">
+                              {link.clickRate.toFixed(1)}% CTR
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            /* Empty State */
+            <div className="p-8 sm:p-12 text-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Link2 className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 dark:text-gray-500" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-2">
+                Welcome to Smart Link! 🚀
+              </h3>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mb-6 max-w-lg mx-auto">
+                Smart Link is a powerful URL shortener. Paste your long URL to create a short, shareable link. <strong>When people click your new short link</strong>, we'll track their clicks, location, and devices right here on your dashboard!
+              </p>
+              <button
+                onClick={() => navigate('/links')}
+                className="px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg font-medium transition-all shadow-lg hover:shadow-xl inline-flex items-center gap-2 text-sm sm:text-base"
+              >
+                <Link2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                Create Your First Link
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Upgrade Modal - Shows when trial expires */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+      />
+
+      {/* ─── Milestone Toast ─── */}
+      {pendingMilestones.length > 0 && (
+        <MilestoneToast
+          milestones={pendingMilestones}
+          onDismiss={() => setPendingMilestones([])}
+        />
+      )}
+    </div >
+  );
+}

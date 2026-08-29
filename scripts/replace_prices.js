@@ -1,0 +1,14 @@
+const fs = require('fs');
+let file = 'frontend/src/pages/AffiliatesLanding.jsx';
+let content = fs.readFileSync(file, 'utf8');
+content = content.replace(/\$9\/mo/g, '$79/mo');
+content = content.replace(/\$89\/mo/g, '$149/mo');
+content = content.replace(/\$49\/mo/g, '$149/mo');
+content = content.replace(/\$89\+/g, '$149+');
+content = content.replace(/>\$89</g, '>$149<');
+content = content.replace(/>\$49</g, '>$149<');
+content = content.replace(/\$19\/mo/g, '$199/mo');
+content = content.replace(/\$80\/mo/g, '$70/mo');
+content = content.replace(/Voluum \$89\/mo/g, 'Voluum $149/mo');
+fs.writeFileSync(file, content);
+console.log('Done replacing in AffiliatesLanding.jsx');
