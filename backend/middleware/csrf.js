@@ -3,6 +3,11 @@ const crypto = require('crypto');
 const { getCsrfCookieOptions } = require('../utils/authCookies');
 
 const csrfMiddleware = (req, res, next) => {
+  // ✅ Skip CSRF in local development to prevent browser port mismatch cookie issues
+  if (process.env.NODE_ENV !== 'production') {
+    return next();
+  }
+
   // Methods that don't change state are allowed
   if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
     // Generate a CSRF token if one doesn't exist, and set it as a cookie
