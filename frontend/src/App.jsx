@@ -54,6 +54,7 @@ const LandingAR = lazyWithRetry(() => import('./pages/LandingAR'));
 const Dashboard = lazyWithRetry(() => import('./pages/Dashboard'));
 const Links = lazyWithRetry(() => import('./pages/EnhancedLinks'));
 const Analytics = lazyWithRetry(() => import('./pages/Analytics'));
+const CinemaAnalytics = lazyWithRetry(() => import('./pages/CinemaAnalytics'));
 const BioEditor = lazyWithRetry(() => import('./pages/BioEditor'));
 const Settings = lazyWithRetry(() => import('./pages/Settings'));
 const BioPage = lazyWithRetry(() => import('./pages/BioPage'));
@@ -195,6 +196,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/links" element={<PrivateRoute><Links /></PrivateRoute>} />
         <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+        <Route path="/cinema" element={<PrivateRoute><CinemaAnalytics /></PrivateRoute>} />
         <Route path="/bio" element={<PrivateRoute><BioEditor /></PrivateRoute>} />
         <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />

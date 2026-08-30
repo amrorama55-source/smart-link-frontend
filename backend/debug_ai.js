@@ -2,7 +2,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
 async function listModels() {
-  const models = ["gemini-pro", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.0-pro"];
+  const models = ["gemini-3.6-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
   console.log("Testing with GEMINI_API_KEY: " + process.env.GEMINI_API_KEY.substring(0, 10) + "...");

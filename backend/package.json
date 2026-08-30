@@ -14,6 +14,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@clickhouse/client": "^1.23.1",
     "@google/generative-ai": "^0.24.1",
     "@sentry/node": "^10.70.0",
     "@strands-agents/sdk": "^1.15.0",

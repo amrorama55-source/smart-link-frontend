@@ -17,6 +17,29 @@ const analyticsWorker = new Worker('analytics-queue', async (job) => {
 
     await freshLink.trackClick(trackingData);
 
+    // 🚀 Parallel Logging to ClickHouse for Real-Time Cinema Analytics
+    const clickhouse = require('../utils/clickhouse');
+    try {
+      await clickhouse.insert({
+        table: 'clicks',
+        values: [{
+          id: require('crypto').randomUUID(),
+          symbol: freshLink.shortCode,
+          country: trackingData.country || 'Unknown',
+          device: trackingData.device || 'Desktop',
+          referrer: trackingData.referrer || 'Direct',
+          is_bot: trackingData.isBot ? 1 : 0,
+          timestamp: new Date().toISOString().slice(0, 19).replace('T', ' ')
+        }],
+        format: 'JSONEachRow'
+      });
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🎬 ClickHouse: Logged click for link ${freshLink.shortCode}`);
+      }
+    } catch (chErr) {
+      console.error('❌ ClickHouse insert failed:', chErr.message);
+    }
+
     // 2. Trigger Webhook (if enabled)
     if (webhookUrl) {
       await triggerWebhook(webhookUrl, {

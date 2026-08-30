@@ -202,6 +202,7 @@ export default function Navbar() {
           <div className="flex gap-2 py-2 overflow-x-auto scrollbar-hide border-t border-gray-50 dark:border-gray-800/50">
             {[
               { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+              { to: '/cinema', icon: Sparkles, label: '🎬 Cinema AI' },
               { to: '/admin', icon: Crown, label: '👑 Admin' },
               { to: '/links', icon: LinkIcon, label: 'Links' },
               { to: '/analytics', icon: BarChart3, label: 'Analytics' },
