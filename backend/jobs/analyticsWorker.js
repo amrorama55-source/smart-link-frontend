@@ -75,4 +75,8 @@ analyticsWorker.on('failed', (job, err) => {
   console.error(`❌ Job ${job.id} failed with error ${err.message}`);
 });
 
+analyticsWorker.on('error', (err) => {
+  console.error('❌ BullMQ Worker Error:', err.message);
+});
+
 module.exports = analyticsWorker;

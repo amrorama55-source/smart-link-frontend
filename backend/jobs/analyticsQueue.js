@@ -17,4 +17,8 @@ const analyticsQueue = new Queue('analytics-queue', {
 
 console.log('✅ Analytics Queue Initialized');
 
+analyticsQueue.on('error', (err) => {
+  console.error('❌ BullMQ Queue Error:', err.message);
+});
+
 module.exports = analyticsQueue;
