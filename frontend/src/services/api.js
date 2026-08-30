@@ -8,7 +8,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10s timeout safeguard
+  timeout: 60000, // 60s timeout safeguard for AI agent requests
 });
 
 // Add CSRF token & Authorization Bearer token to requests
