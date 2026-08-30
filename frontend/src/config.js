@@ -1,15 +1,17 @@
 
-// frontend/src/config.js - FINAL CORRECT VERSION
+const isLocal = typeof window !== 'undefined' && 
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-export const API_URL = import.meta.env.VITE_API_URL || 'https://api.by-smartlink.com';
+export const API_URL = isLocal ? 'http://localhost:3000' : 'https://api.by-smartlink.com';
 
-// ✅ Always use the real production domain regardless of any env var
-export const SHORT_URL_BASE = 'https://api.by-smartlink.com';
+// Always use localhost for testing short links locally
+export const SHORT_URL_BASE = isLocal ? 'http://localhost:3000' : 'https://api.by-smartlink.com';
 
-// ✅ Frontend URL
-export const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL || 'https://www.by-smartlink.com';
+// Frontend URL
+export const FRONTEND_URL = isLocal ? 'http://localhost:5173' : 'https://www.by-smartlink.com';
 
-console.log('🔗 Smart Link Config:', {
+console.log('🔗 Smart Link Dynamic Config:', {
+  isLocal,
   apiUrl: API_URL,
   shortUrlBase: SHORT_URL_BASE
 });
