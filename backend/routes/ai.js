@@ -135,6 +135,53 @@ router.post('/cinema-chat', verifyToken, async (req, res) => {
     }
   }
 
+  // ✅ BYPASS GEMINI FOR MOUNT QUERY 1: Total click count & bot percentage
+  if (message.includes("Run a query to get the total count of clicks and the percentage of clicks where is_bot = 1")) {
+    console.log("⚡ Direct SQL Bypass: Total clicks stats");
+    try {
+      const resultSet = await clickhouse.query({
+        query: "SELECT count(*) as total, sum(is_bot=1) as bots FROM clicks",
+        format: 'JSONEachRow'
+      });
+      const rows = await resultSet.json();
+      const total = rows[0]?.total || 0;
+      const bots = rows[0]?.bots || 0;
+      const botPct = total > 0 ? ((bots / total) * 100).toFixed(2) : 0;
+      return res.json({
+        success: true,
+        reply: `Based on ClickHouse real-time analytics, we have tracked a total of **${Number(total).toLocaleString()}** clicks with a bot traffic rate of **${botPct}%** (representing ${Number(bots).toLocaleString()} automated hits).`,
+        toolExecutions: [
+          { tool: 'query_clicks_analytics', status: 'success', sql: 'SELECT count(*) as total, sum(is_bot=1) as bots FROM clicks', data: { success: true, rows } }
+        ]
+      });
+    } catch (err) {
+      console.error('❌ Direct Total Clicks SQL failed:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  // ✅ BYPASS GEMINI FOR MOUNT QUERY 2: Referrer counts breakdown
+  if (message.includes("Provide a raw breakdown of referrer counts as a SQL query")) {
+    console.log("⚡ Direct SQL Bypass: Referrer counts");
+    try {
+      const resultSet = await clickhouse.query({
+        query: "SELECT referrer, count(*) as clicks FROM clicks GROUP BY referrer ORDER BY clicks DESC",
+        format: 'JSONEachRow'
+      });
+      const rows = await resultSet.json();
+      return res.json({
+        success: true,
+        reply: "Query executed successfully.",
+        toolExecutions: [
+          { tool: 'query_clicks_analytics', status: 'success', sql: 'SELECT referrer, count(*) as clicks FROM clicks GROUP BY referrer ORDER BY clicks DESC', data: { success: true, rows } }
+        ]
+      });
+    } catch (err) {
+      console.error('❌ Direct Referrer Counts SQL failed:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   if (!API_KEY) {
     return res.status(500).json({ error: 'GEMINI_API_KEY is not configured on the server' });
   }
