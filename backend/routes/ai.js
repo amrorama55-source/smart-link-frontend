@@ -108,6 +108,33 @@ router.post('/cinema-chat', verifyToken, async (req, res) => {
     return res.status(400).json({ error: 'message is required' });
   }
 
+  // ✅ BYPASS GEMINI FOR MANUAL SQL RUNS: Direct ClickHouse execution to conserve daily API quota!
+  if (message.startsWith('Run this exact SQL query on clicks table and return the results:')) {
+    const sql = message.replace('Run this exact SQL query on clicks table and return the results:', '').trim();
+    console.log(`⚡ Direct SQL Console Execution: [${sql}]`);
+    try {
+      const isModifying = /insert|update|delete|drop|alter|truncate/i.test(sql);
+      if (isModifying) {
+        throw new Error("Modifying queries are restricted for security.");
+      }
+      const resultSet = await clickhouse.query({
+        query: sql,
+        format: 'JSONEachRow'
+      });
+      const rows = await resultSet.json();
+      return res.json({
+        success: true,
+        reply: "Query executed successfully.",
+        toolExecutions: [
+          { tool: 'query_clicks_analytics', status: 'success', sql, data: { success: true, rows } }
+        ]
+      });
+    } catch (err) {
+      console.error('❌ Direct SQL failed:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
   if (!API_KEY) {
     return res.status(500).json({ error: 'GEMINI_API_KEY is not configured on the server' });
   }
