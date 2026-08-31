@@ -66,7 +66,7 @@ export default function Dashboard() {
       if (daysSinceStart === 0) {
         // Day 0: Welcome message
         setTimeout(() => {
-          success('🎉 You\'ve unlocked Business Elite for 7 days. You have full access to all premium features!', {
+          success('🎉 You\'ve unlocked Business Elite for 14 days. You have full access to all premium features!', {
             duration: 6000,
             action: {
               label: 'Explore Features',
@@ -94,9 +94,9 @@ export default function Dashboard() {
             });
           }, 3000);
         }
-      } else if (daysSinceStart >= 5 && daysSinceStart <= 6) {
-        // Day 5-6: Loss aversion reminders
-        const daysLeft = 7 - daysSinceStart;
+      } else if (daysSinceStart >= 11 && daysSinceStart <= 13) {
+        // Day 11-13: Loss aversion reminders
+        const daysLeft = 14 - daysSinceStart;
         setTimeout(() => {
           warning(`⏰ Only ${daysLeft} days left to keep your Business features. Don't lose access to custom domains and unlimited links!`, {
             duration: 6000,
@@ -106,8 +106,8 @@ export default function Dashboard() {
             }
           });
         }, 4000);
-      } else if (daysSinceStart >= 7) {
-        // Day 7+: Trial expired
+      } else if (daysSinceStart >= 14) {
+        // Day 14+: Trial expired
         setShowUpgradeModal(true);
       }
     }
