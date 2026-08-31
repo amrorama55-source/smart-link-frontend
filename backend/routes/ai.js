@@ -152,10 +152,12 @@ Explain your analysis clearly and summarize findings for film studios.`,
       tools: [cinemaTools]
     });
 
-    const formattedHistory = (chatHistory || []).map(h => ({
-      role: h.role === 'user' ? 'user' : 'model',
-      parts: [{ text: h.content }]
-    }));
+    const formattedHistory = (chatHistory || [])
+      .filter(h => h.content && !h.content.startsWith('❌ Error')) // Safeguard: Filter out error/timeout messages from history
+      .map(h => ({
+        role: h.role === 'user' ? 'user' : 'model',
+        parts: [{ text: h.content }]
+      }));
 
     const contents = [
       ...formattedHistory,
