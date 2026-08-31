@@ -296,7 +296,7 @@ export default function CinemaAnalytics() {
 
               <div className="h-[240px] w-full">
                 {chartData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                     <BarChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                       <XAxis dataKey="name" stroke="#888888" fontSize={10} />
