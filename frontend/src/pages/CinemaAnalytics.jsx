@@ -153,6 +153,7 @@ export default function CinemaAnalytics() {
               value: Number(r[valKey])
             })));
             setChartTitle(`Manual SQL View: ${labelKey} vs ${valKey}`);
+            setToolLogs(prev => [...prev, exec]); // Append to execution logs
           }
         }
       } else {
@@ -296,7 +297,7 @@ export default function CinemaAnalytics() {
 
               <div className="h-[240px] w-full">
                 {chartData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                  <ResponsiveContainer width="100%" height={240}>
                     <BarChart data={chartData}>
                       <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                       <XAxis dataKey="name" stroke="#888888" fontSize={10} />
