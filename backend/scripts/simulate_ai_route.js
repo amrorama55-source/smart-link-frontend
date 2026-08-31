@@ -26,7 +26,7 @@ const cinemaTools = {
 };
 
 async function simulate() {
-  const message = "What is the percentage of bot clicks compared to human clicks for avatar-3?";
+  const message = "Run this exact SQL query on clicks table and return the results: SELECT referrer, count(*) as clicks FROM clicks GROUP BY referrer ORDER BY clicks DESC";
   const chatHistory = [];
 
   console.log(`🤖 Simulating route execution for message: "${message}"`);

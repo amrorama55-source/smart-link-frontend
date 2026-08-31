@@ -294,7 +294,7 @@ export default function CinemaAnalytics() {
                 </span>
               </div>
 
-              <div className="h-[240px] w-full flex items-center justify-center">
+              <div className="h-[240px] w-full">
                 {chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={chartData}>
@@ -310,7 +310,7 @@ export default function CinemaAnalytics() {
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="text-center text-gray-400 dark:text-gray-600 text-sm">
+                  <div className="h-full w-full flex flex-col items-center justify-center text-center text-gray-400 dark:text-gray-600 text-sm">
                     <Info className="w-8 h-8 mx-auto mb-2 opacity-50" />
                     No query data loaded. Ask the AI agent above to load data.
                   </div>
