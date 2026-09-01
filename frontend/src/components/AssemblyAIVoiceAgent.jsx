@@ -1,196 +1,247 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Volume2, VolumeX, Sparkles, Play, CheckCircle2, Radio, Activity, Cpu } from 'lucide-react';
-import api from '../services/api';
+import React, { useState, useEffect } from 'react';
+import { Mic, Radio, Sparkles, Play, ShieldAlert, TrendingUp, Globe2, Activity, Volume2 } from 'lucide-react';
 
 export default function AssemblyAIVoiceAgent({ onQueryResult, currentLoading }) {
-  const [isRecording, setIsRecording] = useState(false);
   const [voiceActive, setVoiceActive] = useState(false);
+  const [activeQueryIndex, setActiveQueryIndex] = useState(null);
   const [transcribedText, setTranscribedText] = useState('');
-  const [agentStatus, setAgentStatus] = useState('Idle (Ready)');
-  const [audioLevel, setAudioLevel] = useState(0);
+  const [agentStatus, setAgentStatus] = useState('Standby');
+  const [audioBars, setAudioBars] = useState(new Array(36).fill(15));
   const [speaking, setSpeaking] = useState(false);
 
-  // Preset quick voice queries for demo & instant testing
   const sampleQueries = [
     {
-      title: 'Analyze Bot vs Human Clicks',
-      text: 'Show me the bot percentage compared to genuine human clicks in ClickHouse.',
+      badge: 'Bot Shield',
+      badgeColor: 'text-amber-400 border-amber-500/30 bg-amber-500/10',
+      icon: ShieldAlert,
+      title: 'Audit Bot vs Real Human Clicks',
+      text: 'Scan the ClickHouse clickstream and calculate the exact percentage of bot scraper traffic.',
       query: 'What is the percentage of bot clicks compared to human clicks? Show breakdown by is_bot.'
     },
     {
-      title: 'Top Social Referrers',
-      text: 'Which platforms generated the highest click volume this week?',
+      badge: 'Social Matrix',
+      badgeColor: 'text-blue-400 border-blue-500/30 bg-blue-500/10',
+      icon: TrendingUp,
+      title: 'Top Social Traffic Channels',
+      text: 'Which platforms generated the highest click volume this week? Rank them in a visual chart.',
       query: 'List the top referrers by click count and show them as a chart.'
     },
     {
-      title: 'Country Geographic Spread',
-      text: 'Break down click distributions across top countries.',
+      badge: 'Geo Analytics',
+      badgeColor: 'text-emerald-400 border-emerald-500/30 bg-emerald-500/10',
+      icon: Globe2,
+      title: 'Worldwide Geographic Distribution',
+      text: 'Break down global campaign impressions and clicks across top performing countries.',
       query: 'Show me the distribution of clicks grouped by country.'
     }
   ];
 
-  // Simulated audio frequency visualizer effect when active
+  // Dynamic soundwave equalizer animation
   useEffect(() => {
     let interval;
     if (voiceActive || speaking) {
       interval = setInterval(() => {
-        setAudioLevel(Math.floor(Math.random() * 80) + 20);
-      }, 100);
+        setAudioBars(
+          new Array(36).fill(0).map(() => Math.floor(Math.random() * 75) + 20)
+        );
+      }, 75);
     } else {
-      setAudioLevel(0);
+      setAudioBars(new Array(36).fill(12));
     }
     return () => clearInterval(interval);
   }, [voiceActive, speaking]);
 
-  // Execute a voice query seamlessly
-  const runVoiceQuery = async (queryItem) => {
+  const runVoiceQuery = async (queryItem, index) => {
+    setActiveQueryIndex(index);
     setVoiceActive(true);
-    setAgentStatus('AssemblyAI: Streaming Audio...');
+    setAgentStatus('Listening & Streaming...');
     setTranscribedText('');
 
-    // Simulate word-by-word streaming transcription (sub-second AssemblyAI Universal-3.5 simulation)
     const words = queryItem.text.split(' ');
     let current = '';
 
+    // Fast sub-second word streaming simulation
     for (let i = 0; i < words.length; i++) {
-      await new Promise(r => setTimeout(r, 90));
+      await new Promise(r => setTimeout(r, 70));
       current += (i === 0 ? '' : ' ') + words[i];
       setTranscribedText(current);
     }
 
-    setAgentStatus('Universal-3.5: Finalized (Confidence 98.4%)');
-    await new Promise(r => setTimeout(r, 400));
+    setAgentStatus('Universal-3.5: Finalized (98.6% Conf.)');
+    await new Promise(r => setTimeout(r, 350));
 
-    setAgentStatus('Agent: Querying ClickHouse Cloud Engine...');
+    setAgentStatus('Querying ClickHouse Engine...');
     
     try {
       if (onQueryResult) {
         await onQueryResult(queryItem.query);
       }
-      setAgentStatus('Agent: Insights Generated & Visualized');
-      
-      // Voice synthesis response
+      setAgentStatus('Visualizing Live Analytics');
+
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance("Analysis completed. Visualizing real-time analytics on the dashboard.");
+        const utterance = new SpeechSynthesisUtterance("Analysis completed. Updating dashboard charts now.");
         utterance.rate = 1.05;
         utterance.onstart = () => setSpeaking(true);
         utterance.onend = () => {
           setSpeaking(false);
           setVoiceActive(false);
-          setAgentStatus('Idle (Ready)');
+          setActiveQueryIndex(null);
+          setAgentStatus('Standby');
         };
         window.speechSynthesis.speak(utterance);
       } else {
         setVoiceActive(false);
-        setAgentStatus('Idle (Ready)');
+        setActiveQueryIndex(null);
+        setAgentStatus('Standby');
       }
     } catch (err) {
       setAgentStatus('Error executing query');
       setVoiceActive(false);
+      setActiveQueryIndex(null);
     }
   };
 
   return (
-    <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/30 rounded-2xl p-6 shadow-xl text-white mb-8 relative overflow-hidden">
+    <div className="relative mb-8 overflow-hidden rounded-3xl border border-slate-800/80 bg-slate-900/60 p-6 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:border-slate-700/60">
       
-      {/* Background Accent Glow */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Subtle modern ambient background glow */}
+      <div className="pointer-events-none absolute -left-20 -top-20 h-72 w-72 rounded-full bg-blue-600/15 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-20 -right-20 h-72 w-72 rounded-full bg-indigo-600/15 blur-3xl" />
 
-      {/* Header Badge */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 pb-4 border-b border-indigo-500/20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-            <Mic className="w-5 h-5 text-white animate-pulse" />
+      {/* Top Bar: Clean Identity & Live Status */}
+      <div className="relative z-10 mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-800/60 pb-4">
+        
+        {/* Left Branding */}
+        <div className="flex items-center gap-3.5">
+          <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-500 p-0.5 shadow-lg shadow-indigo-500/25">
+            <div className="flex h-full w-full items-center justify-center rounded-[14px] bg-slate-950/40 backdrop-blur-sm">
+              <Mic className={`h-5 w-5 text-blue-200 transition-transform duration-300 ${voiceActive ? 'scale-110 text-white' : ''}`} />
+            </div>
+            {voiceActive && (
+              <span className="absolute -inset-1 animate-ping rounded-2xl bg-blue-500/30 duration-1000" />
+            )}
           </div>
+
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-lg font-black tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-blue-300">
-                AssemblyAI Voice Agent
+              <h3 className="text-base font-bold tracking-tight text-white">
+                AssemblyAI Voice Intelligence
               </h3>
-              <span className="px-2 py-0.5 bg-blue-500/20 border border-blue-400/40 text-blue-300 text-[10px] font-extrabold uppercase rounded-full tracking-wider flex items-center gap-1">
-                <Radio className="w-2.5 h-2.5 text-blue-400 animate-ping" /> Universal-3.5 Pro
+              <span className="flex items-center gap-1 rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[11px] font-semibold text-blue-400">
+                <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-pulse" />
+                Universal-3.5 Pro
               </span>
             </div>
-            <p className="text-xs text-indigo-300/70">
-              Autonomous conversational voice interface with sub-second real-time streaming STT
+            <p className="text-xs text-slate-400">
+              Conversational speech agent with real-time sub-second query execution
             </p>
           </div>
         </div>
 
-        {/* Live Engine Status */}
-        <div className="flex items-center gap-3 bg-black/30 border border-indigo-400/20 px-3.5 py-1.5 rounded-xl text-xs">
-          <Activity className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-slate-400 font-mono">Status:</span>
-          <span className="text-emerald-400 font-semibold">{agentStatus}</span>
+        {/* Right Status Badge */}
+        <div className="flex items-center gap-2.5 rounded-xl border border-slate-800 bg-slate-950/60 px-3.5 py-1.5 text-xs text-slate-300 shadow-inner">
+          <Activity className={`h-3.5 w-3.5 ${voiceActive ? 'text-emerald-400 animate-pulse' : 'text-slate-500'}`} />
+          <span className="text-slate-500">Engine:</span>
+          <span className={`font-medium ${voiceActive ? 'text-emerald-400' : 'text-slate-300'}`}>
+            {agentStatus}
+          </span>
         </div>
       </div>
 
-      {/* Main Interactive Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+      {/* Main Content: Two Columns */}
+      <div className="relative z-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
         
-        {/* Left: Waveform & Speech Display (7 cols) */}
-        <div className="lg:col-span-7 bg-black/40 border border-white/10 rounded-xl p-4 flex flex-col justify-between min-h-[140px]">
+        {/* Left: Live Speech Monitor & Waveform (7 cols) */}
+        <div className="flex flex-col justify-between rounded-2xl border border-slate-800/80 bg-slate-950/50 p-5 backdrop-blur-md lg:col-span-7">
           
-          <div className="flex items-center justify-between text-xs text-indigo-300/80 mb-2 font-mono">
+          <div className="mb-3 flex items-center justify-between text-[11px] font-mono text-slate-400">
             <span className="flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-indigo-400" /> Live Transcription Stream:
+              <Radio className="h-3 w-3 text-blue-400" />
+              Live Speech-to-Text Stream
             </span>
-            <span>Latency: &lt; 250ms</span>
+            <span className="text-slate-500">Latency: ~220ms</span>
           </div>
 
-          {/* Transcribed Text Output */}
-          <div className="text-base font-medium text-slate-100 min-h-[48px] flex items-center">
+          {/* Speech Text Box */}
+          <div className="my-2 min-h-[56px] flex items-center">
             {transcribedText ? (
-              <p className="italic text-indigo-100">
-                "{transcribedText}"
+              <p className="text-sm font-medium leading-relaxed text-slate-100">
+                <span className="text-blue-400 font-serif text-lg leading-none mr-1">“</span>
+                {transcribedText}
+                <span className="inline-block h-4 w-1 bg-blue-400 ml-1 animate-pulse" />
               </p>
             ) : (
-              <p className="text-slate-500 text-sm">
-                Click any sample voice query below to test AssemblyAI real-time speech processing...
+              <p className="text-xs text-slate-500 italic">
+                Select a query chip on the right to trigger instant voice transcription &amp; ClickHouse analytics...
               </p>
             )}
           </div>
 
-          {/* Dynamic Audio Frequency Visualizer */}
-          <div className="flex items-center gap-1 h-6 mt-3 pt-2 border-t border-white/5">
-            {[...Array(28)].map((_, i) => (
+          {/* High-End Soundwave Visualizer */}
+          <div className="mt-4 flex items-center gap-1 h-8 rounded-lg bg-slate-900/40 px-2.5 border border-slate-800/50">
+            {audioBars.map((height, i) => (
               <div
                 key={i}
-                className="flex-1 bg-indigo-500 rounded-full transition-all duration-75"
+                className="flex-1 rounded-full bg-gradient-to-t from-blue-600 via-indigo-400 to-cyan-300 transition-all duration-75"
                 style={{
-                  height: voiceActive || speaking ? `${Math.max(15, (audioLevel * ((i % 5) + 1)) % 100)}%` : '20%',
-                  opacity: voiceActive || speaking ? 0.9 : 0.2
+                  height: `${height}%`,
+                  opacity: voiceActive || speaking ? 0.9 : 0.25
                 }}
               />
             ))}
           </div>
         </div>
 
-        {/* Right: Quick Voice Query Action Buttons (5 cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-2">
-          <p className="text-xs font-bold text-indigo-300 uppercase tracking-wider mb-1 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-amber-400" /> Demo Voice Queries (Click to Run):
-          </p>
+        {/* Right: Modern Query Chips (5 cols) */}
+        <div className="flex flex-col justify-between gap-2.5 lg:col-span-5">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
+              <Sparkles className="h-3 w-3 text-amber-400" />
+              Instant Voice Scenarios
+            </span>
+            <span className="text-[10px] text-slate-500">Click to run</span>
+          </div>
 
-          {sampleQueries.map((item, idx) => (
-            <button
-              key={idx}
-              onClick={() => runVoiceQuery(item)}
-              disabled={voiceActive || currentLoading}
-              className="flex items-center justify-between w-full px-3.5 py-2.5 bg-indigo-900/30 hover:bg-indigo-600/40 active:scale-[0.99] border border-indigo-400/20 hover:border-indigo-400/50 rounded-xl text-left transition-all duration-150 group disabled:opacity-50"
-            >
-              <div className="flex items-center gap-2.5 overflow-hidden">
-                <div className="w-6 h-6 rounded-lg bg-indigo-500/20 group-hover:bg-indigo-500 text-indigo-300 group-hover:text-white flex items-center justify-center text-xs font-bold transition">
-                  {idx + 1}
-                </div>
-                <span className="text-xs font-bold text-slate-200 group-hover:text-white truncate">
-                  {item.title}
-                </span>
-              </div>
-              <Play className="w-3.5 h-3.5 text-indigo-400 group-hover:text-white shrink-0 ml-2" />
-            </button>
-          ))}
+          <div className="flex flex-col gap-2">
+            {sampleQueries.map((item, idx) => {
+              const Icon = item.icon;
+              const isCurrent = activeQueryIndex === idx;
+
+              return (
+                <button
+                  key={idx}
+                  onClick={() => runVoiceQuery(item, idx)}
+                  disabled={voiceActive || currentLoading}
+                  className={`group relative flex items-center justify-between rounded-xl border p-3 text-left transition-all duration-200 ${
+                    isCurrent
+                      ? 'border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-500/10'
+                      : 'border-slate-800/80 bg-slate-950/40 hover:border-slate-700 hover:bg-slate-800/40'
+                  } disabled:opacity-50`}
+                >
+                  <div className="flex items-center gap-3 overflow-hidden">
+                    <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border ${item.badgeColor}`}>
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate text-xs font-semibold text-slate-200 group-hover:text-white">
+                          {item.title}
+                        </span>
+                      </div>
+                      <p className="truncate text-[11px] text-slate-500 group-hover:text-slate-400">
+                        {item.badge}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="ml-2 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 group-hover:border-blue-500/40 group-hover:bg-blue-600/20 group-hover:text-blue-400 transition">
+                    <Play className="h-3 w-3 fill-current" />
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
       </div>
