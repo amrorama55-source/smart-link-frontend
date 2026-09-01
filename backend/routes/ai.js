@@ -4,25 +4,6 @@ const { verifyToken } = require('../middleware/verifyToken');
 
 const API_KEY = (process.env.GEMINI_API_KEY || '').trim();
 
-// AssemblyAI Secure Token Minting Endpoint (Universal-3.5 Pro Streaming)
-router.get('/aai-token', async (req, res) => {
-  try {
-    const aaiKey = (process.env.ASSEMBLYAI_API_KEY || '').trim();
-    if (!aaiKey) return res.status(500).json({ error: 'AssemblyAI API Key not configured' });
-
-    const response = await fetch('https://streaming.assemblyai.com/v3/token?expires_in_seconds=60', {
-      headers: { authorization: aaiKey }
-    });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Failed to mint AssemblyAI token');
-
-    return res.json({ token: data.token });
-  } catch (err) {
-    console.error('❌ AssemblyAI token minting failed:', err.message);
-    return res.status(500).json({ error: 'Token minting failed', details: err.message });
-  }
-});
-
 // AI Bio Page Generator - PRODUCTION STABLE VERSION
 router.post('/generate-page', verifyToken, async (req, res) => {
   try {
