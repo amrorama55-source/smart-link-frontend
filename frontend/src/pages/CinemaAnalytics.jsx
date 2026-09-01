@@ -213,19 +213,19 @@ export default function CinemaAnalytics() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Modern Clean Header */}
+        {/* Banner Headers */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-3 py-1 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 text-blue-400 text-xs font-semibold rounded-full border border-blue-500/20 backdrop-blur-md">
-                ⚡ AssemblyAI Universal-3.5 &amp; Google Cloud Partner Track
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-full border border-blue-200 dark:border-blue-800">
+                Google Cloud + AssemblyAI Real-Time Voice Track
               </span>
             </div>
-            <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-              🎬 CinemaLink &amp; Voice Intelligence
+            <h1 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+              🎬 CinemaLink &amp; Voice Intelligence AI Agent
             </h1>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Autonomous marketing intelligence agent with sub-second voice interactions and ClickHouse big data analytics.
+            <p className="text-gray-600 dark:text-gray-400">
+              Autonomous film marketing coordinator powered by AssemblyAI Universal-3.5 speech intelligence and ClickHouse real-time big data.
             </p>
           </div>
         </div>
