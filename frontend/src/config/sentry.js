@@ -15,6 +15,11 @@ export function initFrontendSentry() {
         Sentry.browserTracingIntegration(),
       ],
       tracesSampleRate: import.meta.env.PROD ? 0.05 : 0.5,
+      ignoreErrors: [
+        /@context/i,
+        /toLowerCase/i,
+        /undefined is not an object/i,
+      ],
     });
   };
 
