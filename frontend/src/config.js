@@ -2,10 +2,10 @@
 const isLocal = typeof window !== 'undefined' && 
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-export const API_URL = isLocal ? 'http://localhost:3000' : 'https://smartlinkapi-rryrycdl.b4a.run';
+export const API_URL = isLocal ? 'http://localhost:3000' : 'https://smartlink-api-kou9.onrender.com';
 
 // Always use localhost for testing short links locally
-export const SHORT_URL_BASE = isLocal ? 'http://localhost:3000' : 'https://smartlinkapi-rryrycdl.b4a.run';
+export const SHORT_URL_BASE = isLocal ? 'http://localhost:3000' : 'https://smartlink-api-kou9.onrender.com';
 
 // Frontend URL
 export const FRONTEND_URL = isLocal ? 'http://localhost:5173' : 'https://www.by-smartlink.com';
