@@ -7,18 +7,19 @@ import { dirname } from 'path'
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+const IS_VERCEL = !!(process.env.VERCEL || process.env.CI || process.env.NOW_BUILDER);
+
 // Prerenderer plugin (generates static HTML for each route at build time)
 // Runs LOCALLY only — Vercel does not support Puppeteer (missing libnspr4.so etc.)
-// Deploy with: npm run build && vercel --prebuilt --prod
 let PrerenderPlugin;
-try {
-  PrerenderPlugin = require('@prerenderer/rollup-plugin');
-  if (PrerenderPlugin.default) PrerenderPlugin = PrerenderPlugin.default;
-} catch (e) {
-  // Not installed or not available — skip silently
+if (!IS_VERCEL) {
+  try {
+    PrerenderPlugin = require('@prerenderer/rollup-plugin');
+    if (PrerenderPlugin.default) PrerenderPlugin = PrerenderPlugin.default;
+  } catch (e) {
+    // Not installed or not available — skip silently
+  }
 }
-
-const IS_VERCEL = !!process.env.VERCEL;
 
 const prerenderRoutes = [
   '/',
