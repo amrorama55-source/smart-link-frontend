@@ -189,7 +189,7 @@ router.post('/cinema-chat', verifyToken, async (req, res) => {
   try {
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({
-      model: "gemini-3.5-flash",
+      model: "gemini-1.5-flash",
       systemInstruction: `You are CinemaLink AI, an expert autonomous data analyst agent for film marketing.
 You are equipped with tools to query real-time clickstream data in ClickHouse (clicks table).
 Always write clean, optimized ClickHouse SQL.

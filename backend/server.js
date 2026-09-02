@@ -7,11 +7,11 @@ initSentry();
 // ⚠️ STARTUP CONFIGURATION WARNINGS
 if (!process.env.LS_STARTER_MONTHLY_VARIANT_ID || process.env.LS_STARTER_MONTHLY_VARIANT_ID === 'STARTER_MONTHLY_ID_HERE') {
   console.warn('⚠️  WARNING: LS_STARTER_MONTHLY_VARIANT_ID is not set! Starter plan subscriptions will NOT work.');
-  console.warn('   Fix: fly secrets set LS_STARTER_MONTHLY_VARIANT_ID=<your-lemonsqueezy-variant-id>');
+  console.warn('   Fix: Set LS_STARTER_MONTHLY_VARIANT_ID in Render Environment Variables.');
 }
 if (!process.env.LS_STARTER_YEARLY_VARIANT_ID || process.env.LS_STARTER_YEARLY_VARIANT_ID === 'STARTER_YEARLY_ID_HERE') {
   console.warn('⚠️  WARNING: LS_STARTER_YEARLY_VARIANT_ID is not set! Starter yearly plan subscriptions will NOT work.');
-  console.warn('   Fix: fly secrets set LS_STARTER_YEARLY_VARIANT_ID=<your-lemonsqueezy-variant-id>');
+  console.warn('   Fix: Set LS_STARTER_YEARLY_VARIANT_ID in Render Environment Variables.');
 }
 
 // 🔐 STRIPE MODE CHECK — Critical for production
@@ -21,8 +21,7 @@ if (process.env.NODE_ENV === 'production') {
     console.error('🚨 CRITICAL SECURITY WARNING: Stripe is running in TEST MODE in production!');
     console.error('   Real customer payments will FAIL silently or be misdirected.');
     console.error('   Fix: Replace STRIPE_SECRET_KEY with your sk_live_... key from Stripe Dashboard.');
-    console.error('   Fly.io: fly secrets set STRIPE_SECRET_KEY=sk_live_...');
-    console.error('   Railway: Set STRIPE_SECRET_KEY=sk_live_... in Variables tab.');
+    console.error('   Render: Set STRIPE_SECRET_KEY=sk_live_... in Environment Variables tab.');
   } else if (!stripeKey) {
     console.error('🚨 CRITICAL: STRIPE_SECRET_KEY is not set! Payment routes will fail.');
   } else {
@@ -485,10 +484,11 @@ process.on('unhandledRejection', (reason, promise) => {
 // Start Server
 // ========================================
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.IP || '0.0.0.0';
 let server;
 
 if (process.env.NODE_ENV !== 'test') {
-  server = app.listen(PORT, '0.0.0.0', () => {
+  server = app.listen(PORT, HOST, () => {
     console.log('');
     console.log('🚀 ========================================');
     console.log(`🚀 Smart Link API v2.0`);

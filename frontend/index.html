@@ -226,7 +226,7 @@
   <!-- WebMCP Agent Integration — Smart Link v2.5 (Comprehensive Multi-Context & Declarative Support) -->
   <script>
     (function () {
-      const API_BASE = 'https://smart-link-api.fly.dev';
+      const API_BASE = 'https://smartlink-api-kou9.onrender.com';
 
       // Try to get the logged-in user's JWT for authenticated tool calls
       function getAuthHeaders() {
@@ -481,11 +481,11 @@
 <body>
   <!-- Declarative WebMCP Forms for Agent Discovery -->
   <div id="webmcp-declarative-container" style="display:none;" aria-hidden="true">
-    <form id="webmcp-form-shorten" toolname="shorten_url" tooldescription="Shorten any URL instantly using Smart Link" action="https://smart-link-api.fly.dev/api/public/shorten" method="POST">
+    <form id="webmcp-form-shorten" toolname="shorten_url" tooldescription="Shorten any URL instantly using Smart Link" action="https://smartlink-api-kou9.onrender.com/api/public/shorten" method="POST">
       <input type="url" name="originalUrl" placeholder="Destination URL to shorten" required />
       <button type="submit">Shorten</button>
     </form>
-    <form id="webmcp-form-marketing" toolname="create_marketing_link" tooldescription="Create a marketing tracking link with geo-targeting, UTM, bot protection, and A/B testing" action="https://smart-link-api.fly.dev/api/public/create-smart-link" method="POST">
+    <form id="webmcp-form-marketing" toolname="create_marketing_link" tooldescription="Create a marketing tracking link with geo-targeting, UTM, bot protection, and A/B testing" action="https://smartlink-api-kou9.onrender.com/api/public/create-smart-link" method="POST">
       <input type="url" name="url" placeholder="Main URL" required />
       <input type="text" name="title" placeholder="Campaign Title" />
       <input type="text" name="utmSource" placeholder="utm_source" />
@@ -494,7 +494,7 @@
       <input type="checkbox" name="enableBotProtection" value="true" />
       <button type="submit">Create Campaign Link</button>
     </form>
-    <form id="webmcp-form-analytics" toolname="get_link_analytics" tooldescription="Get click stats and visitor analytics for a Smart Link shortcode" action="https://smart-link-api.fly.dev/api/public/stats" method="GET">
+    <form id="webmcp-form-analytics" toolname="get_link_analytics" tooldescription="Get click stats and visitor analytics for a Smart Link shortcode" action="https://smartlink-api-kou9.onrender.com/api/public/stats" method="GET">
       <input type="text" name="shortCode" placeholder="shortCode" required />
       <button type="submit">Get Analytics</button>
     </form>
