@@ -6,11 +6,18 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastProvider';
 import { useEffect } from 'react';
+import { API_URL } from './config';
 
 function RenderTrigger() {
   useEffect(() => {
     // Fire event after a tiny delay to ensure DOM is fully painted
     const timer = setTimeout(() => document.dispatchEvent(new Event('render-event')), 100);
+    
+    // Silent background pre-warmup to wake up backend container on page load
+    try {
+      fetch(`${API_URL}/health`, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+    } catch {}
+
     return () => clearTimeout(timer);
   }, []);
   return null;
