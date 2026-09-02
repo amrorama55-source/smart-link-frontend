@@ -24,20 +24,23 @@ export default function BioPagePreview({ previewData }) {
 
     return (
         <div
-            className="min-h-full w-full transition-colors duration-500 overflow-x-hidden rounded-[2rem] flex flex-col"
+            className="min-h-full w-full transition-all duration-500 overflow-x-hidden rounded-[2.5rem] flex flex-col relative selection:bg-violet-500/30"
             style={{
                 ...currentTheme.variables,
                 background: currentTheme.variables['--bio-bg'],
                 backdropFilter: currentTheme.variables['--bio-backdrop'] || 'none'
             }}
         >
-            {/* Top Spacing */}
-            <div className="h-20 w-full"></div>
+            {/* Ambient Background Light Reflector */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/20 pointer-events-none"></div>
 
-            <div className="px-5 -mt-10 pb-20 flex-1 text-center">
-                {/* Avatar */}
-                <div className="relative inline-block mb-4 pt-6">
-                    <div className="w-24 h-24 rounded-full p-0.5 bg-white/10 backdrop-blur-md shadow-xl mx-auto overflow-hidden ring-2 ring-white/30">
+            {/* Top Spacing */}
+            <div className="h-16 w-full relative z-10"></div>
+
+            <div className="px-6 -mt-8 pb-24 flex-1 text-center relative z-10 flex flex-col items-center">
+                {/* Avatar with Organic Glow Ring */}
+                <div className="relative inline-block mb-4 pt-4 group">
+                    <div className="w-24 h-24 rounded-full p-1 bg-white/20 backdrop-blur-md shadow-2xl mx-auto overflow-hidden ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-105">
                         {previewData.avatar ? (
                             <img
                                 src={previewData.avatar}
@@ -46,55 +49,60 @@ export default function BioPagePreview({ previewData }) {
                                 onError={(e) => { e.target.style.display = 'none'; }}
                             />
                         ) : (
-                            <div className="w-full h-full rounded-full bg-blue-100 flex items-center justify-center text-3xl">👤</div>
+                            <div className="w-full h-full rounded-full bg-gradient-to-tr from-violet-500 to-indigo-600 flex items-center justify-center text-3xl text-white shadow-inner">
+                                👤
+                            </div>
                         )}
                     </div>
                 </div>
 
                 {/* Name & Handle */}
-                <div className="mb-4">
-                    <h1 className="text-xl font-extrabold tracking-tight mb-0.5" style={{ color: 'var(--bio-text-primary)' }}>
+                <div className="mb-3 max-w-[280px]">
+                    <h1 className="text-xl font-black tracking-tight mb-1" style={{ color: 'var(--bio-text-primary)' }}>
                         {previewData.displayName || "Your Name"}
                     </h1>
-                    <p className="text-[13px] font-semibold opacity-75" style={{ color: 'var(--bio-text-secondary)' }}>
+                    <p className="text-xs font-bold tracking-wide opacity-75 inline-block px-3 py-0.5 rounded-full bg-black/5 dark:bg-white/5" style={{ color: 'var(--bio-text-secondary)' }}>
                         @{previewData.username || "username"}
                     </p>
                 </div>
 
                 {/* Bio */}
                 {previewData.bio && (
-                    <p className="text-[14px] leading-relaxed mb-5 px-3 font-medium opacity-90" style={{ color: 'var(--bio-text-primary)' }}>
+                    <p className="text-xs sm:text-[13px] leading-relaxed mb-6 max-w-[290px] font-medium opacity-90" style={{ color: 'var(--bio-text-primary)' }}>
                         {previewData.bio}
                     </p>
                 )}
 
-                {/* Socials - Moved up */}
+                {/* Socials - Clean Organic Capsules */}
                 {previewData.socialLinks && previewData.socialLinks.length > 0 && (
-                    <div className="flex justify-center flex-wrap gap-3 mb-6">
+                    <div className="flex justify-center flex-wrap gap-2.5 mb-6 max-w-[280px]">
                         {previewData.socialLinks.map((s, i) => {
                             const Icon = socialIcons[s.platform] || Globe;
                             return (
                                 <div
                                     key={i}
-                                    className="p-2.5 rounded-full shadow-sm"
-                                    style={{ backgroundColor: 'var(--bio-link-bg)', color: 'var(--bio-text-primary)' }}
+                                    className="w-9 h-9 rounded-full shadow-sm flex items-center justify-center transition-all duration-200 hover:scale-110 active:scale-95 cursor-pointer border"
+                                    style={{
+                                        backgroundColor: 'var(--bio-link-bg)',
+                                        borderColor: 'var(--bio-link-border)',
+                                        color: 'var(--bio-text-primary)'
+                                    }}
                                 >
                                     <Icon className="w-4 h-4" />
                                 </div>
-                            )
+                            );
                         })}
                     </div>
                 )}
 
-                {/* Blocks - Flexible System */}
-                <div className="flex flex-col items-center space-y-4 w-full">
-                    {/* Combine links and blocks for unified preview */}
+                {/* Blocks - Tactile Pill Links & Cards */}
+                <div className="flex flex-col items-center space-y-3.5 w-full max-w-[320px]">
                     {[...(previewData.customLinks || []).map(l => ({ ...l, type: 'link' })), ...(previewData.blocks || [])]
                         .sort((a, b) => (a.order || 0) - (b.order || 0))
                         .map((block, index) => {
                             if (block.type === 'header') {
                                 return (
-                                    <h3 key={index} className="w-full text-left font-bold text-lg px-2 mt-4" style={{ color: 'var(--bio-text-primary)' }}>
+                                    <h3 key={index} className="w-full text-left font-black text-sm px-2 pt-3 opacity-90 tracking-tight" style={{ color: 'var(--bio-text-primary)' }}>
                                         {block.title}
                                     </h3>
                                 );
@@ -104,24 +112,24 @@ export default function BioPagePreview({ previewData }) {
                                 return (
                                     <div
                                         key={index}
-                                        className="w-full p-6 rounded-3xl border-2 shadow-sm text-left space-y-4"
+                                        className="w-full p-5 rounded-3xl border shadow-md text-left space-y-3 transition-all duration-200"
                                         style={{
                                             backgroundColor: 'var(--bio-card-bg)',
                                             borderColor: 'var(--bio-link-border)',
                                             color: 'var(--bio-text-primary)'
                                         }}
                                     >
-                                        <div className="space-y-1">
-                                            <h4 className="font-bold text-base">{block.title || "Join my Newsletter"}</h4>
-                                            <p className="text-xs opacity-70">{block.content || "Stay updated with my latest news and exclusive content."}</p>
+                                        <div className="space-y-0.5">
+                                            <h4 className="font-extrabold text-sm">{block.title || "Join my Newsletter"}</h4>
+                                            <p className="text-[11px] opacity-75">{block.content || "Stay updated with my latest news."}</p>
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <input 
                                                 type="email" 
                                                 placeholder="Enter your email" 
-                                                className="w-full p-3 rounded-2xl text-sm border bg-white/5 border-white/10 focus:ring-2 focus:ring-blue-500 outline-none"
+                                                className="w-full p-2.5 rounded-xl text-xs border bg-white/10 border-white/15 focus:ring-2 focus:ring-violet-500 outline-none"
                                             />
-                                            <button className="w-full p-3 bg-white text-black rounded-2xl text-sm font-bold shadow-md active:scale-95 transition-all">
+                                            <button className="w-full py-2.5 px-4 bg-white text-gray-900 rounded-xl text-xs font-black shadow-sm active:scale-95 transition-transform hover:opacity-90">
                                                 Subscribe
                                             </button>
                                         </div>
@@ -129,7 +137,7 @@ export default function BioPagePreview({ previewData }) {
                                 );
                             }
 
-                            // Standard Link rendering
+                            // Tactile Rounded Link Button
                             return (
                                 <div
                                     key={index}
@@ -140,31 +148,31 @@ export default function BioPagePreview({ previewData }) {
                                             window.open(block.url, '_blank');
                                         }
                                     }}
-                                    className="relative flex items-center p-1 rounded-full border-2 shadow-sm w-full transition-transform active:scale-[0.98] cursor-pointer"
+                                    className="group relative flex items-center p-1.5 rounded-2xl border shadow-sm w-full transition-all duration-200 hover:shadow-md hover:scale-[1.01] active:scale-[0.98] cursor-pointer"
                                     style={{
                                         backgroundColor: 'var(--bio-link-bg)',
                                         borderColor: 'var(--bio-link-border)',
                                         color: 'var(--bio-text-primary)'
                                     }}
                                 >
-                                    {/* Left Icon */}
-                                    <div className="absolute left-1 w-10 h-10 rounded-full flex items-center justify-center text-xl">
+                                    {/* Left Icon Capsule */}
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 bg-black/5 dark:bg-white/5">
                                         {block.icon || (block.type === 'paywall' ? '🔐' : block.type === 'file' ? '📁' : '🔗')}
                                     </div>
                                     
-                                    {/* Centered Text */}
-                                    <div className="flex-1 py-3 px-12 text-center">
-                                        <p className="font-bold text-[14px] truncate">{block.title || block.url}</p>
+                                    {/* Centered Title */}
+                                    <div className="flex-1 py-2 px-3 text-center">
+                                        <p className="font-extrabold text-xs tracking-tight truncate">{block.title || block.url}</p>
                                     </div>
                                     
-                                    {/* Right Icon */}
-                                    <div className="absolute right-3 flex items-center justify-center">
+                                    {/* Right Badge / Action */}
+                                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
                                         {block.type === 'paywall' ? (
-                                            <div className="text-[10px] font-bold bg-yellow-600/20 text-yellow-600 px-2 py-1 rounded-full">
+                                            <span className="text-[10px] font-black bg-amber-500/20 text-amber-500 px-2.5 py-1 rounded-full">
                                                 BUY
-                                            </div>
+                                            </span>
                                         ) : (
-                                            <MoreHorizontal className="w-4 h-4 opacity-40" />
+                                            <MoreHorizontal className="w-4 h-4 opacity-40 group-hover:opacity-70 transition-opacity" />
                                         )}
                                     </div>
                                 </div>
@@ -173,16 +181,16 @@ export default function BioPagePreview({ previewData }) {
                     }
                     
                     {(!previewData.customLinks || previewData.customLinks.length === 0) && (!previewData.blocks || previewData.blocks.length === 0) && (
-                        <div className="p-6 border-2 border-dashed border-gray-400/30 rounded-2xl text-center text-xs text-gray-400 font-medium w-full">
-                            No links or blocks added yet
+                        <div className="p-6 border-2 border-dashed border-gray-400/20 rounded-2xl text-center text-xs text-gray-400 font-semibold w-full">
+                            ✨ Your links will show up here
                         </div>
                     )}
                 </div>
 
-                {/* ✅ Powered by Smart Link Floating Footer */}
-                <div className="absolute bottom-5 w-full left-0 right-0 px-4 flex justify-center pointer-events-none">
+                {/* Powered by Smart Link Floating Pill */}
+                <div className="mt-8 mb-4 w-full flex justify-center pointer-events-none">
                     <div
-                        className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full shadow-lg border"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-md border"
                         style={{
                             backgroundColor: 'var(--bio-card-bg)',
                             backdropFilter: 'blur(16px)',
@@ -193,19 +201,18 @@ export default function BioPagePreview({ previewData }) {
                         <img
                             src="/logo-v1.svg"
                             alt="Smart Link"
-                            className="w-4 h-4 rounded flex-shrink-0"
+                            className="w-3.5 h-3.5 rounded flex-shrink-0"
                             style={{ display: 'block' }}
                         />
                         <span
-                            className="text-[11px] font-bold tracking-wide"
+                            className="text-[10px] font-extrabold tracking-wider uppercase opacity-80"
                             style={{ color: 'var(--bio-text-primary)' }}
                         >
-                            Join <span className="opacity-70 mx-0.5">@{previewData.username || 'username'}</span> on SmartLink
+                            Smart<span className="opacity-100 font-black">Link</span>
                         </span>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }

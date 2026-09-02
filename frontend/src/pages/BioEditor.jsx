@@ -350,63 +350,81 @@ export default function BioEditor() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-300 pb-24 lg:pb-0">
+  return (
+    <div className="min-h-screen bg-[#FBFBFA] dark:bg-[#0B0F19] text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-24 lg:pb-12">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-6">
+        {/* Friendly Organic Header */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 tracking-tight">Profile Editor</h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">Customize your bio page and manage your links</p>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-xs font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+                Live Bio Canvas
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+              Design your page ✨
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">
+              Everything you customize updates in real-time on your mobile preview.
+            </p>
           </div>
-          <button onClick={handleSave} disabled={saving}
-            className="hidden sm:flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg transition-all">
-            {saving ? <Loader className="animate-spin w-5 h-5" /> : <Save className="w-5 h-5" />}
-            Save Changes
-          </button>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="hidden sm:inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white rounded-2xl font-extrabold text-sm shadow-xl shadow-violet-600/25 transition-all duration-200 active:scale-[0.98] disabled:opacity-50"
+            >
+              {saving ? <Loader className="animate-spin w-4 h-4" /> : <Save className="w-4 h-4" />}
+              Save Changes
+            </button>
+          </div>
         </div>
 
         {showOnboardingHints && (
-          <div className="mb-6 p-6 rounded-[2rem] border border-blue-100 dark:border-blue-900/30 bg-white dark:bg-gray-800 shadow-xl shadow-blue-500/5 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-              <Sparkles className="w-32 h-32 text-blue-600" />
-            </div>
+          <div className="mb-8 p-6 sm:p-8 rounded-3xl border border-violet-100 dark:border-violet-900/30 bg-gradient-to-br from-white via-violet-50/30 to-white dark:from-gray-900 dark:via-violet-950/20 dark:to-gray-900 shadow-xl shadow-violet-500/5 relative overflow-hidden group">
             <div className="flex flex-col md:flex-row items-start justify-between gap-6 relative z-10">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                  <div className="p-3 bg-gradient-to-tr from-violet-600 to-indigo-600 text-white rounded-2xl shadow-lg shadow-violet-600/20">
                     <Zap className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Monetization Quick Start</h2>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Follow these steps to start selling on your bio page</p>
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Quick Launch Guide</h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Follow 3 steps to start growing and monetizing</p>
                   </div>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                  <div className="space-y-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div className="space-y-1.5 p-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-800 shadow-sm">
                     <div className="flex items-center gap-2">
-                      <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center text-[10px] font-black">01</span>
-                      <p className="text-sm font-extrabold text-gray-800 dark:text-gray-200">Connect Stripe</p>
+                      <span className="w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 flex items-center justify-center text-[10px] font-black">01</span>
+                      <p className="text-sm font-black text-gray-800 dark:text-gray-200">Connect Stripe</p>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Go to the <span className="font-bold text-gray-700 dark:text-gray-300">Bio Blocks</span> section below and link your bank account securely.</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Enable one-click sales and bank deposits.</p>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 p-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-800 shadow-sm">
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-[10px] font-black">02</span>
-                      <p className="text-sm font-extrabold text-gray-800 dark:text-gray-200">Add Paywall</p>
+                      <p className="text-sm font-black text-gray-800 dark:text-gray-200">Add Links & Paywalls</p>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Add a "Paywall" block. Set your price and paste the secret link users will buy access to.</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Add social channels, music, or premium digital files.</p>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-1.5 p-4 rounded-2xl bg-white/80 dark:bg-gray-800/80 border border-gray-100 dark:border-gray-800 shadow-sm">
                     <div className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px] font-black">03</span>
-                      <p className="text-sm font-extrabold text-gray-800 dark:text-gray-200">Receive Payouts</p>
+                      <p className="text-sm font-black text-gray-800 dark:text-gray-200">Share Everywhere</p>
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Save your changes. Money from sales is sent <span className="font-bold text-emerald-600">directly to your bank account</span>.</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Copy your Smart Link to Instagram, TikTok, and X.</p>
                   </div>
                 </div>
               </div>
-              <button onClick={handleDismissHints} className="w-full md:w-auto px-6 py-3 rounded-2xl bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 font-bold transition-all text-sm shadow-sm border border-gray-200 dark:border-gray-600">
+              <button
+                onClick={handleDismissHints}
+                className="px-5 py-2.5 rounded-2xl bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold transition-all text-xs"
+              >
                 Dismiss Guide
               </button>
             </div>
@@ -415,14 +433,14 @@ export default function BioEditor() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="space-y-6 lg:col-span-7">
 
             {/* Mobile Tabs */}
-            <div className="lg:hidden flex bg-white dark:bg-gray-800/80 p-1.5 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 mb-6 sticky top-20 z-30">
+            <div className="lg:hidden flex bg-white dark:bg-gray-800/90 p-1.5 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 mb-6 sticky top-20 z-30">
               {[{ id: 'identity', label: 'Identity', icon: User }, { id: 'links', label: 'Links', icon: List }, { id: 'appearance', label: 'Theme', icon: Palette }].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-bold transition-all ${activeTab === tab.id ? 'bg-blue-600 text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-extrabold transition-all ${activeTab === tab.id ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'}`}>
                   <tab.icon className="w-4 h-4" />{tab.label}
                 </button>
               ))}
@@ -610,30 +628,49 @@ export default function BioEditor() {
                 </div>
               </div>
 
+              {/* Big Magnetic Add Link Hero Button */}
+              <div className="mb-6">
+                <button
+                  onClick={() => addBlock('link')}
+                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-black text-sm sm:text-base shadow-lg shadow-violet-500/25 hover:shadow-xl transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 group"
+                >
+                  <span className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center text-lg font-black group-hover:rotate-90 transition-transform duration-300">
+                    +
+                  </span>
+                  <span>Add Link to Bio</span>
+                </button>
+              </div>
+
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                <h2 className="font-bold text-gray-900 dark:text-white text-lg flex items-center gap-2">
-                  <List className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Bio Blocks
+                <h2 className="font-black text-gray-900 dark:text-white text-lg flex items-center gap-2 tracking-tight">
+                  <List className="w-5 h-5 text-violet-600 dark:text-violet-400" /> Active Blocks
                 </h2>
-                <div className="flex flex-wrap gap-3">
-                  <button onClick={() => addBlock('link')} className="flex items-center gap-2 px-3 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-bold border border-blue-100 dark:border-blue-800/50 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-all text-xs">
-                    <Link2 className="w-4 h-4" /> Link
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => addBlock('newsletter')}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-xl font-bold border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100 transition-all text-xs active:scale-95"
+                  >
+                    <Mail className="w-3.5 h-3.5" /> Newsletter
                   </button>
-                  <button onClick={() => addBlock('newsletter')} className="flex items-center gap-2 px-3 py-2 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 rounded-xl font-bold border border-green-100 dark:border-green-800/50 hover:bg-green-100 dark:hover:bg-green-900/40 transition-all text-xs">
-                    <Mail className="w-4 h-4" /> Newsletter
+                  <button
+                    onClick={() => addBlock('paywall')}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 rounded-xl font-bold border border-amber-200/60 dark:border-amber-800/40 hover:bg-amber-100 transition-all text-xs active:scale-95"
+                  >
+                    <Lock className="w-3.5 h-3.5" /> Paywall
                   </button>
-                  <button onClick={() => addBlock('paywall')} className="flex items-center gap-2 px-3 py-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-xl font-bold border border-purple-100 dark:border-purple-800/50 hover:bg-purple-100 dark:hover:bg-purple-900/40 transition-all text-xs">
-                    <Lock className="w-4 h-4" /> Paywall
-                  </button>
-                  <button onClick={() => addBlock('header')} className="flex items-center gap-2 px-3 py-2 bg-gray-50 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-xl font-bold border border-gray-100 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all text-xs">
-                    <Type className="w-4 h-4" /> Header
+                  <button
+                    onClick={() => addBlock('header')}
+                    className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold border border-gray-200 dark:border-gray-700 hover:bg-gray-200 transition-all text-xs active:scale-95"
+                  >
+                    <Type className="w-3.5 h-3.5" /> Header
                   </button>
                   <button
                     onClick={handleTestCheckout}
                     disabled={testCheckoutLoading}
-                    className="flex items-center gap-2 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-xl font-bold border border-amber-100 dark:border-amber-800/50 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-all text-xs"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-400 rounded-xl font-bold border border-violet-200/60 dark:border-violet-800/40 hover:bg-violet-100 transition-all text-xs active:scale-95 disabled:opacity-50"
                   >
-                    {testCheckoutLoading ? <Loader className="w-4 h-4 animate-spin" /> : <FlaskConical className="w-4 h-4" />}
-                    Test Checkout
+                    {testCheckoutLoading ? <Loader className="w-3.5 h-3.5 animate-spin" /> : <FlaskConical className="w-3.5 h-3.5" />}
+                    Test Paywall
                   </button>
                 </div>
               </div>
@@ -788,15 +825,38 @@ export default function BioEditor() {
             </div>
           </div>
 
-          {/* PREVIEW (Desktop) */}
-          <div className="hidden lg:block relative">
-            <div className="sticky top-24">
-              <div className="bg-[#121212] rounded-[3.5rem] p-3 border-[10px] border-[#2a2a2a] shadow-2xl relative overflow-hidden max-w-[380px] mx-auto ring-1 ring-black">
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-7 bg-[#2a2a2a] rounded-b-2xl z-20"></div>
-                <div className="h-[780px] w-full bg-white rounded-[2.5rem] overflow-y-auto no-scrollbar relative">
+          {/* PREVIEW (Desktop) - SLEEK FLOATING PHONE WITH AMBIENT GLOW */}
+          <div className="hidden lg:block lg:col-span-5 relative">
+            <div className="sticky top-24 flex flex-col items-center">
+              {/* Subtle Warm Ambient Glow behind phone */}
+              <div className="absolute -inset-4 bg-gradient-to-tr from-violet-600/20 via-fuchsia-500/15 to-indigo-600/20 rounded-[4rem] blur-2xl pointer-events-none"></div>
+
+              {/* Phone Outer Shell */}
+              <div className="bg-[#0D0E15] rounded-[3.8rem] p-3.5 border-[6px] border-[#1F2430] shadow-2xl shadow-violet-950/50 relative overflow-hidden max-w-[360px] w-full mx-auto ring-1 ring-white/10">
+                {/* Modern Dynamic Island */}
+                <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-30 flex items-center justify-between px-3 shadow-md">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#1A1D27]"></div>
+                  <div className="w-2 h-2 rounded-full bg-violet-600/80"></div>
+                </div>
+
+                {/* Inner Screen Container */}
+                <div className="h-[740px] w-full bg-white rounded-[3rem] overflow-y-auto no-scrollbar relative shadow-inner">
                   <BioPagePreview previewData={bioData} />
                 </div>
               </div>
+
+              {/* Quick View Live Link */}
+              {bioData.username && (
+                <a
+                  href={`/u/${bioData.username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 text-xs font-extrabold text-gray-500 hover:text-violet-600 dark:text-gray-400 dark:hover:text-violet-400 transition-colors"
+                >
+                  <span>Open live link in new tab</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              )}
             </div>
           </div>
         </div>
