@@ -137,287 +137,318 @@ export default function Register() {
   };
 
   return (
-    <div className={`min-h-screen ${isDark
-      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
-      : 'bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-100'
-      } flex items-center justify-center p-4`}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Zap className="w-6 h-6 text-white" />
+    <div className={`min-h-screen flex transition-colors duration-300 ${
+      isDark ? 'bg-[#0B0F19] text-gray-100' : 'bg-[#FAF9F5] text-gray-900'
+    }`}>
+      {/* ─── LEFT COLUMN: The Friendly Signup Form ─── */}
+      <div className="w-full lg:w-[50%] flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 overflow-y-auto">
+        {/* Brand Header */}
+        <div className="flex items-center justify-between mb-8">
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-violet-500/25 group-hover:scale-105 transition-transform duration-200">
+              <Zap className="w-5 h-5" />
             </div>
-            <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Smart Link
+            <span className="text-xl font-extrabold tracking-tight">
+              Smart<span className="text-violet-600 dark:text-violet-400">Link</span>
             </span>
+          </Link>
+          <Link
+            to="/login"
+            className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+          >
+            Already a member? <span className="font-bold text-violet-600 dark:text-violet-400 underline underline-offset-4">Sign in</span>
           </Link>
         </div>
 
-        {/* Card */}
-        <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'
-          } rounded-3xl shadow-2xl border overflow-hidden`}>
-
-          {/* Trial Banner */}
+        {/* Center Content Form */}
+        <div className="max-w-md w-full mx-auto my-auto">
+          {/* Trial Tag if active */}
           {isTrial && (
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white text-center">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <Sparkles className="w-5 h-5 text-yellow-300" />
-                <span className="font-black text-lg">14-Day Starter Free Trial</span>
-                <Sparkles className="w-5 h-5 text-yellow-300" />
+            <div className="mb-6 p-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white flex items-center justify-between shadow-lg shadow-violet-600/20">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-amber-300" />
+                <span className="text-xs font-black uppercase tracking-wider">14-Day Free Pro Trial</span>
               </div>
-              <p className="text-purple-100 text-sm">Create your account to activate — no credit card needed</p>
+              <span className="text-[11px] font-medium opacity-80">No credit card</span>
             </div>
           )}
 
-          <div className="p-8">
-            <h1 className={`text-2xl font-extrabold mb-1 text-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {isTrial ? 'Create your account' : 'Get started for free'}
+          <div className="mb-6">
+            <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
+              {isTrial ? 'Claim your free trial ✨' : 'Create your Smart Link 🚀'}
             </h1>
-            <p className={`text-sm text-center mb-6 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-              {isTrial
-                ? 'Your trial activates automatically after signup'
-                : 'Join 10,000+ creators using Smart Link'}
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              One smart link to connect your audience, track clicks, and grow your revenue.
             </p>
+          </div>
 
-            {/* Google Signup */}
-            <div className="mb-6">
-              <button
-                onClick={handleGoogleSignup}
-                type="button"
-                className={`w-full flex items-center justify-center gap-3 px-4 py-3 border rounded-xl transition-colors ${isDark
-                  ? 'border-gray-600 hover:bg-gray-700 text-white'
-                  : 'border-gray-300 hover:bg-gray-50 text-gray-700'
-                  }`}
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.3-2.3H12v4.4h6.1c-.3 1.5-1.2 2.8-2.6 3.6v3h4.2c2.4-2.2 3.8-5.4 3.8-9.7z" />
-                  <path fill="#34A853" d="M12 23c3.2 0 5.9-1 7.9-2.7l-4.2-3c-1.1.7-2.5 1.1-3.7 1.1-2.8 0-5.1-1.9-5.9-4.4H2.6v2.8C4.6 20.7 8 23 12 23z" />
-                  <path fill="#FBBC05" d="M6.1 14.7c-.3-1-.3-2.1 0-3.1V8.8H2.6c-.7 1.3-1 2.7-1 4.2s.3 2.9 1 4.2l3.5-2.5z" />
-                  <path fill="#EA4335" d="M12 4.6c1.8 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 8 0 4.6 2.3 2.6 5.8l3.5 2.8c.8-2.5 3.1-4.4 5.9-4.4z" />
-                </svg>
-                <span className="font-medium">Continue with Google</span>
-              </button>
+          {/* Google Signup Button */}
+          <button
+            onClick={handleGoogleSignup}
+            type="button"
+            className={`w-full py-3.5 px-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-200 shadow-sm border ${
+              isDark
+                ? 'bg-gray-800/80 hover:bg-gray-800 border-gray-700/80 text-white hover:border-gray-600 hover:shadow-md'
+                : 'bg-white hover:bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300 hover:shadow-md'
+            } active:scale-[0.99]`}
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.3-2.3H12v4.4h6.1c-.3 1.5-1.2 2.8-2.6 3.6v3h4.2c2.4-2.2 3.8-5.4 3.8-9.7z" />
+              <path fill="#34A853" d="M12 23c3.2 0 5.9-1 7.9-2.7l-4.2-3c-1.1.7-2.5 1.1-3.7 1.1-2.8 0-5.1-1.9-5.9-4.4H2.6v2.8C4.6 20.7 8 23 12 23z" />
+              <path fill="#FBBC05" d="M6.1 14.7c-.3-1-.3-2.1 0-3.1V8.8H2.6c-.7 1.3-1 2.7-1 4.2s.3 2.9 1 4.2l3.5-2.5z" />
+              <path fill="#EA4335" d="M12 4.6c1.8 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 8 0 4.6 2.3 2.6 5.8l3.5 2.8c.8-2.5 3.1-4.4 5.9-4.4z" />
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+
+          {/* Divider */}
+          <div className="relative my-6 flex items-center justify-center">
+            <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
+            <span className={`absolute px-3 text-xs font-semibold uppercase tracking-wider ${
+              isDark ? 'bg-[#0B0F19] text-gray-500' : 'bg-[#FAF9F5] text-gray-400'
+            }`}>
+              or sign up with email
+            </span>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* General Error */}
+            {error && (
+              <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2">
+                <span>⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Full Name */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="John Doe"
+                autoComplete="name"
+                className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
+                  isDark
+                    ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
+                    : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
+                } ${errors.name ? 'border-red-500' : ''}`}
+              />
+              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
             </div>
 
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className={`w-full border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className={`px-2 ${isDark ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
-                  Or sign up with email
-                </span>
-              </div>
+            {/* Email Address */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+                Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                autoComplete="email"
+                className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
+                  isDark
+                    ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
+                    : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
+                } ${errors.email ? 'border-red-500' : ''}`}
+              />
+              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* General Error */}
-              {error && (
-                <div className={`border rounded-xl p-4 text-sm ${isDark ? 'bg-red-900/30 border-red-800 text-red-300' : 'bg-red-50 border-red-200 text-red-800'
-                  }`}>
-                  {error}
-                </div>
-              )}
-
-              {/* Full Name */}
-              <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Full Name
-                </label>
+            {/* Password */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+                Password
+              </label>
+              <div className="relative">
                 <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
-                  placeholder="John Doe"
-                  autoComplete="name"
-                  className={`w-full px-4 py-3 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                    } ${errors.name ? 'border-red-400' : ''}`}
+                  placeholder="Min. 8 characters"
+                  autoComplete="new-password"
+                  className={`w-full px-4 py-3.5 pr-12 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
+                    isDark
+                      ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
+                      : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
+                  } ${errors.password ? 'border-red-500' : ''}`}
                 />
-                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
               </div>
-
-              {/* Email */}
-              <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  className={`w-full px-4 py-3 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                    } ${errors.email ? 'border-red-400' : ''}`}
-                />
-                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Min. 8 characters"
-                    autoComplete="new-password"
-                    className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                      : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                      } ${errors.password ? 'border-red-400' : ''}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] flex items-center justify-center ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
-                      }`}
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-                {/* Password Strength */}
-                {formData.password && (
-                  <div className="mt-2 space-y-1">
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <div
-                          key={level}
-                          className={`h-1 flex-1 rounded-full transition-colors ${level <= passwordStrength.strength
-                            ? passwordStrength.color
-                            : isDark ? 'bg-gray-700' : 'bg-gray-200'
-                            }`}
-                        />
-                      ))}
-                    </div>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      Password strength: <span className="font-medium">{passwordStrength.label}</span>
-                    </p>
-                  </div>
-                )}
-                {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
-              </div>
-
-              {/* Confirm Password */}
-              <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Confirm Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Repeat your password"
-                    autoComplete="new-password"
-                    className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                      : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                      } ${errors.confirm ? 'border-red-400' : ''}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] flex items-center justify-center ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
-                      }`}
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-                {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
-              </div>
-
-              {/* Trial Features Preview */}
-              {isTrial && (
-                <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
-                  <p className="text-xs font-black text-purple-700 dark:text-purple-300 uppercase tracking-widest mb-3">
-                    🎯 You'll get instant access to:
-                  </p>
-                  <div className="space-y-2">
-                    {[
-                      'Unlimited Smart Links',
-                      'Custom Domains',
-                      'A/B Testing & Smart Targeting',
-                      'Full API Access',
-                      'Advanced Analytics Suite'
-                    ].map((feature) => (
-                      <div key={feature} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                        <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">{feature}</span>
-                      </div>
+              {formData.password && (
+                <div className="mt-2 space-y-1">
+                  <div className="flex gap-1.5">
+                    {[1, 2, 3, 4, 5].map((lvl) => (
+                      <div
+                        key={lvl}
+                        className={`h-1.5 flex-1 rounded-full transition-all ${
+                          lvl <= passwordStrength.strength ? passwordStrength.color : isDark ? 'bg-gray-800' : 'bg-gray-200'
+                        }`}
+                      />
                     ))}
                   </div>
+                  <p className="text-[11px] font-semibold text-gray-500">
+                    Strength: <span className="font-bold">{passwordStrength.label}</span>
+                  </p>
                 </div>
               )}
-
-              {/* Submit */}
-              <motion.button
-                type="submit"
-                disabled={loading}
-                whileTap={{ scale: 0.97 }}
-                className={`w-full min-h-[52px] py-3.5 rounded-2xl font-black text-base shadow-xl flex items-center justify-center gap-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${isTrial
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-purple-500/30'
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/30'
-                  }`}
-              >
-                {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <span>{isTrial ? '🚀 Create Account & Start Trial' : 'Create Free Account'}</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </motion.button>
-            </form>
-
-            {/* Footer */}
-            <div className="mt-6 text-center">
-              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                Already have an account?{' '}
-                <Link
-                  to="/login"
-                  className={`font-bold hover:underline underline-offset-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}
-                >
-                  Sign in
-                </Link>
-              </p>
-              <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-gray-400">
-                <Shield className="w-3.5 h-3.5" />
-                <span>No credit card required · Cancel anytime</span>
-              </div>
+              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
             </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Repeat password"
+                  autoComplete="new-password"
+                  className={`w-full px-4 py-3.5 pr-12 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
+                    isDark
+                      ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
+                      : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
+                  } ${errors.confirm ? 'border-red-500' : ''}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+              {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
+            </div>
+
+            {/* Submit Button */}
+            <motion.button
+              type="submit"
+              disabled={loading}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 px-6 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:opacity-95 shadow-lg shadow-violet-600/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span>Creating your account...</span>
+                </>
+              ) : (
+                <>
+                  <span>{isTrial ? 'Claim 14-Day Free Trial →' : 'Create Free Smart Link →'}</span>
+                </>
+              )}
+            </motion.button>
+          </form>
+
+          <div className="flex items-center justify-center gap-1.5 mt-6 text-xs text-gray-400">
+            <Shield className="w-3.5 h-3.5 text-emerald-500" />
+            <span>No credit card required · Free plan forever · Instant setup</span>
           </div>
         </div>
 
-        {/* Back to Home */}
-        <div className="mt-6 text-center">
-          <Link
-            to="/"
-            className={`text-sm transition-colors ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'}`}
-          >
-            ← Back to home
-          </Link>
+        {/* Footer */}
+        <div className="text-center text-xs text-gray-400 dark:text-gray-600 mt-6">
+          By signing up, you agree to our Terms of Service and Privacy Policy.
         </div>
-      </motion.div>
+      </div>
+
+      {/* ─── RIGHT COLUMN: The Warm, Human Visual Showcase (Desktop) ─── */}
+      <div className="hidden lg:flex lg:w-[50%] bg-gradient-to-br from-[#1E1238] via-[#120B24] to-[#0A0515] p-12 relative overflow-hidden items-center justify-center">
+        {/* Soft Ambient Light Glows */}
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-violet-600/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-fuchsia-600/25 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="relative z-10 max-w-lg w-full">
+          {/* Floating Feature Card Top */}
+          <div className="mb-6 p-4 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/15 text-white shadow-2xl flex items-center justify-between transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center text-violet-300 font-bold">
+                🎯
+              </div>
+              <div>
+                <p className="text-[11px] text-white/60 font-semibold uppercase tracking-wider">Automated Geo-Routing</p>
+                <p className="text-sm font-black">Route traffic by country & device</p>
+              </div>
+            </div>
+            <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black">Active</span>
+          </div>
+
+          {/* Floating Phone Visual (Human Bio Showcase) */}
+          <div className="mx-auto w-[310px] rounded-[3rem] bg-gradient-to-b from-gray-900 to-black p-3.5 border-4 border-white/20 shadow-2xl shadow-violet-950/80 relative">
+            {/* Dynamic Island */}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-20 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-violet-600/80 ml-auto mr-3"></div>
+            </div>
+
+            {/* Inner Screen */}
+            <div className="rounded-[2.4rem] bg-gradient-to-b from-[#1C172E] via-[#151026] to-[#0D0A1A] p-6 pt-12 text-center text-white min-h-[440px] flex flex-col justify-between">
+              <div>
+                <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-violet-500 mx-auto mb-3 shadow-lg">
+                  <img
+                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+                    alt="Alex"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                </div>
+                <h3 className="font-extrabold text-base tracking-tight">Alex Rivera</h3>
+                <p className="text-xs text-white/60 font-medium">Digital Creator & Educator</p>
+              </div>
+
+              {/* Sample Organic Link Buttons */}
+              <div className="space-y-2.5 my-4">
+                <div className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold transition-colors">
+                  📚 Read Free 2026 Growth Playbook
+                </div>
+                <div className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold transition-colors">
+                  🎙️ Listen to Weekly Masterclass
+                </div>
+                <div className="p-3 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-xs font-black shadow-md">
+                  🚀 Join 1-on-1 Mentorship (3 Spots)
+                </div>
+              </div>
+
+              <div className="text-[10px] text-white/40 tracking-widest font-bold uppercase">
+                by-smartlink.com/alex
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof Badges */}
+          <div className="mt-8 flex items-center justify-center gap-6 text-white/70 text-xs font-semibold">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span>10,000+ Creators</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-violet-400"></span>
+              <span>100% Free Plan</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>Instant AI Pages</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
