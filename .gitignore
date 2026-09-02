@@ -21,6 +21,7 @@ fly_secrets.*
 
 # Git repo داخل مجلدات فرعية
 .git/
+classic-charm-redesign/
 
 # ملفات البناء (frontend)
 build/

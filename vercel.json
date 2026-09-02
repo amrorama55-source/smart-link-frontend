@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "git": {
+    "submodules": false
+  },
   "rewrites": [
     {
       "source": "/((?!.*\\.).*)",
