@@ -179,8 +179,6 @@ export default function EnhancedLinks() {
 const validateForm = () => {
   const newErrors = {};
 
-  console.log('🔍 ===== VALIDATION START =====');
-
   // ========================================
   // ✅ Original URL validation - SOLUTION 3 (Smart Fallback)
   // ========================================
@@ -201,15 +199,6 @@ const validateForm = () => {
     const hasAnyTargeting = hasGeoTargeting || hasDeviceTargeting || hasValidABTest;
 
     const trimmedUrl = (linkData.originalUrl || '').trim();
-    
-    console.log('📋 Checking Original URL:', {
-      hasValidABTest,
-      hasGeoTargeting,
-      hasDeviceTargeting,
-      hasAnyTargeting,
-      originalUrl: trimmedUrl,
-      isEmpty: !trimmedUrl
-    });
 
     // ✅ FLEXIBLE LOGIC (Solution 3):
     // - If NO targeting → Original URL REQUIRED
@@ -217,24 +206,20 @@ const validateForm = () => {
 
     if (!trimmedUrl && !hasAnyTargeting) {
       newErrors.originalUrl = 'Original URL is required (or configure targeting rules)';
-      console.log('❌ Original URL Error: Required when no targeting');
     } else if (trimmedUrl) {
       try {
         const url = new URL(trimmedUrl);
         if (!['http:', 'https:'].includes(url.protocol)) {
           newErrors.originalUrl = 'URL must start with http:// or https://';
-          console.log('❌ Original URL Error: Invalid protocol');
         }
       } catch {
         newErrors.originalUrl = 'Invalid URL format. Example: https://example.com';
-        console.log('❌ Original URL Error: Invalid format');
       }
     }
 
     // ⚠️ Log warning (not error) if targeting exists but no URL
     if (!trimmedUrl && hasAnyTargeting) {
-      console.log('⚠️ Warning: Targeting configured without fallback URL');
-      // This is allowed but not recommended
+      // Targeting without fallback URL is allowed but not recommended
     }
 
     // Custom alias validation
@@ -242,7 +227,6 @@ const validateForm = () => {
       const alias = linkData.customAlias.trim();
       if (!/^[a-zA-Z0-9-_]{3,50}$/.test(alias)) {
         newErrors.customAlias = 'Use 3-50 alphanumeric characters, hyphens, or underscores';
-        console.log('❌ Custom Alias Error');
       }
     }
   }
@@ -251,13 +235,8 @@ const validateForm = () => {
   // ✅ A/B Testing validation
   // ========================================
   if (linkData.abTest?.enabled) {
-    console.log('📋 Checking A/B Test:', {
-      variantsCount: linkData.abTest.variants?.length || 0
-    });
-
     if (!linkData.abTest.variants || linkData.abTest.variants.length < 2) {
       newErrors.abTest = 'A/B testing requires at least 2 variants';
-      console.log('❌ A/B Test Error: Need 2+ variants');
     } else {
       const invalidVariants = linkData.abTest.variants.filter(v => {
         const hasName = v.name && v.name.trim().length > 0;
@@ -267,7 +246,6 @@ const validateForm = () => {
       
       if (invalidVariants.length > 0) {
         newErrors.abTest = 'All variants must have a name and URL';
-        console.log('❌ A/B Test Error: Incomplete variants');
       } else {
         const badUrls = linkData.abTest.variants.filter(v => {
           try {
@@ -280,7 +258,6 @@ const validateForm = () => {
         
         if (badUrls.length > 0) {
           newErrors.abTest = 'All variant URLs must be valid (start with http:// or https://)';
-          console.log('❌ A/B Test Error: Invalid URLs');
         }
       }
 
@@ -292,7 +269,6 @@ const validateForm = () => {
 
         if (totalWeight === 0) {
           newErrors.abTest = 'At least one variant must have weight > 0';
-          console.log('❌ A/B Test Error: Zero weight');
         }
       }
     }
@@ -302,23 +278,12 @@ const validateForm = () => {
   // ✅ Geotargeting validation - FIXED
   // ========================================
   if (linkData.geoRules && linkData.geoRules.length > 0) {
-    console.log('📋 Checking Geo Rules:', {
-      totalRules: linkData.geoRules.length,
-      rules: linkData.geoRules.map((r, i) => ({
-        index: i,
-        countriesCount: r.countries?.length || 0,
-        hasUrl: !!(r.targetUrl && r.targetUrl.trim())
-      }))
-    });
-
     const rulesWithData = linkData.geoRules.filter(r => {
       const hasCountries = r.countries && r.countries.length > 0;
       const hasUrl = r.targetUrl && r.targetUrl.trim().length > 0;
       return hasCountries || hasUrl;
     });
     
-    console.log('📋 Rules with data:', rulesWithData.length);
-
     if (rulesWithData.length > 0) {
       const incompleteRules = rulesWithData.filter(r => {
         const hasCountries = r.countries && r.countries.length > 0;
@@ -328,14 +293,6 @@ const validateForm = () => {
       
       if (incompleteRules.length > 0) {
         newErrors.geoRules = 'Each geo rule must have BOTH countries AND target URL. Please fill both fields or remove the rule.';
-        console.log('❌ Geo Rules Error: Incomplete rules', {
-          incompleteCount: incompleteRules.length,
-          details: incompleteRules.map((r, i) => ({
-            index: i,
-            hasCountries: !!(r.countries && r.countries.length > 0),
-            hasUrl: !!(r.targetUrl && r.targetUrl.trim())
-          }))
-        });
       } else {
         const badGeoUrls = rulesWithData.filter(r => {
           try {
@@ -348,7 +305,6 @@ const validateForm = () => {
         
         if (badGeoUrls.length > 0) {
           newErrors.geoRules = 'All geo rule URLs must be valid and start with http:// or https://';
-          console.log('❌ Geo Rules Error: Invalid URLs');
         }
       }
     }
@@ -364,10 +320,6 @@ const validateForm = () => {
       { key: 'tablet', url: linkData.deviceRules.tablet }
     ].filter(d => d.url && d.url.trim().length > 0);
 
-    console.log('📋 Checking Device Rules:', {
-      urlsProvided: deviceUrls.length
-    });
-
     if (deviceUrls.length > 0) {
       const badDeviceUrls = deviceUrls.filter(d => {
         try {
@@ -380,7 +332,6 @@ const validateForm = () => {
       
       if (badDeviceUrls.length > 0) {
         newErrors.deviceRules = 'All device URLs must be valid (start with http:// or https://)';
-        console.log('❌ Device Rules Error: Invalid URLs');
       }
     }
   }
@@ -389,21 +340,14 @@ const validateForm = () => {
   // ✅ Schedule validation
   // ========================================
   if (linkData.schedule?.enabled) {
-    console.log('📋 Checking Schedule:', {
-      hasStartDate: !!linkData.schedule.startDate,
-      hasEndDate: !!linkData.schedule.endDate
-    });
-
     if (!linkData.schedule.startDate || !linkData.schedule.endDate) {
       newErrors.schedule = 'Start and end dates are required when scheduling is enabled';
-      console.log('❌ Schedule Error: Missing dates');
     } else {
       const start = new Date(linkData.schedule.startDate);
       const end = new Date(linkData.schedule.endDate);
       
       if (start >= end) {
         newErrors.schedule = 'End date must be after start date';
-        console.log('❌ Schedule Error: Invalid date range');
       }
 
       if (linkData.schedule.redirectAfterExpiry && linkData.schedule.redirectAfterExpiry.trim()) {
@@ -411,11 +355,9 @@ const validateForm = () => {
           const url = new URL(linkData.schedule.redirectAfterExpiry.trim());
           if (!['http:', 'https:'].includes(url.protocol)) {
             newErrors.schedule = 'Redirect URL must be valid';
-            console.log('❌ Schedule Error: Invalid redirect URL');
           }
         } catch {
           newErrors.schedule = 'Redirect URL must be valid';
-          console.log('❌ Schedule Error: Invalid redirect URL format');
         }
       }
     }
@@ -425,10 +367,6 @@ const validateForm = () => {
   // ✅ Pixels validation
   // ========================================
   if (linkData.pixels && linkData.pixels.length > 0) {
-    console.log('📋 Checking Pixels:', {
-      totalPixels: linkData.pixels.length
-    });
-
     const pixelsWithData = linkData.pixels.filter(p => 
       (p.platform && p.platform.trim()) || 
       (p.pixelId && p.pixelId.trim())
@@ -443,7 +381,6 @@ const validateForm = () => {
       
       if (incompletePixels.length > 0) {
         newErrors.pixels = 'All pixels must have both platform and pixel ID';
-        console.log('❌ Pixels Error: Incomplete pixels');
       }
     }
   }
@@ -451,11 +388,6 @@ const validateForm = () => {
   // ========================================
   // ✅ Final Summary
   // ========================================
-  console.log('❌ Validation Errors Found:', newErrors);
-  console.log('🔍 ===== VALIDATION END =====');
-  console.log('✅ Validation Result:', Object.keys(newErrors).length === 0 ? 'PASSED' : 'FAILED');
-  console.log('');
-
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
 };
@@ -467,13 +399,6 @@ const validateForm = () => {
  const handleSubmit = async (e) => {
   e.preventDefault();
   
-  console.log('📤 Starting Submit...', {
-    originalUrl: linkData.originalUrl,
-    abTestEnabled: linkData.abTest?.enabled,
-    geoRulesCount: linkData.geoRules?.length || 0,
-    pixelsCount: linkData.pixels?.length || 0
-  });
-
   if (!validateForm()) {
     addToast('Please fix all validation errors', 'error');
     return;
@@ -528,7 +453,6 @@ const validateForm = () => {
             confidenceLevel: linkData.abTest.autoOptimize?.confidenceLevel || 0.95
           }
         };
-        console.log('✅ A/B Test Added:', payload.abTest);
       }
     } else if (editingLink) {
       payload.abTest = { enabled: false, variants: [] };
@@ -554,7 +478,6 @@ const validateForm = () => {
 
       if (validGeoRules.length > 0) {
         payload.geoRules = validGeoRules;
-        console.log('✅ Geo Rules Added:', payload.geoRules);
       }
     }
 
@@ -573,7 +496,6 @@ const validateForm = () => {
           desktop: linkData.deviceRules.desktop?.trim() || '',
           tablet: linkData.deviceRules.tablet?.trim() || ''
         };
-        console.log('✅ Device Rules Added:', payload.deviceRules);
       }
     }
 
@@ -588,7 +510,6 @@ const validateForm = () => {
           endDate: linkData.schedule.endDate,
           redirectAfterExpiry: linkData.schedule.redirectAfterExpiry?.trim() || ''
         };
-        console.log('✅ Schedule Added:', payload.schedule);
       }
     }
 
@@ -612,14 +533,8 @@ const validateForm = () => {
 
       if (validPixels.length > 0) {
         payload.pixels = validPixels;
-        console.log('✅ Pixels Added:', payload.pixels);
       }
     }
-
-    // ========================================
-    // ✅ Final Payload Log
-    // ========================================
-    console.log('📦 Final Payload:', JSON.stringify(payload, null, 2));
 
     // ========================================
     // ✅ Submit to Backend
@@ -719,11 +634,6 @@ const validateForm = () => {
         variants: [...adjustedVariants, newVariant]
       }
     });
-
-    console.log('➕ Added variant:', {
-      totalVariants: newVariantCount,
-      weights: [...adjustedVariants, newVariant].map(v => v.weight)
-    });
   };
 
   const removeVariant = (index) => {
@@ -747,10 +657,6 @@ const validateForm = () => {
         }
       });
 
-      console.log('➖ Removed variant:', {
-        remainingVariants: redistributedVariants.length,
-        weights: redistributedVariants.map(v => v.weight)
-      });
     } else {
       setLinkData({
         ...linkData,
@@ -778,8 +684,6 @@ const validateForm = () => {
           variants: updatedVariants
         }
       });
-
-      console.log(`🔄 Updated variant ${index} ${field}:`, value);
     }
   };
 
