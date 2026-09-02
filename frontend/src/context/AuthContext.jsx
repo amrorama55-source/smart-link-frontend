@@ -43,11 +43,13 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Google OAuth token handler - cookie is already set by server before redirect
-  const loginWithToken = async () => {
+  // Google OAuth token handler - stores token in localStorage and calls /auth/me
+  const loginWithToken = async (token) => {
     try {
-      // The server already set the HttpOnly cookie before redirecting here.
-      // We just need to call /auth/me to hydrate the user state.
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      // Call /auth/me with Authorization Bearer header to hydrate user state
       const data = await getCurrentUser();
       setUser(data.user);
       setError(null);
