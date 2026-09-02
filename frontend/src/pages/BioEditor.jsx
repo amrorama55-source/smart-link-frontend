@@ -350,7 +350,6 @@ export default function BioEditor() {
   );
 
   return (
-  return (
     <div className="min-h-screen bg-[#FBFBFA] dark:bg-[#0B0F19] text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-24 lg:pb-12">
       <Navbar />
 
