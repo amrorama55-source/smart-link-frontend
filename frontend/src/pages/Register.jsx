@@ -137,228 +137,234 @@ export default function Register() {
   };
 
   return (
-    <div className={`min-h-screen flex transition-colors duration-300 ${
-      isDark ? 'bg-[#0B0F19] text-gray-100' : 'bg-[#FAF9F5] text-gray-900'
-    }`}>
-      {/* ─── LEFT COLUMN: The Friendly Signup Form ─── */}
-      <div className="w-full lg:w-[50%] flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 overflow-y-auto">
+    <div className="min-h-screen flex bg-[#0B0F19] text-gray-100 relative overflow-hidden">
+      {/* ─── LEFT COLUMN: Floating Glassmorphism Signup Form ─── */}
+      <div
+        className="w-full lg:w-[50%] flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 overflow-y-auto bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/bg/abstract_amber_glow.jpg')" }}
+      >
+        {/* Dark overlay for rich depth */}
+        <div className="absolute inset-0 bg-[#0B0F19]/75 backdrop-blur-md pointer-events-none" />
+
         {/* Brand Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 relative z-10">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-violet-500/25 group-hover:scale-105 transition-transform duration-200">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform duration-200">
               <Zap className="w-5 h-5" />
             </div>
-            <span className="text-xl font-extrabold tracking-tight">
-              Smart<span className="text-violet-600 dark:text-violet-400">Link</span>
+            <span className="text-xl font-extrabold tracking-tight text-white">
+              Smart<span className="text-amber-400">Link</span>
             </span>
           </Link>
           <Link
             to="/login"
-            className="text-xs sm:text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+            className="text-xs sm:text-sm font-semibold text-gray-300 hover:text-white transition-colors"
           >
-            Already a member? <span className="font-bold text-violet-600 dark:text-violet-400 underline underline-offset-4">Sign in</span>
+            Already a member? <span className="font-bold text-amber-400 underline underline-offset-4">Sign in</span>
           </Link>
         </div>
 
-        {/* Center Content Form */}
-        <div className="max-w-md w-full mx-auto my-auto">
-          {/* Trial Tag if active */}
-          {isTrial && (
-            <div className="mb-6 p-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white flex items-center justify-between shadow-lg shadow-violet-600/20">
-              <div className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-amber-300 flex-shrink-0" />
-                <span className="text-xs font-black uppercase tracking-wider">14-Day Free Pro Trial</span>
-              </div>
-              <span className="text-[11px] font-medium opacity-80">No credit card</span>
-            </div>
-          )}
+        {/* Center Floating Glassmorphism Form Card */}
+        <div className="max-w-md w-full mx-auto my-auto relative z-10">
+          <div className="bg-[#0B0F19]/80 backdrop-blur-2xl border border-white/10 rounded-[2.2rem] p-7 sm:p-9 shadow-2xl shadow-black/80 relative overflow-hidden">
+            {/* Ambient inner glow */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-          <div className="mb-6">
-            <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
-              {isTrial ? 'Start your free trial' : 'Create your account'}
-            </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              One smart link to connect your audience, track clicks, and grow your revenue.
-            </p>
-          </div>
-
-          {/* Google Signup Button */}
-          <button
-            onClick={handleGoogleSignup}
-            type="button"
-            className={`w-full py-3.5 px-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-200 shadow-sm border ${
-              isDark
-                ? 'bg-gray-800/80 hover:bg-gray-800 border-gray-700/80 text-white hover:border-gray-600 hover:shadow-md'
-                : 'bg-white hover:bg-gray-50 border-gray-200 text-gray-800 hover:border-gray-300 hover:shadow-md'
-            } active:scale-[0.99]`}
-          >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.3-2.3H12v4.4h6.1c-.3 1.5-1.2 2.8-2.6 3.6v3h4.2c2.4-2.2 3.8-5.4 3.8-9.7z" />
-              <path fill="#34A853" d="M12 23c3.2 0 5.9-1 7.9-2.7l-4.2-3c-1.1.7-2.5 1.1-3.7 1.1-2.8 0-5.1-1.9-5.9-4.4H2.6v2.8C4.6 20.7 8 23 12 23z" />
-              <path fill="#FBBC05" d="M6.1 14.7c-.3-1-.3-2.1 0-3.1V8.8H2.6c-.7 1.3-1 2.7-1 4.2s.3 2.9 1 4.2l3.5-2.5z" />
-              <path fill="#EA4335" d="M12 4.6c1.8 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 8 0 4.6 2.3 2.6 5.8l3.5 2.8c.8-2.5 3.1-4.4 5.9-4.4z" />
-            </svg>
-            <span>Continue with Google</span>
-          </button>
-
-          {/* Split Divider — FIXED: NO LINE OVER TEXT */}
-          <div className="flex items-center gap-3 my-5">
-            <div className="flex-1 border-t border-white/10" />
-            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 whitespace-nowrap">
-              or sign up with email
-            </span>
-            <div className="flex-1 border-t border-white/10" />
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* General Error */}
-            {error && (
-              <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-center gap-2">
-                <span>⚠️</span>
-                <span>{error}</span>
+            {/* Trial Tag if active */}
+            {isTrial && (
+              <div className="mb-5 p-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white flex items-center justify-between shadow-lg shadow-orange-500/20">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white flex-shrink-0" />
+                  <span className="text-xs font-black uppercase tracking-wider">14-Day Free Pro Trial</span>
+                </div>
+                <span className="text-[11px] font-medium opacity-90">No credit card</span>
               </div>
             )}
 
-            {/* Full Name */}
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
-                Full Name
-              </label>
-              <div className="relative flex items-center">
-                <User className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                  autoComplete="name"
-                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.name ? 'border-red-500' : ''}`}
-                />
-              </div>
-              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+            <div className="mb-6">
+              <h1 className="text-3xl font-black tracking-tight text-white mb-1.5">
+                {isTrial ? 'Start your free trial' : 'Create your account'}
+              </h1>
+              <p className="text-xs text-gray-400">
+                One smart link to connect your audience, track clicks, and grow your revenue.
+              </p>
             </div>
 
-            {/* Email Address */}
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
-                Email Address
-              </label>
-              <div className="relative flex items-center">
-                <Mail className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.email ? 'border-red-500' : ''}`}
-                />
-              </div>
-              {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+            {/* Google Signup Button */}
+            <button
+              onClick={handleGoogleSignup}
+              type="button"
+              className="w-full py-3.5 px-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-200 bg-white/10 hover:bg-white/15 border border-white/15 text-white active:scale-[0.99] shadow-sm mb-5"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.3-2.3H12v4.4h6.1c-.3 1.5-1.2 2.8-2.6 3.6v3h4.2c2.4-2.2 3.8-5.4 3.8-9.7z" />
+                <path fill="#34A853" d="M12 23c3.2 0 5.9-1 7.9-2.7l-4.2-3c-1.1.7-2.5 1.1-3.7 1.1-2.8 0-5.1-1.9-5.9-4.4H2.6v2.8C4.6 20.7 8 23 12 23z" />
+                <path fill="#FBBC05" d="M6.1 14.7c-.3-1-.3-2.1 0-3.1V8.8H2.6c-.7 1.3-1 2.7-1 4.2s.3 2.9 1 4.2l3.5-2.5z" />
+                <path fill="#EA4335" d="M12 4.6c1.8 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 8 0 4.6 2.3 2.6 5.8l3.5 2.8c.8-2.5 3.1-4.4 5.9-4.4z" />
+              </svg>
+              <span className="text-xs font-bold">Continue with Google</span>
+            </button>
+
+            {/* Split Divider — FIXED: NO LINE OVER TEXT */}
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 border-t border-white/10" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 whitespace-nowrap">
+                or sign up with email
+              </span>
+              <div className="flex-1 border-t border-white/10" />
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="Min. 8 characters"
-                  autoComplete="new-password"
-                  className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.password ? 'border-red-500' : ''}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-              {formData.password && (
-                <div className="mt-2 space-y-1">
-                  <div className="flex gap-1.5">
-                    {[1, 2, 3, 4, 5].map((lvl) => (
-                      <div
-                        key={lvl}
-                        className={`h-1.5 flex-1 rounded-full transition-all ${
-                          lvl <= passwordStrength.strength ? passwordStrength.color : 'bg-gray-800'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <p className="text-[11px] font-semibold text-gray-500">
-                    Strength: <span className="font-bold text-gray-300">{passwordStrength.label}</span>
-                  </p>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* General Error */}
+              {error && (
+                <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
                 </div>
               )}
-              {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
-            </div>
 
-            {/* Confirm Password */}
-            <div>
-              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="Repeat password"
-                  autoComplete="new-password"
-                  className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.confirm ? 'border-red-500' : ''}`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+              {/* Full Name */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
+                  Full Name
+                </label>
+                <div className="relative flex items-center">
+                  <User className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    autoComplete="name"
+                    className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.name ? 'border-red-500' : ''}`}
+                  />
+                </div>
+                {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
               </div>
-              {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
+
+              {/* Email Address */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
+                  Email Address
+                </label>
+                <div className="relative flex items-center">
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.email ? 'border-red-500' : ''}`}
+                  />
+                </div>
+                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
+                  Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Min. 8 characters"
+                    autoComplete="new-password"
+                    className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.password ? 'border-red-500' : ''}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {formData.password && (
+                  <div className="mt-2 space-y-1">
+                    <div className="flex gap-1.5">
+                      {[1, 2, 3, 4, 5].map((lvl) => (
+                        <div
+                          key={lvl}
+                          className={`h-1.5 flex-1 rounded-full transition-all ${
+                            lvl <= passwordStrength.strength ? passwordStrength.color : 'bg-gray-800'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-[11px] font-semibold text-gray-500">
+                      Strength: <span className="font-bold text-gray-300">{passwordStrength.label}</span>
+                    </p>
+                  </div>
+                )}
+                {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
+              </div>
+
+              {/* Confirm Password */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="Repeat password"
+                    autoComplete="new-password"
+                    className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.confirm ? 'border-red-500' : ''}`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  >
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
+              </div>
+
+              {/* Submit Button */}
+              <motion.button
+                type="submit"
+                disabled={loading}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 shadow-lg shadow-orange-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+              >
+                {loading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Creating your account...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{isTrial ? 'Claim 14-Day Free Trial →' : 'Create Free Smart Link →'}</span>
+                  </>
+                )}
+              </motion.button>
+            </form>
+
+            <div className="flex items-center justify-center gap-1.5 mt-5 text-[11px] text-gray-400">
+              <Shield className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+              <span>No credit card required · Free plan forever · Instant setup</span>
             </div>
-
-            {/* Submit Button */}
-            <motion.button
-              type="submit"
-              disabled={loading}
-              whileTap={{ scale: 0.98 }}
-              className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:opacity-95 shadow-lg shadow-violet-600/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
-            >
-              {loading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Creating your account...</span>
-                </>
-              ) : (
-                <>
-                  <span>{isTrial ? 'Claim 14-Day Free Trial →' : 'Create Free Smart Link →'}</span>
-                </>
-              )}
-            </motion.button>
-          </form>
-
-          <div className="flex items-center justify-center gap-1.5 mt-6 text-xs text-gray-400">
-            <Shield className="w-3.5 h-3.5 text-emerald-500" />
-            <span>No credit card required · Free plan forever · Instant setup</span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="text-center text-xs text-gray-400 dark:text-gray-600 mt-6">
+        <div className="text-center text-[11px] text-gray-500 mt-6 relative z-10">
           By signing up, you agree to our Terms of Service and Privacy Policy.
         </div>
       </div>
+
 
       {/* ─── RIGHT COLUMN: Immersive Creator Showcase ─── */}
       <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden items-stretch">
