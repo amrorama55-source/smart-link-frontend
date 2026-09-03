@@ -19,8 +19,9 @@ const csrfMiddleware = (req, res, next) => {
     return next();
   }
 
-  // ✅ Skip CSRF for requests with API Key (programmatic access)
-  if (req.headers['x-api-key']) {
+  // ✅ Skip CSRF for requests with API Key or Authorization Bearer token (SPA JS client access)
+  const authHeader = req.headers['authorization'];
+  if (req.headers['x-api-key'] || (authHeader && authHeader.startsWith('Bearer '))) {
     return next();
   }
 
