@@ -508,45 +508,54 @@ export default function BioEditor() {
               </div>
 
               <div className="space-y-5">
-                {/* Avatar & Preset Creator Photos */}
+                {/* Avatar */}
                 <div>
                   <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Profile Picture</label>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center overflow-hidden cursor-pointer shadow-md"
-                        onClick={() => fileInputRef.current?.click()}>
-                        {bioData.avatar ? <img src={bioData.avatar} className="w-full h-full object-cover" /> : <Upload className="w-6 h-6 text-gray-400" />}
-                      </div>
+
+                  {/* Row 1: Current avatar + Upload button */}
+                  <div className="flex items-center gap-4 mb-3">
+                    <div className="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center overflow-hidden cursor-pointer shadow-md flex-shrink-0"
+                      onClick={() => fileInputRef.current?.click()}>
+                      {bioData.avatar ? <img src={bioData.avatar} className="w-full h-full object-cover object-top" /> : <Upload className="w-6 h-6 text-gray-400" />}
+                    </div>
+                    <div className="flex flex-col gap-2">
                       <button onClick={() => fileInputRef.current?.click()}
-                        className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-xl text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-white rounded-xl text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors w-fit">
                         Upload Image
                       </button>
-                      <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+                      {bioData.avatar && (
+                        <button onClick={() => setBioData({ ...bioData, avatar: '' })}
+                          className="text-xs text-red-500 hover:text-red-700 font-semibold text-left">
+                          Remove
+                        </button>
+                      )}
                     </div>
+                    <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
+                  </div>
 
-                    {/* Quick Preset Photos */}
-                    <div className="sm:ml-auto">
-                      <p className="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-1.5">Or Choose Creator Aesthetic:</p>
-                      <div className="flex items-center gap-2">
-                        {[
-                          { url: '/images/creators/creator_neon_cyber.jpg', label: 'Neon Cyber Studio' },
-                          { url: '/images/creators/creator_red_artist.jpg', label: 'Dramatic Red Artist' },
-                          { url: '/images/creators/creator_yellow_genz.jpg', label: 'Gen-Z Yellow Pop' },
-                          { url: '/images/creators/creator_smile_warm.jpg', label: 'Warm Creator' }
-                        ].map((preset, idx) => (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => setBioData({ ...bioData, avatar: preset.url })}
-                            title={preset.label}
-                            className={`w-10 h-10 rounded-full p-0.5 border-2 transition-all hover:scale-110 active:scale-95 ${
-                              bioData.avatar === preset.url ? 'border-violet-500 ring-2 ring-violet-500/30' : 'border-transparent opacity-70 hover:opacity-100'
-                            }`}
-                          >
-                            <img src={preset.url} alt={preset.label} className="w-full h-full rounded-full object-cover object-top" />
-                          </button>
-                        ))}
-                      </div>
+                  {/* Row 2: Sample Creator Photos */}
+                  <div className="border border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-3">
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mb-2">Sample Creator Aesthetic</p>
+                    <div className="flex items-center gap-3">
+                      {[
+                        { url: '/images/creators/creator_neon_cyber.jpg', label: 'Cyber Studio' },
+                        { url: '/images/creators/creator_red_artist.jpg', label: 'Red Artist' },
+                        { url: '/images/creators/creator_yellow_genz.jpg', label: 'Gen-Z Pop' },
+                        { url: '/images/creators/creator_smile_warm.jpg', label: 'Warm Creator' }
+                      ].map((preset, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => setBioData({ ...bioData, avatar: preset.url })}
+                          title={preset.label}
+                          className={`w-11 h-11 rounded-full p-0.5 border-2 transition-all hover:scale-110 active:scale-95 ${
+                            bioData.avatar === preset.url ? 'border-violet-500 ring-2 ring-violet-500/30' : 'border-gray-200 dark:border-gray-600 opacity-60 hover:opacity-100'
+                          }`}
+                        >
+                          <img src={preset.url} alt={preset.label} className="w-full h-full rounded-full object-cover object-top" />
+                        </button>
+                      ))}
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500 ml-1">Click to preview</span>
                     </div>
                   </div>
                 </div>

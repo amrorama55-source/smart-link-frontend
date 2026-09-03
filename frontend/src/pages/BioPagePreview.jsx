@@ -135,9 +135,7 @@ export default function BioPagePreview({ previewData }) {
                                         </div>
                                     </div>
                                 );
-                            }
-
-                            // Tactile Rounded Link Button
+                            }                            // Tactile Rounded Link Button
                             return (
                                 <div
                                     key={index}
@@ -148,7 +146,7 @@ export default function BioPagePreview({ previewData }) {
                                             window.open(block.url, '_blank');
                                         }
                                     }}
-                                    className="group relative flex items-center p-1.5 rounded-2xl border shadow-sm w-full transition-all duration-200 hover:shadow-md hover:scale-[1.01] active:scale-[0.98] cursor-pointer"
+                                    className="group relative flex items-center p-1.5 rounded-2xl border shadow-sm w-full transition-all duration-200 hover:shadow-md hover:scale-[1.01] active:scale-[0.98] cursor-pointer overflow-hidden"
                                     style={{
                                         backgroundColor: 'var(--bio-link-bg)',
                                         borderColor: 'var(--bio-link-border)',
@@ -156,25 +154,25 @@ export default function BioPagePreview({ previewData }) {
                                     }}
                                 >
                                     {/* Left Icon Capsule */}
-                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 bg-black/5 dark:bg-white/5">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0 bg-black/5">
                                         {block.icon || (block.type === 'paywall' ? '🔐' : block.type === 'file' ? '📁' : '🔗')}
                                     </div>
                                     
-                                    {/* Centered Title */}
-                                    <div className="flex-1 py-2 px-3 text-center">
-                                        <p className="font-extrabold text-xs tracking-tight truncate">{block.title || block.url}</p>
+                                    {/* Centered Title — truncated so it never overflows */}
+                                    <div className="flex-1 py-2 px-2 text-center min-w-0">
+                                        <p className="font-extrabold text-xs tracking-tight truncate leading-snug">
+                                            {block.title || block.url}
+                                        </p>
                                     </div>
                                     
-                                    {/* Right Badge / Action */}
-                                    <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
-                                        {block.type === 'paywall' ? (
-                                            <span className="text-[10px] font-black bg-amber-500/20 text-amber-500 px-2.5 py-1 rounded-full">
+                                    {/* Right Badge / Action — only show for paywall, hide dots for normal links */}
+                                    {block.type === 'paywall' && (
+                                        <div className="w-10 h-10 flex items-center justify-center flex-shrink-0">
+                                            <span className="text-[10px] font-black bg-amber-500/20 text-amber-500 px-2 py-1 rounded-full whitespace-nowrap">
                                                 BUY
                                             </span>
-                                        ) : (
-                                            <MoreHorizontal className="w-4 h-4 opacity-40 group-hover:opacity-70 transition-opacity" />
-                                        )}
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
                             );
                         })
@@ -187,33 +185,16 @@ export default function BioPagePreview({ previewData }) {
                     )}
                 </div>
 
-                {/* Powered by Smart Link Floating Pill */}
-                <div className="mt-8 mb-4 w-full flex justify-center pointer-events-none">
-                    <div
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full shadow-md border"
-                        style={{
-                            backgroundColor: 'var(--bio-card-bg)',
-                            backdropFilter: 'blur(16px)',
-                            WebkitBackdropFilter: 'blur(16px)',
-                            borderColor: 'var(--bio-card-border)',
-                        }}
-                    >
-                        <img
-                            src="/logo-v1.svg"
-                            alt="Smart Link"
-                            className="w-3.5 h-3.5 rounded flex-shrink-0"
-                            style={{ display: 'block' }}
-                        />
-                        <span
-                            className="text-[10px] font-extrabold tracking-wider uppercase opacity-80"
-                            style={{ color: 'var(--bio-text-primary)' }}
-                        >
-                            Smart<span className="opacity-100 font-black">Link</span>
+                {/* Minimal branding — tiny and unobtrusive at very bottom */}
+                <div className="mt-8 mb-6 w-full flex justify-center">
+                    <span className="flex items-center gap-1 opacity-30">
+                        <img src="/logo-v1.svg" alt="" className="w-2.5 h-2.5 rounded" style={{ display: 'block' }} />
+                        <span className="text-[9px] font-bold tracking-wider uppercase" style={{ color: 'var(--bio-text-secondary)' }}>
+                            by-smartlink.com
                         </span>
-                    </div>
+                    </span>
                 </div>
             </div>
         </div>
     );
 }
-

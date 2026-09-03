@@ -301,19 +301,19 @@ export default function BioPage({ previewData = null }) {
                         if (currentTheme.id === 'minimal') e.currentTarget.style.color = 'var(--bio-text-primary)';
                       }}
                     >
-                      <div className="absolute left-1.5 w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+                      <div className="absolute left-1.5 w-12 h-12 rounded-full flex items-center justify-center text-2xl flex-shrink-0">
                         {block.icon || (block.type === 'paywall' ? '🔐' : block.type === 'file' ? '📁' : '🔗')}
                       </div>
 
-                      <div className="flex-1 py-4 px-16 text-center">
-                        <p className="font-bold text-[15px] truncate" style={{ color: 'var(--bio-text-primary)' }}>
+                      <div className="flex-1 py-4 pl-16 pr-16 text-center overflow-hidden">
+                        <p className="font-bold text-[15px] truncate max-w-full" style={{ color: 'var(--bio-text-primary)' }}>
                           {block.title || block.url}
                         </p>
                       </div>
 
-                      <div className="absolute right-4 flex items-center justify-center">
+                      <div className="absolute right-4 flex items-center justify-center flex-shrink-0">
                         {block.type === 'paywall' ? (
-                          <div className="text-[10px] font-bold bg-yellow-600/20 text-yellow-600 px-3 py-1.5 rounded-full uppercase tracking-wider">
+                          <div className="text-[10px] font-bold bg-yellow-600/20 text-yellow-600 px-3 py-1.5 rounded-full uppercase tracking-wider whitespace-nowrap">
                             {block.settings?.price ? `${block.settings?.price} ${block.settings?.currency || 'USD'}` : 'Buy'}
                           </div>
                         ) : (
@@ -331,29 +331,18 @@ export default function BioPage({ previewData = null }) {
           )}
         </div>
 
-        <div className="fixed bottom-6 w-full mx-auto left-0 right-0 px-6 z-50 pointer-events-none flex justify-center pb-safe">
+        {/* Minimal "Powered by Smart Link" pill — small, tasteful, at bottom of scroll */}
+        <div className="mt-10 mb-24 flex justify-center">
           <a
             href="https://www.by-smartlink.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_10px_40px_rgba(0,0,0,0.2)] pointer-events-auto border"
-            style={{
-              backgroundColor: 'var(--bio-card-bg)', 
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              borderColor: 'var(--bio-card-border)',
-              color: 'var(--bio-text-primary)',
-              textDecoration: 'none'
-            }}
+            className="inline-flex items-center gap-1.5 opacity-40 hover:opacity-70 transition-opacity"
+            style={{ textDecoration: 'none' }}
           >
-            <img
-              src="/logo-v1.svg"
-              alt="Smart Link"
-              className="w-5 h-5 rounded flex-shrink-0"
-              style={{ display: 'block' }}
-            />
-            <span className="text-[14px] font-bold tracking-wide">
-              Join <span className="opacity-70 mx-0.5">@{bioData.username}</span> on Smart Link
+            <img src="/logo-v1.svg" alt="" className="w-3 h-3 rounded" style={{ display: 'block' }} />
+            <span className="text-[11px] font-semibold tracking-wide" style={{ color: 'var(--bio-text-secondary)' }}>
+              by-smartlink.com
             </span>
           </a>
         </div>
