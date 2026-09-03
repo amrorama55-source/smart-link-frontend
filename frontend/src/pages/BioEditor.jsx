@@ -866,7 +866,7 @@ export default function BioEditor() {
                 </div>
 
                 {/* Inner Screen Container */}
-                <div className="h-[740px] w-full bg-white rounded-[3rem] overflow-y-auto no-scrollbar relative shadow-inner">
+                <div className="h-[740px] w-full bg-[#0B0F19] rounded-[3rem] overflow-y-auto no-scrollbar relative shadow-inner">
                   <BioPagePreview previewData={bioData} />
                 </div>
               </div>
