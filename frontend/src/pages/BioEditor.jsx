@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { Reorder, AnimatePresence } from 'framer-motion';
 import { themes as themeData } from '../utils/bioThemes';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink, Wand2, Link2, Mail, Type, FlaskConical } from 'lucide-react';
+import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink, Wand2, Link2, Mail, Type, FlaskConical, Plus } from 'lucide-react';
 import BioPagePreview from './BioPagePreview';
 import { useToast } from '../context/ToastProvider';
 
@@ -626,36 +626,32 @@ export default function BioEditor() {
 
             {/* BLOCKS (Monetization & Links) */}
             <div className={`${activeTab === 'links' ? 'block' : 'hidden'} lg:block bg-white dark:bg-gray-800/80 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800`}>
-              <div className={`mb-5 p-4 rounded-xl border ${
-                stripeStatus?.status === 'active'
-                  ? 'bg-green-50 dark:bg-green-900/10 border-green-200 dark:border-green-900/30'
-                  : 'bg-purple-50 dark:bg-purple-900/10 border-purple-200 dark:border-purple-900/30'
-              }`}>
+              <div className="mb-6 p-4 rounded-xl border bg-gray-50 dark:bg-gray-900/60 border-gray-200 dark:border-gray-700/80">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-black text-gray-900 dark:text-white uppercase tracking-tight">Creator Payout System</p>
+                    <p className="text-sm font-bold text-gray-900 dark:text-white">Stripe Payouts</p>
                     {stripeStatus?.status === 'active' ? (
                       <p className="text-xs mt-1 text-green-700 dark:text-green-400 font-medium leading-relaxed">
                         ✅ Your Stripe account is active. Sales revenue will be deposited directly to your bank account.
                       </p>
                     ) : stripeStatus?.status === 'pending_verification' ? (
                       <p className="text-xs mt-1 text-amber-700 dark:text-amber-400 flex items-center gap-1 font-medium leading-relaxed">
-                        <AlertTriangle className="w-3 h-3" />
-                        Verification in progress. You can still set up your shop while Stripe verifies your details.
+                        <AlertTriangle className="w-3.5 h-3.5" />
+                        Verification in progress. You can still set up products while Stripe verifies your details.
                       </p>
                     ) : (
-                      <p className="text-xs mt-1 text-purple-700 dark:text-purple-400 font-medium leading-relaxed">
-                        We use <span className="font-bold">Stripe</span> for secure, direct payouts. Connect your account to start selling digital products.
+                      <p className="text-xs mt-1 text-gray-600 dark:text-gray-400 font-normal leading-relaxed">
+                        Connect your Stripe account to receive direct payouts for digital products & paywalls.
                       </p>
                     )}
                   </div>
                   <button
                     onClick={handleStripeConnect}
                     disabled={stripeLoading}
-                    className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 ${
+                    className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors flex items-center gap-1.5 flex-shrink-0 ${
                       stripeStatus?.status === 'active'
                         ? 'bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100'
-                        : 'bg-[#635BFF] hover:bg-[#4B45D6] text-white'
+                        : 'bg-[#635BFF] hover:bg-[#4B45D6] text-white shadow-sm'
                     }`}
                   >
                     {stripeLoading ? <Loader className="w-3 h-3 animate-spin" /> : <ExternalLink className="w-3 h-3" />}
@@ -664,46 +660,44 @@ export default function BioEditor() {
                 </div>
               </div>
 
-              {/* Big Magnetic Add Link Hero Button */}
+              {/* Add Link Primary Button */}
               <div className="mb-6">
                 <button
                   onClick={() => addBlock('link')}
-                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white font-black text-sm sm:text-base shadow-lg shadow-violet-500/25 hover:shadow-xl transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2 group"
+                  className="w-full py-3 px-5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm shadow-sm transition-colors flex items-center justify-center gap-2 active:scale-[0.99]"
                 >
-                  <span className="w-7 h-7 rounded-xl bg-white/20 flex items-center justify-center text-lg font-black group-hover:rotate-90 transition-transform duration-300">
-                    +
-                  </span>
-                  <span>Add Link to Bio</span>
+                  <Plus className="w-4 h-4" />
+                  <span>Add Link</span>
                 </button>
               </div>
 
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-                <h2 className="font-black text-gray-900 dark:text-white text-lg flex items-center gap-2 tracking-tight">
-                  <List className="w-5 h-5 text-violet-600 dark:text-violet-400" /> Active Blocks
+                <h2 className="font-bold text-gray-900 dark:text-white text-base flex items-center gap-2">
+                  <List className="w-4 h-4 text-gray-500" /> Links & Blocks
                 </h2>
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => addBlock('newsletter')}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400 rounded-xl font-bold border border-emerald-200/60 dark:border-emerald-800/40 hover:bg-emerald-100 transition-all text-xs active:scale-95"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold transition-colors text-xs active:scale-95 border border-gray-200 dark:border-gray-600"
                   >
                     <Mail className="w-3.5 h-3.5" /> Newsletter
                   </button>
                   <button
                     onClick={() => addBlock('paywall')}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 rounded-xl font-bold border border-amber-200/60 dark:border-amber-800/40 hover:bg-amber-100 transition-all text-xs active:scale-95"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded-lg font-semibold transition-colors text-xs active:scale-95 border border-gray-200 dark:border-gray-600"
                   >
                     <Lock className="w-3.5 h-3.5" /> Paywall
                   </button>
                   <button
                     onClick={() => addBlock('header')}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-xl font-bold border border-gray-200 dark:border-gray-700 hover:bg-gray-200 transition-all text-xs active:scale-95"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold transition-colors text-xs active:scale-95 border border-gray-200 dark:border-gray-600"
                   >
                     <Type className="w-3.5 h-3.5" /> Header
                   </button>
                   <button
                     onClick={handleTestCheckout}
                     disabled={testCheckoutLoading}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-violet-50 dark:bg-violet-950/30 text-violet-700 dark:text-violet-400 rounded-xl font-bold border border-violet-200/60 dark:border-violet-800/40 hover:bg-violet-100 transition-all text-xs active:scale-95 disabled:opacity-50"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 rounded-lg font-semibold transition-colors text-xs active:scale-95 disabled:opacity-50 border border-gray-200 dark:border-gray-600"
                   >
                     {testCheckoutLoading ? <Loader className="w-3.5 h-3.5 animate-spin" /> : <FlaskConical className="w-3.5 h-3.5" />}
                     Test Paywall
@@ -714,7 +708,7 @@ export default function BioEditor() {
               <Reorder.Group axis="y" values={bioData.blocks} onReorder={(newOrder) => setBioData({ ...bioData, blocks: newOrder })} className="space-y-4">
                 {bioData.blocks.map((block, i) => (
                   <Reorder.Item key={block.id} value={block}>
-                    <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 hover:border-blue-500 transition-all group">
+                    <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-2xl border border-gray-200 dark:border-gray-600 flex items-start gap-3 hover:border-violet-500 transition-all group">
                       <div className="mt-2 text-gray-400 cursor-grab active:cursor-grabbing"><GripVertical className="w-5 h-5" /></div>
 
                       <div className="flex-1 space-y-3">
@@ -722,45 +716,45 @@ export default function BioEditor() {
                         <div className="flex gap-2">
                           {block.type !== 'header' && (
                             <input value={block.icon} onChange={e => updateBlock(i, 'icon', e.target.value)}
-                              className="w-12 text-center p-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl focus:ring-2 focus:ring-blue-500" placeholder="🔗" />
+                              className="w-12 text-center p-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xl focus:ring-2 focus:ring-violet-500 outline-none" placeholder="🔗" />
                           )}
                           <input value={block.title} onChange={e => updateBlock(i, 'title', e.target.value)}
-                            className={`flex-1 p-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-bold focus:ring-2 focus:ring-blue-500 ${block.type === 'header' ? 'text-lg' : 'text-sm'}`}
+                            className={`flex-1 p-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white font-bold focus:ring-2 focus:ring-violet-500 outline-none ${block.type === 'header' ? 'text-lg' : 'text-sm'}`}
                             placeholder={block.type === 'header' ? 'Section Header' : 'Block Title'} />
-                          <div className="flex items-center gap-2 px-2 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                            <span className="text-[9px] font-black uppercase opacity-40">{block.type}</span>
+                          <div className="flex items-center gap-2 px-2.5 py-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">{block.type}</span>
                           </div>
                         </div>
 
                         {/* Block-Specific Fields */}
                         {block.type === 'link' || block.type === 'paywall' ? (
                           <input value={block.url} onChange={e => updateBlock(i, 'url', e.target.value)}
-                            className="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xs focus:ring-2 focus:ring-blue-500" placeholder="https://" />
+                            className="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xs focus:ring-2 focus:ring-violet-500 outline-none" placeholder="https://" />
                         ) : null}
 
                         {block.type === 'newsletter' ? (
                           <textarea value={block.content} onChange={e => updateBlock(i, 'content', e.target.value)}
-                            className="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xs focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 dark:text-white text-xs focus:ring-2 focus:ring-violet-500 outline-none"
                             rows={2} placeholder="Newsletter description..." />
                         ) : null}
 
                         {block.type === 'paywall' ? (
-                          <div className="flex flex-col gap-3 bg-purple-50 dark:bg-purple-900/10 p-3 rounded-xl border border-purple-100 dark:border-purple-900/30">
+                          <div className="flex flex-col gap-3 bg-white dark:bg-gray-800 p-3.5 rounded-xl border border-gray-200 dark:border-gray-700">
                             <div className="flex items-center gap-2">
-                              <Lock className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                              <span className="text-xs font-bold text-purple-700 dark:text-purple-400">Stripe Digital Product</span>
+                              <Lock className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                              <span className="text-xs font-bold text-gray-800 dark:text-gray-200">Paywall Details</span>
                             </div>
                             <div className="flex gap-3">
                               <div className="w-1/2 space-y-1">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase">Price</label>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Price</label>
                                 <input type="number" min="0" step="0.5" value={block.settings?.price || ''} onChange={e => updateBlockSettings(i, 'price', e.target.value)}
-                                  className="w-full p-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 dark:text-white text-xs font-mono focus:ring-2 focus:ring-purple-500"
+                                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-violet-500 outline-none"
                                   placeholder="5.00" />
                               </div>
                               <div className="w-1/2 space-y-1">
-                                <label className="text-[10px] font-bold text-gray-500 uppercase">Currency</label>
+                                <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Currency</label>
                                 <select value={block.settings?.currency || 'USD'} onChange={e => updateBlockSettings(i, 'currency', e.target.value)}
-                                  className="w-full p-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 dark:text-white text-xs font-mono focus:ring-2 focus:ring-purple-500">
+                                  className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-violet-500 outline-none">
                                   <option value="USD">USD ($)</option>
                                   <option value="EUR">EUR (€)</option>
                                   <option value="GBP">GBP (£)</option>
@@ -768,12 +762,12 @@ export default function BioEditor() {
                               </div>
                             </div>
                             <div className="space-y-1">
-                              <label className="text-[10px] font-bold text-gray-500 uppercase">Secret Content / Link</label>
+                              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Unlocked Content / Secret Link</label>
                               <input type="text" value={block.settings?.secretContent || ''} onChange={e => updateBlockSettings(i, 'secretContent', e.target.value)}
-                                className="w-full p-2 rounded-lg border border-purple-200 dark:border-purple-800 bg-white dark:bg-gray-800 dark:text-white text-xs font-mono focus:ring-2 focus:ring-purple-500"
+                                className="w-full p-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 dark:text-white text-xs font-mono focus:ring-2 focus:ring-violet-500 outline-none"
                                 placeholder="https://..." />
-                              <p className="text-[9px] text-gray-500 italic mt-1">
-                                💡 Tip: This will only be revealed AFTER successful payment.
+                              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 font-normal">
+                                Content is revealed automatically to the buyer after successful payment.
                               </p>
                             </div>
                           </div>
@@ -782,7 +776,7 @@ export default function BioEditor() {
 
                       <div className="flex flex-col gap-2">
                         <button onClick={() => updateBlock(i, 'isActive', !block.isActive)}
-                          className={`p-2 rounded-lg transition-colors ${block.isActive ? 'text-green-500 hover:bg-green-50' : 'text-gray-300 hover:bg-gray-50'}`}>
+                          className={`p-2 rounded-lg transition-colors ${block.isActive ? 'text-green-500 hover:bg-green-50 dark:hover:bg-green-950/20' : 'text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                           <Check className="w-5 h-5" />
                         </button>
                         <button onClick={() => removeBlock(i)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
@@ -795,7 +789,7 @@ export default function BioEditor() {
 
                 {bioData.blocks.length === 0 && bioData.customLinks.length === 0 && (
                   <div className="text-center py-12 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-2xl">
-                    <p className="text-sm text-gray-500">No blocks yet. Use the buttons above to add your first block! 🚀</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">No blocks yet. Use the buttons above to add your first block.</p>
                   </div>
                 )}
 

@@ -185,13 +185,13 @@ export default function BioPagePreview({ previewData }) {
                     )}
                 </div>
 
-                {/* Minimal branding — tiny and unobtrusive at very bottom */}
-                <div className="mt-8 mb-6 w-full flex justify-center">
-                    <span className="flex items-center gap-1 opacity-30">
-                        <img src="/logo-v1.svg" alt="" className="w-2.5 h-2.5 rounded" style={{ display: 'block' }} />
-                        <span className="text-[9px] font-bold tracking-wider uppercase" style={{ color: 'var(--bio-text-secondary)' }}>
-                            by-smartlink.com
-                        </span>
+                {/* Minimal subtle branding footer */}
+                <div className="mt-8 mb-6 w-full flex justify-center pointer-events-none">
+                    <span
+                        className="text-[10px] font-medium tracking-wider opacity-30 select-none"
+                        style={{ color: 'var(--bio-text-secondary)' }}
+                    >
+                        by-smartlink.com
                     </span>
                 </div>
             </div>

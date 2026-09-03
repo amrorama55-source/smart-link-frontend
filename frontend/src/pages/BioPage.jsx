@@ -331,17 +331,15 @@ export default function BioPage({ previewData = null }) {
           )}
         </div>
 
-        {/* Minimal "Powered by Smart Link" pill — small, tasteful, at bottom of scroll */}
         <div className="mt-10 mb-24 flex justify-center">
           <a
             href="https://www.by-smartlink.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 opacity-40 hover:opacity-70 transition-opacity"
+            className="inline-flex items-center gap-1.5 opacity-30 hover:opacity-60 transition-opacity"
             style={{ textDecoration: 'none' }}
           >
-            <img src="/logo-v1.svg" alt="" className="w-3 h-3 rounded" style={{ display: 'block' }} />
-            <span className="text-[11px] font-semibold tracking-wide" style={{ color: 'var(--bio-text-secondary)' }}>
+            <span className="text-[11px] font-medium tracking-wide" style={{ color: 'var(--bio-text-secondary)' }}>
               by-smartlink.com
             </span>
           </a>
