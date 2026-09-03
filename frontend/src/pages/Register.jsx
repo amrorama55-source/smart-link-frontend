@@ -153,7 +153,7 @@ export default function Register() {
               <Zap className="w-5 h-5" />
             </div>
             <span className="text-xl font-extrabold tracking-tight text-white">
-              Smart<span className="text-amber-400">Link</span>
+              Smart<span className="text-yellow-400">Link</span>
             </span>
           </Link>
           <Link
