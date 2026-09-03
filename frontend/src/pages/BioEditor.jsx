@@ -5,7 +5,7 @@ import Navbar from '../components/Navbar';
 import { Reorder, AnimatePresence } from 'framer-motion';
 import { themes as themeData } from '../utils/bioThemes';
 import { useAuth } from '../context/AuthContext';
-import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink, Sparkles, Zap, Link2, Mail, Type, FlaskConical } from 'lucide-react';
+import { Trash2, Eye, Save, Check, X, Loader, GripVertical, Copy, Upload, User, List, Palette, Share2, Lock, Crown, AlertTriangle, ExternalLink, Wand2, Link2, Mail, Type, FlaskConical } from 'lucide-react';
 import BioPagePreview from './BioPagePreview';
 import { useToast } from '../context/ToastProvider';
 
@@ -268,7 +268,7 @@ export default function BioEditor() {
             isActive: true
           }))
         }));
-        alert('AI has magic-crafted your page! ✨ Review and save your changes.');
+        alert('Your page has been auto-filled! Review and save your changes.');
       }
     } catch (err) {
       alert('AI Generation failed: ' + (err.response?.data?.message || err.response?.data?.error || err.message));
@@ -358,13 +358,13 @@ export default function BioEditor() {
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
               <span className="text-xs font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
-                Live Bio Canvas
+                Bio Page Builder
               </span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
-              Design your page ✨
+              Design your page
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">
               Everything you customize updates in real-time on your mobile preview.
@@ -454,16 +454,17 @@ export default function BioEditor() {
                 <button
                   onClick={handleAIGenerate}
                   disabled={generating}
-                  className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg text-xs font-black shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2"
+                  className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg text-xs font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-all flex items-center gap-2 border border-gray-200 dark:border-gray-600"
                 >
-                  {generating ? <Loader className="w-3 h-3 animate-spin" /> : '✨ Magic AI Builder'}
+                  {generating ? <Loader className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                  {generating ? 'Filling...' : 'Auto-Fill from Profile'}
                 </button>
               </div>
 
               {/* YOUR SMART LINK */}
               <div className="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 mb-6">
                 <label className="block text-xs font-bold uppercase tracking-wider mb-2 text-blue-800 dark:text-blue-300">
-                  🚀 Your Smart Link
+                  Your Smart Link URL
                 </label>
                 <div className="flex items-center gap-2">
                   <div className="flex-1 bg-white dark:bg-gray-900 p-2.5 rounded-lg border border-blue-200 dark:border-blue-800 text-gray-600 dark:text-gray-300 text-sm font-medium font-mono truncate select-all">

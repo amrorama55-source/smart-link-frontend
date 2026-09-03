@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastProvider';
 import {
   Eye, EyeOff, Mail, Lock, ArrowRight,
-  CheckCircle, Sparkles, Shield, Zap, Link2
+  CheckCircle, Check, Shield, Zap, Link2
 } from 'lucide-react';
 import api from '../services/api';
 import { API_URL } from '../config';
@@ -166,7 +166,7 @@ export default function Register() {
           {isTrial && (
             <div className="mb-6 p-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white flex items-center justify-between shadow-lg shadow-violet-600/20">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-amber-300" />
+                <Check className="w-4 h-4 text-amber-300 flex-shrink-0" />
                 <span className="text-xs font-black uppercase tracking-wider">14-Day Free Pro Trial</span>
               </div>
               <span className="text-[11px] font-medium opacity-80">No credit card</span>
@@ -175,7 +175,7 @@ export default function Register() {
 
           <div className="mb-6">
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2">
-              {isTrial ? 'Claim your free trial ✨' : 'Create your Smart Link 🚀'}
+              {isTrial ? 'Start your free trial' : 'Create your account'}
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               One smart link to connect your audience, track clicks, and grow your revenue.
@@ -371,81 +371,88 @@ export default function Register() {
         </div>
       </div>
 
-      {/* ─── RIGHT COLUMN: The Warm, Human Visual Showcase (Desktop) ─── */}
-      <div className="hidden lg:flex lg:w-[50%] bg-gradient-to-br from-[#1E1238] via-[#120B24] to-[#0A0515] p-12 relative overflow-hidden items-center justify-center">
-        {/* Soft Ambient Light Glows */}
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-violet-600/30 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-fuchsia-600/25 rounded-full blur-3xl pointer-events-none"></div>
+      {/* ─── RIGHT COLUMN: Immersive Creator Showcase ─── */}
+      <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden items-stretch">
+        {/* Full-bleed background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/creators/creator_yellow_genz.jpg')" }}
+        />
+        {/* Deep overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/20" />
+        {/* Left-edge fade to blend with form */}
+        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0B0F19] to-transparent" />
 
-        <div className="relative z-10 max-w-lg w-full">
-          {/* Floating Feature Card Top */}
-          <div className="mb-6 p-4 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/15 text-white shadow-2xl flex items-center justify-between transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+        {/* Subtle glow */}
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-between h-full p-12 w-full">
+
+          {/* Top — stat pill */}
+          <div className="flex justify-end">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white shadow-lg">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full flex-shrink-0" />
+              <span className="text-xs font-bold tracking-wide">10,000+ creators growing their audience</span>
+            </div>
+          </div>
+
+          {/* Middle — 3 creator cards */}
+          <div className="flex flex-col gap-3">
+            <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-1">Recently joined</p>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-violet-500/20 border border-violet-400/30 flex items-center justify-center text-violet-300 font-bold">
-                🎯
-              </div>
-              <div>
-                <p className="text-[11px] text-white/60 font-semibold uppercase tracking-wider">Automated Geo-Routing</p>
-                <p className="text-sm font-black">Route traffic by country & device</p>
-              </div>
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black">Active</span>
-          </div>
-
-          {/* Floating Phone Visual (Human Bio Showcase) */}
-          <div className="mx-auto w-[310px] rounded-[3rem] bg-gradient-to-b from-gray-900 to-black p-3.5 border-4 border-white/20 shadow-2xl shadow-violet-950/80 relative">
-            {/* Dynamic Island */}
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-20 flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-violet-600/80 ml-auto mr-3"></div>
-            </div>
-
-            {/* Inner Screen */}
-            <div className="rounded-[2.4rem] bg-gradient-to-b from-[#1C172E] via-[#151026] to-[#0D0A1A] p-6 pt-12 text-center text-white min-h-[440px] flex flex-col justify-between">
-              <div>
-                <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-violet-500 mx-auto mb-3 shadow-lg">
-                  <img
-                    src="/images/creators/creator_yellow_genz.jpg"
-                    alt="Alex Rivera"
-                    className="w-full h-full rounded-full object-cover object-top"
-                  />
+              {[
+                { img: '/images/creators/creator_neon_cyber.jpg', name: 'Alex M.', role: 'Photographer', clicks: '12K clicks/mo' },
+                { img: '/images/creators/creator_red_artist.jpg', name: 'Lina K.', role: 'Musician', clicks: '38K clicks/mo' },
+                { img: '/images/creators/creator_smile_warm.jpg', name: 'Maya R.', role: 'Educator', clicks: '91K clicks/mo' },
+              ].map((c, i) => (
+                <div
+                  key={i}
+                  className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/15 transition-colors"
+                >
+                  <img src={c.img} alt={c.name} className="w-9 h-9 rounded-full object-cover object-top flex-shrink-0 ring-2 ring-white/20" />
+                  <div className="min-w-0">
+                    <p className="text-white text-xs font-bold truncate">{c.name}</p>
+                    <p className="text-white/50 text-[10px] font-medium truncate">{c.clicks}</p>
+                  </div>
                 </div>
-                <h3 className="font-extrabold text-base tracking-tight">Alex Rivera</h3>
-                <p className="text-xs text-white/60 font-medium">Digital Creator & Educator</p>
-              </div>
-
-              {/* Sample Organic Link Buttons */}
-              <div className="space-y-2.5 my-4">
-                <div className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold transition-colors">
-                  📚 Read Free 2026 Growth Playbook
-                </div>
-                <div className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold transition-colors">
-                  🎙️ Listen to Weekly Masterclass
-                </div>
-                <div className="p-3 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-xs font-black shadow-md">
-                  🚀 Join 1-on-1 Mentorship (3 Spots)
-                </div>
-              </div>
-
-              <div className="text-[10px] text-white/40 tracking-widest font-bold uppercase">
-                by-smartlink.com/alex
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Social Proof Badges */}
-          <div className="mt-8 flex items-center justify-center gap-6 text-white/70 text-xs font-semibold">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span>10,000+ Creators</span>
+          {/* Bottom — headline + review */}
+          <div>
+            <div className="mb-5 p-4 rounded-2xl bg-black/50 backdrop-blur-md border border-white/10">
+              <p className="text-white/90 text-sm font-medium italic leading-relaxed">
+                "I replaced 6 different tools with SmartLink. My link-in-bio now earns more than my merch store."
+              </p>
+              <div className="flex items-center gap-2.5 mt-3">
+                <img
+                  src="/images/creators/creator_yellow_genz.jpg"
+                  alt="Creator"
+                  className="w-8 h-8 rounded-full object-cover object-top ring-2 ring-amber-400/60"
+                />
+                <div>
+                  <p className="text-white text-xs font-extrabold">Zoe K.</p>
+                  <p className="text-white/50 text-[10px]">Gen-Z Creator · 92K followers</p>
+                </div>
+                <div className="ml-auto flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-amber-400 text-xs">★</span>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-violet-400"></span>
-              <span>100% Free Plan</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
-              <span>Instant AI Pages</span>
-            </div>
+
+            <h2 className="text-white text-3xl font-black tracking-tight leading-tight">
+              Everything in one<br />
+              <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                smart link.
+              </span>
+            </h2>
+            <p className="text-white/50 text-sm mt-2 font-medium">
+              Bio page, link tracking, payments, and analytics — all free to start.
+            </p>
           </div>
         </div>
       </div>
