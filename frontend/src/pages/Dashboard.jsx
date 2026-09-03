@@ -216,7 +216,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+  return (
+    <div className="min-h-screen bg-[#FBFBFA] dark:bg-[#0B0F19] text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-20">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
@@ -225,10 +226,10 @@ export default function Dashboard() {
         <DowngradeNotice />
 
         {/* Affiliate Banner */}
-        <div className="mb-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-emerald-500/20 relative overflow-hidden mt-6">
+        <div className="mb-8 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-500/20 relative overflow-hidden mt-6">
           <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
           <div className="flex items-center gap-4 relative z-10">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center flex-shrink-0">
               <DollarSign className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -240,27 +241,33 @@ export default function Dashboard() {
             href="https://smart-link-api.lemonsqueezy.com/affiliates"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-3 bg-white text-teal-600 hover:bg-emerald-50 rounded-xl font-bold transition-colors whitespace-nowrap w-full sm:w-auto text-center shadow-sm relative z-10"
+            className="px-6 py-3 bg-white text-teal-700 hover:bg-emerald-50 rounded-2xl font-bold transition-all whitespace-nowrap w-full sm:w-auto text-center shadow-md relative z-10 tactile-press"
           >
             Become an Affiliate
           </a>
         </div>
 
-        {/* Header — human, not corporate */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        {/* Header — warm, human greeting inspired by Image 8 */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
-              Good to see you
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-xs font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+              Good Morning, {user?.name ? user.name.split(' ')[0] : 'Creator'} 👋
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Here's how your links are doing.
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+              Focus • Plan • Execute • Succeed
             </p>
           </div>
           <button
             onClick={() => navigate('/pricing')}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all text-sm group"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-2xl font-bold shadow-lg shadow-violet-600/30 active:scale-95 transition-all text-sm group"
           >
-            <Zap className="w-4 h-4 group-hover:animate-pulse" />
+            <Zap className="w-4 h-4 fill-white group-hover:animate-bounce" />
             Upgrade Plan
           </button>
         </div>
@@ -286,18 +293,18 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 mt-8">
+        {/* Stats Grid - 2 columns on mobile, 4 on desktop (Frosted Glass Cards) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 mt-6">
           {statCards.map((stat, i) => {
             const Icon = stat.icon;
             return (
               <div
                 key={i}
-                className="bg-white dark:bg-gray-800/80 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 dark:border-gray-800"
+                className="bg-white/80 dark:bg-[#0E1322]/80 backdrop-blur-xl rounded-3xl p-5 sm:p-6 shadow-xl dark:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-violet-500/40 transition-all duration-300 border border-gray-200/80 dark:border-white/10 flex flex-col justify-between"
               >
                 <div className="flex justify-between items-start mb-3 sm:mb-4">
-                  <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[stat.color]}`}>
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <div className={`p-3 rounded-2xl ${colorClasses[stat.color]} text-white shadow-md`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   {stat.trend && (
                     <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${stat.trend === 'up'

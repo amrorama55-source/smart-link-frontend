@@ -236,3 +236,39 @@ html {
 .text-pretty {
   text-wrap: pretty;
 }
+
+/* ==========================
+   Tactile Glassmorphism Utilities
+   (Inspired by 14 visual references)
+========================== */
+.glass-pill-light {
+  @apply bg-white/75 backdrop-blur-md border border-white/80 shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:shadow-violet-500/10 hover:bg-white/90 active:scale-[0.98] transition-all duration-200 rounded-full;
+}
+
+.glass-pill-dark {
+  @apply bg-[#0C0F17]/80 backdrop-blur-xl border border-violet-500/30 shadow-[0_0_20px_rgba(124,58,237,0.15)] hover:border-violet-500/50 hover:bg-[#121624]/90 active:scale-[0.98] transition-all duration-200 rounded-full;
+}
+
+.glass-card-light {
+  @apply bg-white/80 backdrop-blur-xl border border-white/90 shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-3xl transition-all duration-300;
+}
+
+.glass-card-dark {
+  @apply bg-[#0B0F19]/80 backdrop-blur-2xl border border-white/10 shadow-[0_10px_40px_rgba(0,0,0,0.4)] rounded-3xl transition-all duration-300;
+}
+
+.glow-halo-violet {
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.25), inset 0 0 15px rgba(124, 58, 237, 0.1);
+}
+
+.glow-halo-cyan {
+  box-shadow: 0 0 40px rgba(6, 182, 212, 0.25), inset 0 0 15px rgba(6, 182, 212, 0.1);
+}
+
+.glow-halo-amber {
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.25), inset 0 0 15px rgba(245, 158, 11, 0.1);
+}
+
+.tactile-press {
+  @apply active:scale-[0.97] transition-transform duration-150 ease-out;
+}

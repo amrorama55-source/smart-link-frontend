@@ -205,16 +205,16 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className={`relative flex flex-col rounded-3xl border transition-all duration-300 ${
+          className={`relative flex flex-col rounded-3xl backdrop-blur-xl transition-all duration-300 ${
             isPro 
-              ? 'bg-blue-600/5 dark:bg-blue-600/10 border-blue-500/40 shadow-2xl shadow-blue-500/20 scale-105' 
-              : 'bg-white dark:bg-gray-900/60 border-gray-200 dark:border-gray-800 shadow-xl dark:shadow-none hover:border-gray-300 dark:hover:border-gray-700'
+              ? 'bg-gradient-to-b from-violet-600/15 via-[#0F1424]/90 to-[#0B0F19] dark:from-violet-600/20 dark:to-[#0B0F19] border-2 border-violet-500/50 shadow-[0_0_50px_rgba(124,58,237,0.25)] scale-105 z-10' 
+              : 'bg-white/80 dark:bg-[#0E1322]/80 border border-gray-200 dark:border-white/10 shadow-xl dark:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-violet-500/30'
           }`}
         >
           {isPro && (
             <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg whitespace-nowrap">
-                ⭐ Most Popular
+              <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 text-white px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-violet-500/40 whitespace-nowrap flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300" /> Most Popular
               </span>
             </div>
           )}
@@ -222,27 +222,29 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
           <div className="p-8 flex flex-col h-full">
             {/* Header */}
             <div className="mb-6">
-              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-2">{plan.name}</h3>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">{plan.name}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{plan.description}</p>
             </div>
 
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black text-gray-900 dark:text-white">
+                <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tight">
                   {isYearly ? plan.price.yearly : plan.price.monthly}
                 </span>
                 {plan.price.monthly !== '$0' && (
-                  <span className="text-sm font-medium text-gray-500 uppercase tracking-widest">/ month</span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">/ month</span>
                 )}
               </div>
               {isYearly && plan.price.monthly !== '$0' && (
-                <p className="text-xs font-bold text-green-600 dark:text-green-400 mt-1">Billed annually — Save 15%</p>
+                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1.5 flex items-center gap-1">
+                  <CheckCircle className="w-3.5 h-3.5" /> Billed annually — Save 15%
+                </p>
               )}
               {savings && (
-                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1">
-                  <TrendingDown className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
-                  <span className="text-xs font-bold text-green-600 dark:text-green-400">${savings}/mo cheaper than Voluum</span>
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1">
+                  <TrendingDown className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">${savings}/mo cheaper than Voluum</span>
                 </div>
               )}
             </div>
@@ -250,24 +252,24 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
             {/* CTA */}
             <button
               onClick={() => handleCheckout(plan, isYearly)}
-              className={`w-full py-4 rounded-xl font-black text-base transition-all flex items-center justify-center gap-2 mb-6 ${
+              className={`w-full py-4 rounded-2xl font-extrabold text-base transition-all duration-200 flex items-center justify-center gap-2 mb-6 tactile-press ${
                 isPro
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-600/30'
-                  : 'bg-gray-900 dark:bg-gray-800 text-white hover:bg-gray-800 dark:hover:bg-gray-700 border border-gray-800 dark:border-gray-700'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-600/30'
+                  : 'bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 border border-gray-800 dark:border-white/15'
               }`}
             >
               {plan.id === 'free' ? 'Get Started Free' : plan.cta}
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <div className="h-px bg-gray-200 dark:bg-gray-800 w-full mb-6" />
+            <div className="h-px bg-gray-200 dark:bg-gray-800/80 w-full mb-6" />
 
             {/* Features */}
-            <ul className="space-y-3 flex-1">
+            <ul className="space-y-3.5 flex-1">
               {plan.features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isPro ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500'}`} />
-                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">{feature}</span>
+                  <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isPro ? 'text-violet-500 dark:text-violet-400' : 'text-emerald-500'}`} />
+                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-snug">{feature}</span>
                 </li>
               ))}
             </ul>

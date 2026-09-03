@@ -799,30 +799,36 @@ const updatePixel = (index, field, value) => {
 
   // Main Render
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-[#FBFBFA] dark:bg-[#0B0F19] text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-20">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 mb-20 md:mb-0">
         
-        {/* Header — clear, not corporate */}
-        <div className="mb-6 sm:mb-8">
+        {/* Header — clear, human, tactile */}
+        <div className="mb-8">
           <div className="flex flex-col gap-3 sm:gap-4">
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
-                  Your links
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-pulse"></span>
+                  <span className="text-xs font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+                    Smart Link Management
+                  </span>
+                </div>
+                <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+                  Your Links
                 </h1>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-                  One place for all your short links
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+                  One place for all your intelligent tracking links
                 </p>
               </div>
               <button
                 type="button"
                 onClick={openCreateModal}
-                className="w-full sm:w-auto min-h-[44px] px-4 sm:px-6 py-2.5 sm:py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl text-sm sm:text-base active:scale-[0.98] touch-manipulation"
+                className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-2xl font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-600/30 text-base active:scale-[0.98] touch-manipulation tactile-press"
               >
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span>New link</span>
+                <Plus className="w-5 h-5 stroke-[2.5]" />
+                <span>+ Create New Link</span>
               </button>
             </div>
           </div>
