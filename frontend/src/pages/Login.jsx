@@ -276,72 +276,95 @@ export default function Login() {
 
         {/* Footer info */}
         <div className="text-center text-xs text-gray-400 dark:text-gray-600">
-          Protected by enterprise security & bot detection. By signing in, you agree to our Terms.
+          Protected by enterprise security &amp; bot detection. By signing in, you agree to our Terms.
         </div>
       </div>
 
-      {/* ─── RIGHT COLUMN: The Warm, Human Visual Showcase (Desktop) ─── */}
-      <div className="hidden lg:flex lg:w-[52%] bg-gradient-to-br from-[#1E1238] via-[#120B24] to-[#0A0515] p-12 relative overflow-hidden items-center justify-center">
-        {/* Soft Ambient Light Glows */}
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-violet-600/30 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-fuchsia-600/25 rounded-full blur-3xl pointer-events-none"></div>
+      {/* ─── RIGHT COLUMN: Immersive Creator Showcase ─── */}
+      <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden items-stretch">
+        {/* Full-bleed background image — the dramatic red/neon creator */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/creators/creator_red_artist.jpg')" }}
+        />
+        {/* Deep overlay so text is readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
+        {/* Left-side edge fade for seamless blend with form */}
+        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0B0F19] to-transparent" />
 
-        <div className="relative z-10 max-w-lg w-full">
-          {/* Floating Feature Card Top */}
-          <div className="mb-6 p-4 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/15 text-white shadow-2xl flex items-center gap-4 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-400 text-xl font-black">
-              ⚡
-            </div>
-            <div>
-              <p className="text-xs text-white/60 font-semibold uppercase tracking-wider">Live Conversion Rate</p>
-              <p className="text-lg font-black tracking-tight">+42.8% vs Standard Links</p>
-            </div>
-          </div>
+        {/* Subtle ambient glow */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Floating Phone Visual (Human Bio Showcase) */}
-          <div className="mx-auto w-[320px] rounded-[3rem] bg-gradient-to-b from-gray-900 to-black p-3.5 border-4 border-white/20 shadow-2xl shadow-violet-950/80 relative">
-            {/* Dynamic Island */}
-            <div className="absolute top-6 left-1/2 -translate-x-1/2 w-28 h-5 bg-black rounded-full z-20 flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-violet-600/80 ml-auto mr-3"></div>
-            </div>
+        {/* Content — pinned to bottom-left */}
+        <div className="relative z-10 flex flex-col justify-between h-full p-12 w-full">
 
-            {/* Inner Screen */}
-            <div className="rounded-[2.4rem] bg-gradient-to-b from-[#2A1B4E] via-[#1D1236] to-[#120A24] p-6 pt-12 text-center text-white min-h-[440px] flex flex-col justify-between">
-              <div>
-                <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-violet-500 mx-auto mb-3 shadow-lg">
-                  <img
-                    src="/images/creators/creator_neon_cyber.jpg"
-                    alt="Creator Showcase"
-                    className="w-full h-full rounded-full object-cover object-top"
-                  />
-                </div>
-                <h3 className="font-extrabold text-base tracking-tight">Sarah Jenkins</h3>
-                <p className="text-xs text-white/60 font-medium">Filmmaker & Content Strategist</p>
-              </div>
-
-              {/* Sample Organic Link Buttons */}
-              <div className="space-y-2.5 my-4">
-                <div className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold transition-colors">
-                  🎬 Watch Latest Short Film
-                </div>
-                <div className="p-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-bold transition-colors">
-                  🎧 Listen to Podcast Episode 42
-                </div>
-                <div className="p-3 rounded-2xl bg-gradient-to-r from-violet-600 to-fuchsia-600 text-xs font-black shadow-md">
-                  ☕ Join Private Community ($5/mo)
-                </div>
-              </div>
-
-              <div className="text-[10px] text-white/40 tracking-widest font-bold uppercase">
-                by-smartlink.com/sarah
-              </div>
+          {/* Top — floating stat pill */}
+          <div className="flex justify-end">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white shadow-lg">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse flex-shrink-0" />
+              <span className="text-xs font-bold tracking-wide">42.8% higher conversions vs standard links</span>
             </div>
           </div>
 
-          {/* Warm Human Testimonial Quote */}
-          <div className="mt-8 text-center text-white/70 text-sm italic font-medium">
-            "Switching to Smart Link transformed how my audience connects with my content."
-            <div className="text-xs text-white/50 not-italic font-bold mt-1">— Sarah J., 250k+ Followers</div>
+          {/* Middle — Creator stacked mini-cards */}
+          <div className="flex flex-col gap-3">
+            {/* Scrolling creator proof row */}
+            <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-1">Creators using SmartLink</p>
+            <div className="flex items-center gap-3">
+              {[
+                { img: '/images/creators/creator_neon_cyber.jpg', name: 'Alex M.', handle: '@alexmcreates', followers: '180K' },
+                { img: '/images/creators/creator_yellow_genz.jpg', name: 'Zoe K.', handle: '@zoekstyle', followers: '92K' },
+                { img: '/images/creators/creator_smile_warm.jpg', name: 'Maya R.', handle: '@mayar', followers: '440K' },
+              ].map((c, i) => (
+                <div
+                  key={i}
+                  className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/15 transition-colors"
+                >
+                  <img src={c.img} alt={c.name} className="w-9 h-9 rounded-full object-cover object-top flex-shrink-0 ring-2 ring-white/20" />
+                  <div className="min-w-0">
+                    <p className="text-white text-xs font-bold truncate">{c.name}</p>
+                    <p className="text-white/50 text-[10px] font-medium">{c.followers} followers</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom — Main headline + quote */}
+          <div>
+            {/* Testimonial quote */}
+            <div className="mb-5 p-4 rounded-2xl bg-black/50 backdrop-blur-md border border-white/10">
+              <p className="text-white/90 text-sm font-medium italic leading-relaxed">
+                "Smart Link turned my bio into a full storefront. I went from 2% to 18% click-through in one week."
+              </p>
+              <div className="flex items-center gap-2.5 mt-3">
+                <img
+                  src="/images/creators/creator_neon_cyber.jpg"
+                  alt="Creator"
+                  className="w-8 h-8 rounded-full object-cover object-top ring-2 ring-violet-500/60"
+                />
+                <div>
+                  <p className="text-white text-xs font-extrabold">Alex M.</p>
+                  <p className="text-white/50 text-[10px]">Content Creator · 180K followers</p>
+                </div>
+                <div className="ml-auto flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-amber-400 text-xs">★</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Main CTA tagline */}
+            <h2 className="text-white text-3xl font-black tracking-tight leading-tight">
+              Your audience is<br />
+              <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
+                one link away.
+              </span>
+            </h2>
+            <p className="text-white/50 text-sm mt-2 font-medium">
+              Join 12,000+ creators already earning with their SmartLink.
+            </p>
           </div>
         </div>
       </div>
