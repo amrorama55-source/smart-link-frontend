@@ -397,44 +397,45 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Middle — 3 creator cards */}
-          <div className="flex flex-col gap-3">
-            <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-1">Recently joined</p>
-            <div className="flex items-center gap-3">
-              {[
-                { img: '/images/creators/creator_neon_cyber.jpg', name: 'Alex M.', role: 'Photographer', clicks: '12K clicks/mo' },
-                { img: '/images/creators/creator_red_artist.jpg', name: 'Lina K.', role: 'Musician', clicks: '38K clicks/mo' },
-                { img: '/images/creators/creator_smile_warm.jpg', name: 'Maya R.', role: 'Educator', clicks: '91K clicks/mo' },
-              ].map((c, i) => (
-                <div
-                  key={i}
-                  className="flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 hover:bg-white/15 transition-colors"
-                >
-                  <img src={c.img} alt={c.name} className="w-9 h-9 rounded-full object-cover object-top flex-shrink-0 ring-2 ring-white/20" />
-                  <div className="min-w-0">
-                    <p className="text-white text-xs font-bold truncate">{c.name}</p>
-                    <p className="text-white/50 text-[10px] font-medium truncate">{c.clicks}</p>
+          {/* Bottom Grouped Showcase Container — FIXED: NO OVERLAPPING WITH FACE OR TEXT */}
+          <div className="mt-auto space-y-4">
+            {/* Creator Social Proof Glass Card */}
+            <div className="p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl">
+              <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2.5">Recently joined creators</p>
+              <div className="grid grid-cols-3 gap-2.5">
+                {[
+                  { img: '/images/creators/creator_neon_cyber.jpg', name: 'Alex M.', clicks: '12K/mo' },
+                  { img: '/images/creators/creator_red_artist.jpg', name: 'Lina K.', clicks: '38K/mo' },
+                  { img: '/images/creators/creator_smile_warm.jpg', name: 'Maya R.', clicks: '91K/mo' },
+                ].map((c, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 p-2 rounded-xl bg-white/10 border border-white/10 hover:bg-white/15 transition-colors min-w-0"
+                  >
+                    <img src={c.img} alt={c.name} className="w-8 h-8 rounded-full object-cover object-top flex-shrink-0 ring-2 ring-white/20" />
+                    <div className="min-w-0">
+                      <p className="text-white text-xs font-bold truncate leading-tight">{c.name}</p>
+                      <p className="text-white/50 text-[9px] font-medium truncate">{c.clicks}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Bottom — headline + review */}
-          <div>
-            <div className="mb-5 p-4 rounded-2xl bg-black/50 backdrop-blur-md border border-white/10">
-              <p className="text-white/90 text-sm font-medium italic leading-relaxed">
+            {/* Testimonial quote */}
+            <div className="p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl">
+              <p className="text-white/90 text-xs font-medium italic leading-relaxed">
                 "I replaced 6 different tools with SmartLink. My link-in-bio now earns more than my merch store."
               </p>
-              <div className="flex items-center gap-2.5 mt-3">
+              <div className="flex items-center gap-2.5 mt-2.5">
                 <img
                   src="/images/creators/creator_yellow_genz.jpg"
                   alt="Creator"
-                  className="w-8 h-8 rounded-full object-cover object-top ring-2 ring-amber-400/60"
+                  className="w-7 h-7 rounded-full object-cover object-top ring-2 ring-amber-400/60"
                 />
                 <div>
                   <p className="text-white text-xs font-extrabold">Zoe K.</p>
-                  <p className="text-white/50 text-[10px]">Gen-Z Creator · 92K followers</p>
+                  <p className="text-white/50 text-[9px]">Gen-Z Creator · 92K followers</p>
                 </div>
                 <div className="ml-auto flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
@@ -444,15 +445,18 @@ export default function Register() {
               </div>
             </div>
 
-            <h2 className="text-white text-3xl font-black tracking-tight leading-tight">
-              Everything in one<br />
-              <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                smart link.
-              </span>
-            </h2>
-            <p className="text-white/50 text-sm mt-2 font-medium">
-              Bio page, link tracking, payments, and analytics — all free to start.
-            </p>
+            {/* Main CTA tagline */}
+            <div>
+              <h2 className="text-white text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+                Everything in one<br />
+                <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                  smart link.
+                </span>
+              </h2>
+              <p className="text-white/50 text-xs mt-1 font-medium">
+                Bio page, link tracking, payments, and analytics — all free to start.
+              </p>
+            </div>
           </div>
         </div>
       </div>
