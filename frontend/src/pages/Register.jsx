@@ -404,9 +404,9 @@ export default function Register() {
               <div>
                 <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-400 via-rose-500 to-violet-500 mx-auto mb-3 shadow-lg">
                   <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
-                    alt="Alex"
-                    className="w-full h-full rounded-full object-cover"
+                    src="/images/creators/creator_yellow_genz.jpg"
+                    alt="Alex Rivera"
+                    className="w-full h-full rounded-full object-cover object-top"
                   />
                 </div>
                 <h3 className="font-extrabold text-base tracking-tight">Alex Rivera</h3>

@@ -233,3 +233,10 @@ export const themes = {
     }
 };
 
+export const PRESET_AVATARS = [
+  { id: 'neon_cyber', name: 'Cyber Studio (Neon Cyan)', url: '/images/creators/creator_neon_cyber.jpg' },
+  { id: 'red_artist', name: 'Dramatic Red (Artist)', url: '/images/creators/creator_red_artist.jpg' },
+  { id: 'yellow_genz', name: 'Pop Yellow (Gen Z)', url: '/images/creators/creator_yellow_genz.jpg' },
+  { id: 'smile_warm', name: 'Warm Human (Creator)', url: '/images/creators/creator_smile_warm.jpg' }
+];
+
