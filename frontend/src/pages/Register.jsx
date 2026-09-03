@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastProvider';
 import {
   Eye, EyeOff, Mail, Lock, ArrowRight,
-  CheckCircle, Check, Shield, Zap, Link2
+  CheckCircle, Check, Shield, Zap, Link2, User
 } from 'lucide-react';
 import api from '../services/api';
 import { API_URL } from '../config';
@@ -201,20 +201,19 @@ export default function Register() {
             <span>Continue with Google</span>
           </button>
 
-          {/* Divider */}
-          <div className="relative my-6 flex items-center justify-center">
-            <div className="w-full border-t border-gray-200 dark:border-gray-800"></div>
-            <span className={`absolute px-3 text-xs font-semibold uppercase tracking-wider ${
-              isDark ? 'bg-[#0B0F19] text-gray-500' : 'bg-[#FAF9F5] text-gray-400'
-            }`}>
+          {/* Split Divider — FIXED: NO LINE OVER TEXT */}
+          <div className="flex items-center gap-3 my-5">
+            <div className="flex-1 border-t border-white/10" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 whitespace-nowrap">
               or sign up with email
             </span>
+            <div className="flex-1 border-t border-white/10" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* General Error */}
             {error && (
-              <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm font-medium flex items-center gap-2">
+              <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-center gap-2">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
@@ -222,49 +221,47 @@ export default function Register() {
 
             {/* Full Name */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                 Full Name
               </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-                autoComplete="name"
-                className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
-                  isDark
-                    ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
-                    : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
-                } ${errors.name ? 'border-red-500' : ''}`}
-              />
+              <div className="relative flex items-center">
+                <User className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="John Doe"
+                  autoComplete="name"
+                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.name ? 'border-red-500' : ''}`}
+                />
+              </div>
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
             </div>
 
             {/* Email Address */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                 Email Address
               </label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="you@example.com"
-                autoComplete="email"
-                className={`w-full px-4 py-3.5 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
-                  isDark
-                    ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
-                    : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
-                } ${errors.email ? 'border-red-500' : ''}`}
-              />
+              <div className="relative flex items-center">
+                <Mail className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.email ? 'border-red-500' : ''}`}
+                />
+              </div>
               {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                 Password
               </label>
               <div className="relative">
@@ -275,18 +272,14 @@ export default function Register() {
                   onChange={handleChange}
                   placeholder="Min. 8 characters"
                   autoComplete="new-password"
-                  className={`w-full px-4 py-3.5 pr-12 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
-                    isDark
-                      ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
-                      : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
-                  } ${errors.password ? 'border-red-500' : ''}`}
+                  className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.password ? 'border-red-500' : ''}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {formData.password && (
@@ -296,13 +289,13 @@ export default function Register() {
                       <div
                         key={lvl}
                         className={`h-1.5 flex-1 rounded-full transition-all ${
-                          lvl <= passwordStrength.strength ? passwordStrength.color : isDark ? 'bg-gray-800' : 'bg-gray-200'
+                          lvl <= passwordStrength.strength ? passwordStrength.color : 'bg-gray-800'
                         }`}
                       />
                     ))}
                   </div>
                   <p className="text-[11px] font-semibold text-gray-500">
-                    Strength: <span className="font-bold">{passwordStrength.label}</span>
+                    Strength: <span className="font-bold text-gray-300">{passwordStrength.label}</span>
                   </p>
                 </div>
               )}
@@ -311,7 +304,7 @@ export default function Register() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider mb-1.5 text-gray-600 dark:text-gray-400">
+              <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                 Confirm Password
               </label>
               <div className="relative">
@@ -322,18 +315,14 @@ export default function Register() {
                   onChange={handleChange}
                   placeholder="Repeat password"
                   autoComplete="new-password"
-                  className={`w-full px-4 py-3.5 pr-12 rounded-2xl border text-sm font-medium transition-all duration-200 outline-none ${
-                    isDark
-                      ? 'bg-gray-900/60 border-gray-800 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10'
-                      : 'bg-white border-gray-200 text-gray-900 placeholder-gray-400 focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 shadow-sm'
-                  } ${errors.confirm ? 'border-red-500' : ''}`}
+                  className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all ${errors.confirm ? 'border-red-500' : ''}`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
-                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
               {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
@@ -344,11 +333,11 @@ export default function Register() {
               type="submit"
               disabled={loading}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 px-6 rounded-2xl font-black text-sm text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:opacity-95 shadow-lg shadow-violet-600/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
+              className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-violet-600 via-indigo-600 to-violet-700 hover:opacity-95 shadow-lg shadow-violet-600/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
             >
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span>Creating your account...</span>
                 </>
               ) : (
@@ -422,20 +411,20 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Testimonial quote */}
-            <div className="p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl">
-              <p className="text-white/90 text-xs font-medium italic leading-relaxed">
+            {/* Testimonial quote — FIXED: GENEROUS SPACING BETWEEN QUOTE AND AVATAR */}
+            <div className="p-4.5 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/15 shadow-2xl">
+              <p className="text-white/90 text-xs font-medium italic leading-relaxed mb-3.5">
                 "I replaced 6 different tools with SmartLink. My link-in-bio now earns more than my merch store."
               </p>
-              <div className="flex items-center gap-2.5 mt-2.5">
+              <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                 <img
                   src="/images/creators/creator_yellow_genz.jpg"
                   alt="Creator"
-                  className="w-7 h-7 rounded-full object-cover object-top ring-2 ring-amber-400/60"
+                  className="w-8 h-8 rounded-full object-cover object-top ring-2 ring-amber-400/60 flex-shrink-0"
                 />
                 <div>
-                  <p className="text-white text-xs font-extrabold">Zoe K.</p>
-                  <p className="text-white/50 text-[9px]">Gen-Z Creator · 92K followers</p>
+                  <p className="text-white text-xs font-extrabold leading-tight">Zoe K.</p>
+                  <p className="text-white/50 text-[9px] font-medium">Gen-Z Creator · 92K followers</p>
                 </div>
                 <div className="ml-auto flex gap-0.5">
                   {[...Array(5)].map((_, i) => (

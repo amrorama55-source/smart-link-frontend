@@ -169,12 +169,13 @@ export default function Login() {
               <span className="text-xs font-bold">Continue with Google</span>
             </button>
 
-            {/* Clean Organic Divider */}
-            <div className="relative mb-5 flex items-center justify-center">
-              <div className="w-full border-t border-white/10"></div>
-              <span className="absolute px-3 text-[10px] font-semibold uppercase tracking-widest bg-[#0B0F19] text-gray-400">
+            {/* Clean Organic Split Divider — FIXED: NO LINE OVER TEXT */}
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 border-t border-white/10" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 whitespace-nowrap">
                 or sign in with email
               </span>
+              <div className="flex-1 border-t border-white/10" />
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -199,15 +200,15 @@ export default function Login() {
                 <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                   Email Address
                 </label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <div className="relative flex items-center">
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
                   <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border text-xs font-medium bg-black/40 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all"
+                    className="w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -231,7 +232,7 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full px-4 py-3 rounded-xl border text-xs font-medium bg-black/40 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all"
+                    className="w-full px-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -326,20 +327,20 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Testimonial quote */}
-            <div className="p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl">
-              <p className="text-white/90 text-xs font-medium italic leading-relaxed">
+            {/* Testimonial quote — FIXED: GENEROUS SPACING BETWEEN QUOTE AND AVATAR */}
+            <div className="p-4.5 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/15 shadow-2xl">
+              <p className="text-white/90 text-xs font-medium italic leading-relaxed mb-3.5">
                 "Smart Link turned my bio into a full storefront. I went from 2% to 18% click-through in one week."
               </p>
-              <div className="flex items-center gap-2.5 mt-2.5">
+              <div className="flex items-center gap-3 pt-3 border-t border-white/10">
                 <img
                   src="/images/creators/creator_neon_cyber.jpg"
                   alt="Creator"
-                  className="w-7 h-7 rounded-full object-cover object-top ring-2 ring-violet-500/60"
+                  className="w-8 h-8 rounded-full object-cover object-top ring-2 ring-violet-500/60 flex-shrink-0"
                 />
                 <div>
-                  <p className="text-white text-xs font-extrabold">Alex M.</p>
-                  <p className="text-white/50 text-[9px]">Content Creator · 180K followers</p>
+                  <p className="text-white text-xs font-extrabold leading-tight">Alex M.</p>
+                  <p className="text-white/50 text-[9px] font-medium">Content Creator · 180K followers</p>
                 </div>
                 <div className="ml-auto flex gap-0.5">
                   {[...Array(5)].map((_, i) => (
