@@ -828,7 +828,7 @@ const updatePixel = (index, field, value) => {
                 className="w-full sm:w-auto min-h-[48px] px-6 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-2xl font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-violet-600/30 text-base active:scale-[0.98] touch-manipulation tactile-press"
               >
                 <Plus className="w-5 h-5 stroke-[2.5]" />
-                <span>+ Create New Link</span>
+                <span>Create New Link</span>
               </button>
             </div>
           </div>

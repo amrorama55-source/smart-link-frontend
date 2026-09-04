@@ -149,11 +149,11 @@ export default function Register() {
         {/* Brand Header */}
         <div className="flex items-center justify-between mb-8 relative z-10">
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-transform duration-200">
-              <Zap className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform duration-200">
+              <Link2 className="w-5 h-5" />
             </div>
             <span className="text-xl font-extrabold tracking-tight text-white">
-              Smart<span className="text-yellow-400">Link</span>
+              Smart<span className="text-blue-400">Link</span>
             </span>
           </Link>
           <Link

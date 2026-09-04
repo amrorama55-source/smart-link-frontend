@@ -533,32 +533,6 @@ export default function BioEditor() {
                     </div>
                     <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
                   </div>
-
-                  {/* Row 2: Sample Creator Photos */}
-                  <div className="border border-dashed border-gray-200 dark:border-gray-700 rounded-2xl p-3">
-                    <p className="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-widest mb-2">Sample Creator Aesthetic</p>
-                    <div className="flex items-center gap-3">
-                      {[
-                        { url: '/images/creators/creator_neon_cyber.jpg', label: 'Cyber Studio' },
-                        { url: '/images/creators/creator_red_artist.jpg', label: 'Red Artist' },
-                        { url: '/images/creators/creator_yellow_genz.jpg', label: 'Gen-Z Pop' },
-                        { url: '/images/creators/creator_smile_warm.jpg', label: 'Warm Creator' }
-                      ].map((preset, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => setBioData({ ...bioData, avatar: preset.url })}
-                          title={preset.label}
-                          className={`w-11 h-11 rounded-full p-0.5 border-2 transition-all hover:scale-110 active:scale-95 ${
-                            bioData.avatar === preset.url ? 'border-violet-500 ring-2 ring-violet-500/30' : 'border-gray-200 dark:border-gray-600 opacity-60 hover:opacity-100'
-                          }`}
-                        >
-                          <img src={preset.url} alt={preset.label} className="w-full h-full rounded-full object-cover object-top" />
-                        </button>
-                      ))}
-                      <span className="text-[10px] text-gray-400 dark:text-gray-500 ml-1">Click to preview</span>
-                    </div>
-                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
