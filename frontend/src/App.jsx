@@ -12,6 +12,7 @@ function RenderTrigger() {
   useEffect(() => {
     // Fire event after a tiny delay to ensure DOM is fully painted
     const timer = setTimeout(() => document.dispatchEvent(new Event('render-event')), 100);
+    import('./utils/webMCP').then(m => m.initWebMCP()).catch(err => console.error('WebMCP init error:', err));
     
     // Silent background pre-warmup to wake up backend container on page load
     try {
