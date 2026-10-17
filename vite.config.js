@@ -4,20 +4,23 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
+    target: 'esnext',
+    minify: 'esbuild',
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom', 'framer-motion', 'lucide-react']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('recharts')) return 'recharts';
+            if (id.includes('framer-motion')) return 'framer-motion';
+            if (id.includes('lucide-react')) return 'lucide';
+            return 'vendor';
+          }
         }
       }
-    },
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
     }
+  },
+  esbuild: {
+    drop: ['console', 'debugger']
   }
 })
 
