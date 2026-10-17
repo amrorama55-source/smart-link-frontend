@@ -4,7 +4,7 @@ import { Zap, ArrowRight, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '../context/ToastProvider';
 
-const TRIAL_DAYS = 7;
+const TRIAL_DAYS = 14;
 
 const TrialBanner = () => {
     const { user } = useAuth();

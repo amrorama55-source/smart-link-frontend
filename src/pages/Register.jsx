@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastProvider';
 import {
   Eye, EyeOff, Mail, Lock, ArrowRight,
-  CheckCircle, Sparkles, Shield, Zap, Link2
+  CheckCircle, Check, Shield, Zap, Link2, User
 } from 'lucide-react';
 import api from '../services/api';
 import { API_URL } from '../config';
@@ -137,138 +137,135 @@ export default function Register() {
   };
 
   return (
-    <div className={`min-h-screen ${isDark
-      ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black'
-      : 'bg-gradient-to-br from-blue-50 via-blue-50 to-indigo-100'
-      } flex items-center justify-center p-4`}>
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+    <div className="min-h-screen flex bg-[#0B0F19] text-gray-100 relative overflow-hidden">
+      {/* ─── LEFT COLUMN: Floating Glassmorphism Signup Form ─── */}
+      <div
+        className="w-full lg:w-[50%] flex flex-col justify-between p-6 sm:p-10 lg:p-14 relative z-10 overflow-y-auto bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/bg/abstract_amber_glow.jpg')" }}
       >
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-              <Zap className="w-6 h-6 text-white" />
+        {/* Dark overlay for rich depth */}
+        <div className="absolute inset-0 bg-[#0B0F19]/75 backdrop-blur-md pointer-events-none" />
+
+        {/* Brand Header */}
+        <div className="flex items-center justify-between mb-8 relative z-10">
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform duration-200">
+              <Link2 className="w-5 h-5" />
             </div>
-            <span className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-              Smart Link
+            <span className="text-xl font-extrabold tracking-tight text-white">
+              Smart<span className="text-blue-400">Link</span>
             </span>
+          </Link>
+          <Link
+            to="/login"
+            className="text-xs sm:text-sm font-semibold text-gray-300 hover:text-white transition-colors"
+          >
+            Already a member? <span className="font-bold text-amber-400 underline underline-offset-4">Sign in</span>
           </Link>
         </div>
 
-        {/* Card */}
-        <div className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'
-          } rounded-3xl shadow-2xl border overflow-hidden`}>
+        {/* Center Floating Glassmorphism Form Card */}
+        <div className="max-w-md w-full mx-auto my-auto relative z-10">
+          <div className="bg-[#0B0F19]/80 backdrop-blur-2xl border border-white/10 rounded-[2.2rem] p-7 sm:p-9 shadow-2xl shadow-black/80 relative overflow-hidden">
+            {/* Ambient inner glow */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-          {/* Trial Banner */}
-          {isTrial && (
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 text-white text-center">
-              <div className="flex items-center justify-center gap-2 mb-1">
-                <Sparkles className="w-5 h-5 text-yellow-300" />
-                <span className="font-black text-lg">14-Day Starter Free Trial</span>
-                <Sparkles className="w-5 h-5 text-yellow-300" />
+            {/* Trial Tag if active */}
+            {isTrial && (
+              <div className="mb-5 p-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white flex items-center justify-between shadow-lg shadow-orange-500/20">
+                <div className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-white flex-shrink-0" />
+                  <span className="text-xs font-black uppercase tracking-wider">14-Day Free Pro Trial</span>
+                </div>
+                <span className="text-[11px] font-medium opacity-90">No credit card</span>
               </div>
-              <p className="text-purple-100 text-sm">Create your account to activate — no credit card needed</p>
-            </div>
-          )}
+            )}
 
-          <div className="p-8">
-            <h1 className={`text-2xl font-extrabold mb-1 text-center ${isDark ? 'text-white' : 'text-gray-900'}`}>
-              {isTrial ? 'Create your account' : 'Get started for free'}
-            </h1>
-            <p className={`text-sm text-center mb-6 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-              {isTrial
-                ? 'Your trial activates automatically after signup'
-                : 'Join 10,000+ creators using Smart Link'}
-            </p>
-
-            {/* Google Signup */}
             <div className="mb-6">
-              <button
-                onClick={handleGoogleSignup}
-                type="button"
-                className={`w-full flex items-center justify-center gap-3 px-4 py-3 border rounded-xl transition-colors ${isDark
-                  ? 'border-gray-600 hover:bg-gray-700 text-white'
-                  : 'border-gray-300 hover:bg-gray-50 text-gray-700'
-                  }`}
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.3-2.3H12v4.4h6.1c-.3 1.5-1.2 2.8-2.6 3.6v3h4.2c2.4-2.2 3.8-5.4 3.8-9.7z" />
-                  <path fill="#34A853" d="M12 23c3.2 0 5.9-1 7.9-2.7l-4.2-3c-1.1.7-2.5 1.1-3.7 1.1-2.8 0-5.1-1.9-5.9-4.4H2.6v2.8C4.6 20.7 8 23 12 23z" />
-                  <path fill="#FBBC05" d="M6.1 14.7c-.3-1-.3-2.1 0-3.1V8.8H2.6c-.7 1.3-1 2.7-1 4.2s.3 2.9 1 4.2l3.5-2.5z" />
-                  <path fill="#EA4335" d="M12 4.6c1.8 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 8 0 4.6 2.3 2.6 5.8l3.5 2.8c.8-2.5 3.1-4.4 5.9-4.4z" />
-                </svg>
-                <span className="font-medium">Continue with Google</span>
-              </button>
+              <h1 className="text-3xl font-black tracking-tight text-white mb-1.5">
+                {isTrial ? 'Start your free trial' : 'Create your account'}
+              </h1>
+              <p className="text-xs text-gray-400">
+                One smart link to connect your audience, track clicks, and grow your revenue.
+              </p>
             </div>
 
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className={`w-full border-t ${isDark ? 'border-gray-700' : 'border-gray-300'}`}></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className={`px-2 ${isDark ? 'bg-gray-800 text-gray-400' : 'bg-white text-gray-500'}`}>
-                  Or sign up with email
-                </span>
-              </div>
+            {/* Google Signup Button */}
+            <button
+              onClick={handleGoogleSignup}
+              type="button"
+              className="w-full py-3.5 px-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-200 bg-white/10 hover:bg-white/15 border border-white/15 text-white active:scale-[0.99] shadow-sm mb-5"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.3-2.3H12v4.4h6.1c-.3 1.5-1.2 2.8-2.6 3.6v3h4.2c2.4-2.2 3.8-5.4 3.8-9.7z" />
+                <path fill="#34A853" d="M12 23c3.2 0 5.9-1 7.9-2.7l-4.2-3c-1.1.7-2.5 1.1-3.7 1.1-2.8 0-5.1-1.9-5.9-4.4H2.6v2.8C4.6 20.7 8 23 12 23z" />
+                <path fill="#FBBC05" d="M6.1 14.7c-.3-1-.3-2.1 0-3.1V8.8H2.6c-.7 1.3-1 2.7-1 4.2s.3 2.9 1 4.2l3.5-2.5z" />
+                <path fill="#EA4335" d="M12 4.6c1.8 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.1 15.2 0 12 0 8 0 4.6 2.3 2.6 5.8l3.5 2.8c.8-2.5 3.1-4.4 5.9-4.4z" />
+              </svg>
+              <span className="text-xs font-bold">Continue with Google</span>
+            </button>
+
+            {/* Split Divider — FIXED: NO LINE OVER TEXT */}
+            <div className="flex items-center gap-3 my-5">
+              <div className="flex-1 border-t border-white/10" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 whitespace-nowrap">
+                or sign up with email
+              </span>
+              <div className="flex-1 border-t border-white/10" />
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* General Error */}
               {error && (
-                <div className={`border rounded-xl p-4 text-sm ${isDark ? 'bg-red-900/30 border-red-800 text-red-300' : 'bg-red-50 border-red-200 text-red-800'
-                  }`}>
-                  {error}
+                <div className="p-3.5 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-medium flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{error}</span>
                 </div>
               )}
 
               {/* Full Name */}
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                   Full Name
                 </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="John Doe"
-                  autoComplete="name"
-                  className={`w-full px-4 py-3 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                    } ${errors.name ? 'border-red-400' : ''}`}
-                />
+                <div className="relative flex items-center">
+                  <User className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="John Doe"
+                    autoComplete="name"
+                    className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.name ? 'border-red-500' : ''}`}
+                  />
+                </div>
                 {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
               </div>
 
-              {/* Email */}
+              {/* Email Address */}
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                   Email Address
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  className={`w-full px-4 py-3 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                    ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                    : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                    } ${errors.email ? 'border-red-400' : ''}`}
-                />
+                <div className="relative flex items-center">
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-4 pointer-events-none" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="you@example.com"
+                    autoComplete="email"
+                    className={`w-full pl-11 pr-4 py-3.5 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.email ? 'border-red-500' : ''}`}
+                  />
+                </div>
                 {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
               </div>
 
               {/* Password */}
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                   Password
                 </label>
                 <div className="relative">
@@ -279,36 +276,30 @@ export default function Register() {
                     onChange={handleChange}
                     placeholder="Min. 8 characters"
                     autoComplete="new-password"
-                    className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                      : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                      } ${errors.password ? 'border-red-400' : ''}`}
+                    className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.password ? 'border-red-500' : ''}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] flex items-center justify-center ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
-                      }`}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {/* Password Strength */}
                 {formData.password && (
                   <div className="mt-2 space-y-1">
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map((level) => (
+                    <div className="flex gap-1.5">
+                      {[1, 2, 3, 4, 5].map((lvl) => (
                         <div
-                          key={level}
-                          className={`h-1 flex-1 rounded-full transition-colors ${level <= passwordStrength.strength
-                            ? passwordStrength.color
-                            : isDark ? 'bg-gray-700' : 'bg-gray-200'
-                            }`}
+                          key={lvl}
+                          className={`h-1.5 flex-1 rounded-full transition-all ${
+                            lvl <= passwordStrength.strength ? passwordStrength.color : 'bg-gray-800'
+                          }`}
                         />
                       ))}
                     </div>
-                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                      Password strength: <span className="font-medium">{passwordStrength.label}</span>
+                    <p className="text-[11px] font-semibold text-gray-500">
+                      Strength: <span className="font-bold text-gray-300">{passwordStrength.label}</span>
                     </p>
                   </div>
                 )}
@@ -317,7 +308,7 @@ export default function Register() {
 
               {/* Confirm Password */}
               <div>
-                <label className={`block text-sm font-semibold mb-1.5 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
+                <label className="block text-[10px] font-bold uppercase tracking-widest mb-1.5 text-gray-400">
                   Confirm Password
                 </label>
                 <div className="relative">
@@ -326,98 +317,144 @@ export default function Register() {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Repeat your password"
+                    placeholder="Repeat password"
                     autoComplete="new-password"
-                    className={`w-full px-4 py-3 pr-12 border-2 rounded-xl text-sm transition-colors min-h-[48px] focus:outline-none ${isDark
-                      ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500'
-                      : 'bg-gray-50 border-gray-200 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:bg-white'
-                      } ${errors.confirm ? 'border-red-400' : ''}`}
+                    className={`w-full px-4 py-3.5 pr-12 rounded-xl border text-xs font-medium bg-black/50 border-white/10 text-white placeholder-gray-500 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 outline-none transition-all ${errors.confirm ? 'border-red-500' : ''}`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className={`absolute right-3 top-1/2 -translate-y-1/2 min-w-[40px] min-h-[40px] flex items-center justify-center ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600'
-                      }`}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                   >
-                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {errors.confirm && <p className="mt-1 text-xs text-red-500">{errors.confirm}</p>}
               </div>
 
-              {/* Trial Features Preview */}
-              {isTrial && (
-                <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
-                  <p className="text-xs font-black text-purple-700 dark:text-purple-300 uppercase tracking-widest mb-3">
-                    🎯 You'll get instant access to:
-                  </p>
-                  <div className="space-y-2">
-                    {[
-                      'Unlimited Smart Links',
-                      'Custom Domains',
-                      'A/B Testing & Smart Targeting',
-                      'Full API Access',
-                      'Advanced Analytics Suite'
-                    ].map((feature) => (
-                      <div key={feature} className="flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                        <span className="text-xs font-semibold text-purple-700 dark:text-purple-300">{feature}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Submit */}
+              {/* Submit Button */}
               <motion.button
                 type="submit"
                 disabled={loading}
-                whileTap={{ scale: 0.97 }}
-                className={`w-full min-h-[52px] py-3.5 rounded-2xl font-black text-base shadow-xl flex items-center justify-center gap-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed ${isTrial
-                  ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-purple-500/30'
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/30'
-                  }`}
+                whileTap={{ scale: 0.98 }}
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:opacity-95 shadow-lg shadow-orange-500/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4"
               >
                 {loading ? (
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Creating your account...</span>
+                  </>
                 ) : (
                   <>
-                    <span>{isTrial ? '🚀 Create Account & Start Trial' : 'Create Free Account'}</span>
-                    <ArrowRight className="w-5 h-5" />
+                    <span>{isTrial ? 'Claim 14-Day Free Trial →' : 'Create Free Smart Link →'}</span>
                   </>
                 )}
               </motion.button>
             </form>
 
-            {/* Footer */}
-            <div className="mt-6 text-center">
-              <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
-                Already have an account?{' '}
-                <Link
-                  to="/login"
-                  className={`font-bold hover:underline underline-offset-2 ${isDark ? 'text-blue-400' : 'text-blue-600'}`}
-                >
-                  Sign in
-                </Link>
-              </p>
-              <div className="flex items-center justify-center gap-1.5 mt-4 text-xs text-gray-400">
-                <Shield className="w-3.5 h-3.5" />
-                <span>No credit card required · Cancel anytime</span>
-              </div>
+            <div className="flex items-center justify-center gap-1.5 mt-5 text-[11px] text-gray-400">
+              <Shield className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+              <span>No credit card required · Free plan forever · Instant setup</span>
             </div>
           </div>
         </div>
 
-        {/* Back to Home */}
-        <div className="mt-6 text-center">
-          <Link
-            to="/"
-            className={`text-sm transition-colors ${isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-700'}`}
-          >
-            ← Back to home
-          </Link>
+        {/* Footer */}
+        <div className="text-center text-[11px] text-gray-500 mt-6 relative z-10">
+          By signing up, you agree to our Terms of Service and Privacy Policy.
         </div>
-      </motion.div>
+      </div>
+
+
+      {/* ─── RIGHT COLUMN: Immersive Creator Showcase ─── */}
+      <div className="hidden lg:flex lg:w-[50%] relative overflow-hidden items-stretch">
+        {/* Full-bleed background image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/images/creators/creator_yellow_genz.jpg')" }}
+        />
+        {/* Deep overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/55 to-black/20" />
+        {/* Left-edge fade to blend with form */}
+        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0B0F19] to-transparent" />
+
+        {/* Subtle glow */}
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-between h-full p-12 w-full">
+
+          {/* Top — stat pill */}
+          <div className="flex justify-end">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/15 text-white shadow-lg">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full flex-shrink-0" />
+              <span className="text-xs font-bold tracking-wide">10,000+ creators growing their audience</span>
+            </div>
+          </div>
+
+          {/* Bottom Grouped Showcase Container — FIXED: NO OVERLAPPING WITH FACE OR TEXT */}
+          <div className="mt-auto space-y-4">
+            {/* Creator Social Proof Glass Card */}
+            <div className="p-4 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl">
+              <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2.5">Recently joined creators</p>
+              <div className="grid grid-cols-3 gap-2.5">
+                {[
+                  { img: '/images/creators/creator_neon_cyber.jpg', name: 'Alex M.', clicks: '12K/mo' },
+                  { img: '/images/creators/creator_red_artist.jpg', name: 'Lina K.', clicks: '38K/mo' },
+                  { img: '/images/creators/creator_smile_warm.jpg', name: 'Maya R.', clicks: '91K/mo' },
+                ].map((c, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 p-2 rounded-xl bg-white/10 border border-white/10 hover:bg-white/15 transition-colors min-w-0"
+                  >
+                    <img src={c.img} alt={c.name} className="w-8 h-8 rounded-full object-cover object-top flex-shrink-0 ring-2 ring-white/20" />
+                    <div className="min-w-0">
+                      <p className="text-white text-xs font-bold truncate leading-tight">{c.name}</p>
+                      <p className="text-white/50 text-[9px] font-medium truncate">{c.clicks}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Testimonial quote — FIXED: GENEROUS SPACING BETWEEN QUOTE AND AVATAR */}
+            <div className="p-4.5 rounded-2xl bg-black/70 backdrop-blur-xl border border-white/15 shadow-2xl">
+              <p className="text-white/90 text-xs font-medium italic leading-relaxed mb-3.5">
+                "I replaced 6 different tools with SmartLink. My link-in-bio now earns more than my merch store."
+              </p>
+              <div className="flex items-center gap-3 pt-3 border-t border-white/10">
+                <img
+                  src="/images/creators/creator_yellow_genz.jpg"
+                  alt="Creator"
+                  className="w-8 h-8 rounded-full object-cover object-top ring-2 ring-amber-400/60 flex-shrink-0"
+                />
+                <div>
+                  <p className="text-white text-xs font-extrabold leading-tight">Zoe K.</p>
+                  <p className="text-white/50 text-[9px] font-medium">Gen-Z Creator · 92K followers</p>
+                </div>
+                <div className="ml-auto flex gap-0.5">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className="text-amber-400 text-xs">★</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Main CTA tagline */}
+            <div>
+              <h2 className="text-white text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+                Everything in one<br />
+                <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                  smart link.
+                </span>
+              </h2>
+              <p className="text-white/50 text-xs mt-1 font-medium">
+                Bio page, link tracking, payments, and analytics — all free to start.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

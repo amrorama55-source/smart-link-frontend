@@ -81,9 +81,14 @@ export default function Navbar() {
               <div className="w-8 h-8 flex items-center justify-center">
                 <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
               </div>
-              <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-                Smart Link
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xl font-black text-gray-900 dark:text-white tracking-tight">
+                  Smart Link
+                </span>
+                <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/30">
+                  AI Agent
+                </span>
+              </div>
             </Link>
 
             {/* Middle Section: Trial Status (Desktop) */}
@@ -159,6 +164,12 @@ export default function Navbar() {
                           <LayoutDashboard className="w-4 h-4" />
                           <span className="text-sm">Dashboard</span>
                         </Link>
+                        {(user?.role === 'admin' || user?.isAdmin || user?.email === 'smartlinkpro10@gmail.com') && (
+                          <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 font-bold transition-colors">
+                            <Crown className="w-4 h-4" />
+                            <span className="text-sm">Admin Panel</span>
+                          </Link>
+                        )}
                         <Link to="/profile" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">
                           <UserCircle className="w-4 h-4" />
                           <span className="text-sm">Profile</span>
@@ -168,6 +179,7 @@ export default function Navbar() {
                           <span className="text-sm">Settings</span>
                         </Link>
                       </div>
+
 
                       <div className="p-2 border-t border-gray-100 dark:border-gray-700">
                         {(user?.plan === 'free' || user?.plan === 'trial') && (
@@ -195,11 +207,14 @@ export default function Navbar() {
           <div className="flex gap-2 py-2 overflow-x-auto scrollbar-hide border-t border-gray-50 dark:border-gray-800/50">
             {[
               { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+              { to: '/admin', icon: Crown, label: '👑 Admin' },
               { to: '/links', icon: LinkIcon, label: 'Links' },
               { to: '/analytics', icon: BarChart3, label: 'Analytics' },
               { to: '/bio', icon: User, label: 'Bio' },
               { to: '/profile', icon: UserCircle, label: 'Profile' },
             ].map((item) => (
+
+
               <Link
                 key={item.to}
                 to={item.to}

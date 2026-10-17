@@ -26,7 +26,9 @@ export default function AuthCallback() {
             'user_not_found': 'User not found. Please register first.',
             'token_failed': 'Failed to create authentication token.',
             'no_token': 'No authentication token received.',
-            'callback_failed': 'Authentication callback failed.'
+            'callback_failed': 'Authentication callback failed.' ,
+                        'account_banned': 'This account has been suspended.',
+            'verification_failed': 'Could not verify your account. Please try again.',
           };
           
           const msg = errorMessages[error] || 'Authentication failed. Please try again.';
@@ -37,20 +39,28 @@ export default function AuthCallback() {
           }, 3000);
           return;
         }
-
-        // No token in URL - server sets HttpOnly cookie before redirect.
-        // Just call /auth/me to hydrate user state.
-        console.log('✅ Fetching user from cookie session...');
+        const token = searchParams.get('token');
+        if (!token) {
+          setStatus('error');
+          setErrorMessage('No authentication token received.');
+          setTimeout(() => navigate('/login?error=no_token', { replace: true }), 3000);
+          return;
+        }
+        // Remove the token from the address bar right away (history / screenshots / Referer)
+        window.history.replaceState(null, '', window.location.pathname);
+        
+        console.log('✅ Hydrating user session...');
         
         try {
-          await loginWithToken();
+          await loginWithToken(token);
           console.log('✅ Login successful');
           setStatus('success');
           
           setTimeout(() => {
             console.log('🔀 Redirecting to dashboard...');
             navigate('/dashboard', { replace: true });
-          }, 1000);
+          }, 50);
+
           
         } catch (loginError) {
           console.error('❌ Login failed:', loginError);

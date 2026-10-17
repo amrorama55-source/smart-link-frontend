@@ -1,15 +1,24 @@
 // src/App.jsx - Code-split, fast first load
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useSearchParams } from 'react-router-dom';
+
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastProvider';
 import { useEffect } from 'react';
+import { API_URL } from './config';
 
 function RenderTrigger() {
   useEffect(() => {
     // Fire event after a tiny delay to ensure DOM is fully painted
     const timer = setTimeout(() => document.dispatchEvent(new Event('render-event')), 100);
+    import('./utils/webMCP').then(m => m.initWebMCP()).catch(err => console.error('WebMCP init error:', err));
+    
+    // Silent background pre-warmup to wake up backend container on page load
+    try {
+      fetch(`${API_URL}/health`, { method: 'GET', mode: 'no-cors' }).catch(() => {});
+    } catch {}
+
     return () => clearTimeout(timer);
   }, []);
   return null;
@@ -38,17 +47,22 @@ const lazyWithRetry = (componentImport) =>
     }
   });
 
-// Lazy-loaded pages — smaller initial bundle, faster on mobile
+import Landing from './pages/Landing';
+import AdminDashboard from './pages/AdminDashboard';
+
+
+// Lazy-loaded subpages
 const Login = lazyWithRetry(() => import('./pages/Login'));
 const Register = lazyWithRetry(() => import('./pages/Register'));
 const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazyWithRetry(() => import('./pages/ResetPassword'));
 const VerifyEmail = lazyWithRetry(() => import('./pages/VerifyEmail'));
-const Landing = lazyWithRetry(() => import('./pages/Landing'));
 const LandingAR = lazyWithRetry(() => import('./pages/LandingAR'));
+
 const Dashboard = lazyWithRetry(() => import('./pages/Dashboard'));
 const Links = lazyWithRetry(() => import('./pages/EnhancedLinks'));
 const Analytics = lazyWithRetry(() => import('./pages/Analytics'));
+const CinemaAnalytics = lazyWithRetry(() => import('./pages/CinemaAnalytics'));
 const BioEditor = lazyWithRetry(() => import('./pages/BioEditor'));
 const Settings = lazyWithRetry(() => import('./pages/Settings'));
 const BioPage = lazyWithRetry(() => import('./pages/BioPage'));
@@ -142,17 +156,28 @@ function PrivateRoute({ children }) {
   return <>{children}<RenderTrigger /></>;
 }
 
-function PublicRoute({ children }) {
-  const { user, loading } = useAuth();
-  if (loading) return <LoadingScreen />;
-  return user ? <Navigate to="/dashboard" /> : <>{children}<RenderTrigger /></>;
-}
-
-function LandingRoute({ children }) {
-  const { user, loading } = useAuth();
+function AdminRoute({ children }) {
+  const { loading } = useAuth();
   if (loading) return <LoadingScreen />;
   return <>{children}<RenderTrigger /></>;
 }
+
+
+
+
+function PublicRoute({ children }) {
+  const { user, loading } = useAuth();
+  const [searchParams] = useSearchParams();
+  const redirectTarget = searchParams.get('redirect') || '/dashboard';
+  if (loading) return <LoadingScreen />;
+  return user ? <Navigate to={redirectTarget} replace /> : <>{children}<RenderTrigger /></>;
+}
+
+
+function LandingRoute({ children }) {
+  return <>{children}<RenderTrigger /></>;
+}
+
 
 // ==========================================
 // App Routes (wrapped in Suspense for lazy chunks)
@@ -179,9 +204,15 @@ function AppRoutes() {
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/links" element={<PrivateRoute><Links /></PrivateRoute>} />
         <Route path="/analytics" element={<PrivateRoute><Analytics /></PrivateRoute>} />
+        <Route path="/cinema" element={<PrivateRoute><CinemaAnalytics /></PrivateRoute>} />
         <Route path="/bio" element={<PrivateRoute><BioEditor /></PrivateRoute>} />
         <Route path="/settings" element={<PrivateRoute><Settings /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/*" element={<AdminDashboard />} />
+
+
+
 
         {/* Public Bio & Legal Pages (No auth guard, but need RenderTrigger) */}
         <Route path="/@:username" element={<><BioPage /><RenderTrigger /></>} />

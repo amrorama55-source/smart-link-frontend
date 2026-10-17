@@ -71,6 +71,7 @@ export default function MilestoneToast({ milestones, onDismiss }) {
     return () => clearTimeout(timer);
   }, [current, activeMilestones.length]);
 
+  return null; // Disabled milestone popups completely as requested by the user
   if (!activeMilestones.length || !visible) return null;
 
   const item = activeMilestones[current];

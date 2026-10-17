@@ -66,7 +66,7 @@ export default function Dashboard() {
       if (daysSinceStart === 0) {
         // Day 0: Welcome message
         setTimeout(() => {
-          success('🎉 You\'ve unlocked Business Elite for 7 days. You have full access to all premium features!', {
+          success('🎉 You\'ve unlocked Business Elite for 14 days. You have full access to all premium features!', {
             duration: 6000,
             action: {
               label: 'Explore Features',
@@ -94,9 +94,9 @@ export default function Dashboard() {
             });
           }, 3000);
         }
-      } else if (daysSinceStart >= 5 && daysSinceStart <= 6) {
-        // Day 5-6: Loss aversion reminders
-        const daysLeft = 7 - daysSinceStart;
+      } else if (daysSinceStart >= 11 && daysSinceStart <= 13) {
+        // Day 11-13: Loss aversion reminders
+        const daysLeft = 14 - daysSinceStart;
         setTimeout(() => {
           warning(`⏰ Only ${daysLeft} days left to keep your Business features. Don't lose access to custom domains and unlimited links!`, {
             duration: 6000,
@@ -106,8 +106,8 @@ export default function Dashboard() {
             }
           });
         }, 4000);
-      } else if (daysSinceStart >= 7) {
-        // Day 7+: Trial expired
+      } else if (daysSinceStart >= 14) {
+        // Day 14+: Trial expired
         setShowUpgradeModal(true);
       }
     }
@@ -216,7 +216,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen bg-[#FBFBFA] dark:bg-[#0B0F19] text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-20">
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
@@ -225,10 +225,10 @@ export default function Dashboard() {
         <DowngradeNotice />
 
         {/* Affiliate Banner */}
-        <div className="mb-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-emerald-500/20 relative overflow-hidden mt-6">
+        <div className="mb-8 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 rounded-3xl p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl shadow-emerald-500/20 relative overflow-hidden mt-6">
           <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
           <div className="flex items-center gap-4 relative z-10">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center flex-shrink-0">
               <DollarSign className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -240,27 +240,33 @@ export default function Dashboard() {
             href="https://smart-link-api.lemonsqueezy.com/affiliates"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-3 bg-white text-teal-600 hover:bg-emerald-50 rounded-xl font-bold transition-colors whitespace-nowrap w-full sm:w-auto text-center shadow-sm relative z-10"
+            className="px-6 py-3 bg-white text-teal-700 hover:bg-emerald-50 rounded-2xl font-bold transition-all whitespace-nowrap w-full sm:w-auto text-center shadow-md relative z-10 tactile-press"
           >
             Become an Affiliate
           </a>
         </div>
 
-        {/* Header — human, not corporate */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        {/* Header — warm, human greeting inspired by Image 8 */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2 tracking-tight">
-              Good to see you
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="text-xs font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+              </span>
+            </div>
+            <h1 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight">
+              Good Morning, {user?.name ? user.name.split(' ')[0] : 'Creator'} 👋
             </h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              Here's how your links are doing.
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 mt-1">
+              Focus • Plan • Execute • Succeed
             </p>
           </div>
           <button
             onClick={() => navigate('/pricing')}
-            className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-105 active:scale-95 transition-all text-sm group"
+            className="flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-2xl font-bold shadow-lg shadow-violet-600/30 active:scale-95 transition-all text-sm group"
           >
-            <Zap className="w-4 h-4 group-hover:animate-pulse" />
+            <Zap className="w-4 h-4 fill-white group-hover:animate-bounce" />
             Upgrade Plan
           </button>
         </div>
@@ -286,25 +292,25 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* Stats Grid - 2 columns on mobile, 4 on desktop */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 mt-8">
+        {/* Stats Grid - 2 columns on mobile, 4 on desktop (Dark Glassmorphism) */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 mt-6">
           {statCards.map((stat, i) => {
             const Icon = stat.icon;
             return (
               <div
                 key={i}
-                className="bg-white dark:bg-gray-800/80 rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-md transition-shadow duration-200 border border-gray-100 dark:border-gray-800"
+                className="bg-[#0E1322] border border-white/10 text-white rounded-3xl p-5 sm:p-6 shadow-2xl hover:border-violet-500/50 hover:shadow-violet-500/10 transition-all duration-300 flex flex-col justify-between"
               >
                 <div className="flex justify-between items-start mb-3 sm:mb-4">
-                  <div className={`p-2 sm:p-3 rounded-lg ${colorClasses[stat.color]}`}>
-                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  <div className={`p-3 rounded-2xl ${colorClasses[stat.color]} text-white shadow-lg`}>
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
                   {stat.trend && (
-                    <div className={`flex items-center gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${stat.trend === 'up'
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-black ${stat.trend === 'up'
+                      ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
                       : stat.trend === 'down'
-                        ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-400'
+                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        : 'bg-white/10 text-gray-300 border border-white/10'
                       }`}>
                       {stat.trend === 'up' && <TrendingUp className="w-3 h-3" />}
                       {stat.trend === 'down' && <TrendingDown className="w-3 h-3" />}
@@ -315,12 +321,12 @@ export default function Dashboard() {
                     </div>
                   )}
                 </div>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-1">{stat.title}</p>
-                <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                <p className="text-xs sm:text-sm text-gray-400 font-extrabold uppercase tracking-wider mb-1">{stat.title}</p>
+                <p className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
                   {stat.value.toLocaleString()}
                 </p>
                 {stat.description && (
-                  <p className="text-[10px] sm:text-xs text-gray-400 dark:text-gray-500 mt-1 font-medium">
+                  <p className="text-[10px] sm:text-xs text-gray-400 mt-1.5 font-medium">
                     {stat.description}
                   </p>
                 )}
@@ -331,32 +337,32 @@ export default function Dashboard() {
 
         {/* ✅ NEW: Onboarding State for users with links but no clicks */}
         {stats?.totalLinks > 0 && stats?.totalClicks === 0 && (
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl p-6 sm:p-8 mb-8 text-center relative overflow-hidden">
+          <div className="bg-gradient-to-r from-violet-900/30 via-indigo-900/30 to-purple-900/30 border border-violet-500/30 rounded-3xl p-6 sm:p-8 mb-8 text-center relative overflow-hidden text-white backdrop-blur-xl">
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-blue-400/10 rounded-full blur-2xl"></div>
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-violet-400/10 rounded-full blur-2xl"></div>
             <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-24 h-24 bg-indigo-400/10 rounded-full blur-2xl"></div>
             
             <div className="relative z-10">
-              <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm border border-blue-100 dark:border-blue-700">
-                <Share2 className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm border border-white/15">
+                <Share2 className="w-8 h-8 text-violet-400" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-xl sm:text-2xl font-black text-white mb-2">
                 Your short link is ready! What's next? 🚀
               </h2>
               <div className="flex flex-col items-center gap-3 max-w-2xl mx-auto mb-6">
-                <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                <p className="text-sm sm:text-base text-gray-300 font-medium">
                   You've successfully created your link, but we haven't recorded any clicks yet. 
                 </p>
-                <div className="flex items-start gap-3 bg-blue-100/50 dark:bg-blue-900/30 p-4 rounded-xl text-left border border-blue-200 dark:border-blue-800">
-                  <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-blue-900 dark:text-blue-200">
+                <div className="flex items-start gap-3 bg-white/5 p-4 rounded-2xl text-left border border-white/10">
+                  <Info className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-gray-200">
                     <strong>How it works:</strong> We track the traffic that goes through your <strong>new short link</strong>. We do not scan or analyze the original long URL you provided. Share your short link with your audience, and once they start clicking it, your dashboard will fill up with real-time insights, locations, and device stats!
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => navigate('/links')}
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/25 transition-all text-sm flex items-center justify-center gap-2 mx-auto group"
+                className="px-6 py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white rounded-2xl font-black shadow-lg shadow-violet-600/30 transition-all text-sm flex items-center justify-center gap-2 mx-auto group tactile-press"
               >
                 <Copy className="w-4 h-4 group-hover:scale-110 transition-transform" />
                 Go to Links to Copy & Share
@@ -368,30 +374,30 @@ export default function Dashboard() {
         {/* Quick Stats - 2 columns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-8">
           {/* Unique Visitors */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+          <div className="bg-[#0E1322] p-6 rounded-3xl border border-white/10 shadow-xl text-white">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
+              <div className="p-2.5 bg-blue-500/20 text-blue-400 rounded-2xl border border-blue-500/30">
                 <Users className="w-5 h-5" />
               </div>
-              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Unique Visitors</span>
+              <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Unique Visitors</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</span>
-              <span className="text-xs text-blue-600 font-bold uppercase">All Time</span>
+              <span className="text-3xl sm:text-4xl font-black text-white">{stats?.totalUniqueVisitors?.toLocaleString() || 0}</span>
+              <span className="text-xs text-blue-400 font-extrabold uppercase">All Time</span>
             </div>
           </div>
 
           {/* Top Country */}
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
+          <div className="bg-[#0E1322] p-6 rounded-3xl border border-white/10 shadow-xl text-white">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg">
+              <div className="p-2.5 bg-purple-500/20 text-purple-400 rounded-2xl border border-purple-500/30">
                 <Globe className="w-5 h-5" />
               </div>
-              <span className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Top Country</span>
+              <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Top Country</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">{stats?.topCountries?.[0]?.country || 'N/A'}</span>
-              <span className="text-xs text-purple-600 font-bold uppercase">{stats?.topCountries?.[0]?.count || 0} Clicks</span>
+              <span className="text-2xl sm:text-3xl font-black text-white">{stats?.topCountries?.[0]?.country || 'N/A'}</span>
+              <span className="text-xs text-purple-400 font-extrabold uppercase">{stats?.topCountries?.[0]?.count || 0} Clicks</span>
             </div>
           </div>
         </div>

@@ -68,13 +68,47 @@ export default function Settings() {
   const [stripeStatus, setStripeStatus] = useState(null);
   const [stripeLoading, setStripeLoading] = useState(false);
 
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [exportLoading, setExportLoading] = useState(false);
+
   useEffect(() => {
     loadProfile();
     loadSessions();
     loadSubscription();
     loadInvoices();
     loadStripeStatus();
+    loadAuditLogs();
   }, []);
+
+  const loadAuditLogs = async () => {
+    try {
+      const { data } = await api.get('/settings/audit-logs');
+      if (data?.success) setAuditLogs(data.logs || []);
+    } catch (err) {
+      console.error('Failed to load audit logs:', err);
+    }
+  };
+
+  const handleExportData = async () => {
+    setExportLoading(true);
+    try {
+      const response = await api.get('/settings/export-user-data', { responseType: 'blob' });
+      const blob = new Blob([response.data], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `smartlink-gdpr-data-${user?._id || 'export'}.json`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      success('✅ GDPR Data Export package downloaded successfully!');
+      loadAuditLogs();
+    } catch (err) {
+      error('Failed to export data package');
+    } finally {
+      setExportLoading(false);
+    }
+  };
 
   const loadStripeStatus = async () => {
     try {
@@ -84,6 +118,7 @@ export default function Settings() {
       console.error('Failed to load Stripe status:', err);
     }
   };
+
 
   const handleStripeConnect = async () => {
     setStripeLoading(true);
@@ -849,8 +884,72 @@ export default function Settings() {
             {activeTab === 'security' && (
               <div className="space-y-4 sm:space-y-6">
 
+                {/* GDPR Data Export Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
+                  <div className="flex items-center gap-3 mb-4">
+                    <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">GDPR Data Export</h2>
+                  </div>
+                  <div className="p-4 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-lg border border-indigo-100 dark:border-indigo-900/40">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                      Download a full JSON package containing your profile, custom domains, bio page configurations, tracked links, and analytics compliance records.
+                    </p>
+                    <button
+                      onClick={handleExportData}
+                      disabled={exportLoading}
+                      className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium transition-colors flex items-center gap-2 text-sm disabled:opacity-50"
+                    >
+                      <FileText className="w-4 h-4" />
+                      <span>{exportLoading ? 'Generating Export...' : 'Download My Data Package (JSON)'}</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Security Audit Log Section */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 dark:text-green-400 flex-shrink-0" />
+                      <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Recent Security Audit Logs</h2>
+                    </div>
+                    <button onClick={loadAuditLogs} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">
+                      Refresh Logs
+                    </button>
+                  </div>
+                  
+                  {auditLogs.length === 0 ? (
+                    <div className="text-xs text-gray-500 dark:text-gray-400 italic p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                      No security audit events logged yet.
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300 font-bold border-b border-gray-200 dark:border-gray-700">
+                          <tr>
+                            <th className="p-3">Action</th>
+                            <th className="p-3">Details</th>
+                            <th className="p-3">IP Address</th>
+                            <th className="p-3">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+                          {auditLogs.slice(0, 10).map((log, idx) => (
+                            <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-700/30">
+                              <td className="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">{log.action}</td>
+                              <td className="p-3 text-gray-700 dark:text-gray-300">{log.details || 'N/A'}</td>
+                              <td className="p-3 font-mono text-gray-500 dark:text-gray-400">{log.ipAddress || 'Internal'}</td>
+                              <td className="p-3 text-gray-500 dark:text-gray-400">{new Date(log.createdAt).toLocaleString()}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
                 {/* Logout Section */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-5 md:p-6 shadow-sm">
+
                   <div className="flex items-center gap-3 mb-4 sm:mb-6">
                     <LogOut className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Sign Out</h2>

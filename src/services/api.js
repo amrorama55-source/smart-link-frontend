@@ -4,16 +4,19 @@ import axios from 'axios';
 import { API_URL } from '../config'; // Import from config
 
 const api = axios.create({
-  // ✅ FIX: Avoid redundant /api if API_URL already includes it
   baseURL: API_URL.endsWith('/api') ? API_URL : `${API_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 60000, // 60s timeout safeguard for AI agent requests
 });
 
-// Add CSRF token to requests
+// Add CSRF token & Authorization Bearer token to requests
 api.interceptors.request.use((config) => {
-  // Read XSRF-TOKEN from cookies
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   const match = document.cookie.match(new RegExp('(^| )XSRF-TOKEN=([^;]+)'));
   if (match) {
     config.headers['X-CSRF-Token'] = match[2];
@@ -23,30 +26,31 @@ api.interceptors.request.use((config) => {
 // Ensure cookies are included in cross-origin requests
 api.defaults.withCredentials = true;
 
-// Handle 401 responses - redirect to login
+// Handle 401 responses gracefully
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Cookie is cleared by server; just redirect to login
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login';
-      }
-    }
     return Promise.reject(error);
   }
 );
 
-// ✅ Auth APIs - Remove /api prefix
+// ✅ Auth APIs
 export const register = async (userData) => {
   const response = await api.post('/auth/register', userData);
+  if (response.data?.token) {
+    localStorage.setItem('token', response.data.token);
+  }
   return response.data;
 };
 
 export const login = async (credentials) => {
   const response = await api.post('/auth/login', credentials);
+  if (response.data?.token) {
+    localStorage.setItem('token', response.data.token);
+  }
   return response.data;
 };
+
 
 export const getCurrentUser = async () => {
   const response = await api.get('/auth/me');

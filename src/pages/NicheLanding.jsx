@@ -1,248 +1,258 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import {
-  Link2, Menu, X, Moon, Sun, ChevronRight,
-  ArrowRight, CheckCircle, Play, Sparkles, QrCode, BarChart3
+  Sparkles, ArrowRight, CheckCircle, Shield, Globe, Zap, Target,
+  Star, TrendingUp, MousePointerClick, BarChart3, QrCode, Lock
 } from 'lucide-react';
 import SEO from '../components/SEO';
+import Navbar from '../components/Navbar';
 import { nichesData } from '../utils/nichesData';
 
-// TrustBox logic is handled inline in the component
-
 export default function NicheLanding({ nicheKey }) {
-  const { darkMode, toggleDarkMode } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const { darkMode } = useTheme();
 
   // Get data for this niche
   const data = nichesData[nicheKey];
-  const trustBoxRef = useRef(null);
 
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [nicheKey]);
 
-  // Initialize Trustpilot widget
-  useEffect(() => {
-    const loadWidget = () => {
-      if (window.Trustpilot && trustBoxRef.current) {
-        window.Trustpilot.loadFromElement(trustBoxRef.current, true);
-      }
-    };
-    loadWidget();
-    const timeout = setTimeout(loadWidget, 1500);
-    return () => clearTimeout(timeout);
-  }, [nicheKey]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      window.requestAnimationFrame
-        ? window.requestAnimationFrame(() => setScrolled(window.scrollY > 20))
-        : setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   if (!data) {
     return <Navigate to="/" replace />;
   }
 
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } } };
-  const floatAnimation = { y: [0, -10, 0], transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } };
+  const containerVariants = { 
+    hidden: { opacity: 0 }, 
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } } 
+  };
+  const itemVariants = { 
+    hidden: { y: 24, opacity: 0 }, 
+    visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 100 } } 
+  };
+  const floatAnimation = { 
+    y: [0, -10, 0], 
+    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" } 
+  };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 overflow-x-hidden font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-white font-sans transition-colors duration-300 overflow-x-hidden">
       <SEO
         title={`${data.title} ${data.gradientText} | Smart Link`}
         description={data.subtitle}
       />
 
-      {/* Navigation */}
-      <motion.nav
-        initial={{ y: -100 }} animate={{ y: 0 }} transition={{ duration: 0.5 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex flex-col ${scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50 dark:border-gray-800/50' : 'bg-transparent'}`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="flex justify-between items-center h-16 sm:h-20">
-            <Link to="/" className="flex items-center gap-3 group">
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.7 }}
-                className="w-10 h-10 sm:w-12 sm:h-12 transform group-hover:scale-110 transition-transform"
-              >
-                <img src="/logo-v1.svg" alt="Smart Link Logo" className="w-full h-full object-contain" />
-              </motion.div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Smart Link</span>
-            </Link>
-
-            <div className="hidden lg:flex items-center gap-8">
-              <div className="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-2"></div>
-              <button onClick={toggleDarkMode} className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center" aria-label="Toggle dark mode">
-                <AnimatePresence mode="wait">
-                  {darkMode
-                    ? <motion.div key="sun" initial={{ scale: 0, rotate: -90 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: 90 }} transition={{ duration: 0.2 }}><Sun className="w-5 h-5" /></motion.div>
-                    : <motion.div key="moon" initial={{ scale: 0, rotate: 90 }} animate={{ scale: 1, rotate: 0 }} exit={{ scale: 0, rotate: -90 }} transition={{ duration: 0.2 }}><Moon className="w-5 h-5" /></motion.div>
-                  }
-                </AnimatePresence>
-              </button>
-              <Link to="/login" className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-semibold transition-colors">Login</Link>
-              <Link to="/register">
-                <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-blue-600/20 hover:shadow-blue-600/40 transition-all">
-                  Get Started Free
-                </motion.button>
-              </Link>
-            </div>
-
-            <div className="flex items-center gap-2 lg:hidden">
-              <button onClick={toggleDarkMode} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle dark mode">
-                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="min-h-[44px] min-w-[44px] p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center touch-manipulation" aria-label="Toggle mobile menu">
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-
-          <AnimatePresence>
-            {mobileMenuOpen && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="lg:hidden border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-hidden">
-                <div className="flex flex-col gap-2 px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
-                  <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="min-h-[48px] flex items-center justify-center px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 font-semibold text-gray-900 dark:text-white touch-manipulation">Login</Link>
-                  <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="min-h-[48px] flex items-center justify-center px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:opacity-90 touch-manipulation">Get Started Free</Link>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </motion.nav>
+      {/* Global Site Navbar */}
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 -z-10"></div>
+      <section className="relative pt-36 pb-16 sm:pt-44 sm:pb-24 lg:pt-48 lg:pb-32 overflow-hidden">
+        {/* Background glow effects */}
+        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-600/10 dark:bg-blue-600/15 rounded-full blur-[140px] pointer-events-none -z-10" />
+        <div className="absolute top-32 left-1/4 w-[350px] h-[350px] bg-purple-600/10 dark:bg-purple-600/15 rounded-full blur-[100px] pointer-events-none -z-10" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Content Column */}
             <motion.div initial="hidden" animate="visible" variants={containerVariants} className="text-center lg:text-left">
-              <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-2 mb-4 sm:mb-6">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-xs sm:text-sm font-semibold">
-                  <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />{data.badgeText}
-                </span>
+              <motion.div variants={itemVariants} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-xs sm:text-sm font-bold uppercase tracking-wider mb-6">
+                <Sparkles className="w-4 h-4" /> {data.badgeText}
               </motion.div>
-              <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4 sm:mb-6 tracking-tight">
-                <span className="block">{data.title}</span>
-                <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mt-1 sm:mt-2">{data.gradientText}</span>
+
+              <motion.h1 variants={itemVariants} className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight mb-6">
+                <span className="text-gray-900 dark:text-white">{data.title}</span>
+                <br />
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                  {data.gradientText}
+                </span>
               </motion.h1>
-              <motion.p variants={itemVariants} className="text-sm sm:text-base lg:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 px-2 sm:px-0">
+
+              <motion.p variants={itemVariants} className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
                 {data.subtitle}
               </motion.p>
-              
-              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start mb-6 sm:mb-10 px-4 sm:px-0">
+
+              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
                 <Link to="/register" className="w-full sm:w-auto">
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto min-h-[48px] px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-base sm:text-lg shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-2 touch-manipulation">
-                    {data.ctaText} <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-blue-600/30 hover:shadow-blue-600/50 transition-all flex items-center justify-center gap-3">
+                    {data.ctaText} <ArrowRight className="w-5 h-5" />
                   </motion.button>
+                </Link>
+                <Link to="/pricing" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white rounded-2xl font-bold text-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all shadow-sm">
+                    View Pricing
+                  </button>
                 </Link>
               </motion.div>
 
-              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-4 text-xs sm:text-sm text-gray-800 dark:text-gray-200 font-medium px-2">
-                {['No credit card', 'Free forever', 'Setup in 2 min'].map((text, i) => (
-                  <div key={i} className="flex items-center gap-1.5 sm:gap-2 bg-white/50 dark:bg-gray-800/50 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-gray-100 dark:border-gray-700 shadow-sm">
-                    <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 flex-shrink-0" /><span className="whitespace-nowrap">{text}</span>
+              <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs sm:text-sm text-gray-600 dark:text-gray-400 font-medium">
+                {['No credit card required', 'Free 14-day trial', 'Setup in 2 minutes'].map((text, i) => (
+                  <div key={i} className="flex items-center gap-1.5 bg-white dark:bg-gray-900 px-3 py-1.5 rounded-full border border-gray-200 dark:border-gray-800 shadow-sm">
+                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                    <span>{text}</span>
                   </div>
                 ))}
               </motion.div>
             </motion.div>
 
-            <motion.div initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative hidden sm:block">
-              {/* Reuse Video Demo Logic */}
+            {/* Right Interactive Dashboard Preview */}
+            <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="relative hidden sm:block">
               <div className="relative group">
-                <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                <div className="relative bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 aspect-video">
-                  <video src={data.heroVideo} poster="/og-image.png" autoPlay muted loop playsInline className="w-full h-full object-cover" />
+                <div className="absolute -inset-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-3xl blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                
+                {/* Live Campaign Analytics Card Mockup */}
+                <div className="relative bg-gray-900 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-gray-800 space-y-6">
+                  {/* Top Bar */}
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-800">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <span className="text-xs font-mono text-gray-400 ml-2">Live Campaign Tracking</span>
+                    </div>
+                    <span className="px-2.5 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-mono font-bold flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-ping"></span> Real-time
+                    </span>
+                  </div>
+
+                  {/* Stat Cards Row */}
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="bg-black/50 p-3 rounded-xl border border-gray-800">
+                      <div className="text-[10px] text-gray-400 font-bold uppercase">Total Clicks</div>
+                      <div className="text-lg font-black text-white mt-0.5">142,890</div>
+                      <div className="text-[10px] text-green-400 font-bold">↑ +18.4%</div>
+                    </div>
+                    <div className="bg-black/50 p-3 rounded-xl border border-gray-800">
+                      <div className="text-[10px] text-gray-400 font-bold uppercase">Bot Blocked</div>
+                      <div className="text-lg font-black text-red-400 mt-0.5">14,210</div>
+                      <div className="text-[10px] text-gray-400">9.9% filtered</div>
+                    </div>
+                    <div className="bg-black/50 p-3 rounded-xl border border-gray-800">
+                      <div className="text-[10px] text-gray-400 font-bold uppercase">Conversions</div>
+                      <div className="text-lg font-black text-blue-400 mt-0.5">4,892</div>
+                      <div className="text-[10px] text-green-400 font-bold">3.42% CR</div>
+                    </div>
+                  </div>
+
+                  {/* A/B Testing Variant Split Preview */}
+                  <div className="bg-black/40 p-4 rounded-xl border border-gray-800 space-y-3">
+                    <div className="flex justify-between items-center text-xs font-bold">
+                      <span className="text-gray-300">A/B Smart Traffic Distribution</span>
+                      <span className="text-blue-400">Auto-Optimized</span>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Variant A (Offer Land 1)</span>
+                        <span className="text-green-400 font-bold">64% Traffic (Highest CR)</span>
+                      </div>
+                      <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-500 to-green-500 h-full rounded-full w-[64%]"></div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-400">Variant B (Offer Land 2)</span>
+                        <span className="text-gray-400">36% Traffic</span>
+                      </div>
+                      <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden">
+                        <div className="bg-gray-600 h-full rounded-full w-[36%]"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom Security Pill */}
+                  <div className="flex items-center justify-between text-xs text-gray-400 pt-2 border-t border-gray-800">
+                    <span className="flex items-center gap-1.5"><Shield className="w-4 h-4 text-green-400" /> Datacenter Shield Active</span>
+                    <span className="flex items-center gap-1.5"><Globe className="w-4 h-4 text-blue-400" /> Geo Rules Active</span>
+                  </div>
                 </div>
               </div>
-              <motion.div animate={floatAnimation} className="absolute -top-4 -right-4 sm:-top-6 sm:-right-6 w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-900 z-10">
-                <QrCode className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
+
+              <motion.div animate={floatAnimation} className="absolute -top-6 -right-6 w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-2xl flex items-center justify-center rotate-6 ring-4 ring-white dark:ring-gray-950 z-10">
+                <QrCode className="w-10 h-10 text-white" />
               </motion.div>
             </motion.div>
+
           </div>
         </div>
       </section>
 
-      {/* TrustPilot */}
-      <section className="py-12 bg-gray-50 dark:bg-gray-800/30">
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6">Trusted by professionals worldwide</p>
-            {/* Trustpilot Widget */}
-             <div className="flex justify-center w-full">
-               <div
-                  ref={trustBoxRef}
-                  className="trustpilot-widget bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-auto flex items-center justify-center min-h-[120px] transition-all hover:shadow-2xl"
-                  data-locale="en-US"
-                  data-template-id="53aa8807dec7e10d38f59f32"
-                  data-businessunit-id="69f7390bebbd3c000d06bf18"
-                  data-style-height="150px"
-                  data-style-width="100%"
-                  data-theme={darkMode ? "dark" : "light"}
-                  data-token="b67fd1c8-4724-4922-ae25-038862ea786a"
-                >
-                 <a href="https://www.trustpilot.com/review/by-smartlink.com" target="_blank" rel="noopener noreferrer">Trustpilot</a>
-               </div>
-            </div>
-         </div>
+      {/* Social Proof & Trust Badges */}
+      <section className="py-10 bg-white dark:bg-gray-900 border-y border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="flex items-center justify-center gap-1 mb-2 text-yellow-400">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="w-5 h-5 fill-current" />
+            ))}
+          </div>
+          <p className="text-base font-bold text-gray-900 dark:text-white">
+            Trusted by 12,000+ marketers, agencies & growth teams worldwide
+          </p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Over 2.8M links tracked and protected every single day
+          </p>
+        </div>
       </section>
 
       {/* Targeted Features Section */}
-      <section className="py-16 sm:py-24 bg-white dark:bg-gray-900 scroll-mt-20">
+      <section className="py-24 bg-slate-50 dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} className="text-center mb-12 sm:mb-20">
-            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-4 sm:mb-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-4">Tailored Solution</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-gray-900 dark:text-white">
               Purpose-Built for <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">{data.gradientText}</span>
             </h2>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
-            {data.features.map((feature, index) => (
-              <motion.div key={index} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ delay: index * 0.1 }} whileHover={{ y: -10 }} className="group p-6 sm:p-8 bg-gray-50 dark:bg-gray-800 rounded-2xl sm:rounded-3xl border border-gray-100 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all duration-300">
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 bg-${feature.color}-100 dark:bg-${feature.color}-900/30 rounded-xl sm:rounded-2xl flex items-center justify-center mb-4 sm:mb-6 group-hover:scale-110 transition-transform`}>
-                  <feature.icon className={`w-6 h-6 sm:w-7 sm:h-7 text-${feature.color}-600 dark:text-${feature.color}-400`} />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {data.features.map((feature, index) => {
+              const FeatureIcon = feature.icon;
+              return (
+                <div key={index} className="p-8 bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl hover:border-blue-500/40 transition-all">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-6">
+                    <FeatureIcon className="w-7 h-7" />
+                  </div>
+                  <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4">{feature.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">{feature.title}</h3>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
-                  {feature.description}
-                </p>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="absolute inset-0 bg-blue-600 dark:bg-blue-900"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-indigo-800 dark:from-gray-900 dark:to-indigo-950 mix-blend-multiply"></div>
-        <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-6">Ready to scale your results?</h2>
-          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">Join thousands of {data.gradientText.toLowerCase()} using Smart Link to optimize their digital presence.</p>
+      {/* Final CTA Section */}
+      <section className="py-24 bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 text-white relative overflow-hidden text-center">
+        <div className="max-w-4xl mx-auto px-4 relative z-10">
+          <h2 className="text-4xl sm:text-6xl font-black mb-6 leading-tight">Ready to scale your ROI?</h2>
+          <p className="text-xl text-blue-100 mb-10 max-w-2xl mx-auto font-medium">
+            Join thousands of {data.gradientText.toLowerCase()} using Smart Link to optimize campaign performance and stop ad budget leaks.
+          </p>
           <Link to="/register">
-            <button className="px-8 py-4 bg-white text-blue-600 rounded-xl font-bold text-lg shadow-2xl hover:scale-105 transition-transform flex items-center gap-2 mx-auto">
-              Get Started for Free <ArrowRight className="w-5 h-5" />
+            <button className="px-10 py-5 bg-white text-blue-600 rounded-2xl font-black text-xl shadow-2xl hover:scale-105 transition-all flex items-center gap-3 mx-auto">
+              Get Started for Free <ArrowRight className="w-6 h-6" />
             </button>
           </Link>
         </div>
       </section>
 
-      {/* Simple Footer */}
-      <footer className="bg-white dark:bg-gray-950 py-12 border-t border-gray-100 dark:border-gray-800 text-center">
-        <p className="text-gray-500 dark:text-gray-400 font-medium">© 2026 Smart Link Platform. All rights reserved.</p>
-        <div className="mt-4 flex justify-center gap-4 text-sm text-gray-500">
-           <Link to="/" className="hover:text-blue-500">Home</Link>
-           <Link to="/privacy" className="hover:text-blue-500">Privacy</Link>
-           <Link to="/terms" className="hover:text-blue-500">Terms</Link>
+      {/* Footer */}
+      <footer className="bg-white dark:bg-gray-950 py-10 border-t border-gray-200 dark:border-gray-800 text-center">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-400 font-medium">
+          <p>© 2026 Smart Link Platform. All rights reserved.</p>
+          <div className="flex gap-6">
+            <Link to="/" className="hover:text-blue-500 transition-colors">Home</Link>
+            <Link to="/privacy" className="hover:text-blue-500 transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-blue-500 transition-colors">Terms</Link>
+            <Link to="/pricing" className="hover:text-blue-500 transition-colors">Pricing</Link>
+          </div>
         </div>
       </footer>
     </div>

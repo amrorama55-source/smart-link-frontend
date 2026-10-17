@@ -26,82 +26,81 @@ function buildCheckoutUrl(baseUrl, userId) {
 // ============================================================
 const comparisonFeatures = [
   { feature: 'Monthly Price', smartlink: '$79', voluum: '$89', redtrack: '$149' },
-  { feature: 'Unlimited Links', smartlink: true, voluum: true, redtrack: true },
-  { feature: 'Geo Targeting', smartlink: true, voluum: true, redtrack: true },
-  { feature: 'A/B Testing', smartlink: true, voluum: true, redtrack: true },
-  { feature: 'Bot Protection', smartlink: true, voluum: true, redtrack: false },
-  { feature: 'Custom Domains', smartlink: true, voluum: true, redtrack: true },
-  { feature: 'Retargeting Pixels', smartlink: true, voluum: false, redtrack: false },
-  { feature: 'Link Cloaking', smartlink: true, voluum: false, redtrack: true },
-  { feature: 'Bio Page Builder', smartlink: true, voluum: false, redtrack: false },
-  { feature: 'Sub-ID Tracking', smartlink: true, voluum: true, redtrack: true },
-  { feature: 'Language Routing', smartlink: true, voluum: false, redtrack: false },
-  { feature: 'City-Level Targeting', smartlink: true, voluum: true, redtrack: false },
+  { feature: 'AI Marketing Agent', smartlink: true, voluum: false, redtrack: false },
+  { feature: 'Voice Intelligence Briefings', smartlink: true, voluum: false, redtrack: false },
+  { feature: 'Datacenter Bot & Fraud Shield', smartlink: true, voluum: true, redtrack: false },
+  { feature: 'Geo & Device Dynamic Routing', smartlink: true, voluum: true, redtrack: true },
+  { feature: 'A/B Split Testing', smartlink: true, voluum: true, redtrack: true },
+  { feature: 'Branded Custom Domains', smartlink: true, voluum: true, redtrack: true },
+  { feature: 'Retargeting Pixels (FB/TikTok/Google)', smartlink: true, voluum: false, redtrack: false },
+  { feature: 'Marketing Hub & Paywall Builder', smartlink: true, voluum: false, redtrack: false },
+  { feature: 'Sub-ID & Postback Tracking', smartlink: true, voluum: true, redtrack: true },
+  { feature: 'ClickHouse Real-time Analytics', smartlink: true, voluum: false, redtrack: false },
 ];
 
 function ComparisonTable() {
   return (
     <section className="mt-24 max-w-5xl mx-auto">
       <div className="text-center mb-12">
-        <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-green-500/10 text-green-400 border border-green-500/20 mb-4">
+        <span className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 mb-4">
           Side-by-Side Comparison
         </span>
-        <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-          Why Affiliates Are Switching to Smart Link
+        <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white mb-4">
+          Why Modern Brands & Marketers Choose Smart Link
         </h2>
-        <p className="text-gray-400 text-lg">Same power. Fraction of the cost.</p>
+        <p className="text-gray-600 dark:text-gray-400 text-lg">Stop paying $3,000/mo agency retainers or $149/mo outdated tracking tools.</p>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border border-white/10">
+      <div className="overflow-x-auto rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/60 shadow-lg dark:shadow-none">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-white/10">
-              <th className="p-5 text-left text-sm font-bold text-gray-400 bg-white/5 min-w-[180px]">Feature</th>
-              <th className="p-5 text-center bg-blue-600/20 border-x border-blue-500/30 min-w-[140px]">
+            <tr className="border-b border-gray-200 dark:border-gray-800">
+              <th className="p-5 text-left text-sm font-bold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/60 min-w-[180px]">Feature</th>
+              <th className="p-5 text-center bg-blue-600/10 dark:bg-blue-600/20 border-x border-blue-500/30 min-w-[140px]">
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-blue-400 font-black text-lg">Smart Link</span>
-                  <span className="text-white font-black text-2xl">$79<span className="text-sm font-normal text-gray-400">/mo</span></span>
-                  <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full font-bold">BETTER VALUE</span>
+                  <span className="text-blue-600 dark:text-blue-400 font-black text-lg">Smart Link</span>
+                  <span className="text-gray-900 dark:text-white font-black text-2xl">$29<span className="text-sm font-normal text-gray-500 dark:text-gray-400">/mo</span></span>
+                  <span className="text-xs bg-green-500 text-white px-2 py-0.5 rounded-full font-bold">BEST VALUE</span>
                 </div>
               </th>
-              <th className="p-5 text-center bg-white/5 min-w-[140px]">
+              <th className="p-5 text-center bg-gray-50 dark:bg-gray-800/60 min-w-[140px]">
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-gray-400 font-bold text-lg">Voluum</span>
-                  <span className="text-gray-300 font-black text-2xl">$89<span className="text-sm font-normal text-gray-500">/mo</span></span>
+                  <span className="text-gray-600 dark:text-gray-400 font-bold text-lg">Voluum</span>
+                  <span className="text-gray-700 dark:text-gray-300 font-black text-2xl">$89<span className="text-sm font-normal text-gray-500">/mo</span></span>
                 </div>
               </th>
-              <th className="p-5 text-center bg-white/5 min-w-[140px]">
+              <th className="p-5 text-center bg-gray-50 dark:bg-gray-800/60 min-w-[140px]">
                 <div className="flex flex-col items-center gap-1">
-                  <span className="text-gray-400 font-bold text-lg">RedTrack</span>
-                  <span className="text-gray-300 font-black text-2xl">$149<span className="text-sm font-normal text-gray-500">/mo</span></span>
+                  <span className="text-gray-600 dark:text-gray-400 font-bold text-lg">RedTrack</span>
+                  <span className="text-gray-700 dark:text-gray-300 font-black text-2xl">$149<span className="text-sm font-normal text-gray-500">/mo</span></span>
                 </div>
               </th>
             </tr>
           </thead>
           <tbody>
             {comparisonFeatures.map((row, i) => (
-              <tr key={i} className={`border-b border-white/5 transition-colors hover:bg-white/5 ${i % 2 === 0 ? 'bg-transparent' : 'bg-white/[0.02]'}`}>
-                <td className="p-4 text-sm font-semibold text-gray-300">{row.feature}</td>
-                <td className="p-4 text-center bg-blue-600/10 border-x border-blue-500/20">
+              <tr key={i} className={`border-b border-gray-100 dark:border-gray-800 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/40 ${i % 2 === 0 ? 'bg-transparent' : 'bg-gray-50/50 dark:bg-gray-800/20'}`}>
+                <td className="p-4 text-sm font-semibold text-gray-800 dark:text-gray-300">{row.feature}</td>
+                <td className="p-4 text-center bg-blue-600/[0.04] dark:bg-blue-600/10 border-x border-blue-500/20">
                   {typeof row.smartlink === 'boolean' ? (
                     row.smartlink 
-                      ? <Check className="w-5 h-5 text-green-400 mx-auto" />
-                      : <X className="w-5 h-5 text-red-400 mx-auto" />
-                  ) : <span className="font-black text-blue-400 text-lg">{row.smartlink}</span>}
+                      ? <Check className="w-5 h-5 text-green-600 dark:text-green-400 mx-auto" />
+                      : <X className="w-5 h-5 text-red-500 dark:text-red-400 mx-auto" />
+                  ) : <span className="font-black text-blue-600 dark:text-blue-400 text-lg">{row.smartlink}</span>}
                 </td>
                 <td className="p-4 text-center">
                   {typeof row.voluum === 'boolean' ? (
                     row.voluum 
                       ? <Check className="w-5 h-5 text-gray-400 mx-auto" />
                       : <X className="w-5 h-5 text-red-400/50 mx-auto" />
-                  ) : <span className="font-black text-gray-300 text-lg">{row.voluum}</span>}
+                  ) : <span className="font-black text-gray-700 dark:text-gray-300 text-lg">{row.voluum}</span>}
                 </td>
                 <td className="p-4 text-center">
                   {typeof row.redtrack === 'boolean' ? (
                     row.redtrack 
                       ? <Check className="w-5 h-5 text-gray-400 mx-auto" />
                       : <X className="w-5 h-5 text-red-400/50 mx-auto" />
-                  ) : <span className="font-black text-gray-300 text-lg">{row.redtrack}</span>}
+                  ) : <span className="font-black text-gray-700 dark:text-gray-300 text-lg">{row.redtrack}</span>}
                 </td>
               </tr>
             ))}
@@ -117,53 +116,53 @@ function ComparisonTable() {
 // ============================================================
 function SwitchROICalculator() {
   const [currentSpend, setCurrentSpend] = useState(149);
-  const smartlinkCost = 79;
+  const smartlinkCost = 29;
   const monthlySaving = currentSpend - smartlinkCost;
   const yearlySaving = monthlySaving * 12;
 
   return (
     <section className="mt-24 max-w-3xl mx-auto">
-      <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.02] p-8 sm:p-10 backdrop-blur-sm">
+      <div className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/60 p-8 sm:p-10 shadow-xl dark:shadow-none backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center">
-            <Calculator className="w-5 h-5 text-yellow-400" />
+            <Calculator className="w-5 h-5 text-yellow-500 dark:text-yellow-400" />
           </div>
-          <h2 className="text-2xl font-black text-white">Switch & Save Calculator</h2>
+          <h2 className="text-2xl font-black text-gray-900 dark:text-white">Switch & Save Calculator</h2>
         </div>
-        <p className="text-gray-400 mb-8 ml-[52px]">See how much you'll save by ditching your current tracker.</p>
+        <p className="text-gray-600 dark:text-gray-400 mb-8 ml-[52px]">See how much you'll save by ditching your current tracker.</p>
 
         <div className="space-y-6">
           <div>
             <div className="flex justify-between mb-3">
-              <label className="text-sm font-bold text-gray-300">What you currently pay / month</label>
-              <span className="text-xl font-black text-white">${currentSpend}/mo</span>
+              <label className="text-sm font-bold text-gray-700 dark:text-gray-300">What you currently pay / month</label>
+              <span className="text-xl font-black text-gray-900 dark:text-white">${currentSpend}/mo</span>
             </div>
             <input 
               type="range" 
-              min="79" max="500" step="1" 
+              min="29" max="500" step="1" 
               value={currentSpend} 
               onChange={(e) => setCurrentSpend(Number(e.target.value))} 
-              className="w-full h-2 bg-white/10 rounded-full appearance-none cursor-pointer accent-blue-500" 
+              className="w-full h-2 bg-gray-200 dark:bg-gray-800 rounded-full appearance-none cursor-pointer accent-blue-500" 
             />
             <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>$79</span><span>$500+</span>
+              <span>$29</span><span>$500+</span>
             </div>
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 text-center">
-              <p className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">You pay now</p>
-              <p className="text-2xl font-black text-red-400">${currentSpend}</p>
+              <p className="text-xs font-bold text-red-500 dark:text-red-400 uppercase tracking-wider mb-1">You pay now</p>
+              <p className="text-2xl font-black text-red-500 dark:text-red-400">${currentSpend}</p>
               <p className="text-xs text-gray-500">per month</p>
             </div>
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 text-center">
-              <p className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">Smart Link</p>
-              <p className="text-2xl font-black text-blue-400">$29</p>
+              <p className="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1">Smart Link</p>
+              <p className="text-2xl font-black text-blue-600 dark:text-blue-400">$29</p>
               <p className="text-xs text-gray-500">per month</p>
             </div>
             <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4 text-center">
-              <p className="text-xs font-bold text-green-400 uppercase tracking-wider mb-1">You save</p>
-              <p className="text-2xl font-black text-green-400">${yearlySaving}</p>
+              <p className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-wider mb-1">You save</p>
+              <p className="text-2xl font-black text-green-600 dark:text-green-400">${yearlySaving}</p>
               <p className="text-xs text-gray-500">per year</p>
             </div>
           </div>
@@ -174,10 +173,10 @@ function SwitchROICalculator() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-2xl p-5 text-center"
             >
-              <p className="text-green-300 font-bold text-lg">
-                By switching to Smart Link, you'll save <span className="text-white font-black">${yearlySaving.toLocaleString()}</span> this year
+              <p className="text-green-700 dark:text-green-300 font-bold text-lg">
+                By switching to Smart Link, you'll save <span className="text-gray-900 dark:text-white font-black">${yearlySaving.toLocaleString()}</span> this year
               </p>
-              <p className="text-gray-400 text-sm mt-1">That's money you can put back into ad spend to scale your campaigns 🚀</p>
+              <p className="text-gray-600 dark:text-gray-400 text-sm mt-1">That's money you can put back into ad spend to scale your campaigns 🚀</p>
             </motion.div>
           )}
 
@@ -205,16 +204,16 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className={`relative flex flex-col rounded-3xl border transition-all duration-300 ${
+          className={`relative flex flex-col rounded-3xl backdrop-blur-xl transition-all duration-300 ${
             isPro 
-              ? 'bg-gradient-to-b from-blue-600/20 to-blue-600/5 border-blue-500/40 shadow-2xl shadow-blue-500/20 scale-105' 
-              : 'bg-white/5 border-white/10 hover:border-white/20 hover:bg-white/[0.07]'
+              ? 'bg-gradient-to-b from-violet-600/15 via-[#0F1424]/90 to-[#0B0F19] dark:from-violet-600/20 dark:to-[#0B0F19] border-2 border-violet-500/50 shadow-[0_0_50px_rgba(124,58,237,0.25)] scale-105 z-10' 
+              : 'bg-white/80 dark:bg-[#0E1322]/80 border border-gray-200 dark:border-white/10 shadow-xl dark:shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:border-violet-500/30'
           }`}
         >
           {isPro && (
             <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-              <span className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg whitespace-nowrap">
-                ⭐ Most Popular
+              <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 text-white px-5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest shadow-lg shadow-violet-500/40 whitespace-nowrap flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300 fill-amber-300" /> Most Popular
               </span>
             </div>
           )}
@@ -222,27 +221,29 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
           <div className="p-8 flex flex-col h-full">
             {/* Header */}
             <div className="mb-6">
-              <h3 className="text-xl font-black text-white mb-2">{plan.name}</h3>
-              <p className="text-sm text-gray-400 leading-relaxed">{plan.description}</p>
+              <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 tracking-tight">{plan.name}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{plan.description}</p>
             </div>
 
             {/* Price */}
             <div className="mb-6">
               <div className="flex items-baseline gap-2">
-                <span className="text-5xl font-black text-white">
+                <span className="text-5xl font-black text-gray-900 dark:text-white tracking-tight">
                   {isYearly ? plan.price.yearly : plan.price.monthly}
                 </span>
                 {plan.price.monthly !== '$0' && (
-                  <span className="text-sm font-medium text-gray-500 uppercase tracking-widest">/ month</span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">/ month</span>
                 )}
               </div>
               {isYearly && plan.price.monthly !== '$0' && (
-                <p className="text-xs font-bold text-green-400 mt-1">Billed annually — Save 15%</p>
+                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1.5 flex items-center gap-1">
+                  <CheckCircle className="w-3.5 h-3.5" /> Billed annually — Save 15%
+                </p>
               )}
               {savings && (
-                <div className="mt-3 inline-flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 rounded-full px-3 py-1">
-                  <TrendingDown className="w-3.5 h-3.5 text-green-400" />
-                  <span className="text-xs font-bold text-green-400">${savings}/mo cheaper than Voluum</span>
+                <div className="mt-3 inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1">
+                  <TrendingDown className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">${savings}/mo cheaper than Voluum</span>
                 </div>
               )}
             </div>
@@ -250,26 +251,24 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
             {/* CTA */}
             <button
               onClick={() => handleCheckout(plan, isYearly)}
-              className={`w-full py-4 rounded-xl font-black text-base transition-all flex items-center justify-center gap-2 mb-6 ${
+              className={`w-full py-4 rounded-2xl font-extrabold text-base transition-all duration-200 flex items-center justify-center gap-2 mb-6 tactile-press ${
                 isPro
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-500 hover:to-indigo-500 shadow-lg shadow-blue-600/30'
-                  : plan.price.monthly === '$0'
-                  ? 'bg-white/10 text-white hover:bg-white/15 border border-white/20'
-                  : 'bg-white/10 text-white hover:bg-white/15 border border-white/20'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-lg shadow-violet-600/30'
+                  : 'bg-gray-900 dark:bg-white/10 text-white hover:bg-gray-800 dark:hover:bg-white/20 border border-gray-800 dark:border-white/15'
               }`}
             >
               {plan.id === 'free' ? 'Get Started Free' : plan.cta}
               <ArrowRight className="w-4 h-4" />
             </button>
 
-            <div className="h-px bg-white/10 w-full mb-6" />
+            <div className="h-px bg-gray-200 dark:bg-gray-800/80 w-full mb-6" />
 
             {/* Features */}
-            <ul className="space-y-3 flex-1">
+            <ul className="space-y-3.5 flex-1">
               {plan.features.map((feature, i) => (
                 <li key={i} className="flex items-start gap-3">
-                  <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isPro ? 'text-blue-400' : 'text-gray-500'}`} />
-                  <span className="text-sm text-gray-300 font-medium">{feature}</span>
+                  <CheckCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${isPro ? 'text-violet-500 dark:text-violet-400' : 'text-emerald-500'}`} />
+                  <span className="text-sm text-gray-700 dark:text-gray-300 font-medium leading-snug">{feature}</span>
                 </li>
               ))}
             </ul>
@@ -284,7 +283,7 @@ const PricingCard = ({ plan, isYearly, handleCheckout, index }) => {
 const affiliateFAQs = [
   {
     q: 'How is Smart Link different from Voluum or RedTrack?',
-    a: "Smart Link offers the same core tracking features (geo-targeting, A/B testing, bot protection, custom domains) at a fraction of the cost. Starting at $29/mo vs $89/mo for Voluum, you get identical power without the enterprise price tag. We also include link cloaking and a bio page builder — features Voluum doesn't offer."
+    a: "Smart Link offers core tracking features (geo-targeting, A/B testing, bot protection, custom domains) at a fraction of the cost. Starting at $29/mo vs $89/mo for Voluum, you get identical power without the enterprise price tag. We also include link cloaking and a bio page builder — features Voluum doesn't offer."
   },
   {
     q: 'Does it work with affiliate networks like ClickBank, MaxBounty, CJ?',
@@ -309,18 +308,18 @@ function FAQSection() {
   return (
     <section className="mt-24 max-w-3xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-black text-white mb-3">Affiliate Questions, Answered</h2>
-        <p className="text-gray-400">Everything you need to know before switching.</p>
+        <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-3">Affiliate Questions, Answered</h2>
+        <p className="text-gray-600 dark:text-gray-400">Everything you need to know before switching.</p>
       </div>
       <div className="space-y-3">
         {affiliateFAQs.map((faq, i) => (
-          <div key={i} className="border border-white/10 rounded-2xl overflow-hidden bg-white/[0.03] hover:bg-white/[0.05] transition-colors">
+          <div key={i} className="border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden bg-white dark:bg-gray-900/60 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors shadow-sm dark:shadow-none">
             <button
               onClick={() => setOpen(open === i ? null : i)}
               className="w-full flex items-center justify-between p-6 text-left gap-4"
             >
-              <span className="font-bold text-white text-base">{faq.q}</span>
-              <ChevronDown className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-180' : ''}`} />
+              <span className="font-bold text-gray-900 dark:text-white text-base">{faq.q}</span>
+              <ChevronDown className={`w-5 h-5 text-gray-500 dark:text-gray-400 flex-shrink-0 transition-transform duration-200 ${open === i ? 'rotate-180' : ''}`} />
             </button>
             <AnimatePresence>
               {open === i && (
@@ -331,7 +330,7 @@ function FAQSection() {
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-                  <p className="px-6 pb-6 text-gray-400 leading-relaxed border-t border-white/10 pt-4">{faq.a}</p>
+                  <p className="px-6 pb-6 text-gray-600 dark:text-gray-400 leading-relaxed border-t border-gray-100 dark:border-gray-800 pt-4">{faq.a}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -390,7 +389,7 @@ export default function Pricing() {
     };
 
     return (
-        <div className="min-h-screen bg-[#0a0a0f] transition-colors duration-300">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-28">
@@ -401,31 +400,31 @@ export default function Pricing() {
                   animate={{ opacity: 1, y: 0 }}
                   className="max-w-3xl mx-auto text-center mb-16"
                 >
-                  <span className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-6">
+                  <span className="inline-block px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-6">
                     Built for Affiliate Marketers
                   </span>
-                  <h1 className="text-4xl sm:text-6xl font-black text-white mb-6 leading-tight tracking-tight">
-                    Stop Paying <span className="text-red-400 line-through">$89</span> for Voluum.
+                  <h1 className="text-4xl sm:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-tight tracking-tight">
+                    Stop Paying <span className="text-red-500 dark:text-red-400 line-through">$89</span> for Voluum.
                     <br />
-                    <span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">Get More for $29.</span>
+                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">Get More for $29.</span>
                   </h1>
-                  <p className="text-xl text-gray-400 leading-relaxed">
+                  <p className="text-xl text-gray-600 dark:text-gray-400 leading-relaxed">
                     Geo-targeting, A/B testing, bot protection, link cloaking, retargeting pixels — everything you need to run profitable campaigns, at a fraction of the cost.
                   </p>
 
                   {/* Toggle */}
                   <div className="mt-10 flex justify-center">
-                    <div className="bg-white/5 p-1 rounded-2xl border border-white/10 flex items-center">
+                    <div className="bg-gray-200/60 dark:bg-gray-800 p-1 rounded-2xl border border-gray-300 dark:border-gray-700 flex items-center">
                       <button
                         onClick={() => setIsYearly(false)}
                         className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                          !isYearly ? 'bg-white text-gray-900 shadow-lg' : 'text-gray-400 hover:text-white'
+                          !isYearly ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                         }`}
                       >Monthly</button>
                       <button
                         onClick={() => setIsYearly(true)}
                         className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${
-                          isYearly ? 'bg-white text-gray-900 shadow-lg' : 'text-gray-400 hover:text-white'
+                          isYearly ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                         }`}
                       >
                         Yearly
@@ -461,8 +460,8 @@ export default function Pricing() {
                     { icon: Zap, label: 'Instant Setup' },
                     { icon: Headphones, label: '24/7 Support' },
                   ].map(({ icon: Icon, label }) => (
-                    <div key={label} className="flex items-center gap-2 text-xs font-bold text-gray-500">
-                      <Icon className="w-4 h-4 text-gray-600" />
+                    <div key={label} className="flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-gray-400">
+                      <Icon className="w-4 h-4 text-gray-400 dark:text-gray-600" />
                       {label}
                     </div>
                   ))}
@@ -479,8 +478,8 @@ export default function Pricing() {
 
                 {/* ---- Final CTA ---- */}
                 <div className="mt-24 text-center">
-                  <p className="text-gray-500 text-sm mb-4">Already have an account?</p>
-                  <Link to="/dashboard" className="text-sm font-bold text-gray-400 hover:text-blue-400 transition-colors flex items-center justify-center gap-2">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">Already have an account?</p>
+                  <Link to="/dashboard" className="text-sm font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center justify-center gap-2">
                     Go to Dashboard <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -501,11 +500,11 @@ export default function Pricing() {
                                 initial={{ opacity: 0, scale: 0.95, y: 20 }} 
                                 animate={{ opacity: 1, scale: 1, y: 0 }} 
                                 exit={{ opacity: 0, scale: 0.95, y: 20 }} 
-                                className="relative bg-[#0a0a0f] border border-white/10 shadow-2xl shadow-blue-500/20 rounded-3xl p-8 max-w-lg w-full overflow-hidden"
+                                className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-2xl shadow-blue-500/20 rounded-3xl p-8 max-w-lg w-full overflow-hidden text-gray-900 dark:text-white"
                             >
                                 <button 
                                     onClick={() => setIsModalOpen(false)}
-                                    className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors"
+                                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
                                 >
                                     <X className="w-6 h-6" />
                                 </button>
@@ -514,42 +513,42 @@ export default function Pricing() {
                                     <div className="w-16 h-16 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-blue-500/30 mb-4">
                                         <Lock className="w-8 h-8 text-white" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-white mb-2">Secure Checkout</h3>
-                                    <p className="text-gray-400 text-sm">
-                                        Your leads, links, and campaigns are ready. Unlock full access to <strong className="text-blue-400">{selectedPlan.name}</strong>.
+                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2">Secure Checkout</h3>
+                                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                        Your leads, links, and campaigns are ready. Unlock full access to <strong className="text-blue-600 dark:text-blue-400">{selectedPlan.name}</strong>.
                                     </p>
                                 </div>
 
-                                <div className="bg-white/5 border border-white/10 rounded-2xl p-5 mb-6">
+                                <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 mb-6">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="text-gray-300 font-bold">{selectedPlan.name} Plan</span>
-                                        <span className="text-xl font-black text-white">
+                                        <span className="text-gray-800 dark:text-gray-300 font-bold">{selectedPlan.name} Plan</span>
+                                        <span className="text-xl font-black text-gray-900 dark:text-white">
                                             {selectedPlan.yearly ? selectedPlan.price.yearly : selectedPlan.price.monthly}
                                             <span className="text-sm font-normal text-gray-500">/mo</span>
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center text-sm">
                                         <span className="text-gray-500">Billed {selectedPlan.yearly ? 'Annually' : 'Monthly'}</span>
-                                        {selectedPlan.yearly && <span className="text-green-400 font-bold">15% Discount Applied</span>}
+                                        {selectedPlan.yearly && <span className="text-green-600 dark:text-green-400 font-bold">15% Discount Applied</span>}
                                     </div>
                                 </div>
 
                                 <div className="text-center space-y-4">
                                     <button 
                                         onClick={confirmPayment}
-                                        className="w-full py-4 bg-white text-black hover:bg-gray-100 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-2"
+                                        className="w-full py-4 bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100 rounded-xl font-black text-lg transition-all flex items-center justify-center gap-2"
                                     >
                                         Proceed to Payment
                                         <ArrowRight className="w-5 h-5" />
                                     </button>
                                     
                                     <p className="text-xs text-gray-500 max-w-xs mx-auto leading-relaxed">
-                                        <strong className="text-gray-300">Free for 3 days</strong>, we only charge if you keep going. Cancel anytime before then and pay nothing.
+                                        <strong className="text-gray-700 dark:text-gray-300">Free for 14 days</strong>, we only charge if you keep going. Cancel anytime before then and pay nothing.
                                     </p>
 
                                     <div className="flex items-center justify-center gap-2 pt-2">
-                                        <Lock className="w-3 h-3 text-gray-600" />
-                                        <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">🔒 Secured By LemonSqueezy</span>
+                                        <Lock className="w-3 h-3 text-gray-400" />
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Secured By Stripe</span>
                                     </div>
                                 </div>
                             </motion.div>

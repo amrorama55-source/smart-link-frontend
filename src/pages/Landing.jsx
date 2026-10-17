@@ -1,208 +1,591 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { PLANS } from '../utils/plans';
 import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
 import {
-  Shield, Zap, Target, Globe, BarChart3, ChevronRight, CheckCircle, 
-  Menu, X, Moon, Sun, ArrowRight, MousePointerClick, TrendingUp, AlertTriangle,
-  Link2, Layout, Star, Clock, Lock, Copy, CheckCircle2, Loader2
+  Link2, Menu, X, Moon, Sun, ChevronRight,
+  BarChart3, Globe, Smartphone, Target, Zap, Shield,
+  CheckCircle, ArrowRight, Sparkles, Lock, Code, Star, Play, Layout,
+  Mic, Pause, Bot, FileText, Video, Music, Camera, BookOpen, Crown, Wrench,
+  ShoppingBag, Megaphone, Rocket, TrendingUp
 } from 'lucide-react';
 import SEO from '../components/SEO';
-import VideoDemo from '../components/VideoDemo';
-import InteractiveDemo from '../components/InteractiveDemo';
 
-// Creative Organic Shape Component
-const OrganicShape = ({ className, color }) => (
-  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className={className}>
-    <path fill={color} d="M42.7,-62.9C54.4,-53.8,62.4,-39.9,68.1,-25.1C73.8,-10.3,77.2,5.5,74.1,20.4C71,35.3,61.4,49.2,48.5,58.3C35.6,67.4,19.3,71.7,2.8,67.8C-13.7,63.9,-30.4,51.8,-43.3,40.1C-56.2,28.4,-65.4,17.1,-69.1,3.4C-72.8,-10.3,-71.1,-26.4,-62.4,-39.2C-53.7,-52,-38,-61.5,-23.4,-65.8C-8.8,-70.1,4.7,-69.2,18.5,-66.1C32.3,-63.1,46.3,-58.1,42.7,-62.9Z" transform="translate(100 100)" />
-  </svg>
-);
+/* ------------------------------------------------------------------ */
+/*  Design tokens + component classes (scoped under .sl)               */
+/*  Dark-first. Tokens follow the brief; button fills are one step     */
+/*  deeper than the accent gradient so white labels keep >= 4.5:1.     */
+/* ------------------------------------------------------------------ */
+const STYLES = `
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
-// 2. Hero Shortener Hook Component
-function HeroShortener() {
-  const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, loading, success
-  const [shortUrl, setShortUrl] = useState('');
-  const [copied, setCopied] = useState(false);
+.sl{
+  isolation:isolate;
+  --sl-bg:#0A0A0F; --sl-bg2:#0F1117;
+  --sl-surface:rgba(255,255,255,.04); --sl-surface2:rgba(255,255,255,.07);
+  --sl-border:rgba(255,255,255,.10);
+  --sl-text:#F8FAFC; --sl-muted:#94A3B8;
+  --sl-good:#10B981; --sl-bad:#EF4444;
+  --sl-blue:#3B82F6; --sl-violet:#8B5CF6; --sl-ring:#60A5FA;
+  --sl-glow:.38; --sl-nav:rgba(10,10,15,.72);
+  background:var(--sl-bg); color:var(--sl-text);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+.sl[data-theme="light"]{
+  --sl-bg:#F8FAFC; --sl-bg2:#EEF2F7;
+  --sl-surface:rgba(255,255,255,.75); --sl-surface2:#FFFFFF;
+  --sl-border:rgba(15,23,42,.10);
+  --sl-text:#0F172A; --sl-muted:#475569;
+  --sl-good:#047857; --sl-bad:#B91C1C;
+  --sl-blue:#2563EB; --sl-violet:#7C3AED; --sl-ring:#2563EB;
+  --sl-glow:.14; --sl-nav:rgba(248,250,252,.82);
+}
+.sl-display{font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif;}
+.sl-text{color:var(--sl-text)}
+.sl-muted{color:var(--sl-muted)}
+.sl-good{color:var(--sl-good)}
+.sl-bad{color:var(--sl-bad)}
+.sl-bg2{background:var(--sl-bg2)}
+.sl-grad{background:linear-gradient(90deg,var(--sl-blue),var(--sl-violet),var(--sl-blue));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sl-shift 9s ease-in-out infinite alternate}
+.sl-card{background:var(--sl-surface);border:1px solid var(--sl-border);border-radius:20px;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.sl-inner{background:var(--sl-surface2);border:1px solid var(--sl-border);border-radius:12px}
+.sl-divider{border-top:1px solid var(--sl-border)}
+.sl-btn{background:linear-gradient(135deg,#2563EB,#7C3AED);color:#fff;font-weight:600;border-radius:12px;box-shadow:0 10px 30px -10px rgba(124,58,237,.65);transition:filter .2s,transform .2s}
+.sl-btn:hover{filter:brightness(1.12)}
+.sl-ghost{background:var(--sl-surface);color:var(--sl-text);border:1px solid var(--sl-border);font-weight:600;border-radius:12px;transition:background .2s,border-color .2s}
+.sl-ghost:hover{background:var(--sl-surface2);border-color:var(--sl-muted)}
+.sl-chip{background:var(--sl-surface);border:1px solid var(--sl-border);border-radius:999px;color:var(--sl-text)}
+.sl-tint{background:color-mix(in srgb,var(--sl-blue) 14%,transparent);color:var(--sl-text);border:1px solid color-mix(in srgb,var(--sl-blue) 30%,transparent)}
+.sl-iconbox{background:linear-gradient(135deg,color-mix(in srgb,var(--sl-blue) 28%,transparent),color-mix(in srgb,var(--sl-violet) 28%,transparent));border:1px solid var(--sl-border);color:var(--sl-text)}
+.sl-popular{background:linear-gradient(var(--sl-bg2),var(--sl-bg2)) padding-box,linear-gradient(135deg,var(--sl-blue),var(--sl-violet)) border-box;border:2px solid transparent;border-radius:20px}
+.sl-seg{display:inline-flex;gap:4px;padding:6px;background:var(--sl-surface);border:1px solid var(--sl-border);border-radius:18px}
+.sl-seg-btn{display:inline-flex;align-items:center;gap:8px;padding:.65rem 1.5rem;border-radius:13px;border:1px solid transparent;font-weight:600;font-size:.9rem;color:var(--sl-muted);transition:background .2s,color .2s,border-color .2s}
+.sl-seg-btn:hover{color:var(--sl-text)}
+.sl-seg-btn[aria-checked="true"]{background:var(--sl-surface2);color:var(--sl-text);border-color:var(--sl-border)}
 
-  const handleShorten = (e) => {
-    e.preventDefault();
-    if (!url) return;
-    setStatus('loading');
-    
-    // Simulate API delay
-    setTimeout(() => {
-      const randomStr = Math.random().toString(36).substring(2, 7);
-      setShortUrl(`by-smartlink.com/${randomStr}`);
-      setStatus('success');
-    }, 1500);
-  };
+/* ambient glows (animated) */
+.sl-ambient{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+.sl-glow{position:absolute;border-radius:50%;background:radial-gradient(closest-side,var(--c,var(--sl-blue)),transparent);opacity:var(--sl-glow);will-change:transform,opacity;pointer-events:none}
+@keyframes sl-drift-a{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(90px,60px,0) scale(1.18)}}
+@keyframes sl-drift-b{0%,100%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(-100px,-50px,0) scale(1.12)}}
+@keyframes sl-drift-c{0%,100%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(60px,-80px,0) scale(.92)}}
+@keyframes sl-breathe{0%,100%{opacity:calc(var(--sl-glow)*.65)}50%{opacity:var(--sl-glow)}}
+.sl-drift-a{animation:sl-drift-a 20s ease-in-out infinite,sl-breathe 8s ease-in-out infinite}
+.sl-drift-b{animation:sl-drift-b 26s ease-in-out infinite,sl-breathe 10s ease-in-out infinite}
+.sl-drift-c{animation:sl-drift-c 23s ease-in-out infinite,sl-breathe 9s ease-in-out infinite}
+@keyframes sl-shift{from{background-position:0% 50%}to{background-position:100% 50%}}
+.sl button{cursor:pointer}
+.sl :is(a,button,input,select):focus-visible{outline:2px solid var(--sl-ring);outline-offset:2px;border-radius:8px}
+.sl input[type=range]{accent-color:var(--sl-violet);width:100%}
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(shortUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+@keyframes sl-wave{0%,100%{transform:scaleY(.22)}50%{transform:scaleY(1)}}
+.sl-bar{display:block;width:4px;border-radius:4px;background:linear-gradient(to top,var(--sl-blue),var(--sl-violet));transform-origin:center;animation:sl-wave 1.15s ease-in-out infinite}
+.sl-paused .sl-bar{animation-play-state:paused}
+@keyframes sl-ping{75%,100%{transform:scale(2.4);opacity:0}}
+.sl-ping{position:absolute;inset:0;border-radius:999px;background:var(--sl-bad);animation:sl-ping 1.6s cubic-bezier(0,0,.2,1) infinite}
+@media (prefers-reduced-motion:reduce){
+  .sl-bar,.sl-ping,.sl-grad,.sl-drift-a,.sl-drift-b,.sl-drift-c{animation:none!important}
+  .sl *{scroll-behavior:auto!important}
+}
+`;
 
-  if (status === 'success') {
-    return (
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 p-8 rounded-3xl shadow-2xl max-w-2xl mx-auto w-full relative overflow-hidden text-left">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-        <div className="flex items-center justify-center mb-6">
-          <div className="w-16 h-16 bg-green-100 dark:bg-green-500/20 rounded-full flex items-center justify-center text-green-600 dark:text-green-400">
-            <CheckCircle2 className="w-8 h-8" />
-          </div>
-        </div>
-        <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-2 text-center">Your link is protected and live!</h3>
-        <p className="text-gray-500 mb-6 font-medium text-center">Copy your new smart link. To see who clicks it and block bots, create your free account.</p>
-        
-        <div className="flex flex-col sm:flex-row items-center gap-3 bg-gray-50 dark:bg-gray-950 p-3 rounded-2xl border border-gray-200 dark:border-gray-800 mb-6">
-          <div className="flex-1 font-mono text-lg font-bold text-blue-600 dark:text-blue-400 truncate px-4">
-            {shortUrl}
-          </div>
-          <button onClick={copyToClipboard} className="w-full sm:w-auto px-6 py-3 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-white rounded-xl font-bold flex items-center justify-center gap-2 transition-colors">
-            {copied ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
-            {copied ? 'Copied!' : 'Copy'}
-          </button>
-        </div>
+const fmtUSD = (n) =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n);
 
-        <Link to={`/register?redirect=dashboard&url=${encodeURIComponent(url)}`}>
-          <button className="w-full py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-black text-lg shadow-[0_0_30px_rgba(37,99,235,0.3)] transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
-            Claim My Link & View Analytics <ArrowRight className="w-5 h-5" />
-          </button>
-        </Link>
-        <p className="text-xs text-center text-gray-400 font-bold uppercase tracking-wider mt-4">No credit card required</p>
-      </motion.div>
-    );
-  }
+function AnimatedNumber({ value, format = (v) => Math.round(v).toLocaleString('en-US') }) {
+  const reduce = useReducedMotion();
+  const [display, setDisplay] = useState(value);
+  const from = useRef(value);
+  const raf = useRef(0);
 
-  return (
-    <form onSubmit={handleShorten} className="relative max-w-2xl mx-auto w-full">
-      <div className="relative group">
-        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-        <div className="relative flex flex-col sm:flex-row items-center bg-white dark:bg-gray-900 rounded-[2rem] p-2 border border-gray-200 dark:border-gray-800 shadow-2xl">
-          <div className="flex items-center pl-6 pr-4 py-4 w-full sm:w-auto flex-1">
-            <Link2 className="w-6 h-6 text-gray-400 mr-3 shrink-0" />
-            <input 
-              type="url" 
-              required
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="Paste your long link here..." 
-              className="w-full bg-transparent border-none outline-none text-gray-900 dark:text-white text-lg font-medium placeholder-gray-400"
-              disabled={status === 'loading'}
-            />
-          </div>
-          <button 
-            type="submit" 
-            disabled={status === 'loading'}
-            className="w-full sm:w-auto px-8 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-[1.5rem] font-black text-lg hover:scale-105 transition-all shadow-lg shadow-black/10 disabled:opacity-70 disabled:hover:scale-100 flex items-center justify-center gap-2 m-1"
-          >
-            {status === 'loading' ? (
-              <>
-                <Loader2 className="w-6 h-6 animate-spin" /> Shortening...
-              </>
-            ) : (
-              <>
-                Shorten & Protect <ArrowRight className="w-5 h-5" />
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-6 text-sm font-bold text-gray-500">
-        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> 14-Day Free Trial</span>
-        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> Blocks bots instantly</span>
-        <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-green-500" /> Deep analytics</span>
-      </div>
-    </form>
-  );
+  useEffect(() => {
+    if (reduce) { setDisplay(value); from.current = value; return undefined; }
+    const start = performance.now();
+    const a = from.current;
+    const tick = (now) => {
+      const p = Math.min(1, (now - start) / 450);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = a + (value - a) * eased;
+      from.current = v;
+      setDisplay(v);
+      if (p < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [value, reduce]);
+
+  return <span className="tabular-nums">{format(display)}</span>;
 }
 
-// 3. ROI Calculator Component
-function ROICalculator() {
-  const [adSpend, setAdSpend] = useState(2500);
-  const botRate = 0.34; // 34% based on the subtext
-  
-  const wastedSpend = adSpend * botRate;
-
+function Slider({ id, label, value, min, max, step, onChange, display }) {
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-2xl border border-gray-200 dark:border-gray-800 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -mr-32 -mt-32"></div>
-      
-      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">How Much Are You Losing Right Now?</h3>
-      <p className="text-gray-500 text-sm mb-8">Move the slider to see how much bot traffic is eating your budget.</p>
-      
-      <div className="space-y-6 mb-8 relative z-10">
-        <div>
-          <div className="flex justify-between mb-2">
-            <label className="text-sm font-bold text-gray-700 dark:text-gray-300">Monthly Ad Spend</label>
-            <span className="text-lg font-bold text-blue-600">${adSpend.toLocaleString()}</span>
-          </div>
-          <input type="range" min="500" max="10000" step="100" value={adSpend} onChange={(e) => setAdSpend(Number(e.target.value))} className="w-full accent-blue-600 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" />
-        </div>
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <label htmlFor={id} className="text-sm font-medium sl-text">{label}</label>
+        <span className="text-sm font-bold sl-text tabular-nums">{display}</span>
       </div>
-      
-      <div className="bg-slate-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-200 dark:border-gray-700 relative z-10 space-y-4">
-        <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-gray-700">
-          <span className="text-gray-500 font-medium text-sm">Estimated Bot Traffic</span>
-          <span className="text-gray-900 dark:text-white font-bold">34%</span>
-        </div>
-        <div className="flex justify-between items-center pb-4 border-b border-gray-200 dark:border-gray-700">
-          <span className="text-gray-500 font-medium text-sm">Wasted Budget</span>
-          <span className="text-red-500 font-bold text-lg">${wastedSpend.toLocaleString()}/mo</span>
-        </div>
-        <div className="flex justify-between items-center pt-2">
-          <span className="text-gray-900 dark:text-white font-black text-lg">What Smart Link Saves You</span>
-          <span className="text-green-500 font-black text-3xl">${wastedSpend.toLocaleString()}</span>
-        </div>
-      </div>
-
-      <Link to="/register" className="block mt-6">
-        <button className="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold text-lg transition-colors shadow-lg shadow-red-500/30">
-          Stop Losing ${wastedSpend.toLocaleString()} Every Month &rarr;
-        </button>
-      </Link>
+      <input id={id} type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(Number(e.target.value))} />
     </div>
   );
 }
 
-// 9. FAQ Section Component
-function FAQSection() {
-  const [openFAQ, setOpenFAQ] = useState(null);
-  const faqs = [
-    { q: "Why do I need Smart Link if I already have a link shortener?", a: "Traditional shorteners just count clicks. Smart Link goes deeper by tracking OS data, geolocation, and applying our Ad-Fraud shield to block bots, exposing the true intent behind your traffic." },
-    { q: "How does the Ad-Fraud Datacenter Shield work?", a: "We automatically detect and block clicks originating from VPNs, AWS, DigitalOcean, and known botnets. This stops you from paying for fake clicks and keeps your retargeting pixel data 100% pure." },
-    { q: "How does A/B Testing work?", a: "Set your destination variants (e.g. 50% to Page A, 50% to Page B), and our engine automatically routes the traffic. You can then view the analytics to see which page converts better." },
-    { q: "Can I use my own custom domain?", a: "Absolutely. You can connect your own domain (e.g., links.yourbrand.com) on the Pro and Business plans to maintain full brand consistency." },
-    { q: "How do I start tracking?", a: "Simply sign up, paste your URLs, and generate your links. The dashboard will instantly start populating with deep analytics." },
-    { q: "What is the best alternative to ClickMagick in 2026?", a: "Smart Link is the best ClickMagick alternative in 2026, offering enterprise-grade bot protection, sub-ID tracking, and A/B testing with a free core tier, saving you $99/mo." },
-    { q: "How to block bot traffic from Facebook and Google ads?", a: "You can block bot traffic by using an affiliate tracking platform with a Datacenter Shield. Smart Link automatically detects and blocks scrapers and VPN traffic, ensuring your pixels only fire for real humans." },
-    { q: "How to track affiliate links without a website?", a: "You don't need a website to track affiliate links. You can use Smart Link to create a free Link-in-Bio page, add your tracked affiliate links to it, and share that single bio link on your social media profiles." },
-    { q: "Is Linktree good for affiliate marketing?", a: "Linktree is basic and lacks deep analytics. For serious affiliate marketing, you need a platform like Smart Link that provides granular tracking (OS, device, geo), bot protection, and direct A/B testing within your bio page." },
-    { q: "How to route traffic based on country and device?", a: "Using the Smart Link routing engine, you can set rules to redirect users from the US to Offer A, and users from the UK to Offer B, all under a single tracking link. You can also route based on iOS vs Android." }
+/* ------------------------------------------------------------------ */
+/*  Hero: interactive agency-savings calculator                        */
+/* ------------------------------------------------------------------ */
+function SavingsCalculator() {
+  const [fee, setFee] = useState(3000);
+  const [spend, setSpend] = useState(20000);
+  const [bots, setBots] = useState(15);
+
+  const yearlyFees = fee * 12;
+  const exposed = Math.round((spend * bots) / 100);
+
+  return (
+    <div className="sl-card p-6 sm:p-8 relative">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="sl-display text-lg font-bold sl-text">What is your agency costing you?</h2>
+        <span className="sl-chip text-xs font-semibold px-2.5 py-1">Calculator</span>
+      </div>
+
+      <div className="space-y-6 mb-8">
+        <Slider id="calc-fee" label="Agency fee per month" value={fee} min={500} max={10000} step={250} onChange={setFee} display={fmtUSD(fee)} />
+        <Slider id="calc-spend" label="Monthly ad spend" value={spend} min={1000} max={100000} step={1000} onChange={setSpend} display={fmtUSD(spend)} />
+        <Slider id="calc-bots" label="Traffic that is bots or invalid" value={bots} min={5} max={40} step={1} onChange={setBots} display={`${bots}%`} />
+      </div>
+
+      <div className="sl-inner p-5 mb-4">
+        <p className="text-sm sl-muted mb-1">Agency fees you stop paying each year</p>
+        <p className="sl-display text-4xl sm:text-5xl font-extrabold sl-good">
+          <AnimatedNumber value={yearlyFees} format={fmtUSD} />
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        <div className="sl-inner p-4">
+          <p className="text-xs sl-muted mb-1">Agency cost per month</p>
+          <p className="text-lg font-bold sl-text"><AnimatedNumber value={fee} format={fmtUSD} /></p>
+        </div>
+        <div className="sl-inner p-4">
+          <p className="text-xs sl-muted mb-1">Ad budget exposed to bots / month</p>
+          <p className="text-lg font-bold sl-bad"><AnimatedNumber value={exposed} format={fmtUSD} /></p>
+        </div>
+      </div>
+
+      <Link to="/register" className="sl-btn w-full py-3.5 text-sm flex items-center justify-center gap-2">
+        Replace your agency, start free <ArrowRight className="w-4 h-4" />
+      </Link>
+      <p className="text-xs sl-muted mt-3 text-center">Illustrative numbers based on your inputs. Actual results vary.</p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Audience tabs (3 pillars)                                          */
+/* ------------------------------------------------------------------ */
+const AUDIENCES = [
+  {
+    id: 'ecom', label: 'E-commerce & DTC', icon: ShoppingBag,
+    problem: 'Your TikTok and Meta budget is paying for bot clicks that never buy.',
+    note: 'Works with Shopify and WooCommerce.',
+    points: [
+      'Block datacenter and bot clicks before they cost you money',
+      'Send each buyer to the local checkout in their currency and language',
+      'See which ad earned real ROAS, not just clicks'
+    ],
+    caption: 'Sample campaign',
+    rows: [
+      { l: 'Bot clicks blocked', v: '612', tone: 'bad' },
+      { l: 'Real visitors', v: '3,598', tone: '' },
+      { l: 'ROAS, ad set B', v: '3.1x', tone: 'good' }
+    ]
+  },
+  {
+    id: 'media', label: 'Media buyers', icon: Megaphone,
+    problem: 'Voluum and ClickMagick cost $99 to $299 a month and take a week to learn.',
+    note: 'Built for speed and low cost.',
+    points: [
+      'Sub-second routing for every click',
+      'Postback and Sub-ID tracking at half the cost',
+      'Branded links on your own custom domain'
+    ],
+    caption: 'Sample routing rules',
+    rows: [
+      { l: 'iOS', v: 'App Store', tone: '' },
+      { l: 'France', v: '/fr-fr', tone: '' },
+      { l: 'Postback, sub_id tt_ad_42', v: '$38.00', tone: 'good' }
+    ]
+  },
+  {
+    id: 'creators', label: 'Founders & creators', icon: Rocket,
+    problem: "You can't afford an agency, and a basic bio page doesn't sell anything.",
+    note: 'No code, live in 2 minutes.',
+    points: [
+      'Collect newsletter subscribers from a smart marketing hub',
+      'Sell digital products with instant checkout links',
+      'Keep 95% of every sale'
+    ],
+    caption: 'Sample hub activity',
+    rows: [
+      { l: 'New subscribers today', v: '+48', tone: 'good' },
+      { l: 'PDF guide sold at $19', v: '$18.05 kept', tone: 'good' },
+      { l: 'Link clicks', v: '1,204', tone: '' }
+    ]
+  }
+];
+
+function AudienceSection() {
+  const [active, setActive] = useState('ecom');
+  const a = AUDIENCES.find((x) => x.id === active);
+
+  return (
+    <section className="py-24 sl-bg2">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mb-10">
+          <h2 className="sl-display text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">One agent, built for how you actually sell</h2>
+          <p className="text-lg sl-muted">Pick your situation to see what the agent does for you.</p>
+        </div>
+
+        <div role="tablist" aria-label="Who is Smart Link for" className="flex flex-wrap gap-2 mb-8">
+          {AUDIENCES.map((t) => (
+            <button
+              key={t.id}
+              role="tab"
+              id={`aud-tab-${t.id}`}
+              aria-selected={active === t.id}
+              aria-controls={`aud-panel-${t.id}`}
+              onClick={() => setActive(t.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 text-sm ${active === t.id ? 'sl-btn' : 'sl-ghost'}`}
+            >
+              <t.icon className="w-4 h-4" /> {t.label}
+            </button>
+          ))}
+        </div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={a.id}
+            role="tabpanel"
+            id={`aud-panel-${a.id}`}
+            aria-labelledby={`aud-tab-${a.id}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="grid lg:grid-cols-2 gap-6 items-stretch"
+          >
+            <div className="sl-card p-8">
+              <p className="sl-display text-2xl font-bold mb-6 leading-snug">{a.problem}</p>
+              <ul className="space-y-4 mb-6">
+                {a.points.map((p) => (
+                  <li key={p} className="flex items-start gap-3">
+                    <CheckCircle className="w-5 h-5 mt-0.5 flex-shrink-0 sl-good" aria-hidden="true" />
+                    <span className="sl-text">{p}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-sm sl-muted">{a.note}</p>
+            </div>
+
+            <div className="sl-card p-8 flex flex-col justify-center">
+              <p className="text-sm font-semibold sl-muted mb-4">{a.caption}</p>
+              <div className="space-y-3">
+                {a.rows.map((r) => (
+                  <div key={r.l} className="sl-inner flex items-center justify-between px-4 py-4">
+                    <span className="text-sm sl-muted">{r.l}</span>
+                    <span className={`sl-display text-xl font-extrabold tabular-nums ${r.tone === 'bad' ? 'sl-bad' : r.tone === 'good' ? 'sl-good' : 'sl-text'}`}>{r.v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Feature visuals: live bot shield + voice agent                     */
+/* ------------------------------------------------------------------ */
+const BLOCKED = [
+  { who: 'Datacenter, AWS', src: 'TikTok Ads', geo: 'US' },
+  { who: 'Headless browser', src: 'Meta Ads', geo: 'DE' },
+  { who: 'Proxy farm', src: 'Google Ads', geo: 'VN' },
+  { who: 'Datacenter, OVH', src: 'TikTok Ads', geo: 'FR' },
+  { who: 'Scripted clicker', src: 'Meta Ads', geo: 'BR' },
+  { who: 'Datacenter, Azure', src: 'Google Ads', geo: 'IN' }
+];
+
+function ShieldCard() {
+  const reduce = useReducedMotion();
+  const [tick, setTick] = useState(5);
+
+  useEffect(() => {
+    if (reduce) return undefined;
+    const id = setInterval(() => setTick((t) => t + 1), 2400);
+    return () => clearInterval(id);
+  }, [reduce]);
+
+  const items = Array.from({ length: 4 }, (_, k) => {
+    const id = tick - k;
+    return { id, ...BLOCKED[((id % 6) + 6) % 6] };
+  });
+
+  return (
+    <div className="sl-card p-8 md:col-span-2 grid sm:grid-cols-2 gap-8 items-center">
+      <div>
+        <div className="w-11 h-11 rounded-xl sl-iconbox flex items-center justify-center mb-4"><Shield className="w-5 h-5" /></div>
+        <h3 className="sl-display text-xl font-bold mb-2">Advanced Traffic Shield</h3>
+        <p className="text-sm sl-muted leading-relaxed mb-4">Reduce ad waste from automated traffic. Our multi-signal filtering ensures your budget is focused on real human engagement.</p>
+        <p className="text-sm sl-text">
+          <span className="sl-bad font-bold text-2xl sl-display tabular-nums"><AnimatedNumber value={1284 + tick} /></span>
+          <span className="sl-muted ml-2">bot clicks blocked in this sample</span>
+        </p>
+      </div>
+
+      <div className="sl-inner p-4" aria-label="Sample feed of blocked bot clicks">
+        <div className="flex items-center gap-2 mb-3 text-xs font-semibold sl-muted">
+          <span className="relative flex w-2.5 h-2.5" aria-hidden="true">
+            <span className="sl-ping"></span>
+            <span className="relative w-2.5 h-2.5 rounded-full" style={{ background: 'var(--sl-bad)' }}></span>
+          </span>
+          Live preview, sample data
+        </div>
+        <ul className="space-y-2">
+          <AnimatePresence initial={false}>
+            {items.map((it) => (
+              <motion.li
+                key={it.id}
+                layout={!reduce}
+                initial={reduce ? false : { opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduce ? undefined : { opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex items-center justify-between text-xs px-3 py-2 rounded-lg"
+                style={{ background: 'color-mix(in srgb,var(--sl-bad) 10%,transparent)', border: '1px solid color-mix(in srgb,var(--sl-bad) 30%,transparent)' }}
+              >
+                <span className="sl-text font-medium">{it.who}</span>
+                <span className="sl-muted">{it.src}, {it.geo}</span>
+                <span className="sl-bad font-bold">Blocked</span>
+              </motion.li>
+            ))}
+          </AnimatePresence>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function VoiceAgentCard() {
+  const [playing, setPlaying] = useState(true);
+  const bars = Array.from({ length: 30 }, (_, i) => ({ h: 22 + ((i * 37) % 70), d: (i * 0.07).toFixed(2) }));
+
+  return (
+    <div className="sl-card p-8 md:col-span-2 grid sm:grid-cols-2 gap-8 items-center">
+      <div className="sm:order-2">
+        <div className="w-11 h-11 rounded-xl sl-iconbox flex items-center justify-center mb-4"><Mic className="w-5 h-5" /></div>
+        <h3 className="sl-display text-xl font-bold mb-2">AI Voice Marketing Agent</h3>
+        <p className="text-sm sl-muted leading-relaxed">Ask how your campaigns are doing and get a spoken briefing: what worked, what leaked budget, and where to move spend next.</p>
+      </div>
+
+      <div className="sl-inner p-5 sm:order-1">
+        <div className="flex items-center gap-4 mb-4">
+          <button
+            type="button"
+            onClick={() => setPlaying((p) => !p)}
+            aria-label={playing ? 'Pause voice preview animation' : 'Play voice preview animation'}
+            className="sl-btn w-11 h-11 flex items-center justify-center flex-shrink-0"
+            style={{ borderRadius: 999 }}
+          >
+            {playing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+          </button>
+          <div className={`flex items-center justify-between flex-1 h-12 ${playing ? '' : 'sl-paused'}`} aria-hidden="true">
+            {bars.map((b, i) => (
+              <span key={i} className="sl-bar" style={{ height: `${b.h}%`, animationDelay: `${b.d}s` }}></span>
+            ))}
+          </div>
+        </div>
+        <p className="text-xs font-semibold sl-muted mb-1">Example briefing</p>
+        <p className="text-sm sl-text leading-relaxed">Yesterday TikTok sent 4,210 clicks. 612 came from datacenters and were blocked. Ad set B returns 3.1x ROAS, so shift budget there.</p>
+      </div>
+    </div>
+  );
+}
+
+function FeatureCard({ f }) {
+  return (
+    <div className="sl-card p-6">
+      <div className="w-11 h-11 rounded-xl sl-iconbox flex items-center justify-center mb-4"><f.icon className="w-5 h-5" /></div>
+      <h3 className="sl-display text-lg font-bold mb-2">{f.title}</h3>
+      <p className="text-sm sl-muted leading-relaxed">{f.desc}</p>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  How it works (same 4 steps and mock panels)                        */
+/* ------------------------------------------------------------------ */
+function HowItWorksSection() {
+  const [step, setStep] = useState(0);
+  const steps = [
+    { title: "Create Smart Links", desc: "Paste URL, customize alias, and add tags.", icon: Link2 },
+    { title: "Smart Targeting", desc: "Route users by Device (iOS/Android) or Location.", icon: Target },
+    { title: "Build Bio Page", desc: "Drag & drop links, choose themes, and publish.", icon: Layout },
+    { title: "Track Analytics", desc: "Real-time insights on clicks, location, and OS.", icon: BarChart3 }
   ];
 
   return (
-    <section id="faq" className="py-24 bg-slate-50 dark:bg-gray-950 scroll-mt-20 border-t border-gray-200 dark:border-gray-900">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white tracking-tight mb-4">Frequently Asked Questions</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 font-medium">Everything you need to know about Smart Link.</p>
+    <section id="how-it-works" className="py-24 sl-bg2 scroll-mt-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl mb-14">
+          <h2 className="sl-display text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Everything You Need, In One Platform</h2>
+          <p className="text-lg sl-muted">Take a tour of how Smart Link helps you manage and optimize your digital presence.</p>
         </div>
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <div key={i} className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-gray-900">
-              <button onClick={() => setOpenFAQ(openFAQ === i ? null : i)} className="w-full flex items-center justify-between p-6 text-left focus:outline-none">
-                <h3 className="font-bold text-gray-900 dark:text-white text-lg flex-1 pr-4">{faq.q}</h3>
-                <ChevronRight className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${openFAQ === i ? 'rotate-90' : ''}`} />
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-3">
+            {steps.map((s, i) => (
+              <button
+                type="button"
+                key={i}
+                onClick={() => setStep(i)}
+                aria-current={step === i ? 'step' : undefined}
+                className={`w-full flex items-start gap-4 p-4 text-left transition-all ${step === i ? 'sl-card' : 'opacity-70 hover:opacity-100'}`}
+                style={step === i ? undefined : { border: '1px solid transparent', borderRadius: 20 }}
+              >
+                <div className="w-10 h-10 rounded-xl sl-iconbox flex items-center justify-center flex-shrink-0"><s.icon className="w-5 h-5" /></div>
+                <div>
+                  <p className="font-bold text-lg sl-text">{s.title}</p>
+                  <p className="text-sm sl-muted leading-relaxed mt-1">{s.desc}</p>
+                </div>
               </button>
-              <AnimatePresence>
+            ))}
+          </div>
+
+          <div className="sl-card p-8 h-96 flex flex-col justify-center items-center text-center overflow-hidden relative">
+            <AnimatePresence mode="wait">
+              <motion.div key={step} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="w-full max-w-sm">
+                {step === 0 && (
+                  <div className="sl-inner p-6">
+                    <p className="text-xs font-bold sl-muted mb-4 text-left">1. Paste and create</p>
+                    <div className="sl-card rounded p-2 text-left mb-4 text-sm overflow-hidden whitespace-nowrap font-mono sl-muted" style={{ borderRadius: 8 }}>https://myshop.com/super-sale</div>
+                    <div className="flex gap-2 items-center mb-4 justify-start">
+                      <span className="text-sm sl-muted">Custom Alias:</span>
+                      <span className="sl-tint px-2 py-1 rounded text-xs font-bold">summer-sale</span>
+                    </div>
+                    <div className="sl-btn w-full py-2 text-sm">Create Smart Link</div>
+                  </div>
+                )}
+                {step === 1 && (
+                  <div className="sl-inner p-6">
+                    <p className="text-xs font-bold sl-muted mb-4 text-left">2. Add targeting rules</p>
+                    <div className="space-y-3">
+                      <div className="sl-card flex items-center gap-3 p-3" style={{ borderRadius: 10 }}>
+                        <Smartphone className="w-4 h-4 sl-muted" />
+                        <div className="flex-1 text-left">
+                          <p className="text-sm font-bold sl-text">iOS</p>
+                          <p className="text-xs sl-muted">App Store</p>
+                        </div>
+                      </div>
+                      <div className="sl-card flex items-center gap-3 p-3" style={{ borderRadius: 10 }}>
+                        <Globe className="w-4 h-4 sl-muted" />
+                        <div className="flex-1 text-left">
+                          <p className="text-sm font-bold sl-text">France</p>
+                          <p className="text-xs sl-muted">/fr-fr</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {step === 2 && (
+                  <div className="sl-inner p-6 text-center">
+                    <p className="text-xs font-bold sl-muted mb-4 text-left">3. Design bio page</p>
+                    <div className="w-16 h-16 rounded-full mx-auto mb-3 sl-iconbox"></div>
+                    <p className="font-bold sl-text text-sm">Sarah Creator</p>
+                    <p className="text-xs sl-muted mb-4">@sarah_designs</p>
+                    <div className="space-y-2">
+                      <div className="h-8 rounded w-full" style={{ background: 'var(--sl-border)' }}></div>
+                      <div className="h-8 rounded w-full" style={{ background: 'var(--sl-border)' }}></div>
+                    </div>
+                  </div>
+                )}
+                {step === 3 && (
+                  <div className="sl-inner p-6">
+                    <p className="text-xs font-bold sl-muted mb-4 text-left">4. Analyze results</p>
+                    <div className="flex items-end h-24 gap-2 mb-4 justify-between">
+                      {[30, 50, 40, 70, 90, 60].map((h, i) => (
+                        <div key={i} className="w-8 rounded-t" style={{ height: `${h}%`, background: 'linear-gradient(to top,var(--sl-blue),var(--sl-violet))' }}></div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between sl-divider pt-4">
+                      <div className="text-left">
+                        <p className="text-2xl font-bold sl-text">12.5k</p>
+                        <p className="text-xs sl-muted">Clicks</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-2xl font-bold sl-text">iOS</p>
+                        <p className="text-xs sl-muted">Top Device</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  FAQ (same questions and answers)                                   */
+/* ------------------------------------------------------------------ */
+function FAQSection() {
+  const [openFAQ, setOpenFAQ] = useState(null);
+  const faqs = [
+    { q: "Why do I need Smart Link if I already have a link shortener?", a: "Traditional shorteners just count clicks. Smart Link goes deeper by tracking OS data, geolocation, and referrer metrics so you can expose the true intent behind your traffic, not just the volume." },
+    { q: "How does device targeting (iOS/Android) increase conversions?", a: "Instead of overwhelming users with two buttons, you create one Smart Link. We instantly detect their device and route iOS users to the App Store and Android users to Google Play, drastically reducing friction." },
+    { q: "Can I track my link clicks for free?", a: "Yes! We believe deep analytics should be accessible to everyone. You get real-time analytics for all your links, including device, location, and click-through data—all completely free." },
+    { q: "Can I use my own custom domain?", a: "Absolutely. You can connect your own domain (e.g., links.yourbrand.com) to maintain full brand consistency across all touchpoints." },
+    { q: "How do I create a free link in bio?", a: "Simply sign up, claim your username, and paste your URLs. You can customize your bio page with themes and go live in less than 2 minutes." }
+  ];
+
+  return (
+    <section id="faq" className="py-24 scroll-mt-20">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-14">
+          <h2 className="sl-display text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Frequently Asked Questions</h2>
+          <p className="text-lg sl-muted">Everything you need to know about Smart Link.</p>
+        </div>
+        <div className="space-y-3">
+          {faqs.map((faq, i) => (
+            <div key={i} className="sl-card overflow-hidden" style={{ borderRadius: 14 }}>
+              <h3>
+                <button
+                  type="button"
+                  id={`faq-btn-${i}`}
+                  aria-expanded={openFAQ === i}
+                  aria-controls={`faq-panel-${i}`}
+                  onClick={() => setOpenFAQ(openFAQ === i ? null : i)}
+                  className="w-full flex items-center justify-between p-5 sm:p-6 text-left"
+                >
+                  <span className="font-semibold sl-text text-base sm:text-lg flex-1 pr-4">{faq.q}</span>
+                  <ChevronRight className={`w-5 h-5 sl-muted transition-transform duration-200 ${openFAQ === i ? 'rotate-90' : ''}`} aria-hidden="true" />
+                </button>
+              </h3>
+              <AnimatePresence initial={false}>
                 {openFAQ === i && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                    <div className="p-6 pt-0 text-gray-600 dark:text-gray-400 text-base font-medium leading-relaxed border-t border-gray-200 dark:border-gray-800 mx-6">
+                  <motion.div
+                    id={`faq-panel-${i}`}
+                    role="region"
+                    aria-labelledby={`faq-btn-${i}`}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-5 sm:px-6 pb-6 pt-4 sl-muted text-base leading-relaxed sl-divider mx-5 sm:mx-6" style={{ paddingLeft: 0, paddingRight: 0 }}>
                       {faq.a}
                     </div>
                   </motion.div>
@@ -216,18 +599,24 @@ function FAQSection() {
   );
 }
 
+/* ------------------------------------------------------------------ */
+/*  Page                                                               */
+/* ------------------------------------------------------------------ */
 export default function LandingPage() {
-  const { darkMode, toggleDarkMode } = useTheme();
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved === null ? true : saved === 'true'; // dark-first
+  });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isYearly, setIsYearly] = useState(false);
   const { user } = useAuth();
+  const reduce = useReducedMotion();
 
   const SUCCESS_URL = 'https://www.by-smartlink.com/success';
 
-  const navigate = useNavigate();
   const handleStartTrial = () => {
-    navigate('/register?trial=true');
+    window.location.href = '/register?trial=true';
   };
 
   const buildCheckoutUrl = (baseUrl, userId) => {
@@ -239,9 +628,9 @@ export default function LandingPage() {
   };
 
   const handleCheckout = (plan, yearly) => {
-    if (plan.id === 'free') { navigate('/register'); return; }
-    if (plan.id === 'trial') { navigate('/register?trial=true'); return; }
-    if (!user) { navigate('/register?redirect=pricing'); return; }
+    if (plan.id === 'free') { window.location.href = '/register'; return; }
+    if (plan.id === 'trial') { window.location.href = '/register?trial=true'; return; }
+    if (!user) { window.location.href = '/register?redirect=pricing'; return; }
     const rawUrl = yearly ? plan.checkoutUrl.yearly : plan.checkoutUrl.monthly;
     const checkoutUrl = buildCheckoutUrl(rawUrl, user?._id || user?.id);
     if (!checkoutUrl) { alert('Checkout link not available'); return; }
@@ -249,75 +638,95 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
+    if (darkMode) { document.documentElement.classList.add('dark'); }
+    else { document.documentElement.classList.remove('dark'); }
+    localStorage.setItem('darkMode', darkMode.toString());
+  }, [darkMode]);
+
+  useEffect(() => {
     const handleScroll = () => { setScrolled(window.scrollY > 20); };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const enter = (delay = 0) =>
+    reduce ? {} : { initial: { opacity: 0, y: 18 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.55, delay } };
+
+  const features = [
+    { icon: Zap, title: 'Auto-Pilot Optimization', desc: 'Our performance algorithm automatically routes your traffic to the winning A/B variant, maximizing conversion efficiency.' },
+    { icon: BarChart3, title: 'Efficiency Analytics', desc: 'Real-time campaign insights. See exactly how much ad waste was reduced and how much performance was recovered.' },
+    { icon: Smartphone, title: 'Precision Geotargeting', desc: 'Route iOS users to the App Store and Android to Google Play instantly. Eliminate friction and ensure accuracy.' },
+    { icon: Globe, title: 'Global Campaign Guard', desc: 'Redirect users based on their country or language with 0ms latency. Keep your international marketing high-converting.' },
+    { icon: Code, title: 'Enterprise Integration API', desc: 'Integrate our performance protection engine directly into your own workflow or SaaS product to provide enhanced value.' }
+  ];
+  const sellItems = [
+    { icon: FileText, l: 'PDF Guides' }, { icon: Video, l: 'Exclusive Videos' },
+    { icon: Link2, l: 'Secret Links' }, { icon: Wrench, l: 'Templates & Tools' },
+    { icon: Music, l: 'Audio Files' }, { icon: Camera, l: 'Photo Presets' },
+    { icon: BookOpen, l: 'E-Books' }, { icon: Crown, l: 'Premium Access' }
+  ];
+
+  const navLink = 'text-sm font-medium sl-muted hover:text-[color:var(--sl-text)] transition-colors';
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-blue-500/30 overflow-x-hidden">
+    <div className="sl min-h-screen transition-colors duration-300" data-theme={darkMode ? 'dark' : 'light'}>
+      <style>{STYLES}</style>
       <SEO
-        title="Smart Link — The Best Affiliate Tracking Software (ClickMagick Alternative)"
-        description="Looking for the best affiliate tracking software? Smart Link is the #1 ClickMagick alternative for media buyers. Block bots and track affiliate links accurately."
+        title="Smart Link — Marketing Infrastructure for Affiliates, Creators & Media Buyers"
+        description="Replace ClickMagick, Voluum & Linktree with one platform. Geo Targeting, Bot Protection, Deep Analytics & A/B Testing."
       />
 
+      {/* Animated ambient glows */}
+      <div className="sl-ambient" aria-hidden="true">
+        <span className="sl-glow sl-drift-a" style={{ '--c': 'var(--sl-blue)', width: 680, height: 680, top: '-12%', left: '-10%' }}></span>
+        <span className="sl-glow sl-drift-b" style={{ '--c': 'var(--sl-violet)', width: 620, height: 620, top: '38%', right: '-14%' }}></span>
+        <span className="sl-glow sl-drift-c" style={{ '--c': 'var(--sl-blue)', width: 560, height: 560, bottom: '-18%', left: '18%' }}></span>
+      </div>
+
       {/* Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 dark:bg-gray-950/70 backdrop-blur-xl border-b border-gray-200/50 dark:border-white/10 shadow-sm' : 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        style={scrolled ? { background: 'var(--sl-nav)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid var(--sl-border)' } : { background: 'transparent' }}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center gap-2">
               <img src="/logo-v1.svg" alt="Smart Link" className="w-8 h-8" />
-              <span className="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Smart Link.</span>
+              <span className="sl-display text-xl font-extrabold sl-grad">Smart Link</span>
             </Link>
-            
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Features</a>
-              <a href="#roi" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">ROI</a>
-              <a href="#compare" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Compare</a>
-              <a href="#pricing" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Pricing</a>
-              <Link to="/blog" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-wider">Blog</Link>
+              <a href="#features" className={navLink}>Features</a>
+              <a href="#how-it-works" className={navLink}>How It Works</a>
+              <a href="#pricing" className={navLink}>Pricing</a>
             </div>
-
             <div className="hidden md:flex items-center gap-4">
-              <Link to="/ar" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1" title="العربية">
-                <Globe className="w-4 h-4" /> العربية
-              </Link>
-              <button onClick={toggleDarkMode} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center justify-center">
-                {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              <Link to="/ar" className={`${navLink} font-cairo`}>العربية</Link>
+              <button onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} className="p-2 rounded-lg sl-muted hover:bg-[var(--sl-surface2)] transition-colors flex items-center justify-center">
+                {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
-              <Link to="/login" className="text-sm font-bold text-gray-900 dark:text-white px-4 py-2 hover:opacity-70 transition-opacity">Login</Link>
-              <Link to="/register" className="text-sm font-bold px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg shadow-blue-600/30 transition-all hover:scale-105 active:scale-95"> 
-                Start Tracking Free 
-              </Link>
+              <Link to="/login" className="text-sm font-semibold sl-text">Login</Link>
+              <Link to="/register" className="sl-btn text-sm px-5 py-2.5 flex items-center justify-center">Get Started</Link>
             </div>
-            
-            {/* Mobile Menu Toggle */}
-            <div className="md:hidden flex items-center gap-4">
-              <Link to="/ar" className="text-sm font-bold text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors flex items-center gap-1">
-                <Globe className="w-4 h-4" /> ع
-              </Link>
-              <button onClick={toggleDarkMode} className="p-2 text-gray-500">
+            <div className="md:hidden flex items-center gap-2">
+              <button onClick={() => setDarkMode(!darkMode)} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} className="p-2 sl-muted">
                 {darkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-gray-900 dark:text-white p-2">
+              <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle menu" aria-expanded={mobileMenuOpen} className="p-2 sl-muted">
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
           <AnimatePresence>
             {mobileMenuOpen && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
+              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="md:hidden overflow-hidden sl-divider" style={{ background: 'var(--sl-bg)' }}>
                 <div className="flex flex-col gap-4 p-4">
-                  <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">Features</a>
-                  <a href="#roi" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">ROI</a>
-                  <a href="#compare" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">Compare</a>
-                  <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 dark:text-gray-300 font-bold uppercase tracking-wider">Pricing</a>
-                  <Link to="/ar" onClick={() => setMobileMenuOpen(false)} className="text-gray-500 font-sans font-bold flex items-center gap-1">
-                    <Globe className="w-4 h-4" /> العربية
-                  </Link>
-                  <div className="h-px bg-gray-100 dark:bg-gray-800 my-2"></div>
-                  <Link to="/login" className="text-gray-900 dark:text-white font-bold text-center py-2">Login</Link>
-                  <Link to="/register" className="text-center py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-600/30 transition-colors">Start Tracking Free</Link>
+                  <a href="#features" onClick={() => setMobileMenuOpen(false)} className="sl-text font-medium">Features</a>
+                  <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="sl-text font-medium">How It Works</a>
+                  <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="sl-text font-medium">Pricing</a>
+                  <Link to="/ar" onClick={() => setMobileMenuOpen(false)} className="sl-muted font-cairo">العربية</Link>
+                  <div className="sl-divider my-2"></div>
+                  <Link to="/login" className="sl-text font-semibold">Login</Link>
+                  <Link to="/register" className="sl-btn text-center py-3">Get Started</Link>
                 </div>
               </motion.div>
             )}
@@ -325,301 +734,219 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* 1. Hero Section — جديد كلياً */}
-      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-          <OrganicShape className="absolute -top-40 -right-40 w-[800px] h-[800px] opacity-20 dark:opacity-10 mix-blend-multiply dark:mix-blend-lighten blur-3xl animate-blob" color="#3b82f6" />
-          <OrganicShape className="absolute top-40 -left-20 w-[600px] h-[600px] opacity-20 dark:opacity-10 mix-blend-multiply dark:mix-blend-lighten blur-3xl animate-blob animation-delay-2000" color="#8b5cf6" />
-          <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))] dark:opacity-20 opacity-50"></div>
-        </div>
-
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-sm font-bold mb-8 uppercase tracking-widest">
-              <Target className="w-4 h-4" /> #1 Affiliate Marketing Tracking Platform
+      {/* Hero */}
+      <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+            <div>
+              <motion.div {...enter(0)} className="sl-chip inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium mb-6">
+                <Bot className="w-4 h-4" style={{ color: 'var(--sl-violet)' }} aria-hidden="true" /> Autonomous AI Marketing Agent
+              </motion.div>
+              <motion.h1 {...enter(0.08)} className="sl-display text-4xl sm:text-5xl lg:text-[64px] font-extrabold tracking-tight leading-[1.05] mb-6">
+                <span className="block">Fire Your Marketing Agency.</span>
+                <span className="block sl-grad mt-2">Meet Your Autonomous AI Marketing Agent.</span>
+              </motion.h1>
+              <motion.p {...enter(0.16)} className="text-lg sl-muted mb-6 max-w-xl leading-relaxed">
+                Built by an affiliate marketer who was tired of flying blind. It blocks bot clicks, routes every visitor by country and device, and briefs you by voice, so everything that happens after the click is finally visible.
+              </motion.p>
+              <motion.ul {...enter(0.22)} className="flex flex-wrap gap-2 mb-8" aria-label="Capabilities">
+                {[
+                  { i: Target, t: 'Geo Targeting' }, { i: Shield, t: 'Bot Protection' },
+                  { i: BarChart3, t: 'Deep Analytics' }, { i: TrendingUp, t: 'A/B Testing' }
+                ].map((c) => (
+                  <li key={c.t} className="sl-chip flex items-center gap-2 px-3 py-1.5 text-sm font-medium">
+                    <c.i className="w-4 h-4 sl-muted" aria-hidden="true" /> {c.t}
+                  </li>
+                ))}
+              </motion.ul>
+              <motion.div {...enter(0.28)} className="flex flex-col sm:flex-row gap-4 mb-8">
+                <Link to="/register" className="sl-btn w-full sm:w-auto px-7 py-3.5 text-sm flex justify-center items-center gap-2">
+                  Get Started Free <ArrowRight className="w-4 h-4" />
+                </Link>
+                <button onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' })} className="sl-ghost w-full sm:w-auto px-7 py-3.5 text-sm flex justify-center items-center gap-2">
+                  See how it works <Play className="w-4 h-4" />
+                </button>
+              </motion.div>
+              <motion.div {...enter(0.34)} className="flex flex-wrap items-center gap-6 text-sm sl-muted font-medium">
+                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 sl-good" aria-hidden="true" /><span>No credit card</span></div>
+                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 sl-good" aria-hidden="true" /><span>Free forever</span></div>
+                <div className="flex items-center gap-2"><CheckCircle className="w-4 h-4 sl-good" aria-hidden="true" /><span>Setup in 2 min</span></div>
+              </motion.div>
             </div>
-            
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-gray-900 dark:text-white leading-[1.05] tracking-tight mb-8">
-              Your Traffic Is Leaking Money.<br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500">
-                We Show You Where.
-              </span>
-            </h1>
-            
-            <h2 className="text-lg sm:text-xl text-gray-600 dark:text-gray-400 mb-10 leading-relaxed font-medium max-w-2xl mx-auto">
-              Looking for a modern <strong className="text-gray-900 dark:text-white">ClickMagick alternative</strong>? Smart Link is the ultimate <strong className="text-gray-900 dark:text-white">affiliate tracking software</strong>. Stop losing budget to bot traffic and route clicks accurately.
-            </h2>
-            
-            <div className="mb-16">
-              <HeroShortener />
-            </div>
-            
-            <div className="relative hidden sm:block mt-12">
-              <VideoDemo />
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* 2. Pain Points Section — جديد */}
-      <section className="py-24 bg-white dark:bg-gray-900 relative border-y border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">Sound Familiar?</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Card 1 */}
-            <div className="bg-red-50 dark:bg-gray-800 p-8 rounded-3xl border border-red-100 dark:border-gray-700">
-              <div className="w-12 h-12 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center mb-6">
-                <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
-              </div>
-              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">"I'm getting clicks but no conversions"</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-red-500 shrink-0" /> You're probably getting bot traffic</li>
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-green-500 shrink-0" /> Smart Link filters it automatically</li>
-              </ul>
-            </div>
-            
-            {/* Card 2 */}
-            <div className="bg-orange-50 dark:bg-gray-800 p-8 rounded-3xl border border-orange-100 dark:border-gray-700">
-              <div className="w-12 h-12 bg-orange-100 dark:bg-orange-500/20 rounded-full flex items-center justify-center mb-6">
-                <Globe className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-              </div>
-              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">"My US offer isn't converting"</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-orange-500 shrink-0" /> 60% of your traffic might be from the wrong country</li>
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-green-500 shrink-0" /> Geo Targeting fixes this instantly</li>
-              </ul>
-            </div>
-
-            {/* Card 3 */}
-            <div className="bg-blue-50 dark:bg-gray-800 p-8 rounded-3xl border border-blue-100 dark:border-gray-700">
-              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-500/20 rounded-full flex items-center justify-center mb-6">
-                <Zap className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">"I'm paying for 3 different tools"</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-blue-500 shrink-0" /> ClickMagick + Voluum + Linktree</li>
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-green-500 shrink-0" /> Smart Link replaces all 3</li>
-                <li className="flex items-start gap-2 text-gray-600 dark:text-gray-400 font-medium"><ArrowRight className="w-5 h-5 text-green-500 shrink-0" /> For free</li>
-              </ul>
-            </div>
+            <motion.div {...enter(0.2)}>
+              <SavingsCalculator />
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* 7. Stats Section — جديد */}
-      <section className="py-16 bg-gray-900 dark:bg-black text-white border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="flex justify-center mb-3"><Shield className="w-8 h-8 text-red-500" /></div>
-              <p className="text-4xl font-black mb-1">3.6M+</p>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">Bot Clicks Blocked</p>
-            </div>
-            <div>
-              <div className="flex justify-center mb-3"><Globe className="w-8 h-8 text-blue-500" /></div>
-              <p className="text-4xl font-black mb-1">180+</p>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">Countries Targeted</p>
-            </div>
-            <div>
-              <div className="flex justify-center mb-3"><TrendingUp className="w-8 h-8 text-green-500" /></div>
-              <p className="text-4xl font-black mb-1">$2.3M+</p>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">Ad Budget Protected</p>
-            </div>
-            <div>
-              <div className="flex justify-center mb-3"><Clock className="w-8 h-8 text-purple-500" /></div>
-              <p className="text-4xl font-black mb-1">2 min</p>
-              <p className="text-sm font-bold text-gray-400 uppercase tracking-wide">Avg Setup Time</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Audiences */}
+      <AudienceSection />
 
-      {/* 4. Features Section — معاد ترتيبها */}
-      <section id="features" className="py-32 bg-slate-50 dark:bg-gray-950 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-24">
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight mb-6">Built For Performance.</h2>
+      {/* Features */}
+      <section id="features" className="py-24 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-14">
+            <h2 className="sl-display text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Stop Paying For 3 Tools. Get All of It Free.</h2>
+            <p className="text-lg sl-muted">Everything you need to manage your links, track your audience, and grow your brand online.</p>
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              { title: "Bot Protection", desc: "We blocked $2.3M in fake clicks last month. Stop paying for datacenter and VPN traffic.", icon: Shield, color: "text-red-500", bg: "bg-red-500/10" },
-              { title: "Geo Targeting", desc: "Send US traffic to Offer A, EU traffic to Offer B. One link. Zero waste.", icon: Globe, color: "text-blue-500", bg: "bg-blue-500/10" },
-              { title: "Deep Analytics", desc: "Not just clicks. Real intelligence on OS, browsers, and referrers.", icon: BarChart3, color: "text-purple-500", bg: "bg-purple-500/10" },
-              { title: "A/B Testing", desc: "Let data pick your winner. Not your gut. Auto-route traffic to the highest converting page.", icon: Zap, color: "text-yellow-500", bg: "bg-yellow-500/10" },
-              { title: "Pixel Protection", desc: "Your Meta Pixel is being stolen by bot fires. We stop it and only fire on verified humans.", icon: MousePointerClick, color: "text-pink-500", bg: "bg-pink-500/10" },
-              { title: "Bio Pages", desc: "For creators who monetize their audience. Drag & drop landing pages in seconds.", icon: Layout, color: "text-emerald-500", bg: "bg-emerald-500/10" },
-            ].map((f, i) => (
-              <div key={i} className="group p-8 bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                <div className={`w-14 h-14 rounded-2xl ${f.bg} flex items-center justify-center mb-6`}>
-                  <f.icon className={`w-7 h-7 ${f.color}`} />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="md:col-span-2"><ShieldCard /></div>
+            <FeatureCard f={features[0]} />
+            <FeatureCard f={features[1]} />
+            <div className="md:col-span-2"><VoiceAgentCard /></div>
+            <FeatureCard f={features[2]} />
+            <FeatureCard f={features[3]} />
+            <FeatureCard f={features[4]} />
+
+            {/* Creator Paywall */}
+            <div className="sl-card p-8 md:col-span-2 lg:col-span-3 grid md:grid-cols-2 gap-8 items-center" style={{ borderColor: 'color-mix(in srgb,var(--sl-blue) 40%,transparent)' }}>
+              <div>
+                <div className="w-12 h-12 rounded-xl sl-btn flex items-center justify-center mb-5"><Lock className="w-6 h-6" /></div>
+                <h3 className="sl-display text-2xl font-bold mb-3">Creator Paywall</h3>
+                <p className="text-sm sl-muted leading-relaxed">Sell digital products, exclusive guides, or premium links directly from your Bio Page. Start earning from your audience instantly.</p>
+              </div>
+              <div className="sl-inner p-4">
+                <div className="flex items-start gap-3">
+                  <Shield className="w-5 h-5 mt-0.5 flex-shrink-0" style={{ color: 'var(--sl-blue)' }} aria-hidden="true" />
+                  <div>
+                    <p className="text-xs font-bold sl-text mb-1">Securely powered by Stripe</p>
+                    <p className="text-xs sl-muted leading-snug">We use Stripe to process payments. Your funds are protected and transferred directly to your bank account with zero hassle.</p>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4">{f.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed">{f.desc}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <HowItWorksSection />
+
+      {/* Creator Monetization */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl mb-14">
+            <div className="sl-tint inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium mb-4">For Content Creators</div>
+            <h2 className="sl-display text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Turn Your Bio Page Into A Revenue Stream</h2>
+            <p className="text-lg sl-muted">No coding. No complicated setup. Just add a price to your content and start earning — your followers pay directly through your bio link.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5 mb-14">
+            {[
+              { title: 'Connect Your Bank', desc: 'Easily link your Stripe account through our secure dashboard.' },
+              { title: 'Create Your Product', desc: 'Add a "Paywall" block, set your desired price, and link your secret content.' },
+              { title: 'Collect Revenue', desc: 'Your audience pays securely via Stripe. Money is transferred to your account instantly.' }
+            ].map((s, i) => (
+              <div key={i} className="sl-card p-6 text-left">
+                <div className="w-8 h-8 rounded-full sl-btn text-sm font-bold flex items-center justify-center mb-5" style={{ borderRadius: 999 }}>{i + 1}</div>
+                <h3 className="sl-display text-xl font-bold mb-2">{s.title}</h3>
+                <p className="text-sm sl-muted leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* 3. ROI Calculator + Section */}
-      <section id="roi" className="py-32 bg-slate-50 dark:bg-gray-950 relative border-y border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-6">
-                Your budget is bleeding. <br/><span className="text-red-500">Stop the bleeding.</span>
-              </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 font-medium leading-relaxed">
-                If you are running paid ads without protection, click-fraud is eating your budget. Our Ad-Fraud Shield detects and blocks datacenter and VPN traffic instantly.
-              </p>
-              <ul className="space-y-4 mb-10">
-                {[
-                  "Block AWS, Google Cloud, DigitalOcean IPs",
-                  "Prevent Competitor Scrapers from exhausting budget",
-                  "Keep Pixel Data 100% pure for lookalike audiences"
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 font-bold text-gray-900 dark:text-gray-300">
-                    <CheckCircle className="w-6 h-6 text-green-500 flex-shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
+          <div className="sl-card p-8 text-center max-w-3xl mx-auto">
+            <h3 className="sl-display text-xl font-bold mb-6">What Can You Sell?</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
+              {sellItems.map((it) => (
+                <div key={it.l} className="sl-inner flex flex-col items-center gap-2 p-3">
+                  <it.icon className="w-5 h-5" style={{ color: 'var(--sl-violet)' }} aria-hidden="true" />
+                  <span className="text-xs font-bold sl-text">{it.l}</span>
+                </div>
+              ))}
             </div>
-            
-            <ROICalculator />
-            
+            <Link to="/register" className="sl-btn inline-flex px-6 py-3 text-sm">Start Selling for Free</Link>
+            <p className="mt-4 text-xs sl-muted">We only take 5% per sale. You keep 95%.</p>
           </div>
         </div>
       </section>
 
-      {/* 5. Comparison Section — جديد */}
-      <section id="compare" className="py-32 bg-slate-50 dark:bg-gray-950">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">Why Serious Marketers Switch to Smart Link</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 font-medium">One platform. Zero excuses.</p>
-          </div>
-
-          <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-200 dark:border-gray-800 shadow-xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="bg-gray-100 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                    <th className="p-6 text-lg font-bold text-gray-900 dark:text-white">Feature</th>
-                    <th className="p-6 text-lg font-bold text-gray-500 text-center border-l border-gray-200 dark:border-gray-800">ClickMagick</th>
-                    <th className="p-6 text-lg font-bold text-gray-500 text-center border-l border-gray-200 dark:border-gray-800">Voluum</th>
-                    <th className="p-6 text-xl font-black text-blue-600 dark:text-blue-400 text-center border-l-2 border-blue-500 bg-blue-50 dark:bg-blue-900/10">Smart Link</th>
-                  </tr>
-                </thead>
-                <tbody className="text-gray-700 dark:text-gray-300 font-medium">
-                  {[
-                    { name: 'Bot Protection', cm: '✅', vol: '✅', sl: '✅' },
-                    { name: 'Geo Targeting', cm: '✅', vol: '✅', sl: '✅' },
-                    { name: 'A/B Testing', cm: '✅', vol: '✅', sl: '✅' },
-                    { name: 'Bio Pages', cm: '❌', vol: '❌', sl: '✅' },
-                    { name: 'Creator Monetize', cm: '❌', vol: '❌', sl: '✅' },
-                  ].map((row, i) => (
-                    <tr key={i} className="border-b border-gray-200 dark:border-gray-800/50">
-                      <td className="p-6">{row.name}</td>
-                      <td className="p-6 text-center text-xl border-l border-gray-200 dark:border-gray-800">{row.cm}</td>
-                      <td className="p-6 text-center text-xl border-l border-gray-200 dark:border-gray-800">{row.vol}</td>
-                      <td className="p-6 text-center text-xl border-l-2 border-blue-500 bg-blue-50/50 dark:bg-blue-900/5">{row.sl}</td>
-                    </tr>
-                  ))}
-                  <tr className="bg-gray-50 dark:bg-gray-900/50">
-                    <td className="p-6 font-black text-gray-900 dark:text-white">Starting Price</td>
-                    <td className="p-6 text-center font-bold text-gray-500 border-l border-gray-200 dark:border-gray-800">$99/mo</td>
-                    <td className="p-6 text-center font-bold text-gray-500 border-l border-gray-200 dark:border-gray-800">$149/mo</td>
-                    <td className="p-6 text-center font-black text-2xl text-blue-600 dark:text-blue-400 border-l-2 border-blue-500 bg-blue-50 dark:bg-blue-900/10">$29/mo</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Testimonials — معاد كتابتها */}
-      <section className="py-24 bg-slate-50 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8">
-             {[
+      {/* Testimonials */}
+      <section className="py-20 sl-bg2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="sl-display text-3xl font-extrabold text-center mb-14">What People Say</h2>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
               { quote: "Tested SmartLink today, quick honest review. Setup was simple, the dashboard is clean, and everythin...", author: "Karl Beismann", role: "@karlbeis", link: "https://x.com/karlbeis" },
               { quote: "Makes sharing one link for multiple destinations feel easy and tidy, that’s useful for campaigns or social bios.", author: "Vineer", role: "@vineerpasam", link: "https://x.com/vineerpasam" },
               { quote: "It's a solid tool for creators and businesses who want real data instead of guesses. Clean dashboard and real-time link tracking. Good for link-in-bio pages and short links.", author: "Chandan H", role: "@_Chandan_17", link: "https://x.com/_Chandan_17" }
             ].map((t, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-white dark:bg-gray-900 p-8 rounded-3xl border border-gray-200 dark:border-gray-800 text-left hover:shadow-xl transition-shadow flex flex-col">
-                <div className="flex gap-1 mb-6 text-yellow-500">{[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-5 h-5 fill-current" />)}</div>
-                <p className="text-lg text-gray-800 dark:text-gray-200 mb-8 font-bold leading-relaxed flex-1">"{t.quote}"</p>
-                <div>
-                  <p className="font-black text-gray-900 dark:text-white text-sm">{t.author}</p>
-                  <a href={t.link} target="_blank" rel="noreferrer" className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:underline tracking-wider uppercase">{t.role}</a>
+              <figure key={i} className="sl-card p-8 text-left flex flex-col">
+                <div className="flex gap-1 mb-4" style={{ color: '#FBBF24' }} aria-label="5 out of 5 stars">
+                  {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4 h-4 fill-current" aria-hidden="true" />)}
                 </div>
-              </motion.div>
+                <blockquote className="text-sm sl-text leading-relaxed mb-6 flex-1">"{t.quote}"</blockquote>
+                <figcaption>
+                  <p className="font-bold sl-text text-sm">{t.author}</p>
+                  <a href={t.link} target="_blank" rel="noreferrer" className="text-xs hover:underline" style={{ color: 'var(--sl-blue)' }}>{t.role}</a>
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-32 bg-slate-50 dark:bg-gray-950 relative border-t border-gray-200 dark:border-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-5xl font-black text-gray-900 dark:text-white tracking-tight mb-6">Simple, Scalable Pricing.</h2>
-            <div className="flex items-center justify-center p-1.5 bg-gray-200/50 dark:bg-gray-800/50 rounded-full mx-auto w-fit mt-8 border border-gray-200 dark:border-gray-700">
-              <button
-                onClick={() => setIsYearly(false)}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
-                  !isYearly 
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setIsYearly(true)}
-                className={`px-6 py-2.5 rounded-full text-sm font-bold transition-all flex items-center gap-2 ${
-                  isYearly 
-                    ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' 
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                Yearly <span className={isYearly ? 'text-blue-600 dark:text-blue-400' : 'text-blue-500 dark:text-blue-500'}>· Save 25%</span>
+      <section id="pricing" className="py-24 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="sl-display text-3xl sm:text-4xl font-extrabold tracking-tight mb-4">Flexible Plans for Every Stage</h2>
+            <p className="text-lg sl-muted mb-8 max-w-2xl mx-auto">Start for free, upgrade as you grow. No hidden fees, cancel anytime.</p>
+            <div role="radiogroup" aria-label="Billing period" className="sl-seg">
+              <button type="button" role="radio" aria-checked={!isYearly} onClick={() => setIsYearly(false)} className="sl-seg-btn">Monthly</button>
+              <button type="button" role="radio" aria-checked={isYearly} onClick={() => setIsYearly(true)} className="sl-seg-btn">
+                Yearly <span className="text-xs font-bold sl-good">Save 25%</span>
               </button>
             </div>
           </div>
-          
-          <div className="grid lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 items-stretch">
             {PLANS.map((plan) => (
-              <div key={plan.id} className={`relative p-10 rounded-[2.5rem] flex flex-col ${plan.id === 'business' ? 'bg-gray-900 dark:bg-gray-800 text-white shadow-2xl scale-100 lg:scale-105 z-10 border border-gray-800 dark:border-gray-700' : 'bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800'}`}>
-                {plan.id === 'business' && <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">The Ultimate Choice</div>}
-                
-                <h3 className={`text-2xl font-black mb-2 uppercase ${plan.id !== 'business' && 'text-gray-900 dark:text-white'}`}>{plan.name}</h3>
-                <p className={`text-sm font-medium mb-8 ${plan.id === 'business' ? 'text-gray-400' : 'text-gray-500'}`}>{plan.description}</p>
-                
-                <div className="mb-8 flex items-end gap-1">
-                  <span className={`text-5xl font-black tracking-tighter ${plan.id !== 'business' && 'text-gray-900 dark:text-white'}`}>{isYearly ? plan.price.yearly : plan.price.monthly}</span>
-                  <span className={`font-bold pb-1 ${plan.id === 'business' ? 'text-gray-400' : 'text-gray-500'}`}>/mo</span>
+              <div key={plan.id} className={`relative p-8 flex flex-col ${plan.popular ? 'sl-popular md:scale-[1.03] z-10' : 'sl-card'}`}>
+                {plan.popular && <div className="sl-btn absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-xs w-max" style={{ borderRadius: 999 }}>Most Popular</div>}
+                <div className="mb-6">
+                  <h3 className="sl-display text-xl font-bold mb-2 uppercase">{plan.name}</h3>
+                  <p className="text-sm sl-muted">{plan.description}</p>
                 </div>
-                
-                <ul className="space-y-5 mb-10 flex-1">
+                <div className="mb-8 flex items-baseline gap-1">
+                  <span className="sl-display text-4xl font-extrabold">{isYearly ? plan.price.yearly : plan.price.monthly}</span>
+                  <span className="text-sm font-medium sl-muted">/mo</span>
+                </div>
+                <ul className="space-y-4 mb-8 flex-1">
                   {plan.features.map((f, j) => (
                     <li key={j} className="flex items-start gap-3">
-                      <CheckCircle className={`w-5 h-5 flex-shrink-0 ${plan.id === 'business' ? 'text-blue-400' : 'text-gray-900 dark:text-white'}`} />
-                      <span className={`text-sm font-medium ${plan.id === 'business' ? 'text-gray-300' : 'text-gray-700 dark:text-gray-300'}`}>{f}</span>
+                      <CheckCircle className="w-4 h-4 mt-0.5 flex-shrink-0 sl-good" aria-hidden="true" />
+                      <span className="text-sm sl-text">{f}</span>
                     </li>
                   ))}
                 </ul>
-                
-                <button onClick={() => handleCheckout(plan, isYearly)} className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${plan.id === 'business' ? 'bg-blue-600 text-white hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/25' : 'bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800'}`}>
+                <button onClick={() => handleCheckout(plan, isYearly)} className={`w-full py-3 text-sm mb-3 ${plan.popular ? 'sl-btn' : 'sl-ghost'}`}>
                   {plan.cta}
                 </button>
+                {plan.trialAvailable && (
+                  <button onClick={handleStartTrial} className="sl-tint w-full py-2.5 text-xs font-semibold rounded-lg">
+                    Try free for {plan.trialDays} days
+                  </button>
+                )}
+                {plan.id !== 'free' && <p className="text-center mt-3 text-xs sl-muted">Cancel anytime, no questions asked</p>}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-20 px-4">
+        <div className="relative max-w-5xl mx-auto overflow-hidden text-center sl-card py-16 px-6" style={{ borderRadius: 32 }}>
+          <span className="sl-glow sl-drift-b" style={{ '--c': 'var(--sl-blue)', width: 480, height: 480, top: -220, left: '20%' }} aria-hidden="true"></span>
+          <span className="sl-glow sl-drift-a" style={{ '--c': 'var(--sl-violet)', width: 420, height: 420, bottom: -220, right: '15%' }} aria-hidden="true"></span>
+          <div className="relative max-w-2xl mx-auto">
+            <h2 className="sl-display text-3xl sm:text-5xl font-extrabold mb-6 tracking-tight">Ready to link smarter?</h2>
+            <p className="text-lg sl-muted mb-10 max-w-xl mx-auto leading-relaxed">Early access — join the founders who get it before everyone else.</p>
+            <Link to="/register" className="sl-btn inline-flex px-8 py-4 text-base items-center gap-2">
+              See What Happens After Your Clicks <ArrowRight className="w-5 h-5" />
+            </Link>
+            <p className="mt-6 text-sm sl-muted flex items-center justify-center gap-2">
+              <CheckCircle className="w-4 h-4 sl-good" aria-hidden="true" /> Cancel anytime
+            </p>
           </div>
         </div>
       </section>
@@ -627,95 +954,88 @@ export default function LandingPage() {
       {/* FAQ */}
       <FAQSection />
 
-      {/* 8. Final CTA — جديد */}
-      <section className="py-32 bg-slate-50 dark:bg-gray-950 relative overflow-hidden border-t border-gray-200 dark:border-gray-900">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="bg-gray-900 dark:bg-black rounded-[3rem] p-12 sm:p-20 text-center border border-gray-800 shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10 pointer-events-none"></div>
-            <div className="relative z-10">
-              <h2 className="text-4xl sm:text-6xl font-black text-white mb-8 tracking-tight leading-[1.1]">
-                Your competitors already know where their traffic converts. <br className="hidden sm:block" />
-                <span className="text-blue-400">Do you?</span>
-              </h2>
-              <Link to="/register">
-                <button className="w-full sm:w-auto px-10 py-5 bg-white text-gray-900 rounded-full font-black text-xl sm:text-2xl hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.2)]">
-                  Find Out Free — No Card Needed &rarr;
-                </button>
-              </Link>
-              <div className="mt-10 inline-block bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-5 text-center">
-                <p className="text-sm text-gray-400 font-bold uppercase tracking-widest mb-1">Replaces</p>
-                <p className="text-base sm:text-lg text-white font-bold">ClickMagick ($99) + Voluum ($149) + Linktree Pro ($24)</p>
-                <p className="text-green-400 font-black text-xl sm:text-2xl mt-2">= $272/mo saved</p>
-              </div>
+      {/* About */}
+      <section className="py-24 sl-bg2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="sl-display text-3xl font-extrabold mb-6">Our Mission: Empowering Founders & Creators</h2>
+              <p className="sl-muted mb-6 leading-relaxed">
+                Smart Link was born from a simple idea: professional-grade marketing tools shouldn't be locked behind expensive subscriptions for those just starting out.
+              </p>
+              <p className="sl-muted leading-relaxed mb-8">
+                Whether you are a SaaS founder launching your first product, a marketer optimizing campaigns, or a creator building your brand, we provide the analytics and targeting tools you need to succeed.
+              </p>
+              <p className="text-sm font-semibold sl-text flex items-center gap-2"><Sparkles className="w-4 h-4" style={{ color: 'var(--sl-violet)' }} aria-hidden="true" /> Built with love by a global team of specialists.</p>
+            </div>
+            <div className="space-y-6">
+              {[
+                { title: 'Privacy First', desc: "We don't track your users personally. Only clean, actionable data.", icon: Shield },
+                { title: 'Performance DNA', desc: 'Lightweight links that load in milliseconds across the globe.', icon: Zap },
+                { title: 'Secure & Reliable', desc: '99.9% uptime with enterprise-grade security for every link.', icon: Lock }
+              ].map((v, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-12 h-12 rounded-xl sl-iconbox flex items-center justify-center flex-shrink-0"><v.icon className="w-5 h-5" /></div>
+                  <div>
+                    <h3 className="font-bold sl-text mb-1">{v.title}</h3>
+                    <p className="text-sm sl-muted leading-relaxed">{v.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-50 dark:bg-gray-950 pt-16 pb-8 border-t border-gray-200 dark:border-white/[0.06]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 mb-12">
+      <footer className="pt-16 pb-8 sl-divider">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
             <div className="col-span-2 lg:col-span-2">
               <Link to="/" className="flex items-center gap-2 mb-4">
-                <img src="/logo-v1.svg" alt="Smart Link" className="w-10 h-10" />
-                <span className="text-2xl font-black text-gray-900 dark:text-white">Smart Link</span>
+                <img src="/logo-v1.svg" alt="Smart Link" className="w-8 h-8" />
+                <span className="sl-display text-xl font-extrabold sl-grad">Smart Link</span>
               </Link>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 max-w-sm font-medium">The ultimate tracking infrastructure for Media Buyers & Affiliates. Block bots, route traffic, maximize ROI.</p>
+              <p className="text-sm sl-muted mb-6 max-w-sm">The advanced link management platform for modern creators.</p>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Product</h3>
-              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-                <li><Link to="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Dashboard</Link></li>
-                <li><a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Features</a></li>
-                <li><a href="#pricing" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Pricing</a></li>
+              <h3 className="font-semibold sl-text mb-4">Product</h3>
+              <ul className="space-y-3 text-sm sl-muted">
+                <li><Link to="/dashboard" className="hover:text-[color:var(--sl-text)]">Dashboard</Link></li>
+                <li><Link to="/pricing" className="hover:text-[color:var(--sl-text)]">Pricing</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Solutions</h3>
-              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-                <li><Link to="/for-marketers" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Marketers</Link></li>
-                <li><Link to="/for-affiliates" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">For Affiliates</Link></li>
-                <li><a href="https://smart-link-api.lemonsqueezy.com/affiliates" target="_blank" rel="noopener noreferrer" className="hover:text-green-600 dark:hover:text-green-400 transition-colors text-green-600 dark:text-green-400 font-bold">Earn Money (Affiliates)</a></li>
+              <h3 className="font-semibold sl-text mb-4">Solutions</h3>
+              <ul className="space-y-3 text-sm sl-muted">
+                <li><Link to="/for-creators" className="hover:text-[color:var(--sl-text)]">For Creators</Link></li>
+                <li><Link to="/for-marketers" className="hover:text-[color:var(--sl-text)]">For Marketers</Link></li>
+                <li><Link to="/for-ecommerce" className="hover:text-[color:var(--sl-text)]">For E-commerce</Link></li>
+                <li><Link to="/for-affiliates" className="hover:text-[color:var(--sl-text)]">For Affiliates</Link></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Free Tools</h3>
-              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-                <li><Link to="/tools" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">All Free Tools</Link></li>
-                <li><Link to="/tools/qr-code-generator" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">QR Code Generator</Link></li>
-                <li><Link to="/tools/utm-builder" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">UTM Builder</Link></li>
-                <li><Link to="/tools/meta-tag-generator" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Meta Tag Generator</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Resources</h3>
-              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-                <li><Link to="/blog" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">📝 Blog</Link></li>
-                <li><a href="#faq" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</a></li>
-                <li><a href="mailto:support@by-smartlink.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Support</a></li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Legal</h3>
-              <ul className="space-y-3 text-sm font-medium text-gray-600 dark:text-gray-400">
-                <li><Link to="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</Link></li>
-                <li><Link to="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</Link></li>
+              <h3 className="font-semibold sl-text mb-4">Resources</h3>
+              <ul className="space-y-3 text-sm sl-muted">
+                <li><Link to="/faq" className="hover:text-[color:var(--sl-text)]">FAQ</Link></li>
+                <li><Link to="/blog" className="hover:text-[color:var(--sl-text)]">Blog</Link></li>
+                <li><a href="mailto:support@by-smartlink.com" className="hover:text-[color:var(--sl-text)]">Contact Support</a></li>
               </ul>
             </div>
           </div>
-          <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm font-bold text-gray-500">© 2026 Smart Link. Engineered for ROI.</p>
-            <div className="flex items-center gap-4">
+          <div className="pt-8 sl-divider flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm sl-muted">© 2026 Smart Link. All rights reserved.</p>
+            <div className="flex flex-wrap items-center justify-center gap-4">
               <a href="https://www.uneed.best/tool/smart-link" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
-                <img src="https://www.uneed.best/EMBED3.png" alt="Uneed Embed Badge" className="h-8" />
+                <img src="https://www.uneed.best/EMBED3.png" alt="Uneed Embed Badge" className="h-10" />
               </a>
-              <a href="https://pitchwall.co/product/by-smartlink?utm_source=badge" style={{display: "inline-flex"}} target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
-                <img src="https://pitchwall.co/images/listed/pitchwall-light.png" width="180" height="60" alt="Listed on PitchWall" className="h-8 w-auto" />
+              <a href="https://www.saashub.com/smart-link-pro?utm_source=badge&utm_campaign=badge&utm_content=smart-link-pro&badge_variant=color&badge_kind=approved" target="_blank" rel="noreferrer" className="hover:opacity-80 transition-opacity">
+                <img src="https://cdn-b.saashub.com/img/badges/approved-color.png?v=1" alt="Smart Link Pro badge" className="h-10" />
               </a>
-              <a href="https://peerpush.com/p/smart-link-clbl" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
-                <img src="https://peerpush.com/p/smart-link-clbl/badge.png" alt="Smart Link on PeerPush" className="h-8 w-auto" />
-              </a>
+              <div className="flex gap-4 md:ml-4">
+                <Link to="/privacy" className="text-sm sl-muted hover:text-[color:var(--sl-text)]">Privacy Policy</Link>
+                <Link to="/terms" className="text-sm sl-muted hover:text-[color:var(--sl-text)]">Terms of Service</Link>
+              </div>
             </div>
           </div>
         </div>

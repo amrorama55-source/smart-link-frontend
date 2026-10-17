@@ -6,7 +6,7 @@ import api from '../../services/api';
 import { SHORT_URL_BASE } from '../../config';
 
 // ✅ Extract hostname only for CNAME (no https://)
-const API_HOSTNAME = (import.meta.env.VITE_API_URL || 'https://api.by-smartlink.com')
+const API_HOSTNAME = (import.meta.env.VITE_API_URL || 'https://smartlink-api-kou9.onrender.com')
   .replace(/^https?:\/\//i, '')
   .replace(/\/.*$/, '');
 
