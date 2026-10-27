@@ -5,6 +5,7 @@ import TopCountries from '../components/analytics/TopCountries';
 import DevicePie from '../components/analytics/DevicePie';
 import ABTestingSection from '../components/analytics/ABTestingSection';
 import ProfitInsights from '../components/analytics/ProfitInsights';
+import PostbackIntegrationCard from '../components/analytics/PostbackIntegrationCard';
 import { MousePointerClick, Users, Globe, Smartphone, ShieldCheck } from 'lucide-react';
 
 export default function OverviewView({ data, analytics }) {
@@ -60,6 +61,9 @@ export default function OverviewView({ data, analytics }) {
         <TopCountries countries={data.countries} />
         <DevicePie devices={data.devices} />
       </div>
+
+      {/* S2S Postback & Sub-ID Tracking Card */}
+      <PostbackIntegrationCard shortCode={analytics?.shortCode} />
 
     </div>
   );

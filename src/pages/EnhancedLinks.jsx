@@ -66,7 +66,18 @@ export default function EnhancedLinks() {
     },
     
     // Pixels
-    pixels: []
+    pixels: [],
+
+    // Auto-Shield (Bot Protection)
+    autoShield: {
+      enabled: false,
+      redirectBotTo: '',
+      protectPixels: true,
+      blockScrapers: true
+    },
+
+    // Language Targeting
+    languageRules: []
   });
 
   const [errors, setErrors] = useState({});
@@ -120,7 +131,9 @@ export default function EnhancedLinks() {
       geoRules: [],
       deviceRules: { mobile: '', desktop: '', tablet: '' },
       schedule: { enabled: false, startDate: '', endDate: '', redirectAfterExpiry: '' },
-      pixels: []
+      pixels: [],
+      autoShield: { enabled: false, redirectBotTo: '', protectPixels: true, blockScrapers: true },
+      languageRules: []
     });
     setErrors({});
     setActiveTab('basic');
@@ -160,7 +173,14 @@ export default function EnhancedLinks() {
       geoRules: link.geoRules || [],
       deviceRules: link.deviceRules || { mobile: '', desktop: '', tablet: '' },
       schedule: link.schedule || { enabled: false, startDate: '', endDate: '', redirectAfterExpiry: '' },
-      pixels: link.pixels || []
+      pixels: link.pixels || [],
+      autoShield: link.autoShield ? {
+        enabled: !!link.autoShield.enabled,
+        redirectBotTo: link.autoShield.redirectBotTo || '',
+        protectPixels: link.autoShield.protectPixels !== false,
+        blockScrapers: link.autoShield.blockScrapers !== false
+      } : { enabled: false, redirectBotTo: '', protectPixels: true, blockScrapers: true },
+      languageRules: link.languageRules || []
     });
     setErrors({});
     setActiveTab('basic');
@@ -169,7 +189,9 @@ export default function EnhancedLinks() {
       link.geoRules?.length > 0 || 
       link.deviceRules?.mobile || 
       link.schedule?.enabled ||
-      link.pixels?.length > 0
+      link.pixels?.length > 0 ||
+      link.autoShield?.enabled ||
+      (link.languageRules && link.languageRules.length > 0)
     );
     setShowModal(true);
   };
@@ -533,6 +555,33 @@ const validateForm = () => {
 
       if (validPixels.length > 0) {
         payload.pixels = validPixels;
+      }
+    }
+
+    // ========================================
+    // ✅ Auto-Shield (Bot Protection)
+    // ========================================
+    if (linkData.autoShield) {
+      payload.autoShield = {
+        enabled: !!linkData.autoShield.enabled,
+        redirectBotTo: (linkData.autoShield.redirectBotTo || '').trim(),
+        blockScrapers: linkData.autoShield.blockScrapers !== false,
+        protectPixels: linkData.autoShield.protectPixels !== false
+      };
+    }
+
+    // ========================================
+    // ✅ Language-based Targeting
+    // ========================================
+    if (linkData.languageRules && linkData.languageRules.length > 0) {
+      const validLangRules = linkData.languageRules
+        .filter(r => r.language && r.language.trim() && r.targetUrl && r.targetUrl.trim())
+        .map(r => ({
+          language: r.language.trim(),
+          targetUrl: r.targetUrl.trim()
+        }));
+      if (validLangRules.length > 0) {
+        payload.languageRules = validLangRules;
       }
     }
 

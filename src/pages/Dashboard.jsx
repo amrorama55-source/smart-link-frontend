@@ -11,6 +11,7 @@ import { useToast } from '../context/ToastProvider';
 import { SHORT_URL_BASE } from '../config';
 import ProfitInsights from '../components/analytics/ProfitInsights';
 import SmartInsights from '../components/analytics/SmartInsights';
+import VoiceBriefingCard from '../components/VoiceBriefingCard';
 import MilestoneToast from '../components/MilestoneToast';
 import {
   MILESTONE_THRESHOLDS,
@@ -36,7 +37,8 @@ import {
   Users,
   Share2,
   Info,
-  DollarSign
+  DollarSign,
+  Shield
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -192,11 +194,12 @@ export default function Dashboard() {
       description: user?.plan === 'free' ? '24h history' : 'Full history'
     },
     {
-      title: 'Active Links',
-      value: stats?.activeLinks || 0,
-      icon: Eye,
-      color: 'purple',
-      trend: null
+      title: 'Bots Blocked',
+      value: stats?.botClicks || 0,
+      icon: Shield,
+      color: 'red',
+      trend: stats?.botClicks > 0 ? 'Protected' : null,
+      description: stats?.savedAdSpend ? `~$${stats.savedAdSpend} budget protected` : `${stats?.botTrafficPercentage || 0}% bot traffic`
     },
     {
       title: 'Mobile Traffic',
@@ -212,7 +215,8 @@ export default function Dashboard() {
     blue: 'bg-blue-500 dark:bg-blue-600',
     green: 'bg-green-500 dark:bg-green-600',
     purple: 'bg-purple-500 dark:bg-purple-600',
-    orange: 'bg-orange-500 dark:bg-orange-600'
+    orange: 'bg-orange-500 dark:bg-orange-600',
+    red: 'bg-rose-500 dark:bg-rose-600'
   };
 
   return (
@@ -291,6 +295,9 @@ export default function Dashboard() {
             <ActivationChecklist />
           </div>
         )}
+
+        {/* 🎙️ Autonomous AI Voice Marketing Agent Briefing */}
+        <VoiceBriefingCard stats={stats} user={user} />
 
         {/* Stats Grid - 2 columns on mobile, 4 on desktop (Dark Glassmorphism) */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 mt-6">
